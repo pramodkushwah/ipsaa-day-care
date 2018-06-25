@@ -1,0 +1,85 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="label-control">Year</label>
+      <select class="form-control" ng-model="selectedYear" ng-options="year as year for year in years" ng-change="yearChange()">
+      </select>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="label-control">Month</label>
+      <select class="form-control" ng-model="selectedMonth" ng-options="month as month.name for month in months" ng-change="monthChange()">
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header" style="text-align: center">
+    <h4>Attendance</h4>
+  </div>
+  <div class="card-content">
+    <div class="row">
+      <div class="col-md-12">
+        `<h3>Attendance Summary</h3>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <tr>
+              <th>Date</th>
+              <th>Day</th>
+              <th>Status</th>
+              <th>ClockIn</th>
+              <th>ClockOut</th>
+              <th>Leave Action</th>
+            </tr>
+            <tr ng-repeat="atten in attendanceList | orderBy: 'date'" ng-class="atten.class">
+              <td>{{atten.date | date : 'dd/MM/yyyy'}}</td>
+              <td>{{atten.date | date : 'EEEE'}}</td>
+              <td ng-if="atten.status == 'Present'">{{atten.status}}</td>
+              <td ng-if="atten.status == 'Absent'">{{atten.status}}</td>
+              <td ng-if="atten.status == 'Holiday'">{{atten.status}} ( {{atten.holidayName}} )</td>
+              <td ng-if="atten.status == 'Leave'">{{atten.halfLeave ? 'Half Day' : 'Full Day'}} Leave ({{atten.leaveType}})</td>
+              <td>{{atten.actualIn}}</td>
+              <td>{{atten.actualOut}}</td>
+              <td>
+                <span class="label label-success" ng-show="atten.leaveStatus == 'Approved'">Approved</span>
+                <span class="label label-primary" ng-show="atten.leaveStatus == 'Applied'">Applied</span>
+                <span class="label label-danger" ng-show="atten.leaveStatus == 'Rejected'">Rejected</span>
+                <button class="btn btn-sm btn-danger"
+                        ng-click="applyLeave(atten,true,true)"
+                        ng-show="atten.leaveStatus == 'Approved' || atten.leaveStatus == 'Applied' || atten.leaveStatus == 'Rejected'"
+                        ng-disabled="atten.disableApply">
+                  <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="atten.disableApply"></i>
+                  Cancel
+                </button>
+
+                <div ng-hide="atten.status == 'Holiday' || atten.leaveStatus == 'Approved' || atten.leaveStatus == 'Rejected' || atten.leaveStatus == 'Applied'">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <select class="form-control" ng-model="atten.selectedLeaveType" ng-options="leave as leave for leave in leaveTypes" required>
+                        <option value="" style="font-weight: 100">Leave Type</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <button class="btn btn-sm btn-info" ng-click="applyLeave(atten,false)"
+                              ng-hide="atten.status == 'Present'" ng-disabled="atten.disableApply">
+                        <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="atten.disableApply"></i>
+                        Full
+                      </button>
+                      <button class="btn btn-sm btn-info" ng-click="applyLeave(atten,true)" ng-disabled="atten.disableApply">
+                        <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="atten.disableApply"></i>
+                        Half
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

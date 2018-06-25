@@ -1,0 +1,38 @@
+<div class="card">
+  <div class="card-header card-header-icon" data-background-color="rose">
+    <i class="material-icons">chrome_reader_mode</i>
+  </div>
+  <div class="card-content">
+    <h4 class="card-title">Student Fee</h4>
+    <div class="table-responsive">
+      <table class="table table-condensed table-striped table-hover">
+        <thead class="text-primary">
+        <tr>
+          <th>S.No</th>
+          <th>Name</th>
+          <th>Program</th>
+          <th>Group</th>
+          <th>Center</th>
+          <th>Base Fee</th>
+          <th>Discount</th>
+          <th>Final Fee</th>
+          <th>Type</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="studentfee in studentfeelist | orderBy: ['center','program','group']">
+          <td>{{$index+1}}</td>
+          <td>{{studentfee.name}}</td>
+          <td>{{studentfee.program}}</td>
+          <td>{{studentfee.group}}</td>
+          <td>{{studentfee.center}}</td>
+          <td>{{studentfee.baseFee}}</td>
+          <td>{{studentfee.discount}}</td>
+          <td>{{studentfee.finalFee}}</td>
+          <td>{{studentfee.feeDuration}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

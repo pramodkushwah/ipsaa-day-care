@@ -1,0 +1,54 @@
+<div class="card">
+  <div class="card-header card-header-icon" data-background-color="rose">
+    <i class="material-icons">account_box</i>
+  </div>
+  <div class="card-content">
+    <h4 class="card-title">Users</h4>
+    <div class="table-responsive">
+      <table class="table table-condensed table-striped table-hover">
+        <thead class="text-primary">
+        <tr>
+          <th>S.No</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Type</th>
+          <th>Role(s)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="user in users">
+          <td>{{$index+1}}</td>
+          <td>{{user.name}}</td>
+          <td>{{user.email}}</td>
+          <td>{{user.phone}}</td>
+          <td>{{user.type}}</td>
+          <td>{{user.roles}}</td>
+        </tr>
+
+        <tr>
+          <td colspan="6" style="background: #fff">
+            <ul class="pagination pagination-info">
+              <li ng-show="studentsPageNumber!=1" style="cursor: pointer;">
+                <a ng-click="updateStudentPage(studentsPageNumber-1)"> prev
+                  <div class="ripple-container"></div>
+                </a>
+              </li>
+              <li href="#" ng-repeat="page in studentPageBar" ng-class="{active: page==studentsPageNumber}" style="cursor: pointer;">
+                <a ng-click="updateStudentPage(page)"> {{page}}
+                  <div class="ripple-container"></div>
+                </a>
+              </li>
+              <li ng-show="studentsPageCount>studentsPageNumber" style="cursor: pointer;">
+                <a ng-click="updateStudentPage(studentsPageNumber+1)">next
+                  <div class="ripple-container"></div>
+                </a>
+              </li>
+            </ul>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

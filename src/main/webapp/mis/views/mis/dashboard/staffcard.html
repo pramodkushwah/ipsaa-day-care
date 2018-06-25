@@ -1,0 +1,16 @@
+<div class="col-lg-3 col-md-4 col-sm-4">
+  <div class="card card-stats" ng-click="showPanel('stafflist')">
+    <div class="card-header" data-background-color="orange">
+      <i class="material-icons">person_pin</i>
+    </div>
+    <div class="card-content">
+      <p class="category">Staff</p>
+      <h3 class="card-title">{{stats.staffCount | number}}</h3>
+    </div>
+    <div class="card-footer footer-bottom">
+      <div class="stats">
+        <span>Staff Cost:{{stats.staffCost | number}}</span>
+      </div>
+    </div>
+  </div>
+</div>

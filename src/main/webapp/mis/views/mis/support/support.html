@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">SUPPORT</h3>
+      </div>
+      <div class="card-content">
+        <div ui-view></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Queries</h3>
+        <input type="checkbox" ng-model="showClosed" ng-change="refresh()">Show closed
+      </div>
+      <div class="card-content">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table class="table table-condensed table-striped table-hover">
+                <thead class="text-primary">
+                <tr>
+                  <th>Center</th>
+                  <th>Student</th>
+                  <th>Title</th>
+                  <th>Status</th>
+                  <th>Raised By</th>
+                  <th>Created At</th>
+                  <th>Last Action</th>
+                </tr>
+                </thead>
+                <tr ng-repeat="query in queries">
+                  <td>{{query.center}}</td>
+                  <td>{{query.studentName}}</td>
+                  <td><a ui-sref=".viewcase(query)">{{query.title}}</a></td>
+                  <td><span class="label label-info">{{query.status}}</span></td>
+                  <td>{{query.raisedBy}}</td>
+                  <td>{{query.created}}</td>
+                  <td>{{query.lastAction}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

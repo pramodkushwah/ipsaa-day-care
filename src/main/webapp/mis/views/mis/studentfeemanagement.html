@@ -1,0 +1,232 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">Center:</label>
+      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="loadCenterStudentsFee()">
+        <option value="">Select Center</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">Search</label>
+      <input class="form-control" type="text" ng-model="searchFee">
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">assignment</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Student Fee</h4>
+        <button class="btn btn-info btn-xs" ng-click="newStudentFee()" ng-show="selectedCenter">NEW</button>
+        <div class="table-responsive">
+          <table class="table table-condensed table-striped table-hover" ng-show="selectedCenter">
+            <thead class="text-primary">
+            <tr>
+              <th>Name</th>
+              <th>Program</th>
+              <th>Group</th>
+              <th>Center</th>
+              <th>Base Fee</th>
+              <th>Discount</th>
+              <th>Final Fee</th>
+              <th>Type</th>
+              <th ng-show="STUDENTFEE_WRITE">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="studentfee in studentfeelist | filter: searchFee">
+              <td ng-click="loadStudentFee(studentfee,'Show')">{{studentfee.fullName}}</td>
+              <td ng-click="loadStudentFee(studentfee,'Show')">{{studentfee.program.name}}</td>
+              <td ng-click="loadStudentFee(studentfee,'Show')">{{studentfee.group.name}}</td>
+              <td ng-click="loadStudentFee(studentfee,'Show')">{{studentfee.center.code}}</td>
+              <td ng-click="loadStudentFee(studentfee,'Show')">{{studentfee.baseFee}}</td>
+              <td ng-click="loadStudentFee(studentfee,'Show')">{{studentfee.discount}}</td>
+              <td ng-click="loadStudentFee(studentfee,'Show')">{{studentfee.finalFee}}</td>
+              <td ng-click="loadStudentFee(studentfee,'Show')">{{studentfee.feeDuration}}</td>
+              <td ng-show="STUDENTFEE_WRITE">
+                <div class="buttons">
+                  <button type="button" class="btn btn-primary btn-xs" ng-click="loadStudentFee(studentfee,'Edit')">edit</button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-md-4" ng-show="addstudentfee&&selectedCenter">
+
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">chrome_reader_mode</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">{{insertStudentFee.mode}} Student Fee</h4>
+        <form name="StudentFeeForm">
+          <div class="row">
+
+            <div class="col-md-4" ng-show="insertStudentFee.mode=='Edit' || insertStudentFee.mode=='Show'">
+              <div class="form-group">
+                <label class="control-label">Program*</label>
+                <input class="form-control" type="text" readonly ng-model="insertStudentFee.program.name">
+              </div>
+            </div>
+            <div class="col-md-4" ng-show="insertStudentFee.mode=='Edit' || insertStudentFee.mode=='Show'">
+              <div class="form-group">
+                <label class="control-label">Student*</label>
+                <input class="form-control" type="text" readonly ng-model="insertStudentFee.fullName">
+              </div>
+            </div>
+
+            <div class="col-md-4" ng-show="insertStudentFee.mode=='Add'">
+              <div class="form-group">
+                <label class="control-label">Program*</label>
+                <select class="form-control" ng-model="insertStudentFee.program" ng-options="program as program.name for program in programs"
+                        ng-change="getProgramFee();getStudents();">
+                  <option value="">Select</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4" ng-show="insertStudentFee.mode=='Add'">
+              <div class="form-group">
+                <label class="control-label">Student*</label>
+                <select class="form-control" ng-model="insertStudentFee.student"
+                        ng-options="student as student.fullName for student in students | studentFilterFromFee: studentIds">
+                  <option value="">Select</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="control-label" ng-readonly="true">Old fee</label>
+                <input class="form-control" type="text" readonly ng-model="insertStudentFee.oldFee">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="control-label" ng-readonly="true">Base fee*</label>
+                <input class="form-control" type="text" ng-model="insertStudentFee.baseFee" readonly required>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="control-label">Transport</label>
+                <input class="form-control" type="number" required ng-model="insertStudentFee.transportFee" ng-change="transportFeeChanged(insertStudentFee)"
+                       ng-readonly="insertStudentFee.mode=='Show'">
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="control-label">Fee Duration*</label>
+                <select class="form-control" ng-model="insertStudentFee.feeDuration" ng-change="durationChange(insertStudentFee)" ng-disabled="insertStudentFee.mode=='Show'">
+                  <option value="">Select</option>
+                  <option value="Monthly">Monthly</option>
+                  <option value="Quarterly">Quarterly</option>
+                  <option value="Yearly">Yearly</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="control-label">Discount*</label>
+                <input class="form-control" type="number" step="0.001" required ng-model="insertStudentFee.discount" readonly>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="control-label">Adjust*</label>
+                <input class="form-control" type="number" step="0.00001" required ng-model="insertStudentFee.adjust" readonly>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="control-label">Final fee*</label>
+                <input class="form-control" type="number" step="0.0000001" required ng-model="insertStudentFee.finalFee"
+                       ng-change="finalFeeChanged(insertStudentFee)"
+                       ng-readonly="
+                       insertStudentFee.feeDuration != 'Monthly'
+                       || insertStudentFee.mode=='Show'">
+              </div>
+            </div>
+
+            <div class="col-md-4" ng-show="!!insertStudentFee.cgst">
+              <div class="form-group">
+                <label class="control-label">C-GST: ({{insertStudentFee.cgst}}%)</label>
+                <input class="form-control" name="cgst" type="number" readonly ng-model="insertStudentFee.cGstAmount">
+              </div>
+            </div>
+            <div class="col-md-4" ng-show="!!insertStudentFee.sgst">
+              <div class="form-group">
+                <label class="control-label">S-GST: ({{insertStudentFee.sgst}}%)</label>
+                <input class="form-control" name="sgst" type="number" readonly ng-model="insertStudentFee.sGstAmount">
+              </div>
+            </div>
+            <div class="col-md-4" ng-show="!!insertStudentFee.igst">
+              <div class="form-group">
+                <label class="control-label">I-GST: ({{insertStudentFee.igst}}%)</label>
+                <input class="form-control" name="igst" type="number" readonly ng-model="insertStudentFee.iGstAmount">
+              </div>
+            </div>
+
+
+
+            <div class="col-md-4" ng-show="!!insertStudentFee.cgst || !!insertStudentFee.sgst || !!insertStudentFee.igst">
+              <div class="form-group">
+                <label class="control-label">GST-Fee</label>
+                <input class="form-control" type="number"
+                       required ng-model="insertStudentFee.gstFee"
+                       ng-change="gstFeeChanged(insertStudentFee)"
+                       ng-readonly="true || insertStudentFee.feeDuration != 'Monthly' || insertStudentFee.mode=='Show'">
+              </div>
+            </div>
+
+
+
+
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="control-label">Comment*</label>
+                <input class="form-control" type="text" ng-model="insertStudentFee.comment" ng-readonly="insertStudentFee.mode=='Show'">
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane active" id="controls" ng-hide="insertStudentFee.mode=='Show'">
+            <div class="category form-category">
+              *Required Fields
+            </div>
+            <div class="form-footer text-right">
+              <button class="btn btn-rose btn-fill" ng-click="saveStudentFee()" ng-disabled="StudentFeeForm.$invalid || disableSave">
+                <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableSave"></i>
+                Save
+              </button>
+              <button class="btn btn-default" ng-click="cancelStudentFee()">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>

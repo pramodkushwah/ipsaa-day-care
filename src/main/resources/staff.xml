@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<workbook>
+  <worksheet name="Sheet1">
+    <section startRow="1" endRow="3">
+    </section>
+    <loop startRow="4" endRow="4" items="employees" var="employee" varType="com.synlabs.ipsaa.view.batchimport.ImportEmployee">
+      <section startRow="4" endRow="4">
+        <mapping row="4" col="0">employee.eid</mapping>
+        <mapping row="4" col="1">employee.firstName</mapping>
+        <mapping row="4" col="2">employee.lastName</mapping>
+        <mapping row="4" col="3">employee.doj</mapping>
+        <mapping row="4" col="4">employee.mobile</mapping>
+        <mapping row="4" col="5">employee.secondaryNumbers</mapping>
+        <mapping row="4" col="6">employee.email</mapping>
+        <mapping row="4" col="7">employee.designation</mapping>
+        <mapping row="4" col="8">employee.payrollEnabled</mapping>
+        <mapping row="4" col="9">employee.attendanceEnabled</mapping>
+        <mapping row="4" col="10">employee.employeeType</mapping>
+        <mapping row="4" col="11">employee.userType</mapping>
+        <mapping row="4" col="12">employee.costCenterName</mapping>
+        <mapping row="4" col="13">employee.dob</mapping>
+        <mapping row="4" col="14">employee.gender</mapping>
+        <mapping row="4" col="15">employee.address</mapping>
+        <mapping row="4" col="16">employee.city</mapping>
+        <mapping row="4" col="17">employee.state</mapping>
+        <mapping row="4" col="18">employee.zipCode</mapping>
+        <mapping row="4" col="19">employee.phone</mapping>
+        <!--<mapping row="4" col="20">employee.addressType</mapping>-->
+        <mapping row="4" col="20">employee.pAddress</mapping>
+        <mapping row="4" col="21">employee.pCity</mapping>
+        <mapping row="4" col="22">employee.pState</mapping>
+        <mapping row="4" col="23">employee.pZipCode</mapping>
+        <mapping row="4" col="24">employee.pPhone</mapping>
+        <mapping row="4" col="25">employee.expectedIn</mapping>
+        <mapping row="4" col="26">employee.expectedOut</mapping>
+        <mapping row="4" col="27">employee.maritalStatus</mapping>
+      </section>
+      <loopbreakcondition>
+        <rowcheck offset="0">
+          <cellcheck offset="0"></cellcheck>
+          <cellcheck offset="4"></cellcheck>
+        </rowcheck>
+      </loopbreakcondition>
+    </loop>
+  </worksheet>
+</workbook>

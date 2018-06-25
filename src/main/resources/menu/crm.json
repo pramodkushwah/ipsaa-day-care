@@ -1,0 +1,19 @@
+{
+  "label": "CRM",
+  "icon": "group",
+  "seq":900,
+  "submenu": [
+    {
+      "label": "Inquiry",
+      "state": "app.inquiries",
+      "p": "INQUIRY_READ",
+      "seq": 100
+    },
+    {
+      "label": "Report",
+      "state": "app.inquiryreport",
+      "p": "INQUIRY_REPORT",
+      "seq": 200
+    }
+  ]
+}

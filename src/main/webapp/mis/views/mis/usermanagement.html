@@ -1,0 +1,80 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="form-group" role="group">
+      <label class="control-label">Center</label>
+      <select class="form-control" ng-model="searchCenter">
+        <option value="">All</option>
+        <option value="{{center.name}}" ng-repeat="center in centers">{{center.name}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="form-group" role="group">
+      <label class="control-label">Search</label>
+      <input type="search" class="form-control" id="search" placeholder="Search..." ng-model="searchUser">
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6 col-lg-6 col-sm-12">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">assignment</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Users</h4>
+        <button class="btn btn-info btn-sm" ng-click="newUser()">New User</button>
+        <div class="table-responsive">
+          <table class="table table-condensed table-striped table-hover">
+            <thead class="text-primary">
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Type</th>
+              <th>Role(s)</th>
+              <th>Center(s)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="user in users | centerFilter:searchCenter | filter:searchUser | startFrom:currentPage*pageSize | limitTo:pageSize" ng-click="showUser(user)">
+              <td>{{user.fullName}}</td>
+              <td>{{user.email}}</td>
+              <td>{{user.phone}}</td>
+              <td>{{user.type}}</td>
+              <td>
+                <span ng-repeat="role in user.roles" class="label label-info">{{role}}</span>
+              </td>
+              <td>
+                <span ng-repeat="center in user.centers"><span class="label label-info">{{center}}</span>&nbsp;<br ng-if="($index+1) % 3 ==0"></span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="6" style="background: #fff">
+                <ul class="pagination pagination-info">
+                  <li>
+                    <a ng-hide="currentPage == 0" ng-click="currentPage=currentPage-1;updatePageBar()">
+                      Previous
+                    </a>
+                  </li>
+                  <li ng-repeat="page in pagebar" ng-class="{active: page.current}" ng-click="changePage(page)">
+                    <a>{{page.number+1}}</a>
+                  </li>
+                  <li>
+                    <a ng-hide="currentPage >= getData().length/pageSize - 1" ng-click="currentPage=currentPage+1;updatePageBar()">
+                      Next
+                    </a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-6 col-sm-12" ng-if="showUserPanel || editUserPanel">
+    <div ng-include=" 'views/mis/userprofile.html' "></div>
+  </div>
+</div>

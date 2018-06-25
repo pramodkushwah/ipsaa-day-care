@@ -1,0 +1,105 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="form-group" role="group">
+      <label class="control-label">Search</label>
+      <input type="search" class="form-control" id="search" placeholder="Search..." ng-model="searchHoliday" ng-change="resetPagination()">
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">Center</label>
+      <select class="form-control" ng-model="selectedCenter" ng-change="resetPagination()"
+              ng-options="center as center.name for center in centerList">
+        <option value="">All</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">Month</label>
+      <select class="form-control" ng-model="selectedMonth" ng-change="loadHolidays()"
+              ng-options="month.value as month.name for month in months">
+        <option>All</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-1">
+    <div class="form-group">
+      <label class="control-label">Year</label>
+      <select class="form-control" ng-model="selectedYear" ng-change="loadHolidays()"
+              ng-options="year as year for year in years">
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-1">
+    <div class="btn-group btn-group-sm">
+      <button type="button" class="btn btn-info" id="add" ng-click="addHoliday()">Add</button>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6 col-lg-6 col-sm-12">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">account_box</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Holidays</h4>
+        <div class="table-responsive">
+          <table class="table table-condensed table-striped table-hover">
+            <thead class="text-primary">
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Floating</th>
+              <th>Optional</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="holiday in holidays  | orderBy:['holidayDate','name'] |
+             filter: searchHoliday |
+             filter: selectedCenter.code |
+             startFrom:currentPage*pageSize |
+             limitTo:pageSize">
+              <td data-ng-click="showHoliday(holiday,'Show')">{{holiday.name}}</td>
+              <td data-ng-click="showHoliday(holiday,'Show')">{{holiday.holidayDate}}</td>
+              <td data-ng-click="showHoliday(holiday,'Show')">{{holiday.floating}}</td>
+              <td data-ng-click="showHoliday(holiday,'Show')">{{holiday.optional}}</td>
+              <td>
+                <div class="buttons">
+                  <button type="button" class="btn btn-primary btn-xs" ng-click="editHoliday(holiday)">EDIT</button>
+                  <button type="button" class="btn btn-danger btn-xs" ng-click="delHoliday(holiday)">DEL</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="6" style="background: #fff">
+                <ul class="pagination pagination-info">
+                  <li>
+                    <a ng-hide="currentPage == 0" ng-click="currentPage=currentPage-1;updatePageBar()">
+                      Previous
+                    </a>
+                  </li>
+                  <li ng-repeat="page in pagebar" ng-class="{active: page.current}" ng-click="changePage(page)">
+                    <a>{{page.number+1}}</a>
+                  </li>
+                  <li>
+                    <a ng-hide="currentPage >= getData().length/pageSize - 1" ng-click="currentPage=currentPage+1;updatePageBar()">
+                      Next
+                    </a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-6 col-sm-12" ng-show="edit || show || add">
+    <div ng-include=" 'views/mis/addoreditholiday.html' "></div>
+  </div>
+</div>

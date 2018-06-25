@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<workbook>
+  <worksheet name="Sheet1">
+    <section startRow="1" endRow="3">
+    </section>
+    <loop startRow="4" endRow="4" items="students" var="student" varType="com.synlabs.ipsaa.view.batchimport.ImportStudentFull">
+      <section startRow="4" endRow="4">
+        <mapping row="4" col="0">student.sNo</mapping>
+        <mapping row="4" col="1">student.centerCode</mapping>
+        <mapping row="4" col="2">student.programCode</mapping>
+        <mapping row="4" col="3">student.groupName</mapping>
+        <!--<mapping row="4" col="4">student.active</mapping>-->
+        <mapping row="4" col="5">student.admissionDate</mapping>
+        <!--<mapping row="4" col="5">student.aoe</mapping>-->
+        <mapping row="4" col="7">student.fullName</mapping>
+        <mapping row="4" col="8">student.dob</mapping>
+        <mapping row="4" col="9">student.age</mapping>
+        <mapping row="4" col="10">student.gender</mapping>
+        <mapping row="4" col="11">student.address</mapping>
+        <mapping row="4" col="12">student.area</mapping>
+        <!--<mapping row="4" col="13">student.profile</mapping>-->
+        <!--<mapping row="4" col="14">student.familyType</mapping>-->
+        <!--<mapping row="4" col="15">student.expectedIn</mapping>-->
+        <mapping row="4" col="16">student.motherFirstName</mapping>
+        <mapping row="4" col="17">student.motherLastName</mapping>
+        <mapping row="4" col="18">student.motherOccupation</mapping>
+        <mapping row="4" col="19">student.motherQualification</mapping>
+        <mapping row="4" col="20">student.motherCompany</mapping>
+        <mapping row="4" col="22">student.motherWorkAddress</mapping>
+        <mapping row="4" col="23">student.motherMobile</mapping>
+        <mapping row="4" col="26">student.motherEmail</mapping>
+
+        <mapping row="4" col="27">student.fatherFirstName</mapping>
+        <mapping row="4" col="28">student.fatherLastName</mapping>
+        <mapping row="4" col="29">student.fatherOccupation</mapping>
+        <mapping row="4" col="30">student.fatherQualification</mapping>
+        <mapping row="4" col="31">student.fatherCompany</mapping>
+        <mapping row="4" col="33">student.fatherWorkAddress</mapping>
+        <mapping row="4" col="34">student.fatherMobile</mapping>
+        <mapping row="4" col="37">student.fatherEmail</mapping>
+
+        <mapping row="4" col="45">student.bloodGroup</mapping>
+
+      </section>
+      <loopbreakcondition>
+        <rowcheck offset="0">
+          <cellcheck offset="0"></cellcheck>
+        </rowcheck>
+      </loopbreakcondition>
+    </loop>
+  </worksheet>
+</workbook>

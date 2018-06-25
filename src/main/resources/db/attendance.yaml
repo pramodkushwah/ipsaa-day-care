@@ -1,0 +1,11 @@
+
+STUDENTATTENDANCE: >
+  select
+    su.*
+  from
+    calendar cal
+    left join student_attendance su on cal.db_date = su.attendance_date
+    join student s on su.student_id = s.id
+  where
+    cal.db_date between :startdate and :enddate
+    and s.id = :sid

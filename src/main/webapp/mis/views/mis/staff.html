@@ -1,0 +1,145 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="form-group" role="group">
+      <label class="control-label">Search: </label>
+      <input type="search" class="form-control" id="search" placeholder="Search..." ng-model="searchStaff">
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="form-group" role="group">
+      <label class="control-label">Centers: </label>
+      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers">
+        <option value="">All</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="form-group" role="group">
+      <label class="control-label">Active: </label>
+      <select class="form-control" ng-model="activeFilter" ng-change="activeFilterChange()">
+        <option ng-value="true">Active</option>
+        <option ng-value="false">Inactive</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">Type: </label>
+      <select class="form-control" ng-model="selectedType" ng-options="type.value as type.name for type in [
+      {name:'All',value:''},
+      {name:'CxO',value:'CxO'},
+      {name:'Management',value:'Management'},
+      {name:'Teacher',value:'Teacher'},
+      {name:'Staff',value:'Staff'}]">
+      </select>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="btn-group btn-group-sm">
+      <div class="form-group">
+        <button type="button" class="btn btn-info" id="add" ng-click="addStaff()">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br>
+
+<div class="row">
+  <div class="col-md-7 col-lg-6 col-sm-12">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">assignment</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Staff</h4>
+        <div class="table-responsive">
+          <table class="table table-condensed table-striped table-hover">
+            <thead class="text-primary">
+            <tr>
+              <th>EID</th>
+              <th>Center</th>
+              <th>Name</th>
+              <th>Designation</th>
+              <th>Mobile</th>
+              <th>Email</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="staff in stafflist |
+            filter: {name: searchStaff} |
+            filter: {centerCode: selectedCenter.code} |
+            filter: {type: selectedType} |
+            orderBy:'eid' |
+            startFrom:currentPage*pageSize |
+            limitTo:pageSize">
+              <td ng-click="showStaff(staff)">{{staff.eid}}</td>
+              <td ng-click="showStaff(staff)">{{staff.centerCode}}</td>
+              <td ng-click="showStaff(staff)">{{staff.name}}</td>
+              <td ng-click="showStaff(staff)">{{staff.designation}}</td>
+              <td ng-click="showStaff(staff)">{{staff.mobile}}</td>
+              <td ng-click="showStaff(staff)">{{staff.email}}</td>
+              <td ng-show="activeFilter">
+                <div class="buttons">
+                  <button type="button" class="btn btn-primary btn-xs" ng-click="editStaff(staff)">edit</button>
+                  <button type="button" class="btn btn-danger btn-xs" ng-click="deleteStaffSwal(staff)">del</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td colspan="6" style="background: #fff">
+                <ul class="pagination pagination-info">
+                  <li>
+                    <a ng-hide="currentPage == 0" ng-click="currentPage=currentPage-1;updatePageBar()">
+                      Previous
+                    </a>
+                  </li>
+                  <li ng-repeat="page in pagebar" ng-class="{active: page.current}" ng-click="changePage(page)">
+                    <a>{{page.number+1}}</a>
+                  </li>
+                  <li>
+                    <a ng-hide="currentPage >= getData().length/pageSize - 1" ng-click="currentPage=currentPage+1;updatePageBar()">
+                      Next
+                    </a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-5 col-lg-6 col-sm-12" ng-show="editstaff || showstaff || addstaff">
+    <div ng-include=" 'views/mis/staffprofile.html' "></div>
+  </div>
+  <div class="col-md-6 col-lg-6 col-sm-12" ng-show="import">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="orange">
+        <i class="material-icons">mail_outline</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Import New Staff</h4>
+        <div class="row">
+          <div class="col-lg-7 col-md-7 col-sm-7">
+            <input class="btn btn-primary btn-sm" type="file" file-model="file"/>
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-2">
+            <button class="btn btn-warning btn-sm" ng-click="upload()">Upload</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group">
+              <label class="control-label">*{{file.message}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

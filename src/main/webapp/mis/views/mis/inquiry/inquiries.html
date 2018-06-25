@@ -1,0 +1,117 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="form-group ipsaa-form-group">
+      <label class="control-label">Center:</label>
+      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="centerChanged(selectedCenter)">
+        <option value="">Select Center</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="form-group ipsaa-form-group">
+      <label class="control-label">Search:</label>
+      <input class="form-control" ng-model="searchInquiry" type="text">
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <button class="btn btn-rose" ng-click="addInquiry()" style="margin-top: 20px;">Add Inquiry</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <ul class="nav nav-pills nav-pills-warning">
+      <li class="active">
+        <a data-href="#inquiries" data-toggle="tab" class="active" ng-click="changeTab(1)">Inquiry</a>
+      </li>
+      <li>
+        <a data-href="#followups" data-toggle="tab" ng-click="changeTab(2)">Follow up</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="row">
+
+  <div class="col-md-12">
+    <div class="tab-content">
+      <div class="tab-pane active" id="inquiries">
+
+        <div class="card">
+          <div class="card-header card-header-icon" data-background-color="rose">
+            <i class="material-icons">account_box</i>
+          </div>
+          <div class="card-content">
+            <h4 class="card-title">Inquiries</h4>
+            <div class="table-responsive">
+              <table class="table table-condensed table-striped table-hover">
+                <thead class="text-primary">
+                <tr>
+                  <th>#</th>
+                  <th>Child Name</th>
+                  <th>Center</th>
+                  <th>Program</th>
+                  <th>Group</th>
+                  <th>Fees offer</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="inquiry in inquiries | filter: searchInquiry">
+                  <td ng-click="loadInquiry(inquiry.id,'Show')">{{inquiry.inquiryNumber}}</td>
+                  <td ng-click="loadInquiry(inquiry.id,'Show')">{{inquiry.childName}}</td>
+                  <td ng-click="loadInquiry(inquiry.id,'Show')">{{inquiry.centerCode}}</td>
+                  <td ng-click="loadInquiry(inquiry.id,'Show')">{{inquiry.programCode}}</td>
+                  <td ng-click="loadInquiry(inquiry.id,'Show')">{{inquiry.groupName}}</td>
+                  <td ng-click="loadInquiry(inquiry.id,'Show')">{{inquiry.feeOffer}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="tab-pane" id="followups">
+        <div class="card">
+          <div class="card-header card-header-icon" data-background-color="rose">
+            <i class="material-icons">account_box</i>
+          </div>
+          <div class="card-content">
+            <h4 class="card-title">Followups</h4>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label class="control-label">Filter</label>
+                  <select class="form-control" ng-model="followupFilter" ng-change="followupFilterChanged(followupFilter)" ng-options="followupFilter as followupFilter for followupFilter in followupFilters"></select>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-condensed table-striped table-hover">
+                <thead class="text-primary">
+                <tr>
+                  <th>Inquiry Number</th>
+                  <th>Disposition</th>
+                  <th>CallBack Date</th>
+                  <th>CallBack Number</th>
+                  <th>Comment</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="followUp in followUps | orderBy:'callBack'">
+                  <td ng-click="loadFollowup(followUp.inquiryId)">{{followUp.inquiryNumber}}</td>
+                  <td ng-click="loadFollowup(followUp.inquiryId)">{{followUp.callDisposition}}</td>
+                  <td ng-click="loadFollowup(followUp.inquiryId)">{{followUp.callBack}}</td>
+                  <td ng-click="loadFollowup(followUp.inquiryId)">{{followUp.callBackNumber}}</td>
+                  <td ng-click="loadFollowup(followUp.inquiryId)">{{followUp.comment}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,51 @@
+<div class="sidebar" data-active-color="orange" data-background-color="white" data-image="/assets/img/sidebar-1.jpg" ng-cloak>
+
+  <div class="logo">
+    <a ui-sref="app.home" class="simple-text">
+      <img src="/assets/img/ipsaa-logo-sm.png">
+    </a>
+  </div>
+
+  <div class="sidebar-wrapper always-visible" >
+    <input type="file" id="profilePicUpload" file-model="file" style="display:none" accept="image/*"/>
+
+    <div class="user">
+      <div class="photo">
+        <img ng-src="{{profileImageURI}}" ng-click="ppFileBrowse()"/>
+      </div>
+      <div class="info">
+        <a data-toggle="collapse" class="collapsed">{{self.name}}</a>
+        <a>{{self.email}}</a>
+      </div>
+    </div>
+    <ul class="nav">
+      <li class="hidden-md hidden-lg" style="cursor: pointer; cursor: hand;">
+        <a ng-click="logout()">
+          <i class="glyphicon glyphicon-log-out"></i>
+          <p>Logout</p>
+        </a>
+      </li>
+      <li>
+        <a ui-sref="app.home" ng-click="menuClicked()">
+          <i class="material-icons">dashboard</i>
+          <p>Dashboard</p>
+        </a>
+      </li>
+      <li ng-repeat="item in menu.items | orderBy:['seq','label']" ng-click="menuToggle()">
+        <a data-toggle="collapse" data-target="#id_{{item.label.split(' ').join('-')}}">
+          <i class="material-icons">{{item.icon}}</i>
+          <p>{{item.label}}
+            <b class="caret"></b>
+          </p>
+        </a>
+        <div class="collapse" id="id_{{item.label.split(' ').join('-')}}">
+          <ul class="nav">
+            <li ng-repeat="submenu in item.submenu | orderBy:['seq','label']">
+              <a ui-sref="{{submenu.state}}" ng-click="menuClicked()">{{submenu.label}}</a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

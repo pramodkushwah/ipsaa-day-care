@@ -1,0 +1,106 @@
+<div class="row">
+  <div class="col-md-2">
+    <label class="control-label">Centers:</label>
+    <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="centerChange(selectedCenter)">
+      <option value="">ALL</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <label class="control-label">Groups:</label>
+    <select class="form-control" ng-model="selectedGroup" ng-options="group as group.name for group in groups" ng-change="groupChanged(selectedGroup)">
+      <option value="">ALL</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-info" ng-click="getActivities(selectedCenter,selectedGroup);">Get</button>
+  </div>
+
+  <div class="col-md-2">
+    <button class="btn btn-info" ng-click="addActivity()">add</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">account_box</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Activities</h4>
+        <div class="table-responsive">
+          <table class="table table-condensed table-striped table-hover">
+            <thead class="text-primary">
+            <tr>
+              <th>Center</th>
+              <th>Group</th>
+              <th>Date</th>
+              <th>Activity</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="activity in activities | orderBy: '-date'">
+              <td ng-click="showActivity(activity)">{{activity.center.code}}</td>
+              <td ng-click="showActivity(activity)">{{activity.group.name}}</td>
+              <td ng-click="showActivity(activity)">{{activity.date | date : 'dd-MMM-yyyy' : 'IST'}}</td>
+              <td ng-click="showActivity(activity)">{{activity.activity}}</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-xs" ng-click="editActivity(activity)">edit</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card" ng-show="showForm">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">account_box</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">{{workingActivity.mode}} Activity</h4>
+        <div class="row">
+          <div class="col-md-4">
+            <label class="control-label">*Centers:</label>
+            <select class="form-control" ng-model="workingActivity.centerId" ng-options="center.id as center.name for center in centers" ng-disabled="workingActivity.mode!='New'">
+              <option value="">ALL</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="control-label">*Groups:</label>
+            <select class="form-control" ng-model="workingActivity.groupId" ng-options="group.id as group.name for group in groups" ng-disabled="workingActivity.mode!='New'">
+              <option value="">ALL</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="control-label">*Date:(yyyy-mm-dd)</label>
+            <input class="form-control" name="date" ng-model="workingActivity.date" ng-readonly="workingActivity.mode=='Show'">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <label class="control-label">*Activity:</label>
+            <textarea class="form-control" name="date" ng-model="workingActivity.activity" maxlength="1000" rows="4" ng-readonly="workingActivity.mode=='Show'"></textarea>
+          </div>
+        </div>
+        <div class="tab-pane active" id="controls" ng-hide="workingActivity.mode=='Show'">
+          <div class="category form-category">
+            *Required Fields
+          </div>
+          <div class="form-footer text-right">
+            <button class="btn btn-rose btn-fill" ng-click="saveActivity(workingActivity)">
+              <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="saveDisabled"></i>
+              Save
+            </button>
+            <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

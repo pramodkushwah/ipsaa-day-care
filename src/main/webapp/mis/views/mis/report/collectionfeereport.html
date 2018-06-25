@@ -1,0 +1,63 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">Center:</label>
+      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="setSlips([])">
+        <option value="">Select Center</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">Period:</label>
+      <select class="form-control" ng-model="selectedPeriod" ng-change="setSlips([])">
+        <option value="Monthly">Monthly</option>
+        <option value="Quarterly">Quarterly</option>
+        <option value="Yearly">Yearly</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+
+  <div class="col-md-2" ng-show="selectedPeriod == 'Monthly'">
+    <div class="form-group">
+      <label class="control-label">Month:</label>
+      <select class="form-control" ng-model="selectedMonth" ng-options="month.moy as month.name for month in months" ng-change="setSlips([])">
+        <!-- only show current and next month -->
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-md-2" ng-show="selectedPeriod == 'Quarterly'">
+    <div class="form-group">
+      <label class="control-label">Quarter:</label>
+      <select class="form-control" ng-model="selectedQuarter" ng-options="quarter as quarter.name for quarter in quarters" ng-change="setSlips([])"></select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">Year:</label>
+      <select class="form-control" ng-model="selectedYear" ng-change="setSlips([])">
+        <option value="{{year}}" ng-repeat="year in years">{{year}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">Type:</label>
+      <select class="form-control" ng-model="reportType">
+        <option value="Paid">Paid</option>
+        <option value="PartiallyPaid">PartiallyPaid</option>
+        <option value="Raised">Unpaid</option>
+      </select>
+    </div>
+  </div>
+
+  <button class="btn btn-info" ng-click="downloadReport()" ng-disabled="disableDownload">
+    <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableDownload"></i>GET/GENERATE
+  </button>
+</div>

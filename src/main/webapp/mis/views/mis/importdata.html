@@ -1,0 +1,72 @@
+<div class="row">
+  <div class="col-md-6 col-lg-6 col-sm-12">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="orange">
+        <i class="material-icons">mail_outline</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Import {{importType}} Data</h4>
+        <div class="row">
+          <div class="col-lg-7 col-md-7 checkbox">
+            <label>
+              <input data-ng-click="changeDryRun()" type="checkbox" checked="checked">
+              Dry Run
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-7 col-md-7 col-sm-7">
+            <input class="btn btn-primary btn-sm" type="file" file-model="file"/>
+          </div>
+          <div class="col-lg-5 col-md-5 dropdown">
+            <a class="btn btn-warning btn-sm" data-toggle="dropdown" aria-expanded="false">
+              IMPORT TYPE
+              <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a data-ng-click="changeImportType('Employee')">Employee</a></li>
+              <li><a data-ng-click="changeImportType('Employee Salary')">Employee Salary</a></li>
+              <li><a data-ng-click="changeImportType('Student')">Student</a></li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-lg-2 col-md-2 col-sm-2">
+            <button class="btn btn-warning btn-sm" ng-click="upload()">Upload</button>
+          </div>
+        </div>
+        <label class="control-label">This is a transactional file upload, a file is processed fully or not at all.</label>
+        <h6 class="card-title">{{message}}</h6>
+      </div>
+    </div>
+  </div>
+  <div ng-show="results && results.length > 0" class="col-md-6 col-lg-6 col-sm-12">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">account_box</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Import {{importType}} Result</h4>
+        <div class="table-responsive" style="height: 369px">
+          <table class="table table-condensed table-striped table-hover">
+            <thead class="text-primary">
+            <tr>
+              <th>S.No</th>
+              <th>Key</th>
+              <th>Message</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="result in results">
+              <td>{{$index + 1}}</td>
+              <td>{{result.key}}</td>
+              <td>{{result.message}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

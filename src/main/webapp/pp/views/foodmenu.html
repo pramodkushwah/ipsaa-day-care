@@ -1,0 +1,41 @@
+<div class="row" ng-show="students.length>1">
+  <div class="col-md-2">
+    <div class="form-group ">
+      <label class="control-label">Student</label>
+      <select class="form-control" ng-model="selectedStudent" ng-options="student as student.fullName for student in students" ng-change="studentChanged(selectedStudent)">
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <div class="card card-raised">
+      <div class="card-header card-header-icon" data-background-color="portal">
+        <i class="material-icons">assignment</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Food Menu</h4>
+          <div class="table-responsive">
+            <table class="table table-condensed table-striped table-hover">
+              <thead class="text-primary">
+              <tr>
+                <th>Date</th>
+                <th>Break Fast</th>
+                <th>Lunch</th>
+                <th>Dinner</th>
+              </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="menu in menus">
+                  <td>{{menu.date | date : 'dd-MMM-yyyy' : 'IST'}}</td>
+                  <td>{{menu.breakfast}}</td>
+                  <td>{{menu.lunch}}</td>
+                  <td>{{menu.dinner}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

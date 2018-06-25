@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<workbook>
+  <worksheet name="Sheet1">
+    <section startRow="1" endRow="3">
+    </section>
+    <loop startRow="4" endRow="4" items="students" var="student" varType="com.synlabs.ipsaa.view.batchimport.ImportStudent">
+      <section startRow="4" endRow="4">
+        <mapping row="4" col="0">student.admissionNumber</mapping>
+        <mapping row="4" col="1">student.centerCode</mapping>
+        <mapping row="4" col="2">student.programCode</mapping>
+        <mapping row="4" col="3">student.groupName</mapping>
+        <mapping row="4" col="4">student.active</mapping>
+        <mapping row="4" col="5">student.admissionDate</mapping>
+        <mapping row="4" col="6">student.firstName</mapping>
+        <mapping row="4" col="7">student.lastName</mapping>
+        <mapping row="4" col="8">student.nickName</mapping>
+        <mapping row="4" col="9">student.dob</mapping>
+        <mapping row="4" col="10">student.gender</mapping>
+        <mapping row="4" col="11">student.nationality</mapping>
+        <mapping row="4" col="12">student.bloodGroup</mapping>
+        <mapping row="4" col="13">student.profile</mapping>
+        <mapping row="4" col="14">student.familyType</mapping>
+        <mapping row="4" col="15">student.expectedIn</mapping>
+        <mapping row="4" col="16">student.expectedOut</mapping>
+      </section>
+      <loopbreakcondition>
+        <rowcheck offset="0">
+          <cellcheck offset="0"></cellcheck>
+        </rowcheck>
+      </loopbreakcondition>
+    </loop>
+  </worksheet>
+  <worksheet name="Sheet2">
+    <section startRow="1" endRow="3">
+    </section>
+    <loop startRow="4" endRow="4" items="parents" var="parent" varType="com.synlabs.ipsaa.view.batchimport.ImportParent">
+      <section startRow="4" endRow="4">
+        <mapping row="4" col="0">parent.admissionNumber</mapping>
+        <mapping row="4" col="1">parent.relationship</mapping>
+        <mapping row="4" col="2">parent.firstName</mapping>
+        <mapping row="4" col="3">parent.lastName</mapping>
+        <mapping row="4" col="4">parent.mobile</mapping>
+        <mapping row="4" col="5">parent.secondaryNumbers</mapping>
+        <mapping row="4" col="6">parent.email</mapping>
+        <mapping row="4" col="7">parent.occupation</mapping>
+        <mapping row="4" col="8">parent.organisation</mapping>
+        <mapping row="4" col="9">parent.designation</mapping>
+        <mapping row="4" col="10">parent.educationalQualification</mapping>
+        <mapping row="4" col="11">parent.rAddress</mapping>
+        <mapping row="4" col="12">parent.rCity</mapping>
+        <mapping row="4" col="13">parent.rState</mapping>
+        <mapping row="4" col="14">parent.rZipCode</mapping>
+        <mapping row="4" col="15">parent.rPhone</mapping>
+        <mapping row="4" col="16">parent.oAddress</mapping>
+        <mapping row="4" col="17">parent.oCity</mapping>
+        <mapping row="4" col="18">parent.oState</mapping>
+        <mapping row="4" col="19">parent.oZipCode</mapping>
+        <mapping row="4" col="20">parent.oPhone</mapping>
+        <mapping row="4" col="21">parent.emergencyContact</mapping>
+      </section>
+      <loopbreakcondition>
+        <rowcheck offset="0">
+          <cellcheck offset="0"></cellcheck>
+        </rowcheck>
+      </loopbreakcondition>
+    </loop>
+  </worksheet>
+</workbook>

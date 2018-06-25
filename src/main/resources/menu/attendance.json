@@ -1,0 +1,25 @@
+{
+  "label": "Attendance",
+  "icon" : "equalizer",
+  "seq" : 100,
+  "submenu": [
+    {
+      "label": "Student Attendance",
+      "state": "app.studentattendance",
+      "p" : "STUDENT_CLOCKINOUT",
+      "seq" : 100
+    },
+    {
+      "label": "Staff Attendance",
+      "state": "app.staffattendance",
+      "p" : "STAFF_CLOCKINOUT",
+      "seq" : 200
+    },
+    {
+      "label": "Staff Attendance Logs",
+      "state": "app.staffattendancelogs",
+      "p" : "SELF_ATTENDANCE_READ",
+      "seq" : 200
+    }
+  ]
+}

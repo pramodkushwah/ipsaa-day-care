@@ -1,0 +1,20 @@
+{
+  "label": "Approval",
+  "icon": "done",
+  "seq": 700,
+  "submenu": [
+    {
+      "label": "Student Approvals",
+      "state": "app.student_approvals",
+      "p": "STUDENT_APPROVAL_WRITE",
+      "seq": 100
+    },
+    {
+      "label": "Staff Approvals",
+      "state": "app.staff_approvals",
+      "p": "STAFF_APPROVAL_WRITE",
+      "seq": 200
+    }
+
+  ]
+}

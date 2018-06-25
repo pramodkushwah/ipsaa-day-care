@@ -1,0 +1,46 @@
+<div class="row" ng-show="students.length>1">
+  <div class="col-md-2">
+    <div class="form-group ">
+      <label class="control-label">Student</label>
+      <select class="form-control" ng-model="selectedStudent" ng-options="student as student.fullName for student in students" ng-change="studentChanged(selectedStudent)">
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-1">
+    <div class="form-group">
+      <label class="label-control">Year</label>
+      <select class="form-control" ng-model="selectedYear" ng-options="year as year for year in years" ng-change="yearChange()">
+      </select>
+    </div>
+  </div>
+  <div class="col-md-1">
+    <div class="form-group">
+      <label class="label-control">Month</label>
+      <select class="form-control" ng-model="selectedMonth" ng-options="month as month.name for month in months" ng-change="monthChange()">
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+`    <div class="table-responsive">
+      <table class="table table-bordered">
+        <tr>
+          <th>Date</th>
+          <th>Day</th>
+          <th>ClockIn</th>
+          <th>ClockOut</th>
+        </tr>
+        <tr ng-repeat="day in days">
+          <td>{{day.day}}</td>
+          <td>{{day.wd}}</td>
+          <td>{{day.checkin}}</td>
+          <td>{{day.checkout}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

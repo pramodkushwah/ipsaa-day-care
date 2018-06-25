@@ -1,0 +1,38 @@
+<div class="row" ng-show="students.length>1">
+  <div class="col-md-2">
+    <div class="form-group ">
+      <label class="control-label">Student</label>
+      <select class="form-control" ng-model="selectedStudent" ng-options="student as student.fullName for student in students" ng-change="studentChanged(selectedStudent)">
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="portal">
+        <i class="material-icons">account_box</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">{{workingActivity.mode}} Activity</h4>
+        <div class="row">
+          <div class="col-md-4">
+            <label class="control-label">*Date:</label>
+            <select class="form-control" ng-model="workingActivity"
+                    ng-options="activity as (activity.date |  date : 'dd-MMM-yyyy' : 'IST') for activity in activities | orderBy: '-activity.date'">
+              <option value="">Select Date</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <label class="control-label">*Activity:</label>
+            <textarea class="form-control" name="date" ng-model="workingActivity.activity" maxlength="1000" rows="4" readonly></textarea>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

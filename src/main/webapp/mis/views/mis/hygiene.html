@@ -1,0 +1,68 @@
+<div class="row">
+  <div class="col-md-3">
+    <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="centerChanged(selectedCenter)">
+      <option value="">Select Center</option>
+    </select>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">account_box</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Hygiene</h4>
+        <div class="table-responsive">
+          <table class="table table-condensed table-striped table-hover">
+            <thead class="text-primary">
+            <tr>
+              <th>Name</th>
+              <th>Operation</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="hygiene in hygienes">
+              <td style="padding: 0px;">
+                <div class="form-group">
+                  <input type="text" class="form-control" ng-model="hygiene.name" ng-disabled="!hygiene.edit||disableSave">
+                  <span class="material-input"></span>
+                </div>
+              </td>
+              <td ng-show="!hygiene.edit">
+                <button type="button" class="btn btn-primary btn-xs" ng-click="edit(hygiene)">edit</button>
+                <button type="button" class="btn btn-danger btn-xs" ng-click="delete(hygiene)" ng-disabled="hygiene.delete">
+                  <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="hygiene.delete"></i>
+                  del
+                </button>
+              </td>
+              <td ng-show="hygiene.edit">
+                <button type="button" class="btn btn-primary btn-xs" ng-disabled="hygiene.saving"  ng-click="save(hygiene)">
+                  <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="hygiene.saving"></i>
+                  save
+                </button>
+                <button type="button" class="btn btn-danger btn-xs" ng-click="cancel(hygiene)">Cancel</button>
+              </td>
+
+            </tr>
+            <tr>
+              <td style="padding: 0px;">
+                <div class="form-group">
+                  <input class="form-control" type="text" ng-model="workingHygiene.name" ng-disabled="disableSave">
+                  <span class="material-input"></span>
+                </div>
+              </td>
+              <td>
+                <button type="button" class="btn btn-primary btn-xs" ng-disabled="disableSave" ng-click="save(workingHygiene)">
+                  <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableSave"></i>
+                  save
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

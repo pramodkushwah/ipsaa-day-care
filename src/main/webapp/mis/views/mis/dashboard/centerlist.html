@@ -1,0 +1,36 @@
+<div class="card">
+  <div class="card-header card-header-icon" data-background-color="rose">
+    <i class="material-icons">store</i>
+  </div>
+  <div class="card-content">
+    <h4 class="card-title">Centers</h4>
+    <div class="table-responsive">
+      <table class="table table-condensed table-striped table-hover">
+        <thead class="text-primary">
+        <tr>
+          <th>S.No</th>
+          <th>Code</th>
+          <th>Capacity</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Address</th>
+          <th>City</th>
+          <th>Zone</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="center in centers">
+          <td>{{$index + 1}}</td>
+          <td>{{center.code}}</td>
+          <td>{{center.capacity}}</td>
+          <td>{{center.name}}</td>
+          <td>{{center.type}}</td>
+          <td>{{center.address.address}}</td>
+          <td>{{center.address.city}}</td>
+          <td>{{center.zone.name}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

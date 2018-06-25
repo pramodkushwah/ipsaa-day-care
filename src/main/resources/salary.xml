@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<workbook>
+  <worksheet name="Sheet1">
+    <section startRow="1" endRow="3">
+    </section>
+    <loop startRow="4" endRow="4" items="salaries" var="salary" varType="com.synlabs.ipsaa.view.batchimport.ImportSalary">
+      <section startRow="4" endRow="4">
+        <mapping row="4" col="2">salary.eid</mapping>
+
+        <mapping row="4" col="6">salary.pfd</mapping>
+        <mapping row="4" col="7">salary.esid</mapping>
+        <mapping row="4" col="8">salary.profd</mapping>
+
+        <mapping row="4" col="12">salary.ctc</mapping>
+        <!--<mapping row="4" col="13">salary.basic</mapping>-->
+        <!--<mapping row="4" col="14">salary.hra</mapping>-->
+        <mapping row="4" col="15">salary.conveyance</mapping>
+        <mapping row="4" col="16">salary.bonus</mapping>
+        <!--<mapping row="4" col="17">salary.special</mapping>-->
+
+        <!--<mapping row="4" col="19">salary.pfe</mapping>-->
+        <!--<mapping row="4" col="20">salary.pfr</mapping>-->
+        <!--<mapping row="4" col="21">salary.esie</mapping>-->
+        <!--<mapping row="4" col="22">salary.esir</mapping>-->
+        <!--<mapping row="4" col="23">salary.professionalTax</mapping>-->
+        <!--<mapping row="4" col="27">salary.netSalary</mapping>-->
+
+
+      </section>
+      <loopbreakcondition>
+        <rowcheck offset="0">
+          <cellcheck offset="0"></cellcheck>
+          <cellcheck offset="1"></cellcheck>
+        </rowcheck>
+      </loopbreakcondition>
+    </loop>
+  </worksheet>
+</workbook>

@@ -1,0 +1,101 @@
+<div class="card">
+  <form id="EditUserForm">
+    <div class="card-header card-header-icon" data-background-color="orange">
+      <i class="material-icons">mail_outline</i>
+    </div>
+    <div class="card-content">
+      <h4 class="card-title">{{workingUser.mode}} User</h4>
+      <div class="row">
+        <div class="col-md-4">
+          <label class="control-label">*User Type</label>
+          <select class="form-control" required ng-model="workingUser.type">
+            <option label="Employee" value="Employee">Employee</option>
+            <option label="Parent" value="Parent">Parent</option>
+            <option label="Consultant" value="Consultant">Consultant</option>
+            <option label="Management" value="Management">Management</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label">*First Name</label>
+            <input class="form-control" name="firstname" type="text" required ng-model="workingUser.firstname">
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label">*Last Name</label>
+            <input class="form-control" name="lastname" type="text" required ng-model="workingUser.lastname">
+            <span class="material-input"></span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label">*Email</label>
+            <input class="form-control" name="description" type="text" required ng-model="workingUser.email">
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label">*Phone</label>
+            <input class="form-control" name="description" type="text" required ng-model="workingUser.phone">
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-4" ng-show="workingUser.type == 'Employee'">
+          <div class="form-group">
+            <label class="control-label">*Employee</label>
+            <select class="form-control" ng-model="workingUser.employee" ng-options="emp as emp.name+' ('+emp.centerCode+')' for emp in employees | orderBy:'name' track by emp.id">
+              <option value="">Select</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label class="control-label">Role(s)</label>
+          <select class="form-control" ng-model="selectedRole" ng-options="role as role.name for role in roles" ng-change="addRole(selectedRole)"></select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <span class="btn btn-info btn-xs btn-round" ng-repeat="role in workingUser.roles">
+              {{role}}<i class="material-icons" ng-click="removeRole($index)">close</i>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <label class="control-label">Center(s)</label>
+          <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in dropdownCenters" ng-change="addCenter(selectedCenter)"></select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <span class="btn btn-info btn-xs btn-round" ng-repeat="center in workingUser.centers">
+              {{center}}<i class="material-icons" ng-click="removeCenter($index)">close</i>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-footer text-right">
+
+        <button class="btn btn-rose btn-fill" ng-click="saveUser(workingUser)" ng-disabled="disableSave">
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableSave"></i>
+          Save
+        </button>
+        <button class="btn btn-default" ng-click="cancelUser()">Cancel</button>
+        <button class="btn btn-default" ng-click="resetPassword(workingUser)">Reset Password</button>
+        <button class="btn btn-default" ng-click="removeUser(workingUser)">Deactivate</button>
+      </div>
+    </div>
+  </form>
+</div>

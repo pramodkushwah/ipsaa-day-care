@@ -1,0 +1,269 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">Center:</label>
+      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers">
+        <option value="">Select Center</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">Period:</label>
+      <select class="form-control" ng-model="selectedPeriod">
+        <option value="Monthly">Monthly</option>
+        <option value="Quarterly">Quarterly</option>
+        <option value="Yearly">Yearly</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+
+  <div class="col-md-2" ng-show="selectedPeriod == 'Monthly'">
+    <div class="form-group">
+      <label class="control-label">Month:</label>
+      <select class="form-control" ng-model="selectedMonth" ng-options="month.moy as month.name for month in months" ng-change="filterChange()">
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-md-2" ng-show="selectedPeriod == 'Quarterly'">
+    <div class="form-group">
+      <label class="control-label">Quarter:</label>
+      <select class="form-control" ng-model="selectedQuarter" ng-options="quarter as quarter.name for quarter in quarters"></select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-md-2" ng-show="selectedPeriod == 'Yearly' || showYear">
+    <div class="form-group">
+      <label class="control-label">Year:</label>
+      <select class="form-control" ng-model="selectedYear">
+        <option value="{{year}}" ng-repeat="year in years">{{year}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <button class="btn btn-info" ng-click="getFeeSlips()">GET</button>
+</div>
+
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">assignment</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Student Fee Slip</h4>
+        <div class="row" ng-show="studentfeelist.length > 0">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-labe">Search</label>
+              <input class="form-control" ng-model="search">
+            </div>
+          </div>
+        </div>
+        <span class="label label-info">{{selectedCenter.code}}</span>
+        <span class="label label-info">{{selectedPeriod}}</span>
+        <span class="label label-info" ng-show="selectedPeriod == 'Monthly'">{{months[selectedMonth-1].name}}</span>
+        <span class="label label-info" ng-show="selectedPeriod == 'Quarterly'">{{selectedQuarter.name}}</span>
+        <span class="label label-info">{{selectedYear}}</span>
+        <div class="table-responsive">
+          <table class="table table-condensed table-striped table-hover">
+            <thead class="text-primary">
+            <tr>
+              <th>Student</th>
+              <th>Program/Group</th>
+              <th>Period</th>
+              <th>Fee</th>
+              <th>Status</th>
+              <!--<th>Mode</th>-->
+              <!--<th>Inv. Date</th>-->
+              <!--<th>Pay Date</th>-->
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="studentfee in studentfeelist | filter :search" ng-click="showDetails(studentfee)">
+              <td>{{studentfee.fullName}}</td>
+              <td>
+                <span class="label label-info">{{studentfee.center}}</span>
+                <span class="label label-info">{{studentfee.program}}</span>
+                <span class="label label-info">{{studentfee.group}}</span>
+              </td>
+              <td>{{studentfee.feeDuration}}</td>
+              <td>{{studentfee.totalFee}}</td>
+              <td>{{studentfee.status}}</td>
+              <!--<td>{{studentfee.paymentMode}}</td>-->
+              <!--<td>{{studentfee.invoiceDate}}</td>-->
+              <!--<td>{{studentfee.paymentDate}}</td>-->
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6" ng-show="showPanel">
+
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">chrome_reader_mode</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Fee Slip - {{selected.fullName}}</h4>
+        <span class="label label-info">{{selected.center}}</span>
+        <span class="label label-info">{{selected.program}}</span>
+        <span class="label label-info">{{selected.group}}</span>
+
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Fee</label>
+              <input class="form-control" type="text" readonly ng-model="selected.fee">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Extra</label>
+              <input class="form-control" type="text" readonly ng-model="selected.extraCharge">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Late Payment</label>
+              <input class="form-control" type="text" readonly ng-model="selected.latePaymentCharge">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Balance</label>
+              <input class="form-control" type="text" readonly ng-model="selected.balance">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6" ng-show="selected.annualFee">
+            <div class="form-group">
+              <label class="control-label">Annual Fee</label>
+              <input class="form-control" type="number" readonly ng-model="selected.annualFee">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group" ng-show="selected.deposit">
+              <label class="control-label">Deposit</label>
+              <input class="form-control" type="number" readonly ng-model="selected.deposit">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Final fee</label>
+              <input class="form-control" type="text" readonly ng-model="selected.totalFee">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Payable Amount</label>
+              <input class="form-control" type="number" ng-model="selected.payableAmount" readonly>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Paid Amount</label>
+              <input class="form-control" type="number" ng-model="selected.paidAmount">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Payment mode</label>
+              <select class="form-control"
+                      ng-click="selected.confirmed = selected.paymentMode == 'Cash'"
+                      ng-model="selected.paymentMode"
+                      ng-disabled="selected.status=='Paid'">
+                <option value="Cash">Cash</option>
+                <option value="Cheque">Cheque</option>
+                <option value="NEFT">NEFT</option>
+                <option value="Hdfc" disabled>Hdfc</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Reference</label>
+              <input class="form-control" type="text" required ng-model="selected.txnid" ng-readonly="selected.status=='Paid'">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Payment Date (YYYY-MM-DD)</label>
+              <input class="form-control" type="text" required ng-model="selected.paymentDate" ng-readonly="selected.status=='Paid'">
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="form-group">
+              <label class="control-label">Comments*</label>
+              <textarea class="form-control" type="text" required ng-model="selected.comments" ng-readonly="selected.status=='Paid'"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane active" id="controls">
+          <div class="category form-category">
+            *Required Fields
+          </div>
+          <div class="form-footer text-right">
+            <button class="btn btn-rose btn-fill" ng-click="payStudentFee()" ng-disabled="selected.status=='Paid'||disabledRecordPayment">
+              <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disabledRecordPayment"></i>
+              Record Payment
+            </button>
+
+            <button class="btn btn-rose btn-fill" ng-click="downloadReceipt(selected)" ng-disabled="selected.status=='Raised'|| disabledReceiptDownload">
+              <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disabledReceiptDownload"></i>
+              Download Receipt
+            </button>
+
+            <button class="btn btn-default" ng-click="cancelStudentSlip()">Cancel</button>
+          </div>
+        </div>
+        <div class="tab-pane active">
+          <div class="table-responsive">
+            <table class="table table-condensed">
+              <thead>
+              <tr>
+                <th>TxnId</th>
+                <th>Mode</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Confirm</th>
+              </tr>
+              <tr ng-repeat="payment in selected.payments">
+                <td>{{payment.txnid}}</td>
+                <td>{{payment.paymentMode}}</td>
+                <td>{{payment.paidAmount}}</td>
+                <td>{{payment.paymentDate}}</td>
+                <td>
+                  <button class="btn btn-sm"
+                          ng-class="payment.confirmed?'btn-success':'btn-rose'"
+                          ng-click="payment.confirmed?null:confirm(payment)"
+                          ng-disabled="payment.disabled">
+                    <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="payment.disabled"></i>
+                    {{payment.confirmed?'confirmed':'confirm'}}
+                  </button>
+                </td>
+              </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

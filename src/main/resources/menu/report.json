@@ -1,0 +1,35 @@
+{
+  "label": "Report",
+  "icon": "receipt",
+  "seq": 800,
+  "submenu": [
+    {
+      "label": "Student Attendance Report",
+      "state": "app.stdattendancereport",
+      "p": "STD_ATTENDANCE_REPORT",
+      "seq": 100
+    },{
+      "label": "Staff Attendance Report",
+      "state": "app.staffattendancereport",
+      "p": "STAFF_ATTENDANCE_REPORT",
+      "seq": 200
+    },{
+      "label": "Student Fee Report",
+      "state": "app.stdfeereport",
+      "p": "FEE_REPORT",
+      "seq": 300
+    },
+    {
+      "label": "Inquiry Report",
+      "state": "app.inquiryreport",
+      "p": "INQUIRY_REPORT",
+      "seq": 400
+    },
+    {
+      "label": "Fee Collection Report",
+      "state": "app.collectionfeereport",
+      "p": "COLLECTION_FEE_REPORT",
+      "seq": 500
+    }
+  ]
+}

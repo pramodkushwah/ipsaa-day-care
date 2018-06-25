@@ -1,0 +1,509 @@
+<div class="row" ng-show="students.length>1">
+  <div class="col-md-2">
+    <div class="form-group ">
+      <label class="control-label">Student</label>
+      <select class="form-control" ng-model="selectedStudent" ng-options="student as student.fullName for student in students" ng-change="studentChanged(selectedStudent)">
+      </select>
+    </div>
+    </div>
+</div>
+<div class="row">
+  <div class="col-md-3">
+    <div class="card card-profile card-raised profile-card">
+      <div class="card-content">
+        <div class="card-avatar">
+          <a>
+            <img class="img" ng-src="{{student.imgPath}}"/>
+          </a>
+        </div>
+        <h6 class="category">{{student.admissionNumber}}</h6>
+        <h4 class="card-title">{{student.fullName}}</h4>
+        <p class="description">
+          {{student.profile}}
+        </p>
+        <span class="label label-info">{{student.center.name}}</span>
+        <span class="label label-info">{{student.program.name}}</span>
+        <span class="label label-info">{{student.group.name}}</span>
+        <br><br>
+        <button class="btn btn-round btn-portal" ng-show="showstudent && false" ng-click="editStudent()">Edit Profile</button>
+        <button class="btn btn-round btn-portal" ng-show="!showstudent && false">Save Profile</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8 col-lg-8">
+    <div class="card profile-form-card">
+      <form id="StudentProfileForm">
+        <div class="card-header card-header-tabs" data-background-color="rose">
+          <div class="nav-tabs-navigation">
+            <div class="nav-tabs-wrapper">
+              <ul class="nav nav-tabs" data-tabs="tabs">
+                <li class="active">
+                  <a data-toggle="tab" ng-click="selectTab(0)">Profile</a>
+                </li>
+                <li>
+                  <a data-toggle="tab" ng-click="selectTab(1)">Father</a>
+                </li>
+                <li>
+                  <a data-toggle="tab" ng-click="selectTab(2)">Mother</a>
+                </li>
+                <li>
+                  <a data-toggle="tab" ng-click="selectTab(3)">Notification</a>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="card-content">
+          <form>
+            <div class="tab-content">
+              <div class="tab-pane active" id="studentprofile">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Center</label>
+                      <input class="form-control" name="center" type="text" required ng-model="student.center.name" ng-readonly="true">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Program</label>
+                      <input class="form-control" name="program" type="text" required ng-model="student.program.name" ng-readonly="true">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Group</label>
+                      <input class="form-control" name="group" type="text" required ng-model="student.group.name" ng-readonly="true">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Admission Number</label>
+                      <input class="form-control" name="admissionNumber" type="text" required ng-model="student.admissionNumber" ng-readonly="true">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">First Name</label>
+                      <input class="form-control" name="firstName" type="text" required ng-model="student.firstName" ng-readonly="true">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Last Name*</label>
+                      <input class="form-control" name="lastName" type="text" required ng-model="student.lastName" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label class="control-label">Adm. Date</label>
+                      <input class="form-control datepicker" name="doa" type="text" required ng-model="student.admissionDate" ng-readonly="true">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label class="control-label">Date of Birth</label>
+                      <input class="form-control" name="dob" type="text" required ng-model="student.dob" ng-readonly="true">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label class="control-label">Nick Name*</label>
+                      <input class="form-control" name="nickName" type="text" required ng-model="student.nickName" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label class="control-label">Nationality*</label>
+                      <input class="form-control" name="nationality" type="text" required ng-model="student.nationality" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Gender</label>
+                      <input class="form-control" name="gender" type="text" required ng-model="student.gender" ng-readonly="true">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Blood Group*</label>
+                      <select class="form-control" ng-model="student.bloodGroup"
+                              ng-readonly="showstudent"
+                              ng-disabled="showstudent"
+                              required>
+                        <option value="">Blood Group</option>
+                        <option value="{{bloodGroup}}" ng-repeat="bloodGroup in bloodGroups">{{bloodGroup}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Family Type</label>
+                      <select class="form-control" ng-model="student.familyType"
+                              ng-readonly="showstudent"
+                              ng-disabled="showstudent"
+                              required>
+                        <option value="">Family Type</option>
+                        <option value="Nuclear">Nuclear</option>
+                        <option value="Joint">Joint</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <label class="control-label">Student Profile</label>
+                    <textarea class="form-control" ng-model="student.profile" row="5" ng-readonly="showstudent"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-pane" id="fatherprofile">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">First Name</label>
+                      <input class="form-control" name="fatherfirstName" type="text" required ng-model="student.father.firstName" ng-readonly="true">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">Last Name</label>
+                      <input class="form-control" name="fatherLastName" type="text" required ng-model="student.father.lastName" ng-readonly="true">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">Phone*</label>
+                      <input class="form-control" type="text" required ng-model="student.father.mobile" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">Email*</label>
+                      <input class="form-control" type="text" required ng-model="student.father.email" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">Educational Qualification*</label>
+                      <input class="form-control" name="fatherEducationalQualification" type="text" required ng-model="student.father.educationalQualification"
+                             ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">Occupation*</label>
+                      <input class="form-control" name="fatherOccupation" type="text" required ng-model="student.father.occupation" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Designation*</label>
+                      <input class="form-control" name="fatherdesignation" type="text" required ng-model="student.father.designation" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="form-group">
+                      <label class="control-label">Organisation*</label>
+                      <input class="form-control" name="fatherOrganisation" type="text" required ng-model="student.father.organisation" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <legend>Residential Address</legend>
+                    </div>
+                  </div>
+                  <div class="col-md-9">
+                    <div class="form-group">
+                      <label class="control-label">Address*</label>
+                      <input class="form-control" type="text" required ng-model="student.father.residentialAddress.address" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">City*</label>
+                      <input class="form-control" name="city" type="text" required ng-model="student.father.residentialAddress.city" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">State*</label>
+                      <input class="form-control" name="state" type="text" required ng-model="student.father.residentialAddress.state" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Zipcode*</label>
+                      <input class="form-control" name="zipcode" type="text" required ng-model="student.father.residentialAddress.zipcode" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <legend>Office Address</legend>
+                    </div>
+                  </div>
+                  <div class="col-md-9">
+                    <div class="form-group">
+                      <label class="control-label">Address*</label>
+                      <input class="form-control" type="text" required ng-model="student.father.officeAddress.address" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">City*</label>
+                      <input class="form-control" name="city" type="text" required ng-model="student.father.officeAddress.city" ng-readonly="showstudent">
+
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">State*</label>
+                      <input class="form-control" name="state" type="text" required ng-model="student.father.officeAddress.state" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Zipcode*</label>
+                      <input class="form-control" name="zipcode" type="text" required ng-model="student.father.officeAddress.zipcode" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-pane" id="motherprofile">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">First Name</label>
+                      <input class="form-control" type="text" required ng-model="student.mother.firstName" ng-readonly="true">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">*Last Name</label>
+                      <input class="form-control" type="text" required ng-model="student.mother.lastName" ng-readonly="true">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">Phone*</label>
+                      <input class="form-control" type="text" required ng-model="student.mother.mobile" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+
+                    <div class="form-group">
+                      <label class="control-label">Email*</label>
+                      <input class="form-control" type="text" required ng-model="student.mother.email"  ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">Educational Qualification*</label>
+                      <input class="form-control" type="text" required ng-model="student.mother.educationalQualification" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">Occupation*</label>
+                      <input class="form-control" type="text" required ng-model="student.mother.occupation" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Designation*</label>
+                      <input class="form-control" name="motherdesignation" type="text" required ng-model="student.mother.designation" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="form-group">
+                      <label class="control-label">Organisation*</label>
+                      <input class="form-control" name="motherOrganisation" type="text" required ng-model="student.mother.organisation" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <legend>Residential Address</legend>
+                    </div>
+                  </div>
+                  <div class="col-md-9">
+                    <div class="form-group">
+                      <label class="control-label">Address*</label>
+                      <input class="form-control" type="text" required ng-model="student.mother.residentialAddress.address" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">City*</label>
+                      <input class="form-control" name="city" type="text" required ng-model="student.mother.residentialAddress.city" ng-readonly="showstudent">
+
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">State*</label>
+                      <input class="form-control" name="state" type="text" required ng-model="student.mother.residentialAddress.state" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Zipcode*</label>
+                      <input class="form-control" name="zipcode" type="text" required ng-model="student.mother.residentialAddress.zipcode" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <legend>Office Address</legend>
+                    </div>
+                  </div>
+                  <div class="col-md-9">
+                    <div class="form-group">
+                      <label class="control-label">Address*</label>
+                      <input class="form-control" type="text" required ng-model="student.mother.officeAddress.address" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">City*</label>
+                      <input class="form-control" name="state" type="text" required ng-model="student.mother.officeAddress.city" ng-readonly="showstudent">
+
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">State*</label>
+                      <input class="form-control" name="state" type="text" required ng-model="student.mother.officeAddress.state" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Zipcode*</label>
+                      <input class="form-control" name="zipcode" type="text" required ng-model="student.mother.officeAddress.zipcode" ng-readonly="showstudent">
+                      <span class="material-input"></span>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+
+              <div class="tab-pane" id="notification">
+                <div class="discription">
+                  <p>Change Sms or Email notification setting for Check-in and Check-out of student.</p>
+                </div>
+                <div class="row" ng-repeat="parent in student.parents | filter: {account : true}">
+                  <legend>{{parent.relationship}}</legend>
+                  <div class="col-md-4 col-md-offset-2">
+                    <div class="togglebutton">
+                      <label>
+                        <input type="checkbox" ng-checked="parent.smsEnabled" ng-change="notify(parent,'sms')" ng-model="parent.smsEnabled">
+                        <span class="toggle"></span>
+                        SMS ({{parent.mobile}})
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="togglebutton">
+                      <label>
+                        <input type="checkbox" ng-checked="parent.emailEnabled" ng-change="notify(parent,'email')" ng-model="parent.emailEnabled">
+                        <span class="toggle"></span>
+                        Email ({{parent.email}})
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-pane active" id="controls" ng-show="showFooter">
+                <div class="category form-category">
+                  *Required Field
+                </div>
+                <div class="form-footer text-right">
+                  <button class="btn btn-portal btn-fill" ng-click="saveProfile()" ng-hide="showstudent">save</button>
+                  <button class="btn btn-default btn-fill" ng-click="toggleEdit()">{{editlocklabel}}</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

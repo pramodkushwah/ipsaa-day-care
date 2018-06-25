@@ -1,0 +1,87 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="form-group" role="group">
+      <input type="search" class="form-control" id="search" placeholder="Search..." ng-model="searchStudent">
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="btn-group btn-group-sm" role="group" aria-label="filter">
+      <button type="button" class="btn btn-default btn-round" ng-class="{'btn-primary': programFilter=='ALL'}" ng-click="changeFilter('ALL')">ALL</button>
+      <button type="button" class="btn btn-default btn-round" ng-repeat="program in programList" ng-class="{'btn-primary': programFilter==program.code}"
+              ng-click="changeFilter(program.code)">{{program.code}}
+      </button>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <!--<label class="control-label">Active</label>-->
+    <select class="form-control" ng-model="activeFilter" ng-change="activeFilterChange()">
+      <option ng-value="true">Active</option>
+      <option ng-value="false">Inactive</option>
+    </select>
+  </div>
+  <div class="col-md-4">
+    <div class="btn-group btn-group-sm">
+      <button type="button" class="btn btn-info" id="add" ng-click="addStudent()">Add</button>
+      <!--<button type="button" class="btn btn-link" id="download" ng-click="download()">Download</button>-->
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-5 col-lg-6 col-sm-12">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">account_box</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Students</h4>
+        <div class="table-responsive">
+          <table class="table table-condensed table-striped table-hover">
+            <thead class="text-primary">
+            <tr>
+              <th>Name</th>
+              <th>Program</th>
+              <th>Group</th>
+              <th>Operation</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="student in students   | filter:searchStudent |  orderBy:'fullName' | startFrom:currentPage*pageSize | limitTo:pageSize">
+              <td ng-click="showStudent(student)">{{student.fullName}}</td>
+              <td ng-click="showStudent(student)">{{student.program.name}}</td>
+              <td ng-click="showStudent(student)">{{student.group.name}}</td>
+              <td ng-show="activeFilter">
+                <div class="buttons">
+                  <button type="button" class="btn btn-primary btn-xs" ng-click="editStudent(student)">edit</button>
+                  <button type="button" class="btn btn-danger btn-xs" ng-click="deleteStudentSwal(student)" ng-show="hasPrivilege('STUDENT_DELETE')">del</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4" style="background: #fff">
+                <ul class="pagination pagination-info">
+                  <li>
+                    <a ng-hide="currentPage == 0" ng-click="currentPage=currentPage-1;updatePageBar()">
+                      Previous
+                    </a>
+                  </li>
+                  <li ng-repeat="page in pagebar" ng-class="{active: page.current}" ng-click="changePage(page)">
+                    <a>{{page.number+1}}</a>
+                  </li>
+                  <li>
+                    <a ng-hide="currentPage >= getData().length/pageSize - 1" ng-click="currentPage=currentPage+1;updatePageBar()">
+                      Next
+                    </a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-7 col-lg-6 col-sm-12" ng-show="editstudent || showstudent || addstudent">
+    <div ng-include=" 'views/mis/studentprofile.html' "></div>
+  </div>
+</div>

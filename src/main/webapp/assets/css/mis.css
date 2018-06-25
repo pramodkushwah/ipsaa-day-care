@@ -1,0 +1,24 @@
+.progress {
+    margin: 10px 10px;
+}
+.foodmenu-div {
+    margin-top: 0px;
+}
+.card-stats{
+    min-height: 150px;
+    position: relative;
+}
+.card-footer{
+    width: -webkit-fill-available;
+}
+.card-content{
+    padding-bottom: 0px;
+}
+.footer-bottom{
+    position: absolute;
+    bottom:0px;
+}
+.ipsaa-form-group{
+    padding-bottom: 0px;
+    margin-top: 0px;
+}

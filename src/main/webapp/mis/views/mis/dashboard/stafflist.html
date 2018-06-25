@@ -1,0 +1,55 @@
+<div class="card">
+  <div class="card-header card-header-icon" data-background-color="rose">
+    <i class="material-icons">person_pin</i>
+  </div>
+  <div class="card-content">
+    <h4 class="card-title">Staff</h4>
+    <div class="table-responsive">
+      <table class="table table-condensed table-striped table-hover">
+        <thead class="text-primary">
+        <tr>
+          <th>S.No</th>
+          <th>Name</th>
+          <th>Designation</th>
+          <th>Mobile</th>
+          <th>Email</th>
+          <th ng-if="SALARY_READ">Basic Salary</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="staff in staffPage">
+          <td>{{ (PAGESIZE * (staffPageNumber - 1)) + $index + 1}}</td>
+          <td>{{staff.name}}</td>
+          <td>{{staff.designation}}</td>
+          <td>{{staff.mobile}}</td>
+          <td>{{staff.email}}</td>
+          <td ng-if="SALARY_READ">{{staff.basicSalary}}</td>
+        </tr>
+
+        <tr>
+          <td colspan="6" style="background: #fff">
+            <ul class="pagination pagination-info">
+              <li ng-show="staffPageNumber!=1" style="cursor: pointer;">
+                <a ng-click="updateStaffPage(staffPageNumber-1)"> prev
+                  <div class="ripple-container"></div>
+                </a>
+              </li>
+              <li href="#" ng-repeat="page in staffPageBar" ng-class="{active: page==staffPageNumber}" style="cursor: pointer;">
+                <a ng-click="updateStaffPage(page)"> {{page}}
+                  <div class="ripple-container"></div>
+                </a>
+              </li>
+              <li ng-show="staffPageCount>staffPageNumber" style="cursor: pointer;">
+                <a ng-click="updateStaffPage(staffPageNumber+1)">next
+                  <div class="ripple-container"></div>
+                </a>
+              </li>
+            </ul>
+          </td>
+        </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
