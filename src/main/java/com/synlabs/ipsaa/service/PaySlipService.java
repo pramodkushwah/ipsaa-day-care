@@ -85,11 +85,11 @@ public class PaySlipService extends BaseService
     List<Employee> employees = employeeRepository.findByActiveIsTrueAndEmployerId(legalEntity.getId());
     for (Employee emp : employees)
     {
-
       EmployeePaySlip employeePaySlip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(emp, month, year);
       if (employeePaySlip == null)
       {
         EmployeeSalary employeeSalary = employeeSalaryRepository.findByEmployee(emp);
+       
         if (employeeSalary != null)
         {
           if (employeeSalary.getCtc() == null)
