@@ -1,5 +1,5 @@
 app.controller('StudentFeePaymentController', function ($scope, $http) {
-
+    $scope.selectedYear = new Date().getFullYear().toString();
     $scope.disabledRecordPayment=false;
     var allmonths = moment.months();
 

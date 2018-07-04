@@ -179,7 +179,8 @@ public class PaySlipService extends BaseService
     //2. deduct unpaid leaves and absents and append autoComment
 //    BigDecimal days = new BigDecimal("31");
     BigDecimal totalDays = new BigDecimal(Days.daysBetween(LocalDate.fromDateFields(from), LocalDate.fromDateFields(to).plusDays(1)).getDays());
-    BigDecimal totalAbsents = absents.add(leaves);
+//    BigDecimal totalAbsents = absents.add(leaves);
+    BigDecimal totalAbsents = BigDecimal.ZERO;
     BigDecimal presents = totalDays.subtract(totalAbsents);
     autoComment = absents.doubleValue() > 0 ? autoComment + String.format("Absents : %s\n", absents) : autoComment;
     autoComment = leaves.doubleValue() > 0 ? autoComment + String.format("Leaves : %s\n", leaves) : autoComment;

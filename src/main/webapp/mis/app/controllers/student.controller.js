@@ -245,26 +245,32 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
         if (validateStudent(postStudent)) {
             if (postStudent.admissionNumber) {
-                $http.put("/api/student/", postStudent).then(function (response) {
-                    $scope.addstudent = false;
-                    $scope.showstudent = false;
-                    $scope.editstudent = false;
-                    ok("Student updated!");
-                    $scope.disableSave = false;
-                    refresh();
-                }, function (response) {
-                    $scope.disableSave = false;
-                    error(response.data.error);
-                });
+                $http.put("/api/student/", postStudent).then(
+                    function (response) {
+                        console.log(response);
+                        var blob = new Blob([response.data], {
+                            type: 'application/octet-stream'
+                        });
+                        saveAs(blob, response.headers("fileName"));
+                        $scope.addstudent = false;
+                        $scope.showstudent = false;
+                        $scope.editstudent = false;
+                        ok("Student updated!");
+                        $scope.disableSave = false;
+                        refresh();                        
+                    }, function (response) {
+                        $scope.disableSave = false;
+                        error(response.data.error);
+                    });
 
             } else {
-                $http.post("/api/student/", postStudent).then(function () {
+                $http.post("/api/student/", postStudent).then(function (response) {                    
                     $scope.addstudent = false;
                     $scope.showstudent = false;
                     $scope.editstudent = false;
                     ok("Student saved!");
                     $scope.disableSave = false;
-                    refresh();
+                    refresh();                    
                 }, function (response) {
                     $scope.disableSave = false;
                     error(response.data.error);
@@ -275,6 +281,16 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
         }
 
     }, 200, true);
+
+    $scope.downloadStudentProfile = function(student){
+        console.log(student);
+        $http.get("/api/student/pdf/"+student.id,{responseType: 'arraybuffer'}).then(function(response){
+            var blob = new Blob([response.data], {
+                type: 'application/octet-stream'
+            });
+            saveAs(blob, response.headers("fileName"));
+        })
+    }
 
     function validateStudent(student) {
         if (student.mode == 'New' && !student.fee && !student.corporate) {

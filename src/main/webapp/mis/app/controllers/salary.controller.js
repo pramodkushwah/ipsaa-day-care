@@ -108,19 +108,25 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
 
     function calculatePFR(salary) {
         console.log("salary check : "+salary.pfd +"   :  "+salary.basic);
-        if (salary.pfd && salary.basic <= 15000) {
-            return ((salary.basic * 12) / 100).toFixed(0)/1;
+        if (salary.pfd) {
+            if(salary.basic <= 15000)
+                return ((salary.basic * 12) / 100).toFixed(0)/1;
+            else
+                return 1800;
         } else {
-            return 1800;
+            return 0;
         }
     }
 
     function calculatePFE(salary) {
         console.log("salary check : "+salary.pfd +"   :  "+salary.basic);
-        if (salary.pfd && salary.basic <= 15000) {
-            return ((salary.basic * 12) / 100).toFixed(0)/1;
+        if (salary.pfd) {
+            if(salary.basic <= 15000)
+                return ((salary.basic * 12) / 100).toFixed(0)/1;
+            else
+                return 1800;
         } else {
-            return 1800;
+            return 0;
         }
     }
 
@@ -205,9 +211,8 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
         }
 
         if ($scope.runningSalary.profd) {
-            if($scope.runningSalary.ctc>=12000){
+            if($scope.runningSalary.ctc>=12000)
                 $scope.runningSalary.professionalTax = 200;
-            }
             $scope.runningSalary.totalDeduction += $scope.runningSalary.professionalTax;
         } else {
             $scope.runningSalary.professionalTax = 0;

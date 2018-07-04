@@ -53,7 +53,7 @@ public class StudentResponse implements Response
 
   private ApprovalStatus approvalStatus;
 
-  public StudentResponse(Student student)
+public StudentResponse(Student student)
   {
     this.id = mask(student.getId());
     this.active = student.isActive();
@@ -211,4 +211,5 @@ public class StudentResponse implements Response
   {
     return studentImageData;
   }
+  
 }

@@ -2,7 +2,7 @@
   <div class="col-md-2">
     <div class="form-group">
       <label class="control-label">Center:</label>
-      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="setSlips([])">
+      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="setSlips([]);selectedPeriod='Quarterly'">
         <option value="">Select Center</option>
       </select>
       <span class="material-input"></span>
@@ -13,7 +13,7 @@
       <label class="control-label">Period:</label>
       <select class="form-control" ng-model="selectedPeriod" ng-change="setSlips([])">
         <option value="Monthly">Monthly</option>
-        <option value="Quarterly">Quarterly</option>
+        <option value="Quarterly" selected>Quarterly</option>
         <option value="Yearly">Yearly</option>
       </select>
       <span class="material-input"></span>
