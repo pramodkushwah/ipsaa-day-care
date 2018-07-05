@@ -295,6 +295,10 @@ app.controller('HomeController', function ($scope, $http, Auth, $state) {
                 array.splice(array.indexOf('fee'), 1);
                 array.push('fee');
             }
+
+            //removing parent and users box from front-end [ Gopal Kumar ]
+            array.splice(array.indexOf('parent'), 1);
+            array.splice(array.indexOf('user'), 1);
             $scope.dashlist = array;
         });
 
