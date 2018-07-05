@@ -49,7 +49,7 @@ public class EmployeeController
   @GetMapping("salary")
   public List<EmployeeSalaryResponse> list()
   {
-    return employeeService.list().stream().map(EmployeeSalaryResponse::new).collect(Collectors.toList());
+	  return employeeService.list().stream().map(EmployeeSalaryResponse::new).collect(Collectors.toList());
   }
 
   @Secured(SALARY_READ)

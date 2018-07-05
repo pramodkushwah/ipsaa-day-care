@@ -8,6 +8,7 @@ import com.synlabs.ipsaa.entity.common.SerialNumberSequence;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
+import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.enums.LeaveStatus;
 import com.synlabs.ipsaa.enums.LeaveType;
 import com.synlabs.ipsaa.ex.ValidationException;
@@ -82,7 +83,7 @@ public class PaySlipService extends BaseService
       throw new ValidationException(String.format("Cannot locate Employer[id = %s]", mask(employerId)));
     }
 
-    List<Employee> employees = employeeRepository.findByActiveIsTrueAndEmployerId(legalEntity.getId());
+    List<Employee> employees = employeeRepository.findByActiveIsTrueAndApprovalStatusAndEmployerId(ApprovalStatus.Approved,legalEntity.getId());
     for (Employee emp : employees)
     {
       EmployeePaySlip employeePaySlip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(emp, month, year);
@@ -100,7 +101,7 @@ public class PaySlipService extends BaseService
         }
       }
     }
-    return employeePaySlipRepository.findByEmployerIdAndMonthAndYear(legalEntity.getId(), month, year);
+    return employeePaySlipRepository.findByEmployerIdAndEmployeeApprovalStatusAndMonthAndYear(legalEntity.getId(),ApprovalStatus.Approved, month, year);
   }
 
   private EmployeePaySlip generateNewPayslip(Employee employee, EmployeeSalary salary, int year, int month) throws ParseException
@@ -256,7 +257,7 @@ public class PaySlipService extends BaseService
     {
       throw new ValidationException(String.format("Cannot locate LegalEntity[id=%s]", mask(request.getLegalEntityId())));
     }
-    List<EmployeePaySlip> payslips = employeePaySlipRepository.findByEmployerIdAndMonthAndYear(one.getId(), request.getMonth(), request.getYear());
+    List<EmployeePaySlip> payslips = employeePaySlipRepository.findByEmployerIdAndEmployeeApprovalStatusAndMonthAndYear(one.getId(),ApprovalStatus.Approved, request.getMonth(), request.getYear());
 
     logger.info(String.format("Regenerating all payslip for [legal=%s,month=%s,year=%s,count=%s]",
                               one.getName(), request.getMonth(), request.getYear(), payslips.size()));

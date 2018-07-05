@@ -247,11 +247,6 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             if (postStudent.admissionNumber) {
                 $http.put("/api/student/", postStudent).then(
                     function (response) {
-                        console.log(response);
-                        var blob = new Blob([response.data], {
-                            type: 'application/octet-stream'
-                        });
-                        saveAs(blob, response.headers("fileName"));
                         $scope.addstudent = false;
                         $scope.showstudent = false;
                         $scope.editstudent = false;
@@ -262,9 +257,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
                         $scope.disableSave = false;
                         error(response.data.error);
                     });
-
             } else {
-                $http.post("/api/student/", postStudent).then(function (response) {                    
+                $http.post("/api/student/", postStudent).then(function (response) {
                     $scope.addstudent = false;
                     $scope.showstudent = false;
                     $scope.editstudent = false;
@@ -283,11 +277,19 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     }, 200, true);
 
     $scope.downloadStudentProfile = function(student){
-        console.log(student);
         $http.get("/api/student/pdf/"+student.id,{responseType: 'arraybuffer'}).then(function(response){
             var blob = new Blob([response.data], {
-                type: 'application/octet-stream'
+                type: 'application/pdf'
             });
+//             const data = window.URL.createObjectURL(blob);
+//   var link = document.createElement('a');
+//   link.href = data;
+// //   link.download=response.headers("fileName");
+// debugger
+//   link.click();
+//   setTimeout(function(){
+//     window.URL.revokeObjectURL(data);
+//   },100);
             saveAs(blob, response.headers("fileName"));
         })
     }
