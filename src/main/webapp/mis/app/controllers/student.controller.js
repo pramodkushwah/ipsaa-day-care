@@ -281,6 +281,15 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             var blob = new Blob([response.data], {
                 type: 'application/pdf'
             });
+//             const data = window.URL.createObjectURL(blob);
+//   var link = document.createElement('a');
+//   link.href = data;
+// //   link.download=response.headers("fileName");
+// debugger
+//   link.click();
+//   setTimeout(function(){
+//     window.URL.revokeObjectURL(data);
+//   },100);
             saveAs(blob, response.headers("fileName"));
         })
     }

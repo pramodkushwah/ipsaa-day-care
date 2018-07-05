@@ -163,6 +163,6 @@ public class EmployeeService extends BaseService
 
   public List<EmployeeSalary> list()
   {
-    return employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeApprovalStatusAndEmployeeCostCenterIn(ApprovalStatus.Approved, getUserCenters());
+    return employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
   }
 }
