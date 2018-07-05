@@ -288,7 +288,7 @@ public byte[] generateStudentPdf(StudentResponse student) throws TemplateNotFoun
 //	      String fileName = student.getFirstName()+".pdf";
 
 	      Map<String, String> params = new HashMap<>();
-	      params.put("-O", "landscape");
+	      
 	      Pdf slip = addParamsToPdf(null);
 	      addParamsToPdf(slip, params);
 	      addPdfMarginParam(slip, 2);
