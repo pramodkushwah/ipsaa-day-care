@@ -21,7 +21,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, Repos
 
   List<Employee> findByEmployeeTypeAndActiveIsTrue(EmployeeType employeeType);
 
-  List<Employee> findByActiveIsTrueAndEmployerId(Long employerId);
+  List<Employee> findByActiveIsTrueAndApprovalStatusAndEmployerId(ApprovalStatus approvalStatus, Long employerId);
 
   Employee findByIdAndCostCenterIn(Long employeeId, List<Center> centers);
 
