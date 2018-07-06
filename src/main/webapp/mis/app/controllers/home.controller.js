@@ -1,4 +1,4 @@
-app.controller('HomeController', function ($scope, $http, Auth, $state) {
+app.controller('HomeController', function ($scope, $http, $filter, Auth, $state) {
 
     $scope.hasStatPrivilege = Auth.hasPrivilege("DASHBOARD_STATS");
     if ($scope.hasStatPrivilege) {
@@ -296,6 +296,7 @@ app.controller('HomeController', function ($scope, $http, Auth, $state) {
                 array.push('fee');
             }
             $scope.dashlist = array;
+
         });
 
         $http.post('/api/stats/', {}).then(function (response) {
@@ -319,14 +320,17 @@ app.controller('HomeController', function ($scope, $http, Auth, $state) {
         switch (panel) {
             case 'studentlist':
                 $http.post("/api/dash/student", req).then(function (response) {
-                    $scope.students = response.data;
+                    // $scope.students = response.data;
+                    $scope.students = $filter('filter')(response.data, {present:true});
                     $scope.updateStudentPage(1);
                 });
                 $scope.refresh();
                 break;
             case 'stafflist':
                 $http.post("/api/dash/staff", req).then(function (response) {
-                    $scope.stafflist = response.data;
+                    // $scope.stafflist = response.data;
+                    $scope.stafflist = $filter('filter')(response.data, {present:true});
+                    console.log($scope.stafflist);
                     $scope.updateStaffPage(1);
                 });
                 $scope.refresh();

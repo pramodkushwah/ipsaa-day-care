@@ -1,6 +1,8 @@
 package com.synlabs.ipsaa.service;
 
 import com.querydsl.jpa.impl.JPAQuery;
+import com.synlabs.ipsaa.entity.attendance.EmployeeAttendance;
+import com.synlabs.ipsaa.entity.attendance.QEmployeeAttendance;
 import com.synlabs.ipsaa.entity.attendance.QStudentAttendance;
 import com.synlabs.ipsaa.entity.attendance.StudentAttendance;
 import com.synlabs.ipsaa.entity.center.Center;
@@ -116,6 +118,9 @@ public class DashboardService extends BaseService
           //6.
           int staffCost = staffCost(centers);
           response.setStaffCost(staffCost);
+          
+          int presentStaff = countPresentStaff(centers);
+          response.setStaffPresent(presentStaff);
           break;
         case "followup":
           calculateFollowUps(request, response);
@@ -251,6 +256,22 @@ public class DashboardService extends BaseService
          .where(student.active.isTrue())
          .where(attendance.status.eq(AttendanceStatus.Present))
          .where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
+         .where(attendance.checkout.isNull())
+         .where(attendance.center.in(centers));
+
+    return (int) query.fetchCount();
+  }
+  
+  private int countPresentStaff(List<Center> centers)
+  {
+    JPAQuery<Employee> query = new JPAQuery<>(entityManager);
+    QEmployeeAttendance attendance = QEmployeeAttendance.employeeAttendance;
+    QEmployee employee = QEmployee.employee;
+    query.select(attendance).from(attendance)
+         .where(employee.active.isTrue())
+         .where(attendance.status.eq(AttendanceStatus.Present))
+         .where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
+         .where(attendance.checkout.isNull())
          .where(attendance.center.in(centers));
 
     return (int) query.fetchCount();
@@ -500,7 +521,8 @@ public class DashboardService extends BaseService
 
     for (StudentAttendance attendanceRecord : attendances)
     {
-      attendanceMap.put(attendanceRecord.getStudent().getId(), attendanceRecord);
+    	if(attendanceRecord.getCheckout() == null)
+    		attendanceMap.put(attendanceRecord.getStudent().getId(), attendanceRecord);
     }
 
     List<DashStudentResponse> response = new ArrayList<>(students.size());
@@ -523,12 +545,23 @@ public class DashboardService extends BaseService
   {
     List<Center> centers = getCenters(request);
     JPAQuery<Employee> query = new JPAQuery<>(entityManager);
+    JPAQuery<EmployeeAttendance> attquery = new JPAQuery<>(entityManager);
     QEmployee employee = QEmployee.employee;
+    QEmployeeAttendance attendance = QEmployeeAttendance.employeeAttendance;
     query.select(employee).from(employee)
          .where(employee.active.isTrue())
          .where(employee.costCenter.in(centers));
 
     List<Employee> stafflist = query.fetch();
+    
+    attquery.select(attendance)
+    .from(attendance)
+    .where(attendance.employee.in(stafflist))
+    .where(attendance.employee.costCenter.in(centers))
+    .where(attendance.employee.active.isTrue())
+    .where(attendance.attendanceDate.eq(LocalDate.now().toDate()));
+    
+    List<EmployeeAttendance> attendances = attquery.fetch();
 
     List<DashStaffResponse> response = new ArrayList<>(stafflist.size());
 
@@ -544,18 +577,28 @@ public class DashboardService extends BaseService
                  .where(salary.employee.active.isTrue());
 
       List<EmployeeSalary> salaries = salaryquery.fetch();
+      Map<Long, EmployeeAttendance> attendanceMap = new HashMap<>();
 
       Map<Long, EmployeeSalary> salaryMap = new HashMap<>();
       for (EmployeeSalary sal : salaries)
       {
         salaryMap.put(sal.getEmployee().getId(), sal);
       }
+      
+      for (EmployeeAttendance attendanceRecord : attendances)
+      {
+      	if(attendanceRecord.getCheckout() == null)
+      		attendanceMap.put(attendanceRecord.getEmployee().getId(), attendanceRecord);
+      }
 
       for (Employee emp : stafflist)
       {
-        if (salaryMap.containsKey(emp.getId()))
+        if (salaryMap.containsKey(emp.getId())&&attendanceMap.containsKey(emp.getId()))
         {
-          response.add(new DashStaffResponse(salaryMap.get(emp.getId())));
+          response.add(new DashStaffResponse(salaryMap.get(emp.getId()),attendanceMap.get(emp.getId()),emp));
+        }
+        else if(salaryMap.containsKey(emp.getId())){
+    	response.add(new DashStaffResponse(salaryMap.get(emp.getId())));
         }
         else
         {

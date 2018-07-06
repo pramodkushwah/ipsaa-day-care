@@ -12,8 +12,10 @@
           <th>Name</th>
           <th>Designation</th>
           <th>Mobile</th>
-          <th>Email</th>
-          <th ng-if="SALARY_READ">Basic Salary</th>
+          <!-- <th>Email</th>
+          <th ng-if="SALARY_READ">Basic Salary</th> -->
+          <th>Checkin</th>
+          <th>Expected Checkout</th>
         </tr>
         </thead>
         <tbody>
@@ -22,8 +24,10 @@
           <td>{{staff.name}}</td>
           <td>{{staff.designation}}</td>
           <td>{{staff.mobile}}</td>
-          <td>{{staff.email}}</td>
-          <td ng-if="SALARY_READ">{{staff.basicSalary}}</td>
+          <!-- <td>{{staff.email}}</td>
+          <td ng-if="SALARY_READ">{{staff.basicSalary}}</td> -->
+          <td>{{staff.checkin}}</td>
+          <td>{{staff.expectedOut}}</td>
         </tr>
 
         <tr>
