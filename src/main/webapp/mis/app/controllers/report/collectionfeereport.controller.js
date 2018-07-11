@@ -66,13 +66,14 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
 
         postobject.year  = $scope.selectedYear;
         $scope.disableDownload = true;
-        $http.post('/api/report/collectionfee',postobject, {responseType: 'arraybuffer'}).then(
+        $http.post('/api/report/collectionfee',postobject, {responseType: 'json'}).then(
             function (response) {
-                $scope.disableDownload = false;
-                var blob = new Blob([response.data], {
-                    type: 'application/octet-stream'
-                });
-                saveAs(blob, response.headers("fileName"));
+                console.log(response);
+                // $scope.disableDownload = false;
+                // var blob = new Blob([response.data], {
+                //     type: 'application/octet-stream'
+                // });
+                // saveAs(blob, response.headers("fileName"));
             },function (response) {
                 $scope.disableDownload = false;
                 error(response.data.error);

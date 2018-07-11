@@ -7,6 +7,8 @@ import com.synlabs.ipsaa.entity.center.City;
 import com.synlabs.ipsaa.entity.center.Zone;
 import com.synlabs.ipsaa.entity.common.Address;
 import com.synlabs.ipsaa.entity.common.LegalEntity;
+import com.synlabs.ipsaa.entity.common.Role;
+import com.synlabs.ipsaa.entity.common.User;
 import com.synlabs.ipsaa.entity.staff.QEmployee;
 import com.synlabs.ipsaa.entity.student.QStudent;
 import com.synlabs.ipsaa.entity.student.Student;
@@ -15,11 +17,10 @@ import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.ftl.model.ApprovalModel;
-import com.synlabs.ipsaa.jpa.CenterRepository;
-import com.synlabs.ipsaa.jpa.CityRepository;
-import com.synlabs.ipsaa.jpa.LegalEntityRepository;
-import com.synlabs.ipsaa.jpa.ZoneRepository;
+import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.view.center.*;
+import com.synlabs.ipsaa.view.common.UserRequest;
+import com.synlabs.ipsaa.view.common.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -49,6 +50,15 @@ public class CenterService extends BaseService
 
   @Autowired
   private StaffService staffService;
+
+  @Autowired
+  private EmployeeService employeeService;
+  @Autowired
+  private StudentService studentService;
+  @Autowired
+  UserService userService;
+  @Autowired
+  FeeService centerFeeService;
 
   public List<LegalEntity> listEntities() {
     return legalEntityRepository.findAll();
@@ -87,7 +97,6 @@ public class CenterService extends BaseService
     }
 
     City city = cityRepository.findOneByName(request.getCity());
-
     if (city != null)
     {
       center.getAddress().setCity(request.getCity());
@@ -110,10 +119,25 @@ public class CenterService extends BaseService
     {
       throw new ValidationException(String.format("Cannot locate center[id=%s]",request.getMaskId()));
     }
-    center.setActive(false);
-    centerRepository.saveAndFlush(center);
-  }
+    System.out.println("employes "+employeeService.findEmployeeByCenter(center) +" "+request.getId());
+    System.out.println("em");
+   if(employeeService.findEmployeeByCenter(center)!=null && employeeService.findEmployeeByCenter(center).size()>0){
 
+     throw new ValidationException(String.format("Cannot delete this center ! employee detected",request.getMaskId()));
+
+    }else if(studentService.getStudentByCenterId(center)!=null && studentService.getStudentByCenterId(center).size()>0){
+
+     throw new ValidationException(String.format("Cannot delete this center ! student detected",request.getMaskId()));
+
+   }
+   else if(centerFeeService.centerProgramFeeRepository(center.getId())!=null){
+     throw new ValidationException(String.format("Cannot delete this center ! Center Fee Program detected",request.getMaskId()));
+   }
+   else{
+     center.setActive(false);
+     centerRepository.saveAndFlush(center);
+   }
+  }
   public Center updateCenter(CenterRequest request)
   {
 

@@ -5,6 +5,7 @@ import com.synlabs.ipsaa.service.BaseService;
 import com.synlabs.ipsaa.service.CenterService;
 import com.synlabs.ipsaa.service.DocumentService;
 import com.synlabs.ipsaa.service.StaffService;
+import com.synlabs.ipsaa.util.ExcelExporter;
 import com.synlabs.ipsaa.view.center.ApprovalCountResponse;
 import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.staff.*;
@@ -42,6 +43,8 @@ public class StaffController
   @Autowired
   private DocumentService documentService;
 
+  private ExcelExporter excelExporter=new ExcelExporter();
+
   //only user centers employees
   @Secured(STAFF_READ)
   @GetMapping
@@ -56,6 +59,13 @@ public class StaffController
   public List<StaffSummaryResponse> listAll()
   {
     return staffService.listAll().stream().map(StaffSummaryResponse::new).collect(Collectors.toList());
+  }
+  @Secured(STAFF_READ)
+  @GetMapping("/all/export")
+  public String listAllExport()
+  {
+    excelExporter.createExcel(staffService.listAll().stream().map(StaffResponse::new).collect(Collectors.toList()));
+    return "done";
   }
 
   @Secured(STAFF_READ)

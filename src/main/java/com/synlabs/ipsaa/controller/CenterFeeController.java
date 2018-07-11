@@ -1,7 +1,9 @@
 package com.synlabs.ipsaa.controller;
 
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
+import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.service.FeeService;
+import com.synlabs.ipsaa.util.ExcelExporterCenterPrograms;
 import com.synlabs.ipsaa.view.center.*;
 import com.synlabs.ipsaa.view.common.Request;
 import com.synlabs.ipsaa.view.fee.SaveFeeSlipRequest;
@@ -34,6 +36,19 @@ public class CenterFeeController
   public List<CenterChargeResponse> listCharge(@PathVariable Long centerId)
   {
     return feeService.listCenterCharge(new CenterFeeRequest(centerId)).stream().map(CenterChargeResponse::new).collect(Collectors.toList());
+  }
+  @Secured(CENTERFEE_READ)
+  @GetMapping("export")
+  public String listCenterExport()
+  {
+    System.out.print("get");
+    try{
+    ExcelExporterCenterPrograms c=  new ExcelExporterCenterPrograms();
+     c.createExcel(feeService.listCenterProgramFee());
+      return "done";
+    }catch (Exception e){
+      return  "nothing";
+    }
   }
 
   @Secured(CENTERFEE_WRITE)
@@ -80,7 +95,9 @@ public class CenterFeeController
     Request request = new Request()
     {
     };
-    feeService.deleteCenterProgramFee(request.unmask(id));
+
+      feeService.deleteCenterProgramFee(request.unmask(id));
+
   }
 
   @PostMapping("/fee/")

@@ -406,7 +406,6 @@ public class DashboardService extends BaseService
       feeStatsResponse.setMonth(month);
       feeStatsResponse.setMonthly(monthly == null ? 0 : monthly.intValue());
     }
-
     //if start of quarter
     // 2. add quarterly fee for quarter in quarter start
     if (feeDuration == FeeDuration.Quarterly ||

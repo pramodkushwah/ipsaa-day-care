@@ -9,12 +9,12 @@ import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import java.util.Date;
 import java.util.List;
 
-public interface StudentAttendanceRepository extends JpaRepository<StudentAttendance, Long>, QueryDslPredicateExecutor<StudentAttendance>
+public interface StudentAttendanceRepository extends JpaRepository<StudentAttendance, Long> , QueryDslPredicateExecutor<StudentAttendance>
 {
 
   int countByStudentAndAttendanceDate(Student student, Date date);
 
   StudentAttendance findByStudentAndAttendanceDate(Student student, Date date);
-
+  List<StudentAttendance> findByStudentAndCreatedDateBetween(Student student,Date from, Date to);
   List<StudentAttendance> findByCenterAndAttendanceDateBetweenOrderByStudentAdmissionNumberAsc(Center center, Date from, Date to);
 }

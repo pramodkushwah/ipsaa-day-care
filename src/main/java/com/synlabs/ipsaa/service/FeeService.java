@@ -1,30 +1,37 @@
 package com.synlabs.ipsaa.service;
 
+import com.querydsl.jpa.impl.JPAQuery;
+import com.synlabs.ipsaa.entity.attendance.StudentAttendance;
 import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.fee.CenterCharge;
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.fee.Charge;
 import com.synlabs.ipsaa.entity.programs.Program;
+import com.synlabs.ipsaa.entity.student.QStudentFee;
 import com.synlabs.ipsaa.entity.student.Student;
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.enums.ApprovalStatus;
+import com.synlabs.ipsaa.enums.FeeDuration;
 import com.synlabs.ipsaa.enums.PaymentStatus;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
+import com.synlabs.ipsaa.util.BigDecimalUtils;
 import com.synlabs.ipsaa.util.FeeUtils;
 import com.synlabs.ipsaa.view.center.CenterChargeRequest;
 import com.synlabs.ipsaa.view.center.CenterFeeRequest;
 import com.synlabs.ipsaa.view.center.CenterProgramFeeRequest;
-import com.synlabs.ipsaa.view.fee.ChargeRequest;
-import com.synlabs.ipsaa.view.fee.FeeReportRequest;
-import com.synlabs.ipsaa.view.fee.SaveFeeSlipRequest;
-import com.synlabs.ipsaa.view.fee.StudentFeeSlipRequest;
+import com.synlabs.ipsaa.view.fee.*;
 import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport;
+import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport2;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,14 +39,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,12 +69,17 @@ public class FeeService extends BaseService
   @Autowired
   private CenterProgramFeeRepository centerProgramFeeRepository;
 
+  // shubham
+  @Autowired
+  private StudentAttendanceRepository attendanceRepository;
+
   @Autowired
   private StudentFeePaymentRepository slipRepository;
 
   @Autowired
   private StudentRepository studentRepository;
-
+  @Autowired
+  private EntityManager entityManager;
   @Autowired
   private StudentFeeRepository studentFeeRepository;
 
@@ -93,6 +103,11 @@ public class FeeService extends BaseService
   public List<CenterProgramFee> listCenterFee(CenterFeeRequest request)
   {
     return feeRepository.findByCenterId(request.getCenterId());
+  }
+
+  public List<CenterProgramFee> listCenterFee(Long id)
+  {
+    return feeRepository.findByCenterId(id);
   }
 
   public List<CenterCharge> listCenterCharge(CenterFeeRequest request)
@@ -306,6 +321,9 @@ public class FeeService extends BaseService
     centerProgramFeeRepository.delete(id);
   }
 
+  public List<CenterProgramFee> listCenterProgramFee(){
+    return centerProgramFeeRepository.findAll();
+  }
   public CenterProgramFee getProgramFee(CenterProgramFeeRequest request)
   {
     Center center = centerRepository.findOne(request.getCenterId());
@@ -326,6 +344,9 @@ public class FeeService extends BaseService
     return centerProgramFee;
   }
 
+  public CenterProgramFee centerProgramFeeRepository(Long centerId){
+    return centerProgramFeeRepository.findByCenterId(centerId);
+  }
   public CenterProgramFee getProgramFee(SaveFeeSlipRequest request)
   {
     if (request.getId() == null)
@@ -360,11 +381,11 @@ public class FeeService extends BaseService
     }
     return slip;
   }
-
   public File feeReport(FeeReportRequest request) throws IOException
   {
 //    1.finding students fee
     Center center = hasCenter(request.getCenterId());
+    // int quater=
     if (center == null)
     {
       throw new ValidationException("Unauthorized access to center.");
@@ -492,20 +513,171 @@ public class FeeService extends BaseService
     switch (reportType)
     {
       case Paid:
-        row.createCell(8, Cell.CELL_TYPE_NUMERIC).setCellValue(total.doubleValue());
-        row.createCell(9, Cell.CELL_TYPE_NUMERIC).setCellValue(paid.doubleValue());
+        row.createCell(11, Cell.CELL_TYPE_NUMERIC).setCellValue(total.doubleValue());
+        row.createCell(10, Cell.CELL_TYPE_NUMERIC).setCellValue(paid.doubleValue());
         break;
       case PartiallyPaid:
-        row.createCell(8, Cell.CELL_TYPE_NUMERIC).setCellValue(total.doubleValue());
-        row.createCell(9, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
+        row.createCell(11, Cell.CELL_TYPE_NUMERIC).setCellValue(total.doubleValue());
+        row.createCell(12, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
         break;
       case Raised:
-        row.createCell(7, Cell.CELL_TYPE_NUMERIC).setCellValue(total.doubleValue());
+        row.createCell(11, Cell.CELL_TYPE_NUMERIC).setCellValue(total.doubleValue());
         break;
     }
 
     workbook.write(fileOutputStream);
     workbook.dispose();
     return file;
+  }
+  // shubham
+  public File collectionFeeReport2(StudentFeeSlipRequest slipRequest) throws IOException
+  {
+    if (StringUtils.isEmpty(slipRequest.getPeriod()))
+    {
+      throw new ValidationException("Period is required.");
+    }
+
+    Set<String> set = new HashSet<>();
+    set.add("Paid");
+    set.add("PartiallyPaid");
+    set.add("Raised");
+    if (!(!StringUtils.isEmpty(slipRequest.getReportType()) && set.contains(slipRequest.getReportType())))
+    {
+      throw new ValidationException("Report type is required.");
+    }
+
+    PaymentStatus reportType = PaymentStatus.valueOf(slipRequest.getReportType());
+
+    Center center = centerRepository.findByCode(slipRequest.getCenterCode());
+    if (center == null)
+    {
+      throw new ValidationException(String.format("Cannot locate Center[code = %s]", slipRequest.getCenterCode()));
+    }
+
+    if (!hasCenter(slipRequest.getCenterCode()))
+    {
+      throw new ValidationException(String.format("Unauthorized access to center[code=%s] user[email=%s].", slipRequest.getCenterCode(), getUser().getEmail()));
+    }
+
+    List<StudentFeePaymentRequest> slips = studentService.listFeeSlips2(slipRequest);
+
+   // slips = slips.stream().filter(s -> s.getPaymentStatus() == reportType).collect(Collectors.toList());
+
+    File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
+    if (!file.exists())
+    {
+      file.createNewFile();
+    }
+    FileOutputStream fileOutputStream = new FileOutputStream(file);
+    SXSSFWorkbook workbook = new SXSSFWorkbook();
+    createStyle(workbook);
+    Sheet feeCollectionReportSheet = workbook.createSheet("response");
+    int endHeader = FeeCollectionExcelReport2.createHeader(feeCollectionReportSheet, 0, reportType);
+    int i,rowNum=1;
+
+    BigDecimal total = BigDecimal.ZERO;
+    BigDecimal paid = BigDecimal.ZERO;
+    BigDecimal due = BigDecimal.ZERO;
+
+    rowNum=0+endHeader;
+    for (i = 0; i < slips.size(); i++)
+    {
+      StudentFeePaymentRequest slip = slips.get(i);
+      // calculate extra hours
+      FeeCollectionExcelReport2 report = new FeeCollectionExcelReport2(slip,new BigDecimal(calculateExtraHours(slip.getStudent(),slipRequest.getQuarter(),slipRequest.getYear())));
+      report.export(feeCollectionReportSheet, rowNum , reportType);
+      total = total.add(report.getRaisedAmount());
+      paid = paid.add(report.getPaidAmount());
+      due = due.add(report.getDueAmount());
+      rowNum=report.getRowNum();
+      rowNum++;
+    }
+    Row row = feeCollectionReportSheet.createRow(rowNum + endHeader);
+        row.createCell(8, Cell.CELL_TYPE_NUMERIC).setCellValue(total.doubleValue());
+        row.createCell(9, Cell.CELL_TYPE_NUMERIC).setCellValue(paid.doubleValue());
+        row.createCell(12, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
+
+    workbook.write(fileOutputStream);
+    workbook.dispose();
+    return file;
+  }
+  // shubham
+  public List<StudentFeeSlipResponse2> collectionFeeReportTable2(StudentFeeSlipRequest slipRequest) throws IOException
+  {
+    if (StringUtils.isEmpty(slipRequest.getPeriod()))
+    {
+      throw new ValidationException("Period is required.");
+    }
+
+    Set<String> set = new HashSet<>();
+    set.add("Paid");
+    set.add("PartiallyPaid");
+    set.add("Raised");
+    if (!(!StringUtils.isEmpty(slipRequest.getReportType()) && set.contains(slipRequest.getReportType())))
+    {
+      throw new ValidationException("Report type is required.");
+    }
+    PaymentStatus reportType = PaymentStatus.valueOf(slipRequest.getReportType());
+
+    Center center = centerRepository.findByCode(slipRequest.getCenterCode());
+    if (center == null)
+    {
+      throw new ValidationException(String.format("Cannot locate Center[code = %s]", slipRequest.getCenterCode()));
+    }
+
+    if (!hasCenter(slipRequest.getCenterCode()))
+    {
+      throw new ValidationException(String.format("Unauthorized access to center[code=%s] user[email=%s].", slipRequest.getCenterCode(), getUser().getEmail()));
+    }
+    return studentService.listFeeSlipsTable2(slipRequest);
+  }
+
+  // shubham
+  public int calculateExtraHours(Student student,int quarter,int year){
+    int extra=0;
+    List<StudentAttendance> list=null;
+    Date startDate=null,endDate=null;
+    switch (quarter){
+      case 2:
+        startDate =new LocalDate(year, 4, 1).toDate();
+        endDate =new LocalDate(year, 6, 30).toDate();
+        break;
+      case 3:
+         startDate =new LocalDate(year, 7, 1).toDate();
+         endDate =new LocalDate(year, 9, 30).toDate();
+        break;
+      case 4:
+         startDate =new LocalDate(year, 10, 1).toDate();
+         endDate =new LocalDate(year, 12, 30).toDate();
+        break;
+      case 1:
+         startDate =new LocalDate(year+1, 1, 1).toDate();
+         endDate =new LocalDate(year+1, 3, 30).toDate();
+        break;
+    }
+    System.out.println("start date "+startDate);
+    System.out.println("start date "+endDate);
+    System.out.println("break");
+    list=attendanceRepository.findByStudentAndCreatedDateBetween(student,startDate,endDate);
+    System.out.println(list);
+    System.out.println("break");
+    for(StudentAttendance attendace:list){
+      if(attendace.getCheckout()!=null && attendace.getCheckin() !=null)
+        if(student.getExpectedOut()!=null && student.getExpectedIn()!=null)
+          if(attendace.getCheckin().before(student.getExpectedIn())){
+            Period p = new Period(new DateTime(attendace.getCheckin()),new DateTime(student.getExpectedIn()));
+            int hours = p.getHours();
+            System.out.println("extra hours befor"+ hours);
+            System.out.println("break");
+            extra+=hours;
+          }else if(attendace.getCheckout().after(student.getExpectedOut())){
+            Period p = new Period(new DateTime(student.getExpectedOut()),new DateTime(attendace.getCheckout()));
+            int hours = p.getHours();
+            System.out.println("extra hours after"+ hours);
+            System.out.println("break");
+            extra+=hours;
+          }
+    }
+    return extra;
   }
 }

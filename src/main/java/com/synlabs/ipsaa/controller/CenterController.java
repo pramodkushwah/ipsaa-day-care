@@ -1,8 +1,12 @@
 package com.synlabs.ipsaa.controller;
 
 import com.synlabs.ipsaa.entity.center.Center;
+import com.synlabs.ipsaa.entity.common.User;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.service.CenterService;
+import com.synlabs.ipsaa.service.EmployeeService;
+import com.synlabs.ipsaa.service.StudentService;
+import com.synlabs.ipsaa.service.UserService;
 import com.synlabs.ipsaa.view.center.CenterListRequest;
 import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.center.CenterResponse;
@@ -24,6 +28,7 @@ public class CenterController
   @Autowired
   private CenterService centerService;
 
+
   @GetMapping
   @Secured(CENTER_READ)
   public List<CenterResponse> list(@RequestParam(required = false, name = "zone") String zone,
@@ -43,7 +48,6 @@ public class CenterController
   @PostMapping
   public CenterResponse createCenter(@RequestBody @Validated CenterRequest request, BindingResult result)
   {
-
     if (result.hasErrors())
     {
       throw new ValidationException(result.toString());
@@ -63,12 +67,10 @@ public class CenterController
     Center center = centerService.updateCenter(request);
     return new CenterResponse(center);
   }
-
   @Secured(CENTER_DELETE)
   @DeleteMapping(path = "{centerId}")
   public void deleteCenter(@PathVariable Long centerId)
   {
     centerService.deleteCenter(new CenterRequest(centerId));
   }
-
 }

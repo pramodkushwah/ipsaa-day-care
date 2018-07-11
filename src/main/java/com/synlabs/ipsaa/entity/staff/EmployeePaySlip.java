@@ -539,10 +539,10 @@ public class EmployeePaySlip extends BaseEntity
     this.hra = calculateHra(basic).multiply(ratio);
     this.conveyance = ratio.multiply(employeeSalary.getConveyance());
     this.bonus = ratio.multiply(employeeSalary.getBonus());
+    this.special = calculateSpecial(ctc, basic, hra, conveyance, bonus);
 
     this.entertainment = employeeSalary.getEntertainment();
     this.medical = employeeSalary.getMedical();
-    this.special = calculateSpecial(ctc, basic, hra, conveyance, bonus,medical);
     this.arrears = employeeSalary.getArrears();
     this.shoes = employeeSalary.getShoes();
     this.tiffin = employeeSalary.getTiffin();
@@ -568,13 +568,13 @@ public class EmployeePaySlip extends BaseEntity
                calculatePfr(basic) :
                ZERO;
 
-    this.grossSalary = calculateGross(basic, hra, conveyance, special, medical, bonus, pfr);
+    this.grossSalary = calculateGross(basic, hra, conveyance, special, pfr);
 
     this.esi = employeeSalary.isEsid() ?
-               calculateEsi(employeeSalary.isEsid(), grossSalary, bonus, SalaryUtils.ESI_PERCENT) :
+               calculateEsi(employeeSalary.isEsid(), grossSalary, SalaryUtils.ESI_PERCENT) :
                ZERO;
 
-    this.professionalTax = (employeeSalary.isProfd()&&  ctc.compareTo(SalaryUtils.PFT_LIMIT)>=0)?
+    this.professionalTax = employeeSalary.isProfd() ?
                            SalaryUtils.PROFESSIONAL_TAX :
                            ZERO;
 
@@ -588,7 +588,7 @@ public class EmployeePaySlip extends BaseEntity
   @Transient
   public void update()
   {
-    totalEarning = ZERO.add(ctc).add(otherAllowances == null ? ZERO : otherAllowances);
+    totalEarning = ZERO.add(bonus).add(grossSalary).add(otherAllowances == null ? ZERO : otherAllowances);
 
     totalDeduction = ZERO;
     if (esid)
@@ -598,7 +598,6 @@ public class EmployeePaySlip extends BaseEntity
     if (pfd)
     {
       totalDeduction = totalDeduction.add(pfe == null ? ZERO : pfe);
-      totalDeduction = totalDeduction.add(pfr == null ? ZERO : pfr);
     }
     if (profd)
     {
@@ -606,6 +605,7 @@ public class EmployeePaySlip extends BaseEntity
     }
     totalDeduction = totalDeduction.add(otherDeductions == null ? ZERO : otherDeductions);
     totalDeduction = totalDeduction.setScale(0, ROUND_HALF_UP);
+
     netSalary = ZERO
         .add(totalEarning == null ? ZERO : totalEarning)
         .subtract(totalDeduction == null ? ZERO : totalDeduction)

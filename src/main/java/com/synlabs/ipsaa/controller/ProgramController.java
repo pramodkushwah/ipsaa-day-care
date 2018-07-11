@@ -53,7 +53,12 @@ public class ProgramController
   @DeleteMapping(path = "program/{programId}")
   public void deleteProgram(@PathVariable Long programId)
   {
-    programService.deleteProgram(new ProgramRequest(programId));
+    try{
+      programService.deleteProgram(new ProgramRequest(programId));
+    }catch (Exception e){
+  throw new ValidationException(String.format("Cannot delete this program",null));
+}
+
   }
 
   @Secured(PROGRAM_READ)

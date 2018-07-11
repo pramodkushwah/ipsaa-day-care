@@ -61,8 +61,8 @@
             <tr>
               <th>Employee</th>
               <th>Employer</th>
-              <th>CTC</th>
-              <th>Other Allowances</th>
+              <th>Basic Salary</th>
+              <th>Allowances</th>
               <th>Total Deductions</th>
               <th>Net Salary</th>
               <th>Pay Slips</th>
@@ -72,9 +72,13 @@
             <tr ng-repeat="salary in salaries | filter: search">
               <td>{{salary.empName}}</td>
               <td>{{salary.employerName}}</td>
-              <td>{{salary.ctc}}</td>
-              <td>{{salary.otherAllowances}}</td>
-              <td>{{salary.totalDeduction}}</td>
+              <td>{{salary.basic}}</td>
+              <td>{{salary.bonus + salary.conveyance + salary.entertainment + salary.hra + salary.medical + salary.arrears + salary.shoes +salary.special + salary.tiffin +
+                salary.uniform + salary.washing + salary.otherAllowances}}
+              </td>
+
+              <td>{{salary.esi + salary.pf + salary.otherDeductions + salary.retention + salary.tds + salary.advance +
+                salary.unpaidLeaveDeduction + salary.absentDeduction}}</td>
               <td>{{salary.netSalary}}</td>
               <td>
                 <div class="buttons">

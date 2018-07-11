@@ -1,9 +1,9 @@
 package com.synlabs.ipsaa.controller;
 
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
 import com.synlabs.ipsaa.service.*;
 import com.synlabs.ipsaa.view.attendance.AttendanceReportRequest;
-import com.synlabs.ipsaa.view.fee.FeeReportRequest;
-import com.synlabs.ipsaa.view.fee.StudentFeeSlipRequest;
+import com.synlabs.ipsaa.view.fee.*;
 import com.synlabs.ipsaa.view.inquiry.InquiryReportRequest;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.*;
 
@@ -134,10 +135,49 @@ public class ReportController
       throw new IOException("Could not delete temporary file after processing: " + file);
     }
   }
-
   @PostMapping("collectionfee")
   @Secured(COLLECTION_FEE_REPORT)
-  public void collectionFeeReport(HttpServletResponse response, @RequestBody StudentFeeSlipRequest slipRequest) throws IOException
+  public List<StudentFeeSlipResponse2> collectionFeeReport(HttpServletResponse response, @RequestBody StudentFeeSlipRequest slipRequest) throws IOException
+  {
+    return  feeService.collectionFeeReportTable2(slipRequest);
+  }
+  @PostMapping("collectionfee/excel")
+  @Secured(COLLECTION_FEE_REPORT)
+  public void collectionFeeReportExcel(HttpServletResponse response, @RequestBody StudentFeeSlipRequest slipRequest) throws IOException
+  {
+    File file = feeService.collectionFeeReport2(slipRequest);
+    String fileName = "";
+    switch (slipRequest.getPeriod())
+    {
+      case "Monthly":
+        fileName = String.format("%s_%s_Monthly_%s_%s.xlsx", slipRequest.getCenterCode(), slipRequest.getReportType(), slipRequest.getMonth(), slipRequest.getYear());
+        break;
+      case "Quarterly":
+        fileName = String.format("%s_%s_Quarterly_%s_%s.xlsx", slipRequest.getCenterCode(), slipRequest.getReportType(), slipRequest.getQuarter(), slipRequest.getYear());
+        break;
+      case "Yearly":
+        fileName = String.format("%s_%s_Yearly_%s.xlsx", slipRequest.getCenterCode(), slipRequest.getReportType(), slipRequest.getYear());
+        break;
+    }
+    response.setHeader("Content-disposition", String.format("attachment; filename=%s", fileName));
+    response.setHeader("fileName", fileName);
+
+    OutputStream out = response.getOutputStream();
+    FileInputStream in = new FileInputStream(file);
+
+    // copy from in to out
+    IOUtils.copy(in, out);
+    out.flush();
+    in.close();
+    if (!file.delete())
+    {
+      throw new IOException("Could not delete temporary file after processing: " + file);
+    }
+  }
+  // shubham
+  @PostMapping("collectionfee2")
+  @Secured(COLLECTION_FEE_REPORT)
+  public void FeeReport2(HttpServletResponse response, @RequestBody StudentFeeSlipRequest slipRequest) throws IOException
   {
     File file = feeService.collectionFeeReport(slipRequest);
     String fileName = "";
@@ -168,5 +208,4 @@ public class ReportController
       throw new IOException("Could not delete temporary file after processing: " + file);
     }
   }
-
 }
