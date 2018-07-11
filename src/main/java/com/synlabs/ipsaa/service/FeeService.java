@@ -100,6 +100,9 @@ public class FeeService extends BaseService
     }
   }
 
+  public List<StudentFeePaymentRequest> getStudentFeeList(){
+    return slipRepository.findByQuarter(3);
+  }
   public List<CenterProgramFee> listCenterFee(CenterFeeRequest request)
   {
     return feeRepository.findByCenterId(request.getCenterId());
@@ -619,6 +622,7 @@ public class FeeService extends BaseService
     }
     PaymentStatus reportType = PaymentStatus.valueOf(slipRequest.getReportType());
 
+    if(!slipRequest.getCenterCode().equals("All")){
     Center center = centerRepository.findByCode(slipRequest.getCenterCode());
     if (center == null)
     {
@@ -629,6 +633,8 @@ public class FeeService extends BaseService
     {
       throw new ValidationException(String.format("Unauthorized access to center[code=%s] user[email=%s].", slipRequest.getCenterCode(), getUser().getEmail()));
     }
+  }
+
     return studentService.listFeeSlipsTable2(slipRequest);
   }
 
