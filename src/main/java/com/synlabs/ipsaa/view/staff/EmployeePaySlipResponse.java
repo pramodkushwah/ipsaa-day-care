@@ -33,11 +33,8 @@ public class EmployeePaySlipResponse implements Response
   private String centerCode;
   private String autoComment;
   private String comment;
-  
-  private BigDecimal ctc;
 
-
-private BigDecimal totalEarning;
+  private BigDecimal totalEarning;
   private BigDecimal netSalary;
   private BigDecimal totalDeduction;
 
@@ -131,7 +128,7 @@ private BigDecimal totalEarning;
 
     this.totalDays = slip.getTotalDays();
     this.presents = slip.getPresents();
-    this.ctc = slip.getCtc();
+
     this.basic = slip.getBasic();
     this.bonus = slip.getBonus();
     this.conveyance = slip.getConveyance();
@@ -421,11 +418,4 @@ private BigDecimal totalEarning;
   {
     return employerName;
   }
-  public BigDecimal getCtc() {
-	return ctc;
-	}
-	
-	public void setCtc(BigDecimal ctc) {
-		this.ctc = ctc;
-	}
 }

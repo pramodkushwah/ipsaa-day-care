@@ -407,5 +407,4 @@ public class EmployeeSalaryResponse implements Response
   {
     this.employeeId = employeeId;
   }
-  
 }

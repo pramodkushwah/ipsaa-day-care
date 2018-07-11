@@ -101,10 +101,7 @@ public class StudentFeePaymentRecord extends BaseEntity
     this.paymentStatus = paymentStatus;
   }
 
-  public PaymentMode getPaymentMode()
-  {
-    return paymentMode;
-  }
+  public PaymentMode getPaymentMode() {return paymentMode;}
 
   public void setPaymentMode(PaymentMode paymentMode)
   {

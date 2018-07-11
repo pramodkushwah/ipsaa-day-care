@@ -94,12 +94,6 @@
     <td style="width: 100px;">&nbsp;</td>
   </tr>
   <tr>
-    <td style="width: 195px;">Medical</td>
-    <td style="width: 121px;">${paySlip.medical}</td>
-    <td style="width: 237px;">&nbsp;</td>
-    <td style="width: 100px;">&nbsp;</td>
-  </tr>
-  <tr>
     <td style="width: 237px;">Total Earning</td>
     <td style="width: 100px;">${paySlip.totalEarning}</td>
     <td style="width: 195px;">Total Deduction</td>

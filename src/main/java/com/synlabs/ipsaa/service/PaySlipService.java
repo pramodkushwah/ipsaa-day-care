@@ -8,7 +8,6 @@ import com.synlabs.ipsaa.entity.common.SerialNumberSequence;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
-import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.enums.LeaveStatus;
 import com.synlabs.ipsaa.enums.LeaveType;
 import com.synlabs.ipsaa.ex.ValidationException;
@@ -83,14 +82,14 @@ public class PaySlipService extends BaseService
       throw new ValidationException(String.format("Cannot locate Employer[id = %s]", mask(employerId)));
     }
 
-    List<Employee> employees = employeeRepository.findByActiveIsTrueAndApprovalStatusAndEmployerId(ApprovalStatus.Approved,legalEntity.getId());
+    List<Employee> employees = employeeRepository.findByActiveIsTrueAndEmployerId(legalEntity.getId());
     for (Employee emp : employees)
     {
+
       EmployeePaySlip employeePaySlip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(emp, month, year);
       if (employeePaySlip == null)
       {
         EmployeeSalary employeeSalary = employeeSalaryRepository.findByEmployee(emp);
-       
         if (employeeSalary != null)
         {
           if (employeeSalary.getCtc() == null)
@@ -101,7 +100,7 @@ public class PaySlipService extends BaseService
         }
       }
     }
-    return employeePaySlipRepository.findByEmployerIdAndEmployeeApprovalStatusAndMonthAndYear(legalEntity.getId(),ApprovalStatus.Approved, month, year);
+    return employeePaySlipRepository.findByEmployerIdAndMonthAndYear(legalEntity.getId(), month, year);
   }
 
   private EmployeePaySlip generateNewPayslip(Employee employee, EmployeeSalary salary, int year, int month) throws ParseException
@@ -180,8 +179,7 @@ public class PaySlipService extends BaseService
     //2. deduct unpaid leaves and absents and append autoComment
 //    BigDecimal days = new BigDecimal("31");
     BigDecimal totalDays = new BigDecimal(Days.daysBetween(LocalDate.fromDateFields(from), LocalDate.fromDateFields(to).plusDays(1)).getDays());
-//    BigDecimal totalAbsents = absents.add(leaves);
-    BigDecimal totalAbsents = BigDecimal.ZERO;
+    BigDecimal totalAbsents = absents.add(leaves);
     BigDecimal presents = totalDays.subtract(totalAbsents);
     autoComment = absents.doubleValue() > 0 ? autoComment + String.format("Absents : %s\n", absents) : autoComment;
     autoComment = leaves.doubleValue() > 0 ? autoComment + String.format("Leaves : %s\n", leaves) : autoComment;
@@ -257,7 +255,7 @@ public class PaySlipService extends BaseService
     {
       throw new ValidationException(String.format("Cannot locate LegalEntity[id=%s]", mask(request.getLegalEntityId())));
     }
-    List<EmployeePaySlip> payslips = employeePaySlipRepository.findByEmployerIdAndEmployeeApprovalStatusAndMonthAndYear(one.getId(),ApprovalStatus.Approved, request.getMonth(), request.getYear());
+    List<EmployeePaySlip> payslips = employeePaySlipRepository.findByEmployerIdAndMonthAndYear(one.getId(), request.getMonth(), request.getYear());
 
     logger.info(String.format("Regenerating all payslip for [legal=%s,month=%s,year=%s,count=%s]",
                               one.getName(), request.getMonth(), request.getYear(), payslips.size()));

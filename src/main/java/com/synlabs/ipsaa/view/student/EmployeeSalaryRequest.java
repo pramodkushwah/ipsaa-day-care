@@ -365,5 +365,4 @@ public class EmployeeSalaryRequest implements Request
   {
     this.netSalary = netSalary;
   }
-  
 }
