@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-2">
+  <div class="col-md-3">
     <div class="form-group">
       <label class="control-label">Center:</label>
       <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="setSlips([])">
@@ -8,35 +8,15 @@
       <span class="material-input"></span>
     </div>
   </div>
-  <div class="col-md-2">
-    <div class="form-group">
-      <label class="control-label">Period:</label>
-      <select class="form-control" ng-model="selectedPeriod" ng-change="setSlips([])">
-        <option value="Monthly">Monthly</option>
-        <option value="Quarterly">Quarterly</option>
-        <option value="Yearly">Yearly</option>
-      </select>
-      <span class="material-input"></span>
-    </div>
-  </div>
-
-  <div class="col-md-2" ng-show="selectedPeriod == 'Monthly'">
-    <div class="form-group">
-      <label class="control-label">Month:</label>
-      <select class="form-control" ng-model="selectedMonth" ng-options="month.moy as month.name for month in months" ng-change="setSlips([])">
-        <!-- only show current and next month -->
-      </select>
-      <span class="material-input"></span>
-    </div>
-  </div>
-  <div class="col-md-2" ng-show="selectedPeriod == 'Quarterly'">
+  
+  <div class="col-md-3">
     <div class="form-group">
       <label class="control-label">Quarter:</label>
       <select class="form-control" ng-model="selectedQuarter" ng-options="quarter as quarter.name for quarter in quarters" ng-change="setSlips([])"></select>
       <span class="material-input"></span>
     </div>
   </div>
-  <div class="col-md-2">
+  <div class="col-md-3">
     <div class="form-group">
       <label class="control-label">Year:</label>
       <select class="form-control" ng-model="selectedYear" ng-change="setSlips([])">
@@ -46,7 +26,7 @@
     </div>
   </div>
 
-  <div class="col-md-2">
+  <div class="col-md-3">
     <div class="form-group">
       <label class="control-label">Type:</label>
       <select class="form-control" ng-model="reportType">
@@ -57,7 +37,72 @@
     </div>
   </div>
 
-  <button class="btn btn-info" ng-click="downloadReport()" ng-disabled="disableDownload">
-    <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableDownload"></i>GET/GENERATE
-  </button>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <button class="btn btn-primary" ng-click="generateReport('table')" ng-disabled="disableDownload">
+      <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableDownload"></i>GET
+    </button>
+
+    <button class="btn btn-info" ng-click="generateReport('excel')" ng-disabled="disableDownload">
+      <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableDownload"></i>GENERATE EXCEL
+    </button>
+  </div>
+  
+</div>
+
+<div class="row" style="margin-top: 25px">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">description</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Fee Report</h4>
+        <div class="table-responsive">
+          <table class="table table-condensed table-striped table-hover" style="font-size: 10px">
+            <thead class="text-primary">
+              <tr>
+                <!-- <th>S.No</th> -->
+                <th>Student Name</th>
+                <th>Father's Name</th>
+                <th>Mother's Name</th>
+                <th>Annual Fee</th>
+                <th>Adjustments</th>
+                <th>Balance</th>
+                <th>Extra Charges</th>
+                <th>Fees</th>
+                <th>Payable Amount</th>
+                <th>Paid Amount</th>
+                <th>Payement Date</th>
+                <th>Payment Mode</th>
+                <th>Transaction ID</th>
+                <th>Confirmed</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="feeReport in feeReports">
+                <td>{{$index + 1}}</td>
+                <td>{{feeReport.fullName}}</td>
+                <td>{{feeReport.fatherName}}</td>
+                <td>{{feeReport.motherName}}</td>
+                <td>{{feeReport.annualFee}}</td>
+                <td>{{feeReport.adjust}}</td>
+                <td>{{feeReport.balance}}</td>
+                <td>{{feeReport.extraCharge}}</td>
+                <td>{{feeReport.fee}}</td>
+                <td>{{feeReport.payableAmount}}</td>
+                
+                <td ng-repeat="item in feeReport.payments">
+                  {{item}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>  
+  </div>
 </div>
