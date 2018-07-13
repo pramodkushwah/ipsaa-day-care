@@ -1,5 +1,5 @@
 <div class="col-lg-3 col-md-4 col-sm-4">
-  <div class="card card-stats" ng-click="showPanel('studentlist')">
+  <div class="card card-stats">
     <div class="card-header" data-background-color="orange">
       <i class="material-icons">account_box</i>
     </div>
@@ -9,11 +9,15 @@
     </div>
     <div class="card-footer footer-bottom">
       <div class="stats">
-        <span>Present:{{stats.studentPresent | number}}</span>
-        <span>Absent:{{stats.students-stats.studentPresent | number}}</span>
-        &nbsp;|&nbsp;
-        <span>C:{{stats.corporateStudents | number}}</span>
-        <span>NC:{{(stats.students - stats.corporateStudents) | number}}</span>
+        <p style="margin: 0">
+          <a href="#" ng-click="filterStudents('present')">Present</a> : {{stats.studentPresent | number}}
+          &nbsp;|&nbsp;
+          <a href="#" ng-click="filterStudents('absent')">Absent</a> : {{stats.students-stats.studentPresent | number}}
+        </p>
+        <p style="margin: 0">
+          <a href="#" ng-click="filterStudents('corporate')">Corporate</a> : {{stats.corporateStudents | number}} &nbsp;|&nbsp;
+          <a href="#" ng-click="filterStudents('non_corporate')">Non-Corporate</a> : {{(stats.students - stats.corporateStudents) | number}}
+        </p>
       </div>
     </div>
   </div>

@@ -16,7 +16,7 @@ app.controller('HomeController', function ($scope, $http, Auth, $state) {
     $scope.BARSIZE = 5; //put odd values
     $scope.staffPage = [];
     $scope.staffPageBar = [];
-
+    $scope.dataLoading = false;
     $scope.SALARY_READ = Auth.hasPrivilege('SALARY_READ');
 
     $scope.$on('$includeContentLoaded', function (event, url) {
@@ -168,7 +168,7 @@ app.controller('HomeController', function ($scope, $http, Auth, $state) {
     $scope.studentsPageBar = [];
     $scope.updateStudentPage = function (pageNumber) {
         var pageSize = $scope.PAGESIZE;
-        var students = $scope.students;
+        var students = $scope.filteredStudents;
         var studentsPage = [];
         var studentPageBar = [];
         var studentCount = students.length;
@@ -195,6 +195,7 @@ app.controller('HomeController', function ($scope, $http, Auth, $state) {
         $scope.studentsPageNumber = pageNumber;
         $scope.studentsPageCount = pageCount;
         $scope.studentPageBar = studentPageBar;
+        $scope.dataLoading = false;
     };
 
     $scope.refresh = function () {
@@ -317,13 +318,6 @@ app.controller('HomeController', function ($scope, $http, Auth, $state) {
         }
 
         switch (panel) {
-            case 'studentlist':
-                $http.post("/api/dash/student", req).then(function (response) {
-                    $scope.students = response.data;
-                    $scope.updateStudentPage(1);
-                });
-                $scope.refresh();
-                break;
             case 'stafflist':
                 $http.post("/api/dash/staff", req).then(function (response) {
                     $scope.stafflist = response.data;
@@ -353,6 +347,67 @@ app.controller('HomeController', function ($scope, $http, Auth, $state) {
                 break;
         }
     };
+
+    $scope.filterStudents = function (filter) {
+        $scope.dataLoading = true; // to show data loading in table
+        if($scope.req)  // check if request is already created 
+            $scope.req.status = 'no change';
+
+        else    // if new request create a request object for post data of request and status as no change
+            $scope.req = {status : 'no change'};
+        
+        // check for any changes in post data of request from frontend 
+        if ($scope.selectedZone !== null && $scope.selectedZone.name != $scope.req.zone) {
+            $scope.req.zone = $scope.selectedZone.name;
+            $scope.req.status = "new request";
+        }
+        if ($scope.selectedCity !== null && $scope.selectedCity.city != $scope.req.city) {
+            $scope.req.city = $scope.selectedCity.name;
+            $scope.req.status = "new request";
+        }
+        if ($scope.selectedCenter !== null && $scope.selectedCenter.center != $scope.req.center) {
+            $scope.req.center = $scope.selectedCenter.code;
+            $scope.req.status = "new request";
+        }
+
+        // check if students data already exist and request status is not changed 
+        if($scope.students && $scope.req.status == "no change") {
+            $scope.filteredStudents = $scope.students[filter];
+            $scope.updateStudentPage(1);
+        }
+        else {
+            // load students data from backend 
+            var studentsData;
+            $scope.students = {
+                status: 'no data',
+                present: [],
+                absent: [],
+                corporate: [],
+                non_corporate: []
+            };
+            
+            $http.post("/api/dash/student", $scope.req).then(function (response) {
+                studentsData = response.data;
+                studentsData.forEach(function (studentData) {
+                    if( studentData.present )
+                        $scope.students.present.push(studentData);
+                    else
+                        $scope.students.absent.push(studentData);
+                    
+                    if( studentData.corporate )
+                        $scope.students.corporate.push(studentData);
+                    else
+                        $scope.students.non_corporate.push(studentData);
+                });
+                $scope.filteredStudents = $scope.students[filter];
+                
+                $scope.updateStudentPage(1);
+                $scope.students.status = "data fetched";
+            });
+            $scope.refresh();
+        }
+        $scope.showtab = 'studentlist';
+    }
 
     $scope.showFollowups = function (centerCode) {
         var req = createFollowUpRequest();

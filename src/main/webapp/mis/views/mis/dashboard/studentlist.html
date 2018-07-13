@@ -10,10 +10,13 @@
         <tr>
           <th>S.No</th>
           <th>Name</th>
+          <th>Center</th>
           <th>Program</th>
           <th>Group</th>
           <th>Corporate</th>
           <th>Present</th>
+          <th>Expected In</th>
+          <th>Expected Out</th>
           <th>Checkin</th>
           <th>Checkout</th>
         </tr>
@@ -22,16 +25,25 @@
         <tr ng-repeat="student in studentsPage" ng-click="showStudent(student)">
           <td>{{ (PAGESIZE * (studentsPageNumber - 1)) + $index + 1}}</td>
           <td>{{student.name}}</td>
+          <td>center</td>
           <td>{{student.program}}</td>
           <td>{{student.group}}</td>
           <td>{{student.corporate}}</td>
           <td>{{student.present}}</td>
+          <td>{{student.present}}</td>
+          <td>{{student.present}}</td>
           <td>{{student.checkin}}</td>
           <td>{{student.checkout}}</td>
         </tr>
+        <tr ng-show="!studentsPage.length" ng-hide="dataLoading">
+          <td colspan="11">No Data to Show</td>
+        </tr>
+        <tr ng-show="dataLoading">
+          <td colspan="11">Loading...</td>
+        </tr>
 
-        <tr>
-          <td colspan="7" style="background: #fff">
+        <tr ng-show="studentsPage.length">
+          <td colspan="11" style="background: #fff">
             <ul class="pagination pagination-info">
               <li ng-show="studentsPageNumber!=1" style="cursor: pointer;">
                 <a ng-click="updateStudentPage(studentsPageNumber-1)"> prev
