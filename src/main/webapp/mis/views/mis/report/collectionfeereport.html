@@ -1,108 +1,121 @@
 <div class="row">
-  <div class="col-md-3">
-    <div class="form-group">
-      <label class="control-label">Center:</label>
-      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="setSlips([])">
-        <option value="">Select Center</option>
-      </select>
-      <span class="material-input"></span>
-    </div>
-  </div>
-  
-  <div class="col-md-3">
-    <div class="form-group">
-      <label class="control-label">Quarter:</label>
-      <select class="form-control" ng-model="selectedQuarter" ng-options="quarter as quarter.name for quarter in quarters" ng-change="setSlips([])"></select>
-      <span class="material-input"></span>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="form-group">
-      <label class="control-label">Year:</label>
-      <select class="form-control" ng-model="selectedYear" ng-change="setSlips([])">
-        <option value="{{year}}" ng-repeat="year in years">{{year}}</option>
-      </select>
-      <span class="material-input"></span>
-    </div>
-  </div>
+	<div class="col-md-3">
+		<div class="form-group">
+			<label class="control-label">Center:</label>
+			<select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="setSlips([])">
+				<option value="">Select Center</option>
+			</select>
+			<span class="material-input"></span>
+		</div>
+	</div>
 
-  <div class="col-md-3">
-    <div class="form-group">
-      <label class="control-label">Type:</label>
-      <select class="form-control" ng-model="reportType">
-        <option value="Paid">Paid</option>
-        <option value="PartiallyPaid">PartiallyPaid</option>
-        <option value="Raised">Unpaid</option>
-      </select>
-    </div>
-  </div>
+	<div class="col-md-3">
+		<div class="form-group">
+			<label class="control-label">Quarter:</label>
+			<select class="form-control" ng-model="selectedQuarter" ng-options="quarter as quarter.name for quarter in quarters" ng-change="setSlips([])"></select>
+			<span class="material-input"></span>
+		</div>
+	</div>
+	<div class="col-md-2">
+		<div class="form-group">
+			<label class="control-label">Year:</label>
+			<select class="form-control" ng-model="selectedYear" ng-change="setSlips([])">
+				<option value="{{year}}" ng-repeat="year in years">{{year}}</option>
+			</select>
+			<span class="material-input"></span>
+		</div>
+	</div>
 
-</div>
+	<div class="col-sm-4" style="padding-top: 45px">
+		<button class="btn btn-primary" ng-click="generateReport('table')" ng-disabled="loader == 'disableGet'">
+			<i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="loader == 'disableGet'"></i>GET
+		</button>
+	
+		<button class="btn btn-info" ng-click="generateReport('excel')" ng-disabled="loader == 'disableDownload'">
+			<i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="loader == 'disableDownload'"></i>GENERATE EXCEL
+		</button>
+	</div>
 
-<div class="row">
-  <div class="col-sm-12">
-    <button class="btn btn-primary" ng-click="generateReport('table')" ng-disabled="disableDownload">
-      <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableDownload"></i>GET
-    </button>
-
-    <button class="btn btn-info" ng-click="generateReport('excel')" ng-disabled="disableDownload">
-      <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableDownload"></i>GENERATE EXCEL
-    </button>
-  </div>
-  
 </div>
 
 <div class="row" style="margin-top: 25px">
-  <div class="col-sm-12">
-    <div class="card">
-      <div class="card-header card-header-icon" data-background-color="rose">
-        <i class="material-icons">description</i>
-      </div>
-      <div class="card-content">
-        <h4 class="card-title">Fee Report</h4>
-        <div class="table-responsive">
-          <table class="table table-condensed table-striped table-hover" style="font-size: 10px">
-            <thead class="text-primary">
-              <tr>
-                <!-- <th>S.No</th> -->
-                <th>Student Name</th>
-                <th>Father's Name</th>
-                <th>Mother's Name</th>
-                <th>Annual Fee</th>
-                <th>Adjustments</th>
-                <th>Balance</th>
-                <th>Extra Charges</th>
-                <th>Fees</th>
-                <th>Payable Amount</th>
-                <th>Paid Amount</th>
-                <th>Payement Date</th>
-                <th>Payment Mode</th>
-                <th>Transaction ID</th>
-                <th>Confirmed</th>
+	<div class="col-sm-12">
+		<div class="card">
+			<div class="card-header card-header-icon" data-background-color="rose">
+				<i class="material-icons">description</i>
+			</div>
+			<div class="card-content">
+				<div class="row">
+					<div class="col-sm-3">
+						<h4 class="card-title">Fee Report</h4>
+					</div>
+					<div class="col-sm-7" ng-show="feeReports">
+						<div class="radio-inline">
+							<label>
+								<input type="radio" name="optionsRadios" id="optionsRadios1" value="All" checked> All
+							</label>
+						</div>
+						<div class="radio-inline">
+							<label>
+								<input type="radio" name="optionsRadios" id="optionsRadios2" value="Unconfirmed"> Unconfirmed
+							</label>
+						</div>
+						<div class="radio-inline">
+							<label>
+								<input type="radio" name="optionsRadios" id="optionsRadios2" value="Confirmed"> Confirmed
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="table-responsive">
+					<table class="table table-condensed table-striped table-hover">
+						<thead class="text-primary">
+							<tr>
+								<th>Sr. No.</th>
+								<th>Student Name</th>
+								<th>Father's Name</th>
+								<th>Mother's Name</th>
+								<th>Fees</th>
+								<th>Payable Amount</th>
+								<th colspan="4 ">Transaction Details</th>
 
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="feeReport in feeReports">
-                <td>{{$index + 1}}</td>
-                <td>{{feeReport.fullName}}</td>
-                <td>{{feeReport.fatherName}}</td>
-                <td>{{feeReport.motherName}}</td>
-                <td>{{feeReport.annualFee}}</td>
-                <td>{{feeReport.adjust}}</td>
-                <td>{{feeReport.balance}}</td>
-                <td>{{feeReport.extraCharge}}</td>
-                <td>{{feeReport.fee}}</td>
-                <td>{{feeReport.payableAmount}}</td>
-                
-                <td ng-repeat="item in feeReport.payments">
-                  {{item}}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>  
-  </div>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="feeReport in feeReports">
+								<td>{{ $index + 1 }}</td>
+								<td>{{feeReport.fullName}}</td>
+								<td>{{feeReport.fatherName}}</td>
+								<td>{{feeReport.motherName}}</td>
+								<td>{{feeReport.fee}}</td>
+								<td>{{feeReport.payableAmount}}</td>
+
+								<td colspan="4" ng-show="feeReport.payments.length">
+									<table class="table table-bordered">
+										<tr>
+											<th>Transaction Ref.</th>
+											<th>Amount Paid</th>
+											<th>Payment Date</th>
+											<th>Payment Mode</th>
+										</tr>
+										<tr ng-repeat="item in feeReport.payments">
+											<td>{{ item.txnid }}</td>
+											<td>{{ item.paidAmount }}</td>
+											<td>{{ item.paymentDate }}</td>
+											<td>{{ item.paymentMode }}</td>
+										</tr>
+
+									</table>
+
+								</td>
+								<td colspan="4" ng-hide="feeReport.payments.length">
+									No Transaction Record
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
