@@ -164,7 +164,10 @@ public class StaffService extends BaseService
   {
     return employeeRepository.findOne(request.getId());
   }
-
+// shubham
+  public List<EmployeeSalary> getEmployeeSalary(){
+   return employeeSalaryRepository.findByEmployeeActiveTrue();
+  }
 
   @Transactional
   public Employee save(StaffRequest request) throws ParseException

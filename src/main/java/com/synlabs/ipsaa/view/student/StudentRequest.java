@@ -46,6 +46,7 @@ public class StudentRequest implements Request
   @JsonFormat(pattern = "HH:mm", timezone = "IST")
   private Date expectedOut;
 
+
   public StudentFeeRequest getFee()
   {
     return fee;
