@@ -30,8 +30,11 @@ public class FeeCollectionExcelReport2
   private String txnid           ="";
   private String motherName      ="";
   private String FatherName      ="";
+  private BigDecimal sgst=BigDecimal.ZERO;
+  private BigDecimal gst=BigDecimal.ZERO;
+  private BigDecimal igst=BigDecimal.ZERO;
 
-  private BigDecimal extraHours   = BigDecimal.ZERO;
+  //private BigDecimal extraHours   = BigDecimal.ZERO;
   private String     paymentStatus = "";
   private String     paymentMode   = "";
   private BigDecimal raisedAmount  = BigDecimal.ZERO;
@@ -41,14 +44,17 @@ public class FeeCollectionExcelReport2
   private StudentFeePaymentRequest slip;
   private int rowNum=0;
 
-  public FeeCollectionExcelReport2(StudentFeePaymentRequest slip,BigDecimal extraHours)
+  public FeeCollectionExcelReport2(StudentFeePaymentRequest slip/*,BigDecimal extraHours*/)
   {
     this.slip=slip;
-    this.extraHours=extraHours;
+    //this.extraHours=extraHours;
     Student student = slip.getStudent();
     admissionNumber = student.getAdmissionNumber();
     name = student.getName();
     id=student.getId();
+    sgst=slip.getSgst();
+    gst=slip.getCgst();
+    igst=slip.getIgst();
     centerName = student.getCenterName();
     programName = student.getProgramName();
     groupName = student.getGroupName();
@@ -123,11 +129,12 @@ public class FeeCollectionExcelReport2
       this.paidAmount.add(new BigDecimal(record.getPaidAmount().doubleValue()));
       row.createCell(11, Cell.CELL_TYPE_STRING).setCellValue(raisedAmount.doubleValue());
       row.createCell(12, Cell.CELL_TYPE_STRING).setCellValue(record.getConfirmed());
-      row.createCell(13, Cell.CELL_TYPE_NUMERIC).setCellValue(extraHours.doubleValue());
+      //row.createCell(13, Cell.CELL_TYPE_NUMERIC).setCellValue(extraHours.doubleValue());
       row.createCell(14, Cell.CELL_TYPE_NUMERIC).setCellValue(dueAmount.doubleValue());
       row.createCell(15, Cell.CELL_TYPE_STRING).setCellValue(motherName);
       row.createCell(16, Cell.CELL_TYPE_STRING).setCellValue(FatherName);
       row.createCell(17, Cell.CELL_TYPE_STRING).setCellValue(record.getPaymentDate().toString());
+
       //rowNumber++;
     }
     return sheet;
@@ -150,13 +157,14 @@ public class FeeCollectionExcelReport2
         row.createCell(10, Cell.CELL_TYPE_STRING).setCellValue("Total Amount Pain");
         row.createCell(11, Cell.CELL_TYPE_STRING).setCellValue("Raised Amount");
         row.createCell(12, Cell.CELL_TYPE_STRING).setCellValue("Confirmed");
-        row.createCell(13, Cell.CELL_TYPE_STRING).setCellValue("Extra hours");
+     //   row.createCell(13, Cell.CELL_TYPE_STRING).setCellValue("Extra hours");
         row.createCell(14, Cell.CELL_TYPE_STRING).setCellValue("Due Amount");
 
         //
         row.createCell(15, Cell.CELL_TYPE_STRING).setCellValue("Mother Name");
     row.createCell(16, Cell.CELL_TYPE_STRING).setCellValue("Father Name");
     row.createCell(17, Cell.CELL_TYPE_STRING).setCellValue("Payment Date");
+
 
     return rowNumber + 1;
   }

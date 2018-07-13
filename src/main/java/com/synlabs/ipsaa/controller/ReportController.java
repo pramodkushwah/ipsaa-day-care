@@ -114,25 +114,47 @@ public class ReportController
   // shubham
 @PostMapping("studentfee")
 @Secured(FEE_REPORT)
-public void FeeReport(@RequestBody FeeReportRequest request, HttpServletResponse response) throws IOException
+public List<StudentFeeSlipResponse3> FeeReport(@RequestBody FeeReportRequest request, HttpServletResponse response) throws IOException
 {
-  File file = feeService.FeeReport2(request);
-  response.setContentType("application/octet-stream");
-  response.setHeader("Content-disposition", String.format("attachment; filename=Fee_Report_%s.xlsx",
-          request.getCenterCode()));
-  response.setHeader("fileName", String.format("Fee_Report_%s.xlsx",
-          request.getCenterCode()));
-  OutputStream out = response.getOutputStream();
-  FileInputStream in = new FileInputStream(file);
-  // copy from in to out
-  IOUtils.copy(in, out);
-  out.flush();
-  in.close();
-  if (!file.delete())
-  {
-    throw new IOException("Could not delete temporary file after processing: " + file);
-  }
+  return feeService.FeeReportTable2(request);
+
+//  response.setContentType("application/octet-stream");
+//  response.setHeader("Content-disposition", String.format("attachment; filename=Fee_Report_%s.xlsx",
+//          request.getCenterCode()));
+//  response.setHeader("fileName", String.format("Fee_Report_%s.xlsx",
+//          request.getCenterCode()));
+//  OutputStream out = response.getOutputStream();
+//  FileInputStream in = new FileInputStream(file);
+//  // copy from in to out
+//  IOUtils.copy(in, out);
+//  out.flush();
+//  in.close();
+//  if (!file.delete())
+//  {
+//    throw new IOException("Could not delete temporary file after processing: " + file);
+//  }
 }
+  @PostMapping("studentfee/excel")
+  @Secured(FEE_REPORT)
+  public void FeeReportExcel(@RequestBody FeeReportRequest request, HttpServletResponse response) throws IOException
+  {
+    File file = feeService.FeeReport2(request);
+    response.setContentType("application/octet-stream");
+    response.setHeader("Content-disposition", String.format("attachment; filename=Fee_Report_%s.xlsx",
+            request.getCenterCode()));
+    response.setHeader("fileName", String.format("Fee_Report_%s.xlsx",
+            request.getCenterCode()));
+    OutputStream out = response.getOutputStream();
+    FileInputStream in = new FileInputStream(file);
+    // copy from in to out
+    IOUtils.copy(in, out);
+    out.flush();
+    in.close();
+    if (!file.delete())
+    {
+      throw new IOException("Could not delete temporary file after processing: " + file);
+    }
+  }
 
   @PostMapping("inquiry")
   @Secured(INQUIRY_REPORT)
@@ -164,18 +186,16 @@ public void FeeReport(@RequestBody FeeReportRequest request, HttpServletResponse
   public List<StudentFeeSlipResponse2> collectionFeeReport(HttpServletResponse response, @RequestBody StudentFeeSlipRequest slipRequest) throws IOException
   {
     return  feeService.collectionFeeReportTable2(slipRequest);
- }
-  // shubham temp
-  @GetMapping("collectionfee/export")
-  @Secured(COLLECTION_FEE_REPORT)
-  public String collectionFeeReportExport() throws IOException
-  {
-    StudentFeeExcelReport report=new StudentFeeExcelReport(feeService.getStudentFeeList(),studentFeeRepository);
-    report.createExcel();
-    return "done";
   }
-
-
+//  // shubham temp
+//  @GetMapping("collectionfee/export")
+//  @Secured(COLLECTION_FEE_REPORT)
+//  public String collectionFeeReportExport() throws IOException
+//  {
+//    StudentFeeExcelReport report=new StudentFeeExcelReport(feeService.getStudentFeeList(),studentFeeRepository);
+//    report.createExcel();
+//    return "done";
+//  }
   // shubham
   @PostMapping("collectionfee/excel")
   @Secured(COLLECTION_FEE_REPORT)
