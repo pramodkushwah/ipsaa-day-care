@@ -262,6 +262,43 @@ public class DocumentService extends BaseService
     return mergedPdfFile;
   }
 
+  
+//   @SuppressWarnings({ "unchecked", "resource" })
+// public byte[] generateStudentPdf(StudentResponse student) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException, InterruptedException, DocumentException{
+// 	  Template template = configuration.getTemplate("student-confirmation/confirmation.ftl");
+// 	    try
+// 	    {
+// 	      Map<String, Object> rootMap = new HashMap<>();
+// 	      rootMap.put("slip",student);
+	      
+	      
+// 	      rootMap.put("father",student.getParents().get(0));
+// 	      rootMap.put("mother",student.getParents().get(1));
+	      
+// 	      Writer out = new StringWriter();
+// 	      template.process(rootMap, out);
+// 	      String html = out.toString();
+// //	      String fileName = student.getFirstName()+".pdf";
+
+// 	      Map<String, String> params = new HashMap<>();
+	      
+// 	      Pdf slip = addParamsToPdf(null);
+// 	      addParamsToPdf(slip, params);
+// 	      addPdfMarginParam(slip, 2);
+
+// 	      slip.addPageFromString(html);
+// 	      byte[] bytes = slip.getPDF();
+// //	      fileStore.store("STUDENT", fileName, bytes);
+// 	      return bytes;
+// 	    }
+// 	    catch (TemplateException | InterruptedException e)
+// 	    {
+// 	      e.printStackTrace();
+// 	      logger.warn(String.format("Error generating paySlip pdf"));
+// 	      return null;
+// 	    }
+//   }
+  
   private Map<String, Object> fillPaySlipTemplate(EmployeePaySlip paySlip, Map<String, Object> rootMap)
   {
     rootMap.put("paySlip", new EmployeePaySlipResponse(paySlip));
