@@ -22,3 +22,6 @@
     padding-bottom: 0px;
     margin-top: 0px;
 }
+.sidebar .sidebar-wrapper, .off-canvas-sidebar .sidebar-wrapper {
+    height: calc(100vh - 90px);
+}

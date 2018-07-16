@@ -1,7 +1,6 @@
 app.controller('CollectionFeeReportController', function ($http, $scope) {
 
-    $scope.disableDownload = false;
-
+    $scope.loader = '';
     //populate months, years, quarter dropdown
     $scope.quarters = [
         {value: 1, name: "FYQ4"},
@@ -41,31 +40,25 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
             return;
         }
 
-        if ( !$scope.reportType ) {
-            error("Select Report Type");
-            return;
-        }
-
-
         var postobject = {
             centerCode: $scope.selectedCenter.code,
             period: 'Quarterly',
-            reportType: $scope.reportType
+            reportType: 'Paid'
         };
 
         postobject.quarter = $scope.selectedQuarter.value ? $scope.selectedQuarter.value: 0;
 
         postobject.year  = $scope.selectedYear;
-        $scope.disableDownload = true;
+        $scope.loader = type == "excel" ? "disableDownload" : "disableGet";
 
         var reqUrl = '/api/report/collectionfee';
-        // reqUrl = type == "excel" ? reqUrl + '/excel' : reqUrl;
+        reqUrl = type == "excel" ? reqUrl + '/excel' : reqUrl;
         var resType = type == "table" ? 'json' : 'arrayBuffer';
 
         $http.post(reqUrl, postobject, { responseType: resType }).then(
 
             function (response) {
-                $scope.disableDownload = false;
+                $scope.loader = '';
                 if(type == 'table') {
                     $scope.feeReports = response.data;
                 }
@@ -75,8 +68,9 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
                     });
                     saveAs(blob, response.headers("fileName"));
                 }
+                
             },function (response) {
-                $scope.disableDownload = false;
+                $scope.loader = '';
                 error(response.data.error);
             }
         );
