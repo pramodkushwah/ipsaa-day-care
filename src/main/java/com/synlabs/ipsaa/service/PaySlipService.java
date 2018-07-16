@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -131,6 +132,12 @@ public class PaySlipService extends BaseService
     Integer year = paySlip.getYear();
     Integer month = paySlip.getMonth();
     paySlip.setComment(request.getComment());
+    // shubham
+    if(request.getNoOfPresent()!=null)
+    paySlip.setPresents(request.getNoOfPresent());
+else{
+      paySlip.setPresents(new BigDecimal(0));
+    }
     paySlip.setOtherAllowances(request.getOtherAllowances() == null ? ZERO : request.getOtherAllowances());
     paySlip.setOtherDeductions(request.getOtherDeductions() == null ? ZERO : request.getOtherDeductions());
 
@@ -151,13 +158,17 @@ public class PaySlipService extends BaseService
     Date to = LocalDate.fromDateFields(from).plusMonths(1).minusDays(1).toDate();
     List<EmployeeAttendance> attendances = attendanceRepository.findByEmployeeAndAttendanceDateBetween(employee, from, to);
     attendances = attendanceService.fillAbsent(from, to, employee, employee.getCostCenter(), attendances, false);
-
     BigDecimal leaves = ZERO;
     BigDecimal absents = ZERO;
+    BigDecimal present = ZERO;
     for (EmployeeAttendance attendance : attendances)
     {
       switch (attendance.getStatus())
       {
+        case Present:
+          present=present.add(BigDecimal.ONE);
+          System.out.println(present);
+          break;
         case Absent:
           absents = absents.add(BigDecimal.ONE);
           break;
@@ -179,15 +190,29 @@ public class PaySlipService extends BaseService
     //2. deduct unpaid leaves and absents and append autoComment
 //    BigDecimal days = new BigDecimal("31");
     BigDecimal totalDays = new BigDecimal(Days.daysBetween(LocalDate.fromDateFields(from), LocalDate.fromDateFields(to).plusDays(1)).getDays());
+    // shubham get no of months
+    Calendar cal = Calendar.getInstance();
+    cal.set(Calendar.MONTH, month-1);// o to 11
+    cal.set(Calendar.YEAR, year);
+    totalDays=new BigDecimal(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+    System.out.println(totalDays);
+
     BigDecimal totalAbsents = absents.add(leaves);
     BigDecimal presents = totalDays.subtract(totalAbsents);
     autoComment = absents.doubleValue() > 0 ? autoComment + String.format("Absents : %s\n", absents) : autoComment;
+    autoComment = presents.doubleValue() > 0 ? autoComment + String.format("Present : %s\n", presents) : autoComment;
     autoComment = leaves.doubleValue() > 0 ? autoComment + String.format("Leaves : %s\n", leaves) : autoComment;
     payslip.setAutoComment(autoComment);
-    payslip.update(salary, totalDays, presents);
+    // shubham
+    if(payslip.getPresents()!=null){
+      payslip.update(salary, totalDays,payslip.getPresents());
+    }else
+    payslip.update(salary, totalDays,presents);
+
     payslip.roundOff();
     return payslip;
   }
+
 
   @Transactional
   public EmployeePaySlip updatePaySlip(EmployeePaySlipRequest request) throws IOException, DocumentException

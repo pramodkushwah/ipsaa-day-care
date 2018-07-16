@@ -79,6 +79,7 @@ public class EmployeePaySlipResponse implements Response
   private String ban;
   private String aadharNumber;
 
+
   public EmployeePaySlipResponse(EmployeePaySlip slip)
   {
     Employee employee = slip.getEmployee();

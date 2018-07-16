@@ -28,6 +28,12 @@ public class StaffProfileResponse implements Response
   private String esin;
   private String pran;
   private String ban;
+  // shubham
+  private String  ifscCode;
+  private String bankName;
+  private String branchName;
+  private String holderName;
+
 
   public StaffProfileResponse(EmployeeProfile profile)
   {
@@ -45,6 +51,27 @@ public class StaffProfileResponse implements Response
     this.esin = profile.getEsin();
     this.pran = profile.getPran();
     this.ban = profile.getBan();
+    // shubham
+    this.ifscCode=profile.getIfscCode();
+    this.bankName=profile.getBankName();
+    this.branchName=profile.getBankName();
+    this.holderName=profile.getHolderName();
+  }
+
+  // shubham
+  public String getIfscCode() {
+    return ifscCode;
+  }
+
+  public String getBankName() {
+    return bankName;
+  }
+
+  public String getBranchName() {
+    return branchName;
+  }
+  public String getHolderName() {
+    return holderName;
   }
 
   public String getBan()

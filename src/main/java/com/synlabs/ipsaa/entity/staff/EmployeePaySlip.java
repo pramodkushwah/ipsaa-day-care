@@ -50,6 +50,7 @@ public class EmployeePaySlip extends BaseEntity
 
   @Column(precision = 16, scale = 2)
   private BigDecimal presents;
+
   private BigDecimal totalDays;
 
   @Column(precision = 16, scale = 2)
