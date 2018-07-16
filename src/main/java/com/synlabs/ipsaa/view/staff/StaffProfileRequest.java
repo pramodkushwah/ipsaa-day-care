@@ -26,6 +26,11 @@ public class StaffProfileRequest implements Request
   private String esin;
   private String pran;
   private String ban;
+  // shubham
+  private String  ifscCode;
+  private String bankName;
+  private String branchName;
+  private String holderName;
 
   private AddressRequest address;
   private AddressRequest permanentAddress;
@@ -49,7 +54,11 @@ public class StaffProfileRequest implements Request
     employeeProfile.setEsin(esin);
     employeeProfile.setPran(pran);
     employeeProfile.setBan(ban);
-
+    // shubham
+    employeeProfile.setIfscCode(ifscCode);
+    employeeProfile.setBranchName(branchName);
+    employeeProfile.setHolderName(holderName);
+    employeeProfile.setBankName(bankName);
     if (address != null)
     {
       employeeProfile.setAddress(address.toEntity());
@@ -199,4 +208,38 @@ public class StaffProfileRequest implements Request
   {
     this.permanentAddress = permanentAddress;
   }
+  // shubham
+
+  public String getIfscCode() {
+    return ifscCode;
+  }
+
+  public void setIfscCode(String ifscCode) {
+    this.ifscCode = ifscCode;
+  }
+
+  public String getBankName() {
+    return bankName;
+  }
+
+  public void setBankName(String bankName) {
+    this.bankName = bankName;
+  }
+
+  public String getBranchName() {
+    return branchName;
+  }
+
+  public void setBranchName(String branchName) {
+    this.branchName = branchName;
+  }
+
+  public String getHolderName() {
+    return holderName;
+  }
+
+  public void setHolderName(String holderName) {
+    this.holderName = holderName;
+  }
+
 }

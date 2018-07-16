@@ -64,15 +64,15 @@ public class StaffController
     List<StaffSummaryResponse> list=staffService.listAll().stream().map(StaffSummaryResponse::new).collect(Collectors.toList());
     return list;
   }
-  @Secured(STAFF_READ)
-  @GetMapping("/all/export")
-  public String listAllExport()
-  {
-    StaffExcelReport excel=new StaffExcelReport(staffService.getEmployeeSalary());
-    excel.createExcel();
-    //excelExporter.createExcel(staffService.listAll().stream().map(StaffResponse::new).collect(Collectors.toList()));
-    return "done";
-  }
+//  @Secured(STAFF_READ)
+//  @GetMapping("/all/export")
+//  public String listAllExport()
+//  {
+//    StaffExcelReport excel=new StaffExcelReport(staffService.getEmployeeSalary());
+//    excel.createExcel();
+//    //excelExporter.createExcel(staffService.listAll().stream().map(StaffResponse::new).collect(Collectors.toList()));
+//    return "done";
+//  }
 
   @Secured(STAFF_READ)
   @GetMapping("/reporting/")
