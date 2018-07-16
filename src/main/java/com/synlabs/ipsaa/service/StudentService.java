@@ -1075,27 +1075,36 @@ public class StudentService extends BaseService
       StudentFeePaymentRequest slip;
       switch (request.getPeriod())
       {
-        case "Monthly":
-          slip = feePaymentRepository.findOneByStudentAndFeeDurationAndMonthAndYear(fee.getStudent(), period, requestMonth, requestYear);
-          if (slip != null)
-          {
-            allslips.add(new StudentFeeSlipResponse2(slip));
-          }
-          break;
+//        case "Monthly":
+//          slip = feePaymentRepository.findOneByStudentAndFeeDurationAndMonthAndYear(fee.getStudent(), period, requestMonth, requestYear);
+//          if (slip != null)
+//          {
+//            allslips.add(new StudentFeeSlipResponse2(slip));
+//          }
+//          break;
         case "Quarterly":
           slip = feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(), period, requestQuarter, requestYear);
-          if (slip != null)
-          {
-            allslips.add(new StudentFeeSlipResponse2(slip));
-          }
+            if (slip != null &&  request.getConfirm()!=null &&  request.getConfirm())
+            {
+              List<StudentFeePaymentRecord> result=slip.getPayments().stream().filter(confirm->confirm.getConfirmed()==true).collect(Collectors.toList());                // convert list to stream
+              slip.setPayments(result);
+              allslips.add(new StudentFeeSlipResponse2(slip));
+            }else if(slip != null && request.getConfirm()!=null  && !request.getConfirm()){
+              List<StudentFeePaymentRecord> result=slip.getPayments().stream().filter(confirm->confirm.getConfirmed()==false).collect(Collectors.toList());                // convert list to stream
+              slip.setPayments(result);
+              allslips.add(new StudentFeeSlipResponse2(slip));
+            }else if(slip != null){
+              //slip.getPayments().stream().filter(confirm->confirm.getConfirmed()==true).collect(Collectors.toList());                // convert list to stream
+              allslips.add(new StudentFeeSlipResponse2(slip));
+            }
           break;
-        case "Yearly":
-          slip = feePaymentRepository.findOneByStudentAndFeeDurationAndYear(fee.getStudent(), period, requestYear);
-          if (slip != null)
-          {
-            allslips.add(new StudentFeeSlipResponse2(slip));
-          }
-          break;
+//        case "Yearly":
+//          slip = feePaymentRepository.findOneByStudentAndFeeDurationAndYear(fee.getStudent(), period, requestYear);
+//          if (slip != null)
+//          {
+//            allslips.add(new StudentFeeSlipResponse2(slip));
+//          }
+//          break;
       }
     }
     return allslips;

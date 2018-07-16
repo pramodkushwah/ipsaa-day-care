@@ -11,6 +11,7 @@ public class StudentFeeSlipRequest implements Request
   private int    quarter;
   private int    year;
   private String reportType;
+  private Boolean confirm;
 
   public Long getId()
   {
@@ -87,4 +88,10 @@ public class StudentFeeSlipRequest implements Request
     this.year = year;
   }
 
+  public Boolean getConfirm() {
+    return confirm;
+  }
+  public void setConfirm(Boolean confirm) {
+    this.confirm = confirm;
+  }
 }
