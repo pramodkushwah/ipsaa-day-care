@@ -2,9 +2,11 @@ package com.synlabs.ipsaa.view.student;
 
 import com.synlabs.ipsaa.entity.attendance.StudentAttendance;
 import com.synlabs.ipsaa.entity.student.Student;
+import com.synlabs.ipsaa.entity.student.StudentParent;
 import com.synlabs.ipsaa.view.common.Response;
 
 import java.util.Date;
+import java.util.List;
 
 public class DashStudentResponse implements Response
 {
@@ -14,7 +16,10 @@ public class DashStudentResponse implements Response
   private String  group;
   private Date    checkout;
   private Date    checkin;
-  private boolean corporate;
+  private Date expectedOut;
+  private Date expectedIn;
+
+private boolean corporate;
 
   public DashStudentResponse(Student student)
   {
@@ -22,6 +27,8 @@ public class DashStudentResponse implements Response
     program = student.getProgramName();
     group = student.getGroupName();
     corporate = student.isCorporate();
+    expectedIn  = student.getExpectedIn();
+    expectedOut = student.getExpectedOut();
     present = false;
   }
 
@@ -67,4 +74,20 @@ public class DashStudentResponse implements Response
   {
     return checkin;
   }
+  
+  public Date getExpectedOut() {
+	return expectedOut;
+	}
+	
+	public void setExpectedOut(Date expectedOut) {
+		this.expectedOut = expectedOut;
+	}
+	
+	public Date getExpectedIn() {
+		return expectedIn;
+	}
+	
+	public void setExpectedIn(Date expectedIn) {
+		this.expectedIn = expectedIn;
+	}
 }

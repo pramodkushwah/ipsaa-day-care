@@ -3,7 +3,7 @@
     <i class="material-icons">account_box</i>
   </div>
   <div class="card-content">
-    <h4 class="card-title">Students</h4>
+    <h4 class="card-title">Present Students</h4>
     <div class="table-responsive">
       <table class="table table-condensed table-striped table-hover">
         <thead class="text-primary">
@@ -18,7 +18,7 @@
           <th>Expected In</th>
           <th>Expected Out</th>
           <th>Checkin</th>
-          <th>Checkout</th>
+          <th>Expected Checkout</th>
         </tr>
         </thead>
         <tbody>
@@ -33,7 +33,7 @@
           <td>{{student.present}}</td>
           <td>{{student.present}}</td>
           <td>{{student.checkin}}</td>
-          <td>{{student.checkout}}</td>
+          <td>{{student.expectedOut}}</td>
         </tr>
         <tr ng-show="!studentsPage.length" ng-hide="dataLoading">
           <td colspan="11">No Data to Show</td>

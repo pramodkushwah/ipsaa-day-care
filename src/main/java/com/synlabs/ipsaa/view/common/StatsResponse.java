@@ -7,6 +7,7 @@ public class StatsResponse implements Response
   private int              parentUsers;
   private int              centers;
   private int              studentPresent;
+  private int              staffPresent;
   private int              capacity;
   private int              staffCount;
   private FeeStatsResponse expectedFee;
@@ -180,5 +181,13 @@ public class StatsResponse implements Response
   {
     return parentUsers;
   }
+
+public int getStaffPresent() {
+	return staffPresent;
+}
+
+public void setStaffPresent(int staffPresent) {
+	this.staffPresent = staffPresent;
+}
 }
 
