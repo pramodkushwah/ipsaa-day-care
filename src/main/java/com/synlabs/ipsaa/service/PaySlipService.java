@@ -136,7 +136,11 @@ public class PaySlipService extends BaseService
     if(request.getNoOfPresent()!=null)
     paySlip.setPresents(request.getNoOfPresent());
 else{
-      paySlip.setPresents(new BigDecimal(0));
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.MONTH, month-1);// o to 11
+      cal.set(Calendar.YEAR, year);
+      int totalDays=cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+      paySlip.setPresents(new BigDecimal(totalDays));
     }
     paySlip.setOtherAllowances(request.getOtherAllowances() == null ? ZERO : request.getOtherAllowances());
     paySlip.setOtherDeductions(request.getOtherDeductions() == null ? ZERO : request.getOtherDeductions());
