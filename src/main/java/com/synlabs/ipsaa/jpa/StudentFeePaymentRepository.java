@@ -13,6 +13,7 @@ import java.util.List;
 public interface StudentFeePaymentRepository extends JpaRepository<StudentFeePaymentRequest, Long>
 {
   List<StudentFeePaymentRequest> findByStudentId(Long studentId);
+  List<StudentFeePaymentRequest> findByQuarter(int quarter);
 
   StudentFeePaymentRequest findOneByStudentAndFeeDurationAndMonthAndYear(Student student, FeeDuration period, int month, int year);
 
