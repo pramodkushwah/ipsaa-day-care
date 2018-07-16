@@ -2,48 +2,62 @@ package com.synlabs.ipsaa.view.report.excel;
 
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
+import com.synlabs.ipsaa.view.staff.StaffFilterRequest;
 import com.synlabs.ipsaa.view.staff.StaffResponse;
 import com.synlabs.ipsaa.view.staff.StaffSummaryResponse;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 
 public class StaffExcelReport {
     List<EmployeeSalary> staff;
-    public StaffExcelReport(List<EmployeeSalary> staff){
+
+    StaffFilterRequest staffRequest;
+    String path;
+    public StaffExcelReport(List<EmployeeSalary> staff,StaffFilterRequest staffRequest,String path){
         this.staff=staff;
+        this.path=path;
+        this.staffRequest=staffRequest;
     }
-    public void createExcel(){
-        XSSFWorkbook workbook = new XSSFWorkbook();
+    public File createExcel(){
+        File file = new File(path + UUID.randomUUID() + ".xlsx");
+        if (!file.exists())
+        {
+            try {
+                file.createNewFile();
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                SXSSFWorkbook workbook = new SXSSFWorkbook();
+                Sheet feeCollectionReportSheet = workbook.createSheet("response");// creating a blank sheet
+                int rownum = 0;
+                for (EmployeeSalary satff : this.staff)
+                {
+                    Row row = feeCollectionReportSheet.createRow(rownum++);
+                    if (rownum == 1) {
+                        setupheaders(row);
+                        rownum++;
+                    } else
+                        createList(satff, row);
+                }
+                workbook.write(fileOutputStream);
+                workbook.dispose();
+                return file;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        XSSFSheet sheet = workbook.createSheet("sheet1");// creating a blank sheet
-        int rownum = 0;
-        for (EmployeeSalary satff : this.staff)
-        {
-                Row row = sheet.createRow(rownum++);
-                if (rownum == 1) {
-                    setupheaders(row);
-                    rownum++;
-                } else
-                    createList(satff, row);
         }
-        try
-        {
-            FileOutputStream out = new FileOutputStream(new File("staffReport.xlsx")); // file name with path
-            workbook.write(out);
-            out.close();
-
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        return file;
     }
     private static void createList(EmployeeSalary staffR, Row row) // creating cells for each row
     {
@@ -72,9 +86,11 @@ public class StaffExcelReport {
 
 
         cell = row.createCell(9,Cell.CELL_TYPE_STRING);
-        if(staffR.getEmployee().getProfile().getBan()!=null)
+        if(staffR.getEmployee().getProfile().getBan()!=null){
             System.out.println(staffR.getEmployee().getProfile().getBan());
             cell.setCellValue(staffR.getEmployee().getProfile().getBan());
+        }
+
 
         cell = row.createCell(10,Cell.CELL_TYPE_NUMERIC);
         if(staffR.getCtc()!=null){
