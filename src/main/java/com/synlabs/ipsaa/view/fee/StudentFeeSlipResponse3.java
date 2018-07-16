@@ -1,20 +1,24 @@
 package com.synlabs.ipsaa.view.fee;
 
+import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.jpa.StudentFeeRepository;
 import com.synlabs.ipsaa.view.common.Response;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentFeeSlipResponse implements Response
+public class StudentFeeSlipResponse3 implements Response
 {
   private Long id;
 
   private String     fullName;
   private String     group;
   private String     program;
-  private int        month;
+  private String     center;
+  //private int        month;
+  private String     transportFee;
   private int        quarter;
   private int        year;
   private BigDecimal fee;
@@ -36,21 +40,23 @@ public class StudentFeeSlipResponse implements Response
   private String     autoComments;
   private boolean generateActive;
 
-  private List<StudentFeePaymentResponse> payments;
+ // private List<StudentFeePaymentResponse> payments;
 
   public BigDecimal getIgst()
   {
     return igst;
   }
-
-  public StudentFeeSlipResponse(StudentFeePaymentRequest slip)
+  public StudentFeeSlipResponse3(StudentFeePaymentRequest slip,StudentFeeRepository studentFeeRepository)
   {
-
+    StudentFee fee=null;
+      fee = studentFeeRepository.findByStudent(slip.getStudent());
+    this.center=slip.getStudent().getCenterName();
+    this.transportFee=fee.getTransportFee().toString();
     this.id = slip.getId();
     this.fullName = slip.getStudent().getProfile().getFullName();
     this.group = slip.getStudent().getGroup().getName();
     this.program = slip.getStudent().getProgram().getName();
-    this.month = slip.getMonth();
+    //this.month = slip.getMonth();
     this.quarter = slip.getQuarter();
     this.year = slip.getYear();
     this.extraCharge = slip.getExtraCharge();
@@ -74,14 +80,14 @@ public class StudentFeeSlipResponse implements Response
     this.adjust = this.adjust == null ? BigDecimal.ZERO : this.adjust;
     this.balance = this.balance == null ? BigDecimal.ZERO : this.balance;
     this.autoComments = slip.getAutoComments();
-    if (slip.getPayments() != null && !slip.getPayments().isEmpty())
-    {
-      payments = new ArrayList<>(slip.getPayments().size());
-      slip.getPayments().forEach(payment -> {
-        payments.add(new StudentFeePaymentResponse(payment));
-        this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
-      });
-    }
+//    if (slip.getPayments() != null && !slip.getPayments().isEmpty())
+//    {
+//      payments = new ArrayList<>(slip.getPayments().size());
+//      slip.getPayments().forEach(payment -> {
+//        payments.add(new StudentFeePaymentResponse(payment));
+//        this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
+//      });
+//    }
   }
 
   public boolean isGenerateActive() {
@@ -148,10 +154,10 @@ public String getAutoComments()
     return program;
   }
 
-  public int getMonth()
-  {
-    return month;
-  }
+//  public int getMonth()
+//  {
+//    return month;
+//  }
 
   public int getQuarter()
   {
@@ -203,10 +209,10 @@ public String getAutoComments()
     return feeDuration;
   }
 
-  public List<StudentFeePaymentResponse> getPayments()
-  {
-    return payments;
-  }
+//  public List<StudentFeePaymentResponse> getPayments()
+//  {
+//    return payments;
+//  }
 
   @Override
   public String toString()
@@ -216,7 +222,7 @@ public String getAutoComments()
         ", fullName='" + fullName + '\'' +
         ", group='" + group + '\'' +
         ", program='" + program + '\'' +
-        ", month=" + month +
+  //      ", month=" + month +
         ", quarter=" + quarter +
         ", year=" + year +
         ", fee=" + fee +

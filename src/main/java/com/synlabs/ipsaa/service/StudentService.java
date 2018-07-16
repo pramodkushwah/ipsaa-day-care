@@ -342,8 +342,16 @@ public class StudentService extends BaseService
     }
 
     List<Address> allAddresses = student.getAllAddresses();
+    if (allAddresses.size()<1)
+    {
+      throw new ValidationException("Invalid address");
+    }
     for (Address address : allAddresses)
     {
+
+      if(address!=null){
+        throw new ValidationException("Invalid address");
+      }
 
       address.setState(isEmptyOrNa(address.getState()) ?
                        center.getAddress().getState() :
@@ -892,6 +900,86 @@ public class StudentService extends BaseService
     }
     return allslips;
   }
+
+  // shubham
+  public List<StudentFeeSlipResponse3> listFeeReport2(FeeReportRequest request)
+  {
+    FeeDuration period = FeeDuration.valueOf("Quarterly");
+    QStudentFee qStudentFee = QStudentFee.studentFee;
+    JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
+    if(request.getCenterCode().equals("All")){
+      query.select(qStudentFee)
+              .from(qStudentFee)
+              .where(qStudentFee.feeDuration.eq(period))
+              .where(qStudentFee.student.approvalStatus.eq(ApprovalStatus.Approved))
+              .where(qStudentFee.student.active.isTrue())
+              .where(qStudentFee.student.corporate.isFalse());
+      //.where(qStudentFee.student.center.code.eq(request.getCenterCode()));
+    }else{
+      query.select(qStudentFee)
+              .from(qStudentFee)
+              .where(qStudentFee.feeDuration.eq(period))
+              .where(qStudentFee.student.approvalStatus.eq(ApprovalStatus.Approved))
+              .where(qStudentFee.student.active.isTrue())
+              .where(qStudentFee.student.corporate.isFalse())
+              .where(qStudentFee.student.center.code.eq(request.getCenterCode()));
+    }
+    List<StudentFee> feelist = query.fetch();
+    List<StudentFeeSlipResponse3> allslips = new LinkedList<>();
+    // int requestMonth = request.getMonth();
+    int requestQuarter = request.getQuarter();
+    int requestYear = request.getYear();
+    for (StudentFee fee : feelist)
+    {
+      StudentFeePaymentRequest slip;
+      slip = feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(), period, requestQuarter, requestYear);
+      if (slip != null)
+      {
+        allslips.add(new StudentFeeSlipResponse3(slip,studentFeeRepository));
+      }
+    }
+    return allslips;
+  }
+  // shubham
+  public List<StudentFeePaymentRequest> listFeeReport(FeeReportRequest request)
+  {
+    FeeDuration period = FeeDuration.valueOf("Quarterly");
+    QStudentFee qStudentFee = QStudentFee.studentFee;
+    JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
+    if(request.getCenterCode().equals("All")){
+      query.select(qStudentFee)
+              .from(qStudentFee)
+              .where(qStudentFee.feeDuration.eq(period))
+              .where(qStudentFee.student.approvalStatus.eq(ApprovalStatus.Approved))
+              .where(qStudentFee.student.active.isTrue())
+              .where(qStudentFee.student.corporate.isFalse());
+              //.where(qStudentFee.student.center.code.eq(request.getCenterCode()));
+    }else{
+      query.select(qStudentFee)
+              .from(qStudentFee)
+              .where(qStudentFee.feeDuration.eq(period))
+              .where(qStudentFee.student.approvalStatus.eq(ApprovalStatus.Approved))
+              .where(qStudentFee.student.active.isTrue())
+              .where(qStudentFee.student.corporate.isFalse())
+              .where(qStudentFee.student.center.code.eq(request.getCenterCode()));
+    }
+    List<StudentFee> feelist = query.fetch();
+    List<StudentFeePaymentRequest> allslips = new LinkedList<>();
+   // int requestMonth = request.getMonth();
+    int requestQuarter = request.getQuarter();
+    int requestYear = request.getYear();
+    for (StudentFee fee : feelist)
+    {
+      StudentFeePaymentRequest slip;
+
+          slip = feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(), period, requestQuarter, requestYear);
+          if (slip != null)
+          {
+            allslips.add(slip);
+          }
+    }
+    return allslips;
+  }
 // shubham
   public List<StudentFeePaymentRequest> listFeeSlips2(StudentFeeSlipRequest request)
   {
@@ -899,6 +987,7 @@ public class StudentService extends BaseService
     FeeDuration period = FeeDuration.valueOf(request.getPeriod());
     QStudentFee qStudentFee = QStudentFee.studentFee;
     JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
+    if(!request.getCenterCode().equals("All"))
     query.select(qStudentFee)
             .from(qStudentFee)
             .where(qStudentFee.feeDuration.eq(period))
@@ -906,6 +995,15 @@ public class StudentService extends BaseService
             .where(qStudentFee.student.active.isTrue())
             .where(qStudentFee.student.corporate.isFalse())
             .where(qStudentFee.student.center.code.eq(request.getCenterCode()));
+    else
+      query.select(qStudentFee)
+              .from(qStudentFee)
+              .where(qStudentFee.feeDuration.eq(period))
+              .where(qStudentFee.student.approvalStatus.eq(ApprovalStatus.Approved))
+              .where(qStudentFee.student.active.isTrue())
+              .where(qStudentFee.student.corporate.isFalse());
+              //.where(qStudentFee.student.center.code.eq(request.getCenterCode()))
+
     List<StudentFee> feelist = query.fetch();
 
     List<StudentFeePaymentRequest> allslips = new LinkedList<>();
@@ -918,13 +1016,13 @@ public class StudentService extends BaseService
       StudentFeePaymentRequest slip;
       switch (request.getPeriod())
       {
-        case "Monthly":
-          slip = feePaymentRepository.findOneByStudentAndFeeDurationAndMonthAndYear(fee.getStudent(), period, requestMonth, requestYear);
-          if (slip != null)
-          {
-            allslips.add(slip);
-          }
-          break;
+//        case "Monthly":
+//          slip = feePaymentRepository.findOneByStudentAndFeeDurationAndMonthAndYear(fee.getStudent(), period, requestMonth, requestYear);
+//          if (slip != null)
+//          {
+//            allslips.add(slip);
+//          }
+//          break;
         case "Quarterly":
           slip = feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(), period, requestQuarter, requestYear);
           if (slip != null)
@@ -932,13 +1030,13 @@ public class StudentService extends BaseService
             allslips.add(slip);
           }
           break;
-        case "Yearly":
-          slip = feePaymentRepository.findOneByStudentAndFeeDurationAndYear(fee.getStudent(), period, requestYear);
-          if (slip != null)
-          {
-            allslips.add(slip);
-          }
-          break;
+//        case "Yearly":
+//          slip = feePaymentRepository.findOneByStudentAndFeeDurationAndYear(fee.getStudent(), period, requestYear);
+//          if (slip != null)
+//          {
+//            allslips.add(slip);
+//          }
+//          break;
       }
     }
     return allslips;
@@ -949,7 +1047,7 @@ public class StudentService extends BaseService
     FeeDuration period = FeeDuration.valueOf(request.getPeriod());
     QStudentFee qStudentFee = QStudentFee.studentFee;
     JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
-    if(request.getCenterCode().equals("ALL"))
+    if(request.getCenterCode().equals("All"))
       query.select(qStudentFee)
               .from(qStudentFee)
               .where(qStudentFee.feeDuration.eq(period))
@@ -977,27 +1075,36 @@ public class StudentService extends BaseService
       StudentFeePaymentRequest slip;
       switch (request.getPeriod())
       {
-        case "Monthly":
-          slip = feePaymentRepository.findOneByStudentAndFeeDurationAndMonthAndYear(fee.getStudent(), period, requestMonth, requestYear);
-          if (slip != null)
-          {
-            allslips.add(new StudentFeeSlipResponse2(slip));
-          }
-          break;
+//        case "Monthly":
+//          slip = feePaymentRepository.findOneByStudentAndFeeDurationAndMonthAndYear(fee.getStudent(), period, requestMonth, requestYear);
+//          if (slip != null)
+//          {
+//            allslips.add(new StudentFeeSlipResponse2(slip));
+//          }
+//          break;
         case "Quarterly":
           slip = feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(), period, requestQuarter, requestYear);
-          if (slip != null)
-          {
-            allslips.add(new StudentFeeSlipResponse2(slip));
-          }
+            if (slip != null &&  request.getConfirm()!=null &&  request.getConfirm())
+            {
+              List<StudentFeePaymentRecord> result=slip.getPayments().stream().filter(confirm->confirm.getConfirmed()==true).collect(Collectors.toList());                // convert list to stream
+              slip.setPayments(result);
+              allslips.add(new StudentFeeSlipResponse2(slip));
+            }else if(slip != null && request.getConfirm()!=null  && !request.getConfirm()){
+              List<StudentFeePaymentRecord> result=slip.getPayments().stream().filter(confirm->confirm.getConfirmed()==false).collect(Collectors.toList());                // convert list to stream
+              slip.setPayments(result);
+              allslips.add(new StudentFeeSlipResponse2(slip));
+            }else if(slip != null){
+              //slip.getPayments().stream().filter(confirm->confirm.getConfirmed()==true).collect(Collectors.toList());                // convert list to stream
+              allslips.add(new StudentFeeSlipResponse2(slip));
+            }
           break;
-        case "Yearly":
-          slip = feePaymentRepository.findOneByStudentAndFeeDurationAndYear(fee.getStudent(), period, requestYear);
-          if (slip != null)
-          {
-            allslips.add(new StudentFeeSlipResponse2(slip));
-          }
-          break;
+//        case "Yearly":
+//          slip = feePaymentRepository.findOneByStudentAndFeeDurationAndYear(fee.getStudent(), period, requestYear);
+//          if (slip != null)
+//          {
+//            allslips.add(new StudentFeeSlipResponse2(slip));
+//          }
+//          break;
       }
     }
     return allslips;
@@ -1440,13 +1547,13 @@ public class StudentService extends BaseService
       throw new NotFoundException("Missing slip");
     }
 
-    BigDecimal total = slip.getBaseFee();
+   // BigDecimal total = slip.getBaseFee();
 
     int alreadypaid
         = (slip.getPayments() == null || slip.getPayments().isEmpty()) ? 0 :
           slip.getPayments().stream().mapToInt(p -> p.getPaidAmount().intValue()).sum();
 
-    if (request.getExtraCharge() != null)
+   /* if (request.getExtraCharge() != null)
     {
       total = total.add(request.getExtraCharge());
     }
@@ -1461,17 +1568,18 @@ public class StudentService extends BaseService
     if (request.getAnnualFee() != null)
     {
       total = total.add(request.getAnnualFee());
-    }
+    }*/
 
     slip.setExtraCharge(request.getExtraCharge());
     slip.setLatePaymentCharge(request.getLatePaymentCharge());
-    slip.setTotalFee(total);
+   // slip.setTotalFee(total);
+    slip.setTotalFee(FeeUtils.calculateTotalFee(slip));
     slip.setComments(request.getComments());
     slip.setReGenerateSlip(true);
     slip.setReceiptSerial(null);
     slip.setReceiptFileName(null);
 
-    if (total.intValue() <= (alreadypaid + request.getPaidAmount().intValue()))
+    if (slip.getTotalFee().intValue() <= (alreadypaid + request.getPaidAmount().intValue()))
     {
       slip.setPaymentStatus(PaymentStatus.Paid);
     }

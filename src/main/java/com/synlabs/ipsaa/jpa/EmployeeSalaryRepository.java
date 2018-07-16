@@ -20,4 +20,5 @@ public interface EmployeeSalaryRepository extends JpaRepository<EmployeeSalary, 
   Page<EmployeeSalary> findByEmployeeActiveTrueAndEmployeeEmployerCode(String employerCode, Pageable pageable);
 
   List<EmployeeSalary> findByEmployeeActiveTrueAndEmployeeCostCenterIn(List<Center> userCenters);
+  List<EmployeeSalary> findByEmployeeActiveTrue();
 }
