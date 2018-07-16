@@ -28,6 +28,8 @@ public final class IPSAAAuth
 
     public static final String PAYSLIP_READ  = "ROLE_PAYSLIP_READ";
     public static final String PAYSLIP_WRITE = "ROLE_PAYSLIP_WRITE";
+// shubham
+    public static final String STUDENTFEE_RECEIPT_CONFIRM = "ROLE_STUDENTFEE_RECEIPT_CONFIRM";
 
     public static final String STUDENTFEE_RECEIPT_WRITE = "ROLE_STUDENTFEE_RECEIPT_WRITE";
     public static final String STUDENTFEE_RECEIPT_READ  = "ROLE_STUDENTFEE_RECEIPT_READ";

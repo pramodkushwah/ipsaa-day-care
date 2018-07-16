@@ -1,5 +1,6 @@
 package com.synlabs.ipsaa.controller;
 
+import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
 import com.synlabs.ipsaa.jpa.StudentFeeRepository;
@@ -7,9 +8,12 @@ import com.synlabs.ipsaa.service.*;
 import com.synlabs.ipsaa.view.attendance.AttendanceReportRequest;
 import com.synlabs.ipsaa.view.fee.*;
 import com.synlabs.ipsaa.view.inquiry.InquiryReportRequest;
+import com.synlabs.ipsaa.view.report.excel.StaffExcelReport;
 import com.synlabs.ipsaa.view.report.excel.StudentFeeExcelReport;
+import com.synlabs.ipsaa.view.staff.StaffFilterRequest;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,10 +31,15 @@ import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.*;
 public class ReportController
 {
   @Autowired
+  private StaffService staffService;
+  @Autowired
   private StudentAttendanceService studentAttendanceService;
 
   @Autowired
   private StaffAttendanceService staffAttendanceService;
+
+  @Value("${ipsaa.export.directory}")
+  private String exportDir;
 
   @Autowired
   private FeeService feeService;
@@ -220,6 +229,44 @@ public List<StudentFeeSlipResponse3> FeeReport(@RequestBody FeeReportRequest req
     OutputStream out = response.getOutputStream();
     FileInputStream in = new FileInputStream(file);
 
+    // copy from in to out
+    IOUtils.copy(in, out);
+    out.flush();
+    in.close();
+    if (!file.delete()) {
+      throw new IOException("Could not delete temporary file after processing: " + file);
+    }
+  }
+// shubham staff collection
+  @PostMapping("staffCollection/excel")
+  @Secured(COLLECTION_FEE_REPORT)
+  public void staffCollectionExcel(HttpServletResponse response, @RequestBody StaffFilterRequest staffRequest) throws IOException {
+    // modifiy by shubham
+    List<EmployeeSalary> list=staffService.getEmployeeSalary();
+    if(staffRequest.getCenterCode()!=null)
+    list.stream().filter(e->e.getEmployee().getCostCenter().getName().equals(staffRequest.getCenterCode()));
+
+    StaffExcelReport excel=new StaffExcelReport(list,staffRequest,exportDir);
+    File file = excel.createExcel();
+
+//    File file = feeService.collectionFeeReport2(slipRequest);
+//    String fileName = "";
+//    switch (slipRequest.getPeriod()) {
+//      case "Monthly":
+//        fileName = String.format("%s_%s_Monthly_%s_%s.xlsx", slipRequest.getCenterCode(), slipRequest.getReportType(), slipRequest.getMonth(), slipRequest.getYear());
+//        break;
+//      case "Quarterly":
+//        fileName = String.format("%s_Quarterly_%s_%s.xlsx", slipRequest.getCenterCode(), slipRequest.getQuarter(), slipRequest.getYear());
+//        break;
+//      case "Yearly":
+//        fileName = String.format("%s_%s_Yearly_%s.xlsx", slipRequest.getCenterCode(), slipRequest.getReportType(), slipRequest.getYear());
+//        break;
+//    }
+
+    response.setHeader("Content-disposition", String.format("attachment; filename=%s", "responce"));
+    response.setHeader("fileName", "responce");
+    OutputStream out = response.getOutputStream();
+    FileInputStream in = new FileInputStream(file);
     // copy from in to out
     IOUtils.copy(in, out);
     out.flush();
