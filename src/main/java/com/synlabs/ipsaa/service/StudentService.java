@@ -935,7 +935,7 @@ public class StudentService extends BaseService
       slip = feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(), period, requestQuarter, requestYear);
       if (slip != null)
       {
-        allslips.add(new StudentFeeSlipResponse3(slip));
+        allslips.add(new StudentFeeSlipResponse3(slip,studentFeeRepository));
       }
     }
     return allslips;

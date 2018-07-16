@@ -19,37 +19,29 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
 
     //set current month, quarter and year
 
-
-
-
-
-    $scope.downloadReport = function () {
-        if (!$scope.selectedCenter) {
+    /*  
+    type : string =  'excel' | 'table' 
+        'excel'-- to download report as excel file
+        'table'-- to generate table in the view
+    */
+    $scope.generateReport = function (type) {
+         
+        if ( !$scope.selectedCenter ) {
             error("Select Center");
             return;
         }
 
-        if (!$scope.selectedPeriod) {
-            error("Select Period");
-            return;
-        }
-
-        if ($scope.selectedPeriod === 'Monthly' && !$scope.selectedMonth) {
-            error("Select Month");
-            return;
-        }
-
-        if ($scope.selectedPeriod === 'Quarterly' && !$scope.selectedQuarter) {
+        if ( !$scope.selectedQuarter ) {
             error("Select Quarter");
             return;
         }
 
-        if ($scope.selectedPeriod === 'Yearly' && !$scope.selectedYear) {
+        if ( !$scope.selectedYear ) {
             error("Select Year");
             return;
         }
 
-        if (!$scope.reportType) {
+        if ( !$scope.reportType ) {
             error("Select Report Type");
             return;
         }
@@ -57,23 +49,32 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
 
         var postobject = {
             centerCode: $scope.selectedCenter.code,
-            period: $scope.selectedPeriod,
+            period: 'Quarterly',
             reportType: $scope.reportType
         };
 
-        if($scope.selectedPeriod == 'Monthly') postobject.month = $scope.selectedMonth ? $scope.selectedMonth : 0;
-        else if($scope.selectedPeriod == 'Quarterly') postobject.quarter = $scope.selectedQuarter.value ? $scope.selectedQuarter.value: 0;
+        postobject.quarter = $scope.selectedQuarter.value ? $scope.selectedQuarter.value: 0;
 
         postobject.year  = $scope.selectedYear;
         $scope.disableDownload = true;
-        $http.post('/api/report/collectionfee',postobject, {responseType: 'json'}).then(
+
+        var reqUrl = '/api/report/collectionfee';
+        // reqUrl = type == "excel" ? reqUrl + '/excel' : reqUrl;
+        var resType = type == "table" ? 'json' : 'arrayBuffer';
+
+        $http.post(reqUrl, postobject, { responseType: resType }).then(
+
             function (response) {
-                console.log(response);
-                // $scope.disableDownload = false;
-                // var blob = new Blob([response.data], {
-                //     type: 'application/octet-stream'
-                // });
-                // saveAs(blob, response.headers("fileName"));
+                $scope.disableDownload = false;
+                if(type == 'table') {
+                    $scope.feeReports = response.data;
+                }
+                else {
+                    var blob = new Blob([response.data], {
+                        type: 'application/octet-stream'
+                    });
+                    saveAs(blob, response.headers("fileName"));
+                }
             },function (response) {
                 $scope.disableDownload = false;
                 error(response.data.error);

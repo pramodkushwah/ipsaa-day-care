@@ -648,7 +648,7 @@ public class FeeService extends BaseService
     {
       StudentFeePaymentRequest slip = slips.get(i);
       // calculate extra hours
-      FeeReportExcel2 report = new FeeReportExcel2(slip/*,new BigDecimal(calculateExtraHours(slip.getStudent(),,slipRequest.getQuarter(),slipRequest.getYear())*/);
+      FeeReportExcel2 report = new FeeReportExcel2(slip,studentFeeRepository/*,new BigDecimal(calculateExtraHours(slip.getStudent(),,slipRequest.getQuarter(),slipRequest.getYear())*/);
       report.export(feeCollectionReportSheet, rowNum);
       total = total.add(report.getRaisedAmount());
       paid = paid.add(report.getPaidAmount());

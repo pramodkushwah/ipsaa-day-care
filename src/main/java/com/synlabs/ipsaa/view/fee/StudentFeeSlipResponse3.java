@@ -1,6 +1,8 @@
 package com.synlabs.ipsaa.view.fee;
 
+import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.jpa.StudentFeeRepository;
 import com.synlabs.ipsaa.view.common.Response;
 
 import java.math.BigDecimal;
@@ -16,6 +18,7 @@ public class StudentFeeSlipResponse3 implements Response
   private String     program;
   private String     center;
   //private int        month;
+  private String     transportFee;
   private int        quarter;
   private int        year;
   private BigDecimal fee;
@@ -43,10 +46,12 @@ public class StudentFeeSlipResponse3 implements Response
   {
     return igst;
   }
-
-  public StudentFeeSlipResponse3(StudentFeePaymentRequest slip)
+  public StudentFeeSlipResponse3(StudentFeePaymentRequest slip,StudentFeeRepository studentFeeRepository)
   {
-
+    StudentFee fee=null;
+      fee = studentFeeRepository.findByStudent(slip.getStudent());
+    this.center=slip.getStudent().getCenterName();
+    this.transportFee=fee.getTransportFee().toString();
     this.id = slip.getId();
     this.fullName = slip.getStudent().getProfile().getFullName();
     this.group = slip.getStudent().getGroup().getName();

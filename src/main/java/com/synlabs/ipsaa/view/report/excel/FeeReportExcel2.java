@@ -1,9 +1,11 @@
 package com.synlabs.ipsaa.view.report.excel;
 
 import com.synlabs.ipsaa.entity.student.Student;
+import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecord;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
 import com.synlabs.ipsaa.enums.PaymentStatus;
+import com.synlabs.ipsaa.jpa.StudentFeeRepository;
 import com.synlabs.ipsaa.util.BigDecimalUtils;
 import com.synlabs.ipsaa.util.FeeUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -41,10 +43,13 @@ public class FeeReportExcel2
   private StudentFeePaymentRequest slip;
   private int rowNum=0;
 
-  public FeeReportExcel2(StudentFeePaymentRequest slip/*, BigDecimal extraHours*/)
+  public FeeReportExcel2(StudentFeePaymentRequest slip/*, BigDecimal extraHours*/,StudentFeeRepository studentFeeRepository)
   {
+
     this.slip=slip;
    // this.extraHours=extraHours;
+      StudentFee fee=null;
+      fee = studentFeeRepository.findByStudent(slip.getStudent());
     Student student = slip.getStudent();
     admissionNumber = student.getAdmissionNumber();
     name = student.getName();
