@@ -3,19 +3,38 @@ app.controller('FeeReportController', function ($scope, $http) {
     $scope.years = [moment().year() - 2, moment().year() - 1, moment().year()];
     $scope.disableDownload = false;
 
-
-    $scope.download = function (center) {
-        if (!(center && center.id)) {
+    $scope.quarters = [
+        { value: 1, name: "FYQ4" },
+        { value: 2, name: "FYQ1" },
+        { value: 3, name: "FYQ2" },
+        { value: 4, name: "FYQ3" }
+    ];
+    $scope.years = [moment().year() - 1, moment().year(), moment().year() + 1];
+    
+    $scope.download = function () {
+        if (!($scope.selectedCenter && $scope.selectedCenter.id)) {
             error("Please select Center.");
             return;
         }
+
+        if (!($scope.selectedQuarter && $scope.selectedQuarter.value)) {
+            error("Please select Quarter.");
+            return;
+        }
+
+        if (!($scope.selectedYear)) {
+            error("Please select Year.");
+            return;
+        }
+
+
         var request = {};
-        request.centerId = center.id;
-        request.month = $scope.selectedMonth;
+        request.centerCode = $scope.selectedCenter.code;
+        request.quarter = $scope.selectedQuarter.value;
         request.year = $scope.selectedYear;
 
         $scope.disableDownload = true;
-        $http.post('/api/report/studentfee', request, {responseType: 'arraybuffer'}).then(
+        $http.post('/api/report/studentfee/excel', request, {responseType: 'arraybuffer'}).then(
             function (response) {
                 $scope.disableDownload = false;
                 var blob = new Blob([response.data], {
