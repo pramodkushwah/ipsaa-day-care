@@ -22,8 +22,10 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
     type : string =  'excel' | 'table' 
         'excel'-- to download report as excel file
         'table'-- to generate table in the view
+
+    txn_status : string = true | false
     */
-    $scope.generateReport = function (type) {
+    $scope.generateReport = function (type, txn_status) {
          
         if ( !$scope.selectedCenter ) {
             error("Select Center");
@@ -54,6 +56,14 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
         var reqUrl = '/api/report/collectionfee';
         reqUrl = type == "excel" ? reqUrl + '/excel' : reqUrl;
         var resType = type == "table" ? 'json' : 'arrayBuffer';
+        
+        // need to send in post request body for confirmed and unconfirmed transactions
+        if (txn_status) {
+            if(txn_status == "confirmed")
+                postobject.confirm = true;
+            else
+                postobject.confirm = false;
+        } 
 
         $http.post(reqUrl, postobject, { responseType: resType }).then(
 
@@ -78,10 +88,30 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
 
     };
 
+    $scope.confirmTransaction = function(txnId) {
+
+        var res = {
+            id: txnId,
+            confirmed : true
+        };
+
+        $http.put('/api/student/payfee', res).then(
+            function(response) {
+                console.log(response);
+            },
+            function(error) {
+                console.log(error);
+            }
+
+        );
+    }
+
+
     function loadCenters() {
         $http.get('/api/center/').then(
             function (response) {
                 $scope.centers = response.data;
+                $scope.centers.unshift({code: 'All', name: 'All'});
                 if (Array.isArray($scope.centers) && $scope.centers.length == 1) {
                     $scope.selectedCenter = $scope.centers[0];
                 }

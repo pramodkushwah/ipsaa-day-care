@@ -352,6 +352,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
     };
 
     $scope.filterStudents = function (filter) {
+        $scope.listFor = filter;
         $scope.dataLoading = true; // to show data loading in table
         if($scope.req)  // check if request is already created 
             $scope.req.status = 'no change';
@@ -383,24 +384,41 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
             var studentsData;
             $scope.students = {
                 status: 'no data',
-                present: [],
-                absent: [],
-                corporate: [],
-                non_corporate: []
+                Present: [],
+                Corporate: [],
+                Non_Corporate: []
             };
             
             $http.post("/api/dash/student", $scope.req).then(function (response) {
                 studentsData = response.data;
                 studentsData.forEach(function (studentData) {
+                    studentData.checkin = '09-00-00';
+                    studentData.checkout = '18-00-00';
+                    studentData.extraHours = 0;
+                    if ((studentData.checkin != null || studentData.checkout != null)
+                        && (studentData.expectedIn != null || studentData.expectedOut != null))
+                    {
+                        var expectedIn = Number(studentData.expectedIn.substr(0, 2));
+                        var checkIn = Number(studentData.checkin.substr(0, 2));
+                        var expectedOut = Number(studentData.expectedOut.substr(0, 2));
+                        var checkOut = Number(studentData.checkout.substr(0, 2));
+
+                        if (checkIn<expectedIn) {
+                            studentData.extraHours += Math.trunc(expectedIn - checkIn);  
+                        }
+                        
+                        if (checkOut>expectedOut) {
+                            studentData.extraHours += Math.trunc(checkOut - expectedOut);
+                        } 
+                    }
+
                     if( studentData.present )
-                        $scope.students.present.push(studentData);
-                    else
-                        $scope.students.absent.push(studentData);
+                        $scope.students.Present.push(studentData);
                     
                     if( studentData.corporate )
-                        $scope.students.corporate.push(studentData);
+                        $scope.students.Corporate.push(studentData);
                     else
-                        $scope.students.non_corporate.push(studentData);
+                        $scope.students.Non_Corporate.push(studentData);
                 });
                 $scope.filteredStudents = $scope.students[filter];
                 

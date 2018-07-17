@@ -99,6 +99,7 @@
             <thead class="text-primary">
             <tr>
               <th><input type="checkbox" class="checkbox" ng-change="toggleAll(allchecked)" ng-model="allchecked"/></th>
+              <th>Sr No.</th>
               <th>Student</th>
               <th>Program/Group</th>
               <th>Fee</th>
@@ -112,6 +113,7 @@
             <tbody>
             <tr ng-repeat="studentfee in studentfeelist | filter: search">
               <td><input type="checkbox" class="checkbox" ng-model="studentfee.selected" ng-click="toggleOneSlip(studentfee)"></td>
+              <td>{{ $index + 1 }}</td>
               <td ng-click="showDetails(studentfee)">{{studentfee.fullName}}</td>
               <td ng-click="showDetails(studentfee)">
                 <span class="label label-info">{{studentfee.center}}</span>
