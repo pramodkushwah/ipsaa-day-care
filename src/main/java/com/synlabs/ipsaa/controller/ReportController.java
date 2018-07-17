@@ -126,23 +126,8 @@ public class ReportController
 public List<StudentFeeSlipResponse3> FeeReport(@RequestBody FeeReportRequest request, HttpServletResponse response) throws IOException
 {
   return feeService.FeeReportTable2(request);
-
-//  response.setContentType("application/octet-stream");
-//  response.setHeader("Content-disposition", String.format("attachment; filename=Fee_Report_%s.xlsx",
-//          request.getCenterCode()));
-//  response.setHeader("fileName", String.format("Fee_Report_%s.xlsx",
-//          request.getCenterCode()));
-//  OutputStream out = response.getOutputStream();
-//  FileInputStream in = new FileInputStream(file);
-//  // copy from in to out
-//  IOUtils.copy(in, out);
-//  out.flush();
-//  in.close();
-//  if (!file.delete())
-//  {
-//    throw new IOException("Could not delete temporary file after processing: " + file);
-//  }
 }
+
   @PostMapping("studentfee/excel")
   @Secured(FEE_REPORT)
   public void FeeReportExcel(@RequestBody FeeReportRequest request, HttpServletResponse response) throws IOException

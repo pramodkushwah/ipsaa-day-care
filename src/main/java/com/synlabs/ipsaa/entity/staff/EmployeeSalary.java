@@ -80,6 +80,12 @@ public class EmployeeSalary extends BaseEntity
   private BigDecimal netSalary;
   @Column(precision = 16, scale = 2)
   private BigDecimal grossSalary;
+  // shubham
+  private boolean islock=false;
+
+  public boolean isLock() { return islock; }
+
+  public void setLock(boolean lock) { this.islock = lock; }
 
   public BigDecimal getGrossSalary()
   {
