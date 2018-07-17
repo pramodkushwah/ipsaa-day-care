@@ -116,6 +116,24 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
         );
     };
 
+    $scope.lockControls = function(paySlip) {
+
+        paySlip.disableBtn = 'disabled';
+        
+        $http.put('/api/employee/payslip/lock', {
+            id: paySlip.id,
+            lock : true
+        }).then(
+            function (response) {
+                console.log('locked');
+            },
+            function (response) {
+                error("Salary already locked");
+                // console.log('error while locking');
+            }
+        );
+    }
+
     function error(message) {
         swal({
             title: message,
