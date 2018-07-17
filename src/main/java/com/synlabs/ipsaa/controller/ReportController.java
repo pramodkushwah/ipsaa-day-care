@@ -3,6 +3,7 @@ package com.synlabs.ipsaa.controller;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.jpa.EmployeePaySlipRepository;
 import com.synlabs.ipsaa.jpa.StudentFeeRepository;
 import com.synlabs.ipsaa.service.*;
 import com.synlabs.ipsaa.view.attendance.AttendanceReportRequest;
@@ -37,6 +38,8 @@ public class ReportController
 
   @Autowired
   private StaffAttendanceService staffAttendanceService;
+  @Autowired
+  private EmployeePaySlipRepository employeePaySlipRepository;
 
   @Value("${ipsaa.export.directory}")
   private String exportDir;
@@ -231,7 +234,7 @@ public List<StudentFeeSlipResponse3> FeeReport(@RequestBody FeeReportRequest req
     if(staffRequest.getCenterCode()!=null)
     list.stream().filter(e->e.getEmployee().getCostCenter().getName().equals(staffRequest.getCenterCode()));
 
-    StaffExcelReport excel=new StaffExcelReport(list,staffRequest,exportDir);
+    StaffExcelReport excel=new StaffExcelReport(list,staffRequest,exportDir,employeePaySlipRepository);
     File file = excel.createExcel();
 
 //    File file = feeService.collectionFeeReport2(slipRequest);

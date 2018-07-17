@@ -78,6 +78,7 @@ public class EmployeePaySlipResponse implements Response
   private String pran;
   private String ban;
   private String aadharNumber;
+  private boolean islock;
 
 
   public EmployeePaySlipResponse(EmployeePaySlip slip)
@@ -85,6 +86,7 @@ public class EmployeePaySlipResponse implements Response
     Employee employee = slip.getEmployee();
     if (employee != null)
     {
+
       this.eid = employee.getEid();
       this.empName = employee.getName();
       this.empDesignation = employee.getDesignation() == null ? "" : employee.getDesignation();
@@ -100,7 +102,7 @@ public class EmployeePaySlipResponse implements Response
         this.ban = profile.getBan() == null ? "" : profile.getBan();
       }
     }
-
+    this.islock=slip.isLock();
     this.employerCode = "";
     this.employerName = "";
     this.employerAddress = "";
@@ -158,6 +160,14 @@ public class EmployeePaySlipResponse implements Response
     this.otherAllowances = slip.getOtherAllowances();
     this.autoComment = slip.getAutoComment();
     this.comment = slip.getComment();
+  }
+
+  public boolean isIslock() {
+    return islock;
+  }
+
+  public void setIslock(boolean islock) {
+    this.islock = islock;
   }
 
   public BigDecimal getPfe()

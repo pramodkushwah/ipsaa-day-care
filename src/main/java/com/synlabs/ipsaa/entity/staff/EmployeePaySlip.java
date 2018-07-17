@@ -113,9 +113,19 @@ public class EmployeePaySlip extends BaseEntity
   @Column(precision = 16, scale = 2, nullable = false)
   private BigDecimal grossSalary;
 
+  private boolean isLock=false;
+
   private String comment;
 
   private String autoComment;
+
+  public boolean isLock() {
+    return isLock;
+  }
+
+  public void setLock(boolean lock) {
+    isLock = lock;
+  }
 
   public BigDecimal getPresents()
   {

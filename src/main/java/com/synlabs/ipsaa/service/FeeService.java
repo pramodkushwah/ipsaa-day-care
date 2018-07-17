@@ -574,8 +574,11 @@ public class FeeService extends BaseService
     {
       file.createNewFile();
     }
-    FileOutputStream fileOutputStream = new FileOutputStream(new File("extrahoursReport.xlsx"));
-    //FileOutputStream fileOutputStream = new FileOutputStream(file);
+    //FileOutputStream fileOutputStream = new FileOutputStream(new File("extrahoursReport.xlsx"));
+    FileOutputStream fileOutputStream = new FileOutputStream(file);
+
+
+
     SXSSFWorkbook workbook = new SXSSFWorkbook();
     createStyle(workbook);
     Sheet feeCollectionReportSheet = workbook.createSheet("response");
@@ -631,8 +634,8 @@ public class FeeService extends BaseService
     {
       file.createNewFile();
     }
-    FileOutputStream fileOutputStream = new FileOutputStream(new File("extrahoursReport.xlsx"));
-    //FileOutputStream fileOutputStream = new FileOutputStream(file);
+    //FileOutputStream fileOutputStream = new FileOutputStream(new File("extrahoursReport.xlsx"));
+    FileOutputStream fileOutputStream = new FileOutputStream(file);
     SXSSFWorkbook workbook = new SXSSFWorkbook();
     createStyle(workbook);
     Sheet feeCollectionReportSheet = workbook.createSheet("response");

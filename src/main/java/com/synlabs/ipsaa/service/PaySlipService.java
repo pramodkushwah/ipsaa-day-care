@@ -119,22 +119,19 @@ public class PaySlipService extends BaseService
     return payslip;
   }
   @Transactional
-  public EmployeeSalary lockSalary(EmployeePaySlipRequest request){
+  public boolean lockSalary(EmployeePaySlipRequest request){
     EmployeePaySlip paySlip = employeePaySlipRepository.findOne(request.getId());
     if (paySlip == null)
     {
       throw new ValidationException(String.format("Cannot Locate PaySlip[id = %s]", mask(request.getId())));
     }
-    Employee employee = paySlip.getEmployee();
-    EmployeeSalary salary = employeeSalaryRepository.findByEmployee(employee);
-    System.out.println(salary.getId() +" "+salary.isLock());
-    if (salary !=null  && salary.isLock())
+    if (paySlip.isLock())
     {
       throw new ValidationException(String.format("salary is already locked", mask(request.getId())));
     }
-    salary.setLock(true);
-    employeeSalaryRepository.saveAndFlush(salary);
-    return salary;
+    paySlip.setLock(true);
+    employeePaySlipRepository.saveAndFlush(paySlip);
+    return true;
   }
   @Transactional
   public EmployeePaySlip reGeneratePaySlip(EmployeePaySlipRequest request) throws IOException, DocumentException, ParseException
@@ -147,7 +144,7 @@ public class PaySlipService extends BaseService
 
     Employee employee = paySlip.getEmployee();
     EmployeeSalary salary = employeeSalaryRepository.findByEmployee(employee);
-    if (salary !=null  && salary.isLock())
+    if (salary !=null  && paySlip.isLock())
     {
       throw new ValidationException(String.format("Cannot change locked salary", mask(request.getId())));
     }
