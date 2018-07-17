@@ -114,6 +114,14 @@ public class PaySlipService extends BaseService
     payslip.setCenter(employee.getCostCenter());
     payslip.setMonth(month);
     payslip.setYear(year);
+    // shubham
+    if(payslip.getPresents()==null ){
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.MONTH, month-1);// o to 11
+      cal.set(Calendar.YEAR, year);
+      int totalDays=cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+      payslip.setPresents(new BigDecimal(totalDays));
+    }
     payslip = calculatePayslip(employee, salary, year, month, payslip);
     employeePaySlipRepository.saveAndFlush(payslip);
     return payslip;
@@ -153,9 +161,10 @@ public class PaySlipService extends BaseService
     Integer month = paySlip.getMonth();
     paySlip.setComment(request.getComment());
     // shubham
-    if(request.getNoOfPresent()!=null)
-    paySlip.setPresents(request.getNoOfPresent());
-else{
+     if(request.getPresents()!=null){
+      paySlip.setPresents(request.getPresents());
+      }
+    else if(paySlip.getPresents()==null && request.getPresents()==null){
       Calendar cal = Calendar.getInstance();
       cal.set(Calendar.MONTH, month-1);// o to 11
       cal.set(Calendar.YEAR, year);
@@ -246,7 +255,9 @@ else{
     {
       throw new ValidationException(String.format("Cannot Locate PaySlip[id = %s]", mask(request.getId())));
     }
-
+    if(request.getPresents()!=null){
+      paySlip.setPresents(request.getPresents());
+    }
     paySlip.setComment(request.getComment());
     paySlip.setOtherAllowances(request.getOtherAllowances() == null ? ZERO : request.getOtherAllowances());
     paySlip.setOtherDeductions(request.getOtherDeductions() == null ? ZERO : request.getOtherDeductions());

@@ -10,7 +10,7 @@ public class EmployeePaySlipRequest implements Request
   private Long   id;
   private String comment;
 // shubham
-  private BigDecimal noOfPresent;
+  private BigDecimal presents;
   //earnings
   private BigDecimal bonus;
   private BigDecimal conveyance;
@@ -47,7 +47,7 @@ public class EmployeePaySlipRequest implements Request
     slip.setUniform(uniform);
     slip.setWashing(washing);
     slip.setOtherAllowances(otherAllowances);
-    slip.setPresents(noOfPresent);
+    slip.setPresents(presents);
     slip.setOtherDeductions(otherDeductions);
     slip.setRetention(retention);
     slip.setTds(tds);
@@ -64,12 +64,12 @@ public class EmployeePaySlipRequest implements Request
     this.lock = lock;
   }
 
-  public BigDecimal getNoOfPresent() {
-    return noOfPresent;
+  public BigDecimal getPresents() {
+    return presents;
   }
 
-  public void setNoOfPresent(BigDecimal noOfPresent) {
-    this.noOfPresent = noOfPresent;
+  public void setPresents(BigDecimal presents) {
+    this.presents = presents;
   }
 
   public Long getId()
