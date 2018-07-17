@@ -54,7 +54,7 @@ public class StaffProfileResponse implements Response
     // shubham
     this.ifscCode=profile.getIfscCode();
     this.bankName=profile.getBankName();
-    this.branchName=profile.getBankName();
+    this.branchName=profile.getBranchName();
     this.holderName=profile.getHolderName();
   }
 
