@@ -16,6 +16,16 @@ public class StudentAttendance extends BaseAttendance
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   private Student student;
 
+  private int extraHours;
+
+  public int getExtraHours() {
+    return extraHours;
+  }
+
+  public void setExtraHours(int extraHours) {
+    this.extraHours = extraHours;
+  }
+
   public Student getStudent()
   {
     return student;
