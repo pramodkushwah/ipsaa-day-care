@@ -101,6 +101,9 @@ public class StudentAttendanceService extends BaseService
     attendance.setStatus(AttendanceStatus.Present);
     attendance.setStudent(student);
     attendance.setAttendanceDate(DateTime.now().toDate());
+    // shubham
+    int extra=countExtra(student,attendance,true);
+    attendance.setExtraHours(extra);
     attendanceRepository.saveAndFlush(attendance);
     eventBus.post(attendance);
   }
@@ -121,9 +124,11 @@ public class StudentAttendanceService extends BaseService
       throw new ValidationException("Student has already clocked out!");
     }
 
+// shubham
+    int extra=countExtra(student,attendance,true);
+    attendance.setExtraHours(attendance.getExtraHours()+extra);
     attendance.setCheckout(DateTime.now().toDate());
     attendanceRepository.saveAndFlush(attendance);
-
     eventBus.post(attendance);
   }
 
@@ -288,5 +293,29 @@ public class StudentAttendanceService extends BaseService
 
     });
     return result;
+  }
+
+
+  // shubham
+  public int countExtra(Student student, StudentAttendance attendance, boolean isCheckin) {
+    int extra=0;
+    if(isCheckin){
+      if(attendance.getCheckin() !=null && student.getExpectedIn()!=null){
+        if(attendance.getCheckin().before(student.getExpectedIn())){
+          Period p = new Period(new DateTime(attendance.getCheckin()),new DateTime(student.getExpectedIn()));
+          int hours = p.getHours();
+          extra+=hours;
+        }
+      }
+    }else{
+      if(attendance.getCheckout()!=null && student.getExpectedOut()!=null){
+        if(attendance.getCheckout().after(student.getExpectedOut())){
+          Period p = new Period(new DateTime(student.getExpectedOut()),new DateTime(attendance.getCheckout()));
+          int hours = p.getHours();
+          extra+=hours;
+        }
+      }
+    }
+    return extra;
   }
 }

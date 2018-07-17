@@ -30,6 +30,8 @@ public class EmployeePaySlipRequest implements Request
   private BigDecimal retention;
   private BigDecimal tds;
   private BigDecimal advance;
+  // shubham
+  private boolean lock;
 
   public EmployeePaySlip toEntity(EmployeePaySlip slip)
   {
@@ -53,6 +55,13 @@ public class EmployeePaySlipRequest implements Request
 
     slip.setComment(comment);
     return slip;
+  }
+
+  public boolean isLock() {
+    return lock;
+  }
+  public void setLock(boolean lock) {
+    this.lock = lock;
   }
 
   public BigDecimal getNoOfPresent() {

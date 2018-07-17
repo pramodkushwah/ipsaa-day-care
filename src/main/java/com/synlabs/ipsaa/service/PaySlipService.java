@@ -13,6 +13,7 @@ import com.synlabs.ipsaa.enums.LeaveType;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.store.FileStore;
+import com.synlabs.ipsaa.view.fee.lockSalaryRequest;
 import com.synlabs.ipsaa.view.staff.EmployeePaySlipRequest;
 import com.synlabs.ipsaa.view.staff.PaySlipRegenerateRequest;
 import org.joda.time.Days;
@@ -117,7 +118,24 @@ public class PaySlipService extends BaseService
     employeePaySlipRepository.saveAndFlush(payslip);
     return payslip;
   }
-
+  @Transactional
+  public EmployeeSalary lockSalary(EmployeePaySlipRequest request){
+    EmployeePaySlip paySlip = employeePaySlipRepository.findOne(request.getId());
+    if (paySlip == null)
+    {
+      throw new ValidationException(String.format("Cannot Locate PaySlip[id = %s]", mask(request.getId())));
+    }
+    Employee employee = paySlip.getEmployee();
+    EmployeeSalary salary = employeeSalaryRepository.findByEmployee(employee);
+    System.out.println(salary.getId() +" "+salary.isLock());
+    if (salary !=null  && salary.isLock())
+    {
+      throw new ValidationException(String.format("salary is already locked", mask(request.getId())));
+    }
+    salary.setLock(true);
+    employeeSalaryRepository.saveAndFlush(salary);
+    return salary;
+  }
   @Transactional
   public EmployeePaySlip reGeneratePaySlip(EmployeePaySlipRequest request) throws IOException, DocumentException, ParseException
   {
@@ -126,8 +144,13 @@ public class PaySlipService extends BaseService
     {
       throw new ValidationException(String.format("Cannot Locate PaySlip[id = %s]", mask(request.getId())));
     }
+
     Employee employee = paySlip.getEmployee();
     EmployeeSalary salary = employeeSalaryRepository.findByEmployee(employee);
+    if (salary !=null  && salary.isLock())
+    {
+      throw new ValidationException(String.format("Cannot change locked salary", mask(request.getId())));
+    }
 
     Integer year = paySlip.getYear();
     Integer month = paySlip.getMonth();
