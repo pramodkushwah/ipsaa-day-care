@@ -10,13 +10,13 @@
     <div class="card-footer footer-bottom">
       <div class="stats">
         <p style="margin: 0">
-          <a href="#" ng-click="filterStudents('present')">Present</a> : {{stats.studentPresent | number}}
-          &nbsp;|&nbsp;
-          <a href="#" ng-click="filterStudents('absent')">Absent</a> : {{stats.students-stats.studentPresent | number}}
+          <a href="#" ng-click="filterStudents('Present')">Present</a> : {{stats.studentPresent | number}}
         </p>
         <p style="margin: 0">
-          <a href="#" ng-click="filterStudents('corporate')">Corporate</a> : {{stats.corporateStudents | number}} &nbsp;|&nbsp;
-          <a href="#" ng-click="filterStudents('non_corporate')">Non-Corporate</a> : {{(stats.students - stats.corporateStudents) | number}}
+          <a href="#" ng-click="filterStudents('Corporate')">Corporate</a> : {{stats.corporateStudents | number}}
+        </p>
+        <p style="margin: 0">
+          <a href="#" ng-click="filterStudents('Non_Corporate')">Non-Corporate</a> : {{(stats.students - stats.corporateStudents) | number}}
         </p>
       </div>
     </div>
