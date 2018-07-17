@@ -28,7 +28,7 @@
 
 	<div class="col-sm-4" style="padding-top: 45px">
 		<button class="btn btn-primary" ng-click="generateReport('table')" ng-disabled="loader == 'disableGet'">
-			<i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="loader == 'disableGet'"></i>GET
+			GET
 		</button>
 	
 		<button class="btn btn-info" ng-click="generateReport('excel')" ng-disabled="loader == 'disableDownload'">
@@ -45,6 +45,7 @@
 				<i class="material-icons">description</i>
 			</div>
 			<div class="card-content">
+				<i class="text-primary fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="loader == 'disableGet'" style="float: right;"></i>
 				<div class="row">
 					<div class="col-sm-3">
 						<h4 class="card-title">Fee Report</h4>
@@ -52,17 +53,17 @@
 					<div class="col-sm-7" ng-show="feeReports">
 						<div class="radio-inline">
 							<label>
-								<input type="radio" name="optionsRadios" id="optionsRadios1" value="All" checked> All
+								<input type="radio" name="optionsRadios" id="optionsRadios1" value="All" checked ng-click="generateReport('table')"> All
 							</label>
 						</div>
 						<div class="radio-inline">
 							<label>
-								<input type="radio" name="optionsRadios" id="optionsRadios2" value="Unconfirmed"> Unconfirmed
+								<input type="radio" name="optionsRadios" id="optionsRadios2" value="Unconfirmed" ng-click="generateReport('table', 'unconfirmed')"> Unconfirmed
 							</label>
 						</div>
 						<div class="radio-inline">
 							<label>
-								<input type="radio" name="optionsRadios" id="optionsRadios2" value="Confirmed"> Confirmed
+								<input type="radio" name="optionsRadios" id="optionsRadios2" value="Confirmed" ng-click="generateReport('table', 'confirmed')"> Confirmed
 							</label>
 						</div>
 					</div>
@@ -81,7 +82,7 @@
 
 							</tr>
 						</thead>
-						<tbody>
+						<tbody ng-hide="loader == 'disableGet'">
 							<tr ng-repeat="feeReport in feeReports">
 								<td>{{ $index + 1 }}</td>
 								<td>{{feeReport.fullName}}</td>
@@ -97,12 +98,20 @@
 											<th>Amount Paid</th>
 											<th>Payment Date</th>
 											<th>Payment Mode</th>
+											<th>Status</th>
 										</tr>
 										<tr ng-repeat="item in feeReport.payments">
 											<td>{{ item.txnid }}</td>
 											<td>{{ item.paidAmount }}</td>
 											<td>{{ item.paymentDate }}</td>
 											<td>{{ item.paymentMode }}</td>
+											<td>
+												<span class="text-success" ng-show="item.confirmed">Confirmed</span>
+												<button class="btn btn-success" ng-hide="item.confirmed" 
+												ng-click= "confirmTransaction(item.id)" data-id="{{item.id}}">
+												Confirm</button>
+											</td>
+											<td id="" style="display: none"></td>
 										</tr>
 
 									</table>
