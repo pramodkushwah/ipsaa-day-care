@@ -7,26 +7,24 @@
     <div class="table-responsive">
       <table class="table table-condensed table-striped table-hover">
         <thead class="text-primary">
-        <tr>
-          <th>S.No</th>
-          <th>Name</th>
-          <th>Center</th>
-          <th>Program</th>
-          <th>Group</th>
-          <th ng-show="listFor == 'Present'">Corporate</th>
-          <th ng-hide="listFor == 'Present'">Present</th>
-          <th ng-hide="listFor == 'Present'">Expected In</th>
-          <th ng-hide="listFor == 'Present'">Expected Out</th>
-          <th>Checkin</th>
-          <th>Checkout</th>
-          <th>Extra Hours</th>
-        </tr>
+          <tr>
+            <th>S.No</th>
+            <th>Name</th>
+            <th>Program</th>
+            <th>Group</th>
+            <th ng-show="listFor == 'Present'">Corporate</th>
+            <th ng-hide="listFor == 'Present'">Present</th>
+            <th ng-hide="listFor == 'Present'">Expected In</th>
+            <th ng-hide="listFor == 'Present'">Expected Out</th>
+            <th>Checkin</th>
+            <th>Checkout</th>
+            <th>Extra Hours</th>
+          </tr>
         </thead>
         <tbody>
         <tr ng-repeat="student in studentsPage" ng-click="showStudent(student)">
           <td>{{ (PAGESIZE * (studentsPageNumber - 1)) + $index + 1}}</td>
           <td>{{student.name}}</td>
-          <td>center</td>
           <td>{{student.program}}</td>
           <td>{{student.group}}</td>
           <td ng-show="listFor == 'Present'">{{student.corporate}}</td>
