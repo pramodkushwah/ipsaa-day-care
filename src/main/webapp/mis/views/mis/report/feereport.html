@@ -5,6 +5,18 @@
       <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers"></select>
     </div>
   </div>
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">*Quarter</label>
+      <select class="form-control" ng-model="selectedQuarter" ng-options="quarter as quarter.name for quarter in quarters"></select>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">*Year</label>
+      <select class="form-control" ng-model="selectedYear" ng-options="year as year for year in years"></select>
+    </div>
+  </div>
 
   <div class="col-md-2">
     <button class="btn btn-sm btn-rose" style="margin-top: 40px;" ng-click="download(selectedCenter)"
