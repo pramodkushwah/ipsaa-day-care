@@ -34,7 +34,7 @@
     {
       "label": "Staff Salary Monthly Report",
       "state": "app.staffsalarymonthlyreport",
-      "p": "STAFF_SALARY_MONTHLY_REPORT",
+      "p": "COLLECTION_FEE_REPORT",
       "seq": 600
     }
   ]
