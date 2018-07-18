@@ -166,10 +166,10 @@
 
         <div class="tab-pane active" id="controls">
           <div class="form-footer text-right">
-            <button class="btn btn-rose btn-fill" ng-click="update(paySlip)" ng-disabled="paySlip.disableUpdateBtn || paySlip.disableBtn">
+            <button class="btn btn-rose btn-fill" ng-click="update(paySlip)" ng-disabled="paySlip.disableUpdateBtn || paySlip.islock">
               <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="paySlip.disableUpdateBtn"></i>save
             </button>
-            <button class="btn btn-rose btn-fill" ng-click="regeneratePaySlip(paySlip)" ng-disabled="paySlip.disableRegenerateBtn || paySlip.disableBtn">
+            <button class="btn btn-rose btn-fill" ng-click="regeneratePaySlip(paySlip)" ng-disabled="paySlip.disableRegenerateBtn || paySlip.islock">
               <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="paySlip.disableRegenerateBtn"></i>regenerate
             </button>
             <button class="btn btn-rose btn-fill" ng-click="lockControls(paySlip)"> Lock </button>
