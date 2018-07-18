@@ -71,14 +71,16 @@ public class StaffExcelReport {
     }
     private void createList(EmployeeSalary staffR, Row row) // creating cells for each row
     {
+    		
         EmployeePaySlip slip=employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(staffR.getEmployee(),month,year);
         if(slip!=null){
-
+       
         Cell cell = row.createCell(1);
         cell.setCellValue(staffR.getEmployee().getFirstName());
         cell = row.createCell(2);
-        cell.setCellValue(staffR.getEmployee().getLastName());
-
+        if(staffR.getEmployee().getLastName()!=null)
+        		cell.setCellValue(staffR.getEmployee().getLastName());
+        
         cell = row.createCell(3);
         if(staffR.getEmployee().getDesignation()!=null)
             cell.setCellValue(staffR.getEmployee().getEid());
@@ -93,19 +95,19 @@ public class StaffExcelReport {
             cell.setCellValue(staffR.getEmployee().getProfile().getBan());
         }
         cell = row.createCell(6,Cell.CELL_TYPE_STRING);
-        if(staffR.getSpecial()!=null)
+        if(staffR.getEmployee().getProfile().getHolderName()!=null)
             cell.setCellValue((staffR.getEmployee().getProfile().getHolderName()));
 
         cell = row.createCell(7,Cell.CELL_TYPE_STRING);
-        if(staffR.getSpecial()!=null)
+        if(staffR.getEmployee().getProfile().getIfscCode()!=null)
             cell.setCellValue((staffR.getEmployee().getProfile().getIfscCode()));
 
         cell = row.createCell(8,Cell.CELL_TYPE_STRING);
-        if(staffR.getSpecial()!=null)
+        if(staffR.getEmployee().getProfile().getBankName()!=null)
             cell.setCellValue((staffR.getEmployee().getProfile().getBankName()));
 
         cell = row.createCell(9,Cell.CELL_TYPE_STRING);
-        if(staffR.getSpecial()!=null)
+        if(staffR.getEmployee().getProfile().getBranchName()!=null)
             cell.setCellValue((staffR.getEmployee().getProfile().getBranchName()));
 
 
