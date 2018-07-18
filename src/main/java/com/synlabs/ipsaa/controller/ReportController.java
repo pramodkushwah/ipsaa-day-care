@@ -251,8 +251,8 @@ public List<StudentFeeSlipResponse3> FeeReport(@RequestBody FeeReportRequest req
 //        break;
 //    }
 
-    response.setHeader("Content-disposition", String.format("attachment; filename=%s", "responce"));
-    response.setHeader("fileName", "responce");
+    response.setHeader("Content-disposition", String.format("attachment; filename=%s.xlsx", staffRequest.getEmployerCode()));
+    response.setHeader("fileName", staffRequest.getEmployerCode()+".xlsx");
     OutputStream out = response.getOutputStream();
     FileInputStream in = new FileInputStream(file);
     // copy from in to out

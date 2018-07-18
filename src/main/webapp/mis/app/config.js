@@ -219,6 +219,12 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             controller: 'GalleryController',
             templateUrl: "views/mis/gallery/gallery.html"
         })
+        .state('app.staffsalarymonthlyreport', {
+            url: "/staffsalarymonthlyreport",
+            controller: 'staffSalaryMonthlyReportController',
+            templateUrl: "views/mis/report/staffsalarymonthlyreport.html"
+        })
+
 
     ;
 
