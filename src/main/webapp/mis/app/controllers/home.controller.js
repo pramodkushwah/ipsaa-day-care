@@ -387,8 +387,8 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
             studentsData = response.data;
             studentsData.forEach(function (studentData) {
                 studentData.extraHours = 0;
-                if ((studentData.checkin != null || studentData.checkout != null)
-                    && (studentData.expectedIn != null || studentData.expectedOut != null))
+                if ((studentData.checkin != null && studentData.checkout != null)
+                    && (studentData.expectedIn != null && studentData.expectedOut != null))
                 {
                     var expectedIn = Number(studentData.expectedIn.substr(0, 2));
                     var checkIn = Number(studentData.checkin.substr(0, 2));
