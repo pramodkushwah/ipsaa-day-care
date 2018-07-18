@@ -352,81 +352,72 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
     };
 
     $scope.filterStudents = function (filter) {
+        
+        $('html, body').animate(function() {
+            scrollTop: $('#students_table').offset().top
+        }, 300);
+
         $scope.listFor = filter;
         $scope.dataLoading = true; // to show data loading in table
-        if($scope.req)  // check if request is already created 
-            $scope.req.status = 'no change';
-
-        else    // if new request create a request object for post data of request and status as no change
-            $scope.req = {status : 'no change'};
+          // if new request create a request object for post data of request and status as new request
+        $scope.req = {status : 'new request'};
         
         // check for any changes in post data of request from frontend 
-        if ($scope.selectedZone !== null && $scope.selectedZone.name != $scope.req.zone) {
+        if ($scope.selectedZone !== null) {
             $scope.req.zone = $scope.selectedZone.name;
-            $scope.req.status = "new request";
         }
-        if ($scope.selectedCity !== null && $scope.selectedCity.city != $scope.req.city) {
+        if ($scope.selectedCity !== null) {
             $scope.req.city = $scope.selectedCity.name;
-            $scope.req.status = "new request";
         }
-        if ($scope.selectedCenter !== null && $scope.selectedCenter.center != $scope.req.center) {
+        if ($scope.selectedCenter !== null) {
             $scope.req.center = $scope.selectedCenter.code;
-            $scope.req.status = "new request";
         }
 
-        // check if students data already exist and request status is not changed 
-        if($scope.students && $scope.req.status == "no change") {
-            $scope.filteredStudents = $scope.students[filter];
-            $scope.updateStudentPage(1);
-        }
-        else {
+        
             // load students data from backend 
-            var studentsData;
-            $scope.students = {
-                status: 'no data',
-                Present: [],
-                Corporate: [],
-                Non_Corporate: []
-            };
-            
-            $http.post("/api/dash/student", $scope.req).then(function (response) {
-                studentsData = response.data;
-                studentsData.forEach(function (studentData) {
-                    studentData.checkin = '09-00-00';
-                    studentData.checkout = '18-00-00';
-                    studentData.extraHours = 0;
-                    if ((studentData.checkin != null || studentData.checkout != null)
-                        && (studentData.expectedIn != null || studentData.expectedOut != null))
-                    {
-                        var expectedIn = Number(studentData.expectedIn.substr(0, 2));
-                        var checkIn = Number(studentData.checkin.substr(0, 2));
-                        var expectedOut = Number(studentData.expectedOut.substr(0, 2));
-                        var checkOut = Number(studentData.checkout.substr(0, 2));
+        var studentsData;
+        $scope.students = {
+            status: 'no data',
+            Present: [],
+            Corporate: [],
+            Non_Corporate: []
+        };
+        
+        $http.post("/api/dash/student", $scope.req).then(function (response) {
+            studentsData = response.data;
+            studentsData.forEach(function (studentData) {
+                studentData.extraHours = 0;
+                if ((studentData.checkin != null || studentData.checkout != null)
+                    && (studentData.expectedIn != null || studentData.expectedOut != null))
+                {
+                    var expectedIn = Number(studentData.expectedIn.substr(0, 2));
+                    var checkIn = Number(studentData.checkin.substr(0, 2));
+                    var expectedOut = Number(studentData.expectedOut.substr(0, 2));
+                    var checkOut = Number(studentData.checkout.substr(0, 2));
 
-                        if (checkIn<expectedIn) {
-                            studentData.extraHours += Math.trunc(expectedIn - checkIn);  
-                        }
-                        
-                        if (checkOut>expectedOut) {
-                            studentData.extraHours += Math.trunc(checkOut - expectedOut);
-                        } 
+                    if (checkIn<expectedIn) {
+                        studentData.extraHours += Math.trunc(expectedIn - checkIn);  
                     }
-
-                    if( studentData.present )
-                        $scope.students.Present.push(studentData);
                     
-                    if( studentData.corporate )
-                        $scope.students.Corporate.push(studentData);
-                    else
-                        $scope.students.Non_Corporate.push(studentData);
-                });
-                $scope.filteredStudents = $scope.students[filter];
+                    if (checkOut>expectedOut) {
+                        studentData.extraHours += Math.trunc(checkOut - expectedOut);
+                    } 
+                }
+
+                if( studentData.present )
+                    $scope.students.Present.push(studentData);
                 
-                $scope.updateStudentPage(1);
-                $scope.students.status = "data fetched";
+                if( studentData.corporate )
+                    $scope.students.Corporate.push(studentData);
+                else
+                    $scope.students.Non_Corporate.push(studentData);
             });
-            $scope.refresh();
-        }
+            $scope.filteredStudents = $scope.students[filter];
+            
+            $scope.updateStudentPage(1);
+            $scope.students.status = "data fetched";
+        });
+        $scope.refresh();
         $scope.showtab = 'studentlist';
     }
 
