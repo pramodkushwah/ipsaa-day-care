@@ -53,7 +53,7 @@
 					<div class="col-sm-7" ng-show="feeReports">
 						<div class="radio-inline">
 							<label>
-								<input type="radio" name="optionsRadios" id="optionsRadios1" value="All" checked ng-click="generateReport('table')"> All
+								<input type="radio" name="optionsRadios" id="optionsRadios1" value="All" checked ng-click="generateReport('table', 'all')"> All
 							</label>
 						</div>
 						<div class="radio-inline">
@@ -107,8 +107,8 @@
 											<td>{{ item.paymentMode }}</td>
 											<td>
 												<span class="text-success" ng-show="item.confirmed">Confirmed</span>
-												<button class="btn btn-success" ng-hide="item.confirmed" 
-												ng-click= "confirmTransaction(item.id)" data-id="{{item.id}}">
+												<button class="btn btn-success" ng-show="!item.confirmed" 
+												ng-click= "confirmTransaction(item)">
 												Confirm</button>
 											</td>
 											<td id="" style="display: none"></td>

@@ -1,5 +1,5 @@
 app.controller('CollectionFeeReportController', function ($http, $scope) {
-
+    
     $scope.loader = '';
     //populate months, years, quarter dropdown
     $scope.quarters = [
@@ -26,6 +26,12 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
     txn_status : string = true | false
     */
     $scope.generateReport = function (type, txn_status) {
+
+        $scope.txnStatus = $scope.txnStatus ?
+                            !txn_status ? 
+                            $scope.txnStatus
+                            : txn_status 
+                            : "all";
          
         if ( !$scope.selectedCenter ) {
             error("Select Center");
@@ -58,8 +64,8 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
         var resType = type == "table" ? 'json' : 'arrayBuffer';
         
         // need to send in post request body for confirmed and unconfirmed transactions
-        if (txn_status) {
-            if(txn_status == "confirmed")
+        if ( $scope.txnStatus != "all" ) {
+            if( $scope.txnStatus == "confirmed")
                 postobject.confirm = true;
             else
                 postobject.confirm = false;
@@ -88,22 +94,24 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
 
     };
 
-    $scope.confirmTransaction = function(txnId) {
+    $scope.confirmTransaction = function(txn) {
 
         var res = {
-            id: txnId,
+            id: txn.id,
             confirmed : true
         };
 
         $http.put('/api/student/payfee', res).then(
             function(response) {
-                console.log(response);
+                ok("Transaction Confirmed");
+                txn.confirmed = true;
             },
-            function(error) {
-                console.log(error);
+            function(response) {
+                error("Error while confirming transaction");
             }
 
         );
+        
     }
 
 
@@ -123,6 +131,24 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
 
     function refresh() {
         loadCenters();
+    }
+
+    function error(message) {
+        swal({
+            title: message,
+            type: 'error',
+            buttonsStyling: false,
+            confirmButtonClass: "btn btn-danger"
+        });
+    }
+
+    function ok(message) {
+        swal({
+            title: message,
+            type: 'success',
+            buttonsStyling: false,
+            confirmButtonClass: "btn btn-success"
+        });
     }
 
     refresh();
