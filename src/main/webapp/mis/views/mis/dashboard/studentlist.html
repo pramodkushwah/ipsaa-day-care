@@ -15,10 +15,10 @@
             <th ng-show="listFor == 'Present'">Corporate</th>
             <th ng-hide="listFor == 'Present'">Present</th>
             <th ng-hide="listFor == 'Present'">Expected In</th>
-            <th ng-hide="listFor == 'Present'">Expected Out</th>
             <th>Checkin</th>
-            <th>Checkout</th>
-            <th>Extra Hours</th>
+            <th >Expected Out</th>
+            <th ng-hide="listFor == 'Present'">Checkout</th>
+            <th ng-hide="listFor == 'Present'">Extra Hours</th>
           </tr>
         </thead>
         <tbody>
@@ -30,10 +30,10 @@
           <td ng-show="listFor == 'Present'">{{student.corporate}}</td>
           <td ng-hide="listFor == 'Present'">{{student.present}}</td>
           <td ng-hide="listFor == 'Present'">{{student.expectedIn}}</td>
-          <td ng-hide="listFor == 'Present'">{{student.expectedOut}}</td>
           <td>{{student.checkin}}</td>
-          <td>{{student.checkout}}</td>
-          <td>{{student.extraHours}}</td>>
+          <td >{{student.expectedOut}}</td>
+          <td ng-hide="listFor == 'Present'">{{student.checkout}}</td>
+          <td ng-hide="listFor == 'Present'">{{student.extraHours}}</td>>
         </tr>
         <tr ng-show="!studentsPage.length && !dataLoading">
           <td colspan="11">No Data to Show</td>
