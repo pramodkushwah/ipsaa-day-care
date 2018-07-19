@@ -3,8 +3,9 @@
     <i class="material-icons">account_box</i>
   </div>
   <div class="card-content">
+    <i class="fa fa-spinner fa-fw fa-pulse fa-2x text-primary" ng-show="loader" style="float: right"></i>
     <h4 class="card-title">{{listFor}} Students</h4>
-    <div class="table-responsive">
+    <div class="table-responsive" ng-show="studentsPage.length">
       <table class="table table-condensed table-striped table-hover">
         <thead class="text-primary">
           <tr>

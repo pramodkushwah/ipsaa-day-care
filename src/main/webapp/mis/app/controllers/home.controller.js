@@ -11,6 +11,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
     $scope.selectedCenter = null;
     $scope.searchParent = '';
     $scope.showfollowups = '';
+    $scope.loader = false;
 
     $scope.PAGESIZE = 10;
     $scope.BARSIZE = 5; //put odd values
@@ -352,7 +353,9 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
     };
 
     $scope.filterStudents = function (filter) {
-        
+        $scope.studentsPage = [];
+        $scope.loader = true;
+
         $('html, body').animate(function() {
             scrollTop: $('#students_table').offset().top
         }, 300);
@@ -416,6 +419,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
             
             $scope.updateStudentPage(1);
             $scope.students.status = "data fetched";
+            $scope.loader = false;
         });
         $scope.refresh();
         $scope.showtab = 'studentlist';
