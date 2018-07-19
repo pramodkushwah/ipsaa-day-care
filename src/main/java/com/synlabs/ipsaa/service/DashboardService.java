@@ -520,7 +520,7 @@ public class DashboardService extends BaseService
 
     for (StudentAttendance attendanceRecord : attendances)
     {
-    	if(attendanceRecord.getCheckout() == null)
+    //	if(attendanceRecord.getCheckout() == null)
     		attendanceMap.put(attendanceRecord.getStudent().getId(), attendanceRecord);
     }
 
