@@ -45,7 +45,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="student in filteredStudents   | filter:searchStudent |  orderBy:'fullName' | startFrom:currentPage*pageSize | limitTo:pageSize">
+            <tr ng-repeat="student in students   | filter:searchStudent |  orderBy:'fullName' | startFrom:currentPage*pageSize | limitTo:pageSize">
               <td ng-click="showStudent(student)">{{student.fullName}}</td>
               <td ng-click="showStudent(student)">{{student.program.name}}</td>
               <td ng-click="showStudent(student)">{{student.group.name}}</td>
