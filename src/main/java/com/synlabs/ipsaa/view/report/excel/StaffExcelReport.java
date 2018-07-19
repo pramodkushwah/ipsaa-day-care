@@ -45,13 +45,17 @@ public class StaffExcelReport {
 				SXSSFWorkbook workbook = new SXSSFWorkbook();
 				Sheet feeCollectionReportSheet = workbook.createSheet("SalarySlip");// creating a blank sheet
 				int rownum = 0;
-				for (EmployeeSalary satff : this.staff) {
-					Row row = feeCollectionReportSheet.createRow(rownum++);
+				boolean isCreateList = true;
+				Row row = null;
+				for (EmployeeSalary satffSalary : this.staff) {
+					if(isCreateList==true) {
+						row = feeCollectionReportSheet.createRow(rownum++);
+					} 
 					if (rownum == 1) {
 						setupheaders(row);
-						rownum++;
+						//rownum++;
 					} else
-						createList(satff, row);
+						isCreateList = createList(satffSalary, row);
 				}
 				workbook.write(fileOutputStream);
 				workbook.dispose();
@@ -64,7 +68,7 @@ public class StaffExcelReport {
 		return file;
 	}
 
-	private void createList(EmployeeSalary staffR, Row row) // creating cells for each row
+	private boolean createList(EmployeeSalary staffR, Row row) // creating cells for each row
 	{
 
 		EmployeePaySlip slip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(staffR.getEmployee(), month,
@@ -214,8 +218,10 @@ public class StaffExcelReport {
 
 			cell = row.createCell(35, Cell.CELL_TYPE_BOOLEAN);
 			cell.setCellValue(slip.isLock());
+			
+			return true;
 		}
-
+		return false;
 	}
 
 	public void setupheaders(Row row) {

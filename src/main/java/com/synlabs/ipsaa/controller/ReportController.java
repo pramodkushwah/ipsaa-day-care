@@ -272,7 +272,7 @@ public class ReportController {
 
 		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
 				staffRequest.getEmployerCode(), staffRequest.getMonth(), staffRequest.getYear()));
-		response.setHeader("fileName", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
+		response.setHeader("fileName", String.format("%s_Month_%s_Year_%s.xlsx",
 				staffRequest.getEmployerCode(), staffRequest.getMonth(), staffRequest.getYear()));
 		OutputStream out = response.getOutputStream();
 		FileInputStream in = new FileInputStream(file);
