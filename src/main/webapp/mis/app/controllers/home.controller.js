@@ -404,7 +404,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
                     } 
                 }
 
-                if( studentData.present )
+                if( studentData.present && studentData.checkout == null)
                     $scope.students.Present.push(studentData);
                 
                 if( studentData.corporate )
