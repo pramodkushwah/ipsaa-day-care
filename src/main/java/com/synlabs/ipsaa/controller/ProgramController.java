@@ -34,7 +34,6 @@ public class ProgramController
   {
     return programService.listPrograms().stream().map(ProgramResponse::new).collect(Collectors.toList());
   }
-
   @Secured(PROGRAM_WRITE)
   @PostMapping(path = "program")
   public ProgramResponse createProgram(@RequestBody ProgramRequest request)

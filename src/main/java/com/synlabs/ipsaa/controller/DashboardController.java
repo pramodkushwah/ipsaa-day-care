@@ -25,11 +25,13 @@ public class DashboardController
   @Autowired
   private DashboardService dashboardService;
 
+  // modify by shubham
   @PostMapping("stats")
   @Secured(DASHBOARD_STATS)
   public StatsResponse getStats(@RequestBody DashboardRequest request)
   {
-    return dashboardService.getStats(request);
+    //return dashboardService.getStats(request);
+    return dashboardService.getStatsV2(request);
   }
 
   @PostMapping("stats/fee")

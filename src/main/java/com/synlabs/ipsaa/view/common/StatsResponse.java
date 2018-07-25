@@ -189,5 +189,23 @@ public int getStaffPresent() {
 public void setStaffPresent(int staffPresent) {
 	this.staffPresent = staffPresent;
 }
-}
 
+// -----------------------------------------------shubham --------------------------------------------------
+  private int newJoinings;
+  private int newLivings;
+  public int getNewLivings() {
+    return newLivings;
+  }
+
+  public void setNewLivings(int newLivings) {
+    this.newLivings = newLivings;
+  }
+
+  public int getNewJoinings() {
+    return newJoinings;
+  }
+
+  public void setNewJoinings(int newJoinings) {
+    this.newJoinings = newJoinings;
+  }
+}

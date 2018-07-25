@@ -78,7 +78,7 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
         tiffin: 0.0,
         uniform: 0.0,
         washing: 0.0,
-        extraMonthlyFixedAllowance: 0.0,
+        extraMonthlyAllowance: 0.0,
         totalEarning: 0.0,
         esi: 0.0,
         pf: 0.0,
@@ -258,7 +258,7 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
             retention: salary.retention,
             tds: salary.tds,
             advance: salary.advance,
-            extraMonthlyAllowance: salary.extraMonthlyFixedAllowance
+            extraMonthlyAllowance: salary.extraMonthlyAllowance
 
         };
 

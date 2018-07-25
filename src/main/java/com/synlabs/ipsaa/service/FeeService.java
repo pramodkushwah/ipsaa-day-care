@@ -7,6 +7,7 @@ import com.synlabs.ipsaa.entity.fee.CenterCharge;
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.fee.Charge;
 import com.synlabs.ipsaa.entity.programs.Program;
+import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.entity.student.QStudentFee;
 import com.synlabs.ipsaa.entity.student.Student;
 import com.synlabs.ipsaa.entity.student.StudentFee;
@@ -340,6 +341,8 @@ public class FeeService extends BaseService
     {
       throw new NotFoundException(String.format("Program[%s] not Found", request.getMaskedProgramId()));
     }
+
+
     CenterProgramFee centerProgramFee = centerProgramFeeRepository.findByProgramIdAndCenterId(request.getProgramId(), request.getCenterId());
     if (centerProgramFee == null)
     {
@@ -533,143 +536,64 @@ public class FeeService extends BaseService
     workbook.dispose();
     return file;
   }
-  // shubham for collection fee list of txid ref
-  public File collectionFeeReport2(StudentFeeSlipRequest slipRequest) throws IOException
+
+
+  //----------------------------shubham ---------------------------------------------------------------------------//
+
+  // shubham for feeReport with extraout hours
+  public File FeeReport2(FeeReportRequest slipRequest) throws IOException
   {
-    if (StringUtils.isEmpty(slipRequest.getPeriod()))
-    {
-      throw new ValidationException("Period is required.");
-    }
-
-    Set<String> set = new HashSet<>();
-    set.add("Paid");
-    set.add("PartiallyPaid");
-    set.add("Raised");
-    if (!(!StringUtils.isEmpty(slipRequest.getReportType()) && set.contains(slipRequest.getReportType())))
-    {
-      throw new ValidationException("Report type is required.");
-    }
-
-    PaymentStatus reportType = PaymentStatus.valueOf(slipRequest.getReportType());
-
     if(!slipRequest.getCenterCode().equals("All")){
       Center center = centerRepository.findByCode(slipRequest.getCenterCode());
       if (center == null)
       {
         throw new ValidationException(String.format("Cannot locate Center[code = %s]", slipRequest.getCenterCode()));
       }
-
       if (!hasCenter(slipRequest.getCenterCode()))
       {
         throw new ValidationException(String.format("Unauthorized access to center[code=%s] user[email=%s].", slipRequest.getCenterCode(), getUser().getEmail()));
       }
     }
-
-    List<StudentFeePaymentRequest> slips = studentService.listFeeSlips2(slipRequest);
-
-   // slips = slips.stream().filter(s -> s.getPaymentStatus() == reportType).collect(Collectors.toList());
-
-    File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
-    if (!file.exists())
-    {
-      file.createNewFile();
-    }
-    //FileOutputStream fileOutputStream = new FileOutputStream(new File("extrahoursReport.xlsx"));
-    FileOutputStream fileOutputStream = new FileOutputStream(file);
-
-
-
-    SXSSFWorkbook workbook = new SXSSFWorkbook();
-    createStyle(workbook);
-    Sheet feeCollectionReportSheet = workbook.createSheet("response");
-    int endHeader = FeeCollectionExcelReport2.createHeader(feeCollectionReportSheet, 0, reportType);
-    int i,rowNum=1;
-
-    BigDecimal total = BigDecimal.ZERO;
-    BigDecimal paid = BigDecimal.ZERO;
-    BigDecimal due = BigDecimal.ZERO;
-
-    rowNum=0+endHeader;
-    for (i = 0; i < slips.size(); i++)
-    {
-      StudentFeePaymentRequest slip = slips.get(i);
-      // calculate extra hours
-      FeeCollectionExcelReport2 report = new FeeCollectionExcelReport2(slip/*,new BigDecimal(calculateExtraHours(slip.getStudent(),slipRequest.getQuarter(),slipRequest.getYear()))*/);
-      report.export(feeCollectionReportSheet, rowNum , reportType);
-      total = total.add(report.getRaisedAmount());
-      paid = paid.add(report.getPaidAmount());
-      due = due.add(report.getDueAmount());
-      rowNum=report.getRowNum();
-      rowNum++;
-    }
-    Row row = feeCollectionReportSheet.createRow(rowNum + endHeader);
-        row.createCell(10, Cell.CELL_TYPE_NUMERIC).setCellValue(total.doubleValue());
-        row.createCell(11, Cell.CELL_TYPE_NUMERIC).setCellValue(paid.doubleValue());
-        row.createCell(14, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
-
-    workbook.write(fileOutputStream);
-    workbook.dispose();
-    return file;
-  }
-  // shubham for feeReport with extraout hours
-  public File FeeReport2(FeeReportRequest slipRequest) throws IOException
- {
-   if(!slipRequest.getCenterCode().equals("All")){
-     Center center = centerRepository.findByCode(slipRequest.getCenterCode());
-     if (center == null)
-     {
-       throw new ValidationException(String.format("Cannot locate Center[code = %s]", slipRequest.getCenterCode()));
-     }
-     if (!hasCenter(slipRequest.getCenterCode()))
-     {
-       throw new ValidationException(String.format("Unauthorized access to center[code=%s] user[email=%s].", slipRequest.getCenterCode(), getUser().getEmail()));
-     }
-   }
     List<StudentFeePaymentRequest> slips = studentService.listFeeReport(slipRequest);
 
-    // slips = slips.stream().filter(s -> s.getPaymentStatus() == reportType).collect(Collectors.toList());
-
     File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
     if (!file.exists())
     {
       file.createNewFile();
     }
-    //FileOutputStream fileOutputStream = new FileOutputStream(new File("extrahoursReport.xlsx"));
     FileOutputStream fileOutputStream = new FileOutputStream(file);
     SXSSFWorkbook workbook = new SXSSFWorkbook();
     createStyle(workbook);
-    Sheet feeCollectionReportSheet = workbook.createSheet("response");
-    int endHeader = FeeReportExcel2.createHeader(feeCollectionReportSheet, 0);
+    Sheet feeReportSheet = workbook.createSheet("FeeReport");
+    int topHeader = FeeReportExcel2.createHeader(feeReportSheet, 0);
     int i,rowNum=1;
 
-    BigDecimal total = BigDecimal.ZERO;
+    BigDecimal raised = BigDecimal.ZERO;
     BigDecimal paid = BigDecimal.ZERO;
     BigDecimal due = BigDecimal.ZERO;
 
-    rowNum=0+endHeader;
-    for (i = 0; i < slips.size(); i++)
+    rowNum=0+topHeader;
+    for (StudentFeePaymentRequest slip : slips)
     {
-      StudentFeePaymentRequest slip = slips.get(i);
-      // calculate extra hours
-      FeeReportExcel2 report = new FeeReportExcel2(slip,studentFeeRepository/*,new BigDecimal(calculateExtraHours(slip.getStudent(),,slipRequest.getQuarter(),slipRequest.getYear())*/);
-      report.export(feeCollectionReportSheet, rowNum);
-      total = total.add(report.getRaisedAmount());
+      FeeReportExcel2 report = new FeeReportExcel2(slip);
+      report.export(feeReportSheet, rowNum);
+
+      raised = raised.add(report.getRaisedAmount());
       paid = paid.add(report.getPaidAmount());
       due = due.add(report.getDueAmount());
       rowNum=report.getRowNum();
       rowNum++;
     }
-    Row row = feeCollectionReportSheet.createRow(rowNum + endHeader);
-    row.createCell(10, Cell.CELL_TYPE_NUMERIC).setCellValue(total.doubleValue());
-    row.createCell(11, Cell.CELL_TYPE_NUMERIC).setCellValue(paid.doubleValue());
-    row.createCell(14, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
+    Row row = feeReportSheet.createRow(rowNum + topHeader);
+    row.createCell(5, Cell.CELL_TYPE_NUMERIC).setCellValue(raised.doubleValue());
+    row.createCell(6, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
 
     workbook.write(fileOutputStream);
     workbook.dispose();
     return file;
   }
   // shubham for feeReport with extraout hours
-  public List<StudentFeeSlipResponse3> FeeReportTable2(FeeReportRequest slipRequest) throws IOException
+  public List<StudentFeeSlipResponse3> FeeReportTable(FeeReportRequest slipRequest) throws IOException
   {
     if(!slipRequest.getCenterCode().equals("All")){
       Center center = centerRepository.findByCode(slipRequest.getCenterCode());
@@ -683,47 +607,6 @@ public class FeeService extends BaseService
       }
     }
     return studentService.listFeeReport2(slipRequest);
-
-//    // slips = slips.stream().filter(s -> s.getPaymentStatus() == reportType).collect(Collectors.toList());
-//
-//    File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
-//    if (!file.exists())
-//    {
-//      file.createNewFile();
-//    }
-//    FileOutputStream fileOutputStream = new FileOutputStream(new File("extrahoursReport.xlsx"));
-//    //FileOutputStream fileOutputStream = new FileOutputStream(file);
-//    SXSSFWorkbook workbook = new SXSSFWorkbook();
-//    createStyle(workbook);
-//    Sheet feeCollectionReportSheet = workbook.createSheet("response");
-//    int endHeader = FeeReportExcel2.createHeader(feeCollectionReportSheet, 0);
-//    int i,rowNum=1;
-//
-//    BigDecimal total = BigDecimal.ZERO;
-//    BigDecimal paid = BigDecimal.ZERO;
-//    BigDecimal due = BigDecimal.ZERO;
-//
-//    rowNum=0+endHeader;
-//    for (i = 0; i < slips.size(); i++)
-//    {
-//      StudentFeePaymentRequest slip = slips.get(i);
-//      // calculate extra hours
-//      FeeReportExcel2 report = new FeeReportExcel2(slip/*,new BigDecimal(calculateExtraHours(slip.getStudent(),,slipRequest.getQuarter(),slipRequest.getYear())*/);
-//      report.export(feeCollectionReportSheet, rowNum);
-//      total = total.add(report.getRaisedAmount());
-//      paid = paid.add(report.getPaidAmount());
-//      due = due.add(report.getDueAmount());
-//      rowNum=report.getRowNum();
-//      rowNum++;
-//    }
-//    Row row = feeCollectionReportSheet.createRow(rowNum + endHeader);
-//    row.createCell(10, Cell.CELL_TYPE_NUMERIC).setCellValue(total.doubleValue());
-//    row.createCell(11, Cell.CELL_TYPE_NUMERIC).setCellValue(paid.doubleValue());
-//    row.createCell(14, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
-//
-//    workbook.write(fileOutputStream);
-//    workbook.dispose();
-//    return file;
   }
   // shubham
   public List<StudentFeeSlipResponse2> collectionFeeReportTable2(StudentFeeSlipRequest slipRequest) throws IOException
@@ -732,32 +615,36 @@ public class FeeService extends BaseService
     {
       throw new ValidationException("Period is required.");
     }
-
-    Set<String> set = new HashSet<>();
-    set.add("Paid");
-    set.add("PartiallyPaid");
-    set.add("Raised");
-    if (!(!StringUtils.isEmpty(slipRequest.getReportType()) && set.contains(slipRequest.getReportType())))
-    {
-      throw new ValidationException("Report type is required.");
-    }
-    PaymentStatus reportType = PaymentStatus.valueOf(slipRequest.getReportType());
-
     if(!slipRequest.getCenterCode().equals("All")){
-    Center center = centerRepository.findByCode(slipRequest.getCenterCode());
-    if (center == null)
-    {
-      throw new ValidationException(String.format("Cannot locate Center[code = %s]", slipRequest.getCenterCode()));
-    }
+      Center center = centerRepository.findByCode(slipRequest.getCenterCode());
+      if (center == null)
+      {
+        throw new ValidationException(String.format("Cannot locate Center[code = %s]", slipRequest.getCenterCode()));
+      }
 
-    if (!hasCenter(slipRequest.getCenterCode()))
-    {
-      throw new ValidationException(String.format("Unauthorized access to center[code=%s] user[email=%s].", slipRequest.getCenterCode(), getUser().getEmail()));
+      if (!hasCenter(slipRequest.getCenterCode()))
+      {
+        throw new ValidationException(String.format("Unauthorized access to center[code=%s] user[email=%s].", slipRequest.getCenterCode(), getUser().getEmail()));
+      }
     }
-  }
     return studentService.listFeeSlipsTable2(slipRequest);
   }
 
+  public List<StudentFeeSlipResponse3> feeReportTable2(FeeReportRequest slipRequest) throws IOException
+  {
+    if(!slipRequest.getCenterCode().equals("All")){
+      Center center = centerRepository.findByCode(slipRequest.getCenterCode());
+      if (center == null)
+      {
+        throw new ValidationException(String.format("Cannot locate Center[code = %s]", slipRequest.getCenterCode()));
+      }
+      if (!hasCenter(slipRequest.getCenterCode()))
+      {
+        throw new ValidationException(String.format("Unauthorized access to center[code=%s] user[email=%s].", slipRequest.getCenterCode(), getUser().getEmail()));
+      }
+    }
+    return studentService.listFeeReport2(slipRequest);
+  }
   // shubham
   public int calculateExtraHours(Student student,int quarter,int year){
     int extra=0;
@@ -769,16 +656,16 @@ public class FeeService extends BaseService
         endDate =new LocalDate(year, 6, 30).toDate();
         break;
       case 3:
-         startDate =new LocalDate(year, 7, 1).toDate();
-         endDate =new LocalDate(year, 9, 30).toDate();
+        startDate =new LocalDate(year, 7, 1).toDate();
+        endDate =new LocalDate(year, 9, 30).toDate();
         break;
       case 4:
-         startDate =new LocalDate(year, 10, 1).toDate();
-         endDate =new LocalDate(year, 12, 30).toDate();
+        startDate =new LocalDate(year, 10, 1).toDate();
+        endDate =new LocalDate(year, 12, 30).toDate();
         break;
       case 1:
-         startDate =new LocalDate(year+1, 1, 1).toDate();
-         endDate =new LocalDate(year+1, 3, 30).toDate();
+        startDate =new LocalDate(year+1, 1, 1).toDate();
+        endDate =new LocalDate(year+1, 3, 30).toDate();
         break;
     }
 
@@ -806,8 +693,73 @@ public class FeeService extends BaseService
             int hours = p.getHours();
             extra+=hours;
           }
-      }
+        }
     }
     return extra;
   }
+  // shubham for collection fee list of txid ref
+
+  public File collectionFeeReport2(StudentFeeSlipRequest slipRequest) throws IOException
+  {
+    if (StringUtils.isEmpty(slipRequest.getPeriod()))
+    {
+      throw new ValidationException("Period is required.");
+    }
+    if(!slipRequest.getCenterCode().equals("All")){
+      Center center = centerRepository.findByCode(slipRequest.getCenterCode());
+      if (center == null)
+      {
+        throw new ValidationException(String.format("Cannot locate Center[code = %s]", slipRequest.getCenterCode()));
+      }
+
+      if (!hasCenter(slipRequest.getCenterCode()))
+      {
+        throw new ValidationException(String.format("Unauthorized access to center[code=%s] user[email=%s].", slipRequest.getCenterCode(), getUser().getEmail()));
+      }
+    }
+    List<StudentFeePaymentRequest> slips = studentService.listFeeSlips2(slipRequest);
+    BigDecimal Raised = BigDecimal.ZERO;
+    BigDecimal paid = BigDecimal.ZERO;
+    BigDecimal due = BigDecimal.ZERO;
+
+    File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
+    if (!file.exists()) {
+      try {
+        file.createNewFile();
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
+        createStyle(workbook);
+        Sheet feeCollectionReportSheet = workbook.createSheet("Fee Collection");// creating a blank sheet
+        int topHeader = FeeCollectionExcelReport2.createHeader(feeCollectionReportSheet, 0);
+        int i, rowNum = 1;
+
+        rowNum = 0 + topHeader;
+        for (i = 0; i < slips.size(); i++) {
+          StudentFeePaymentRequest slip = slips.get(i);
+          // calculate extra hours
+          FeeCollectionExcelReport2 report = new FeeCollectionExcelReport2(slip);
+          report.export(feeCollectionReportSheet, rowNum);
+          Raised = Raised.add(report.getRaisedAmount());
+          paid = paid.add(report.getPaidAmount());
+          due = due.add(report.getDueAmount());
+          rowNum = report.getRowNum();
+          //rowNum++;
+        }
+        Row row = feeCollectionReportSheet.createRow(rowNum + topHeader);
+        row.createCell(10, Cell.CELL_TYPE_NUMERIC).setCellValue(Raised.doubleValue());
+        row.createCell(11, Cell.CELL_TYPE_NUMERIC).setCellValue(paid.doubleValue());
+        row.createCell(14, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
+
+
+        workbook.write(fileOutputStream);
+        workbook.dispose();
+        return file;
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return file;
+  }
+  //--------------------------------------shubham ---------------------------------------------------------------
+
 }
