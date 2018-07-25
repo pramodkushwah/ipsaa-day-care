@@ -61,7 +61,7 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
     //
     //     }
     // };
-
+    alert();
     $scope.initRunningSalary = {
         pfd: false,
         esid: false,
@@ -79,6 +79,7 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
         tiffin: 0.0,
         uniform: 0.0,
         washing: 0.0,
+        extraMonthlyFixedAllowance: 0.0,
         totalEarning: 0.0,
         esi: 0.0,
         pf: 0.0,
@@ -207,7 +208,7 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
         //Roundoff
         $scope.runningSalary.totalEarning = Math.round(($scope.runningSalary.totalEarning * 100) / 100);
         $scope.runningSalary.totalDeduction = Math.round(($scope.runningSalary.totalDeduction * 100) / 100);
-        $scope.runningSalary.netSalary = Math.round(($scope.runningSalary.netSalary * 100) / 100);
+        $scope.runningSalary.netSalary = Math.round(($scope.runningSalary.netSalary * 100) / 100); 
     }
 
     $scope.addSalary = function () {
@@ -257,7 +258,9 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
             washing: salary.washing,
             retention: salary.retention,
             tds: salary.tds,
-            advance: salary.advance
+            advance: salary.advance,
+            extraMonthlyAllowance: salary.extraMonthlyFixedAllowance
+
         };
 
         request.esid = !!salary.esid;
