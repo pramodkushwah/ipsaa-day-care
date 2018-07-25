@@ -61,7 +61,6 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
     //
     //     }
     // };
-    alert();
     $scope.initRunningSalary = {
         pfd: false,
         esid: false,
