@@ -98,4 +98,9 @@ public class SalaryUtils
     }
     return gross.multiply(esiPercentage).divide(HUNDRED, 2);
   }
+  //-----------------------------------------------------shubham-----------------------------------------------------
+  public static BigDecimal calculateGrossV2(EmployeeSalary salary)
+  {
+    return salary.getBasic().add(salary.getHra()).add(salary.getConveyance()).add(salary.getSpecial()).add(salary.getExtraMonthlyAllowance()).subtract(salary.getPfr());
+  }
 }

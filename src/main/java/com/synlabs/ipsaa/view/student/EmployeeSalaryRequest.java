@@ -6,6 +6,7 @@ import com.synlabs.ipsaa.view.common.Request;
 import java.math.BigDecimal;
 
 import static com.synlabs.ipsaa.util.SalaryUtils.calculateGross;
+import static com.synlabs.ipsaa.util.SalaryUtils.calculateGrossV2;
 import static java.math.BigDecimal.ZERO;
 
 /**
@@ -91,7 +92,8 @@ public class EmployeeSalaryRequest implements Request
       salary.setProfessionalTax(ZERO);
     }
 
-    salary.setGrossSalary(calculateGross(salary));
+    //modify by shubham calculateGrossV2 by calculateGross
+    salary.setGrossSalary(calculateGrossV2(salary));
     salary.update();
     return salary;
   }
@@ -364,5 +366,18 @@ public class EmployeeSalaryRequest implements Request
   public void setNetSalary(BigDecimal netSalary)
   {
     this.netSalary = netSalary;
+  }
+
+
+  //----------------------------------shubham -------------------------------------------------------------
+  // shubham
+  private BigDecimal extraMonthlyAllowance;
+
+  public BigDecimal getExtraMonthlyAllowance() {
+    return extraMonthlyAllowance;
+  }
+
+  public void setExtraMonthlyAllowance(BigDecimal extraMonthlyAllowance) {
+    this.extraMonthlyAllowance = extraMonthlyAllowance;
   }
 }
