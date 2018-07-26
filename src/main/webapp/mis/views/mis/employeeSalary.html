@@ -129,7 +129,7 @@
         <div class="col-md-3">
           <div class="form-group">
             <label class="control-label">Extra Monthly Fixed Allowance</label>
-            <input class="form-control" name="extra_allowance" type="number" ng-model="runningSalary.extraMonthlyAllowance" ng-readonly="show">
+            <input class="form-control" name="extra_allowance" type="number" ng-model="runningSalary.extraMonthlyAllowance" ng-readonly="show" ng-change="onChange()">
             <span class="material-input"></span>
           </div>
         </div>
@@ -147,7 +147,7 @@
       <div class="row">
         <div class="col-md-3">
           <div class="form-group">
-            <input type="checkbox" name="esid" ng-model="runningSalary.esid">
+            <input type="checkbox" name="esid" ng-model="runningSalary.esid" ng-change="onChange()">
             <label class="control-label">ESI*</label>
             <input class="form-control" name="esi" type="number"
                    ng-disabled="!runningSalary.esid"

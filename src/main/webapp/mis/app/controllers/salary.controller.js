@@ -124,6 +124,7 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
         return salary.basic +
             salary.hra +
             salary.conveyance +
+            salary.extraMonthlyAllowance +
             salary.special -
             salary.pfr;
     }
@@ -314,7 +315,7 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
         }
     };
 
-    function init() {
+    function init(func) {
         $http.get('/api/center/').then(function (response) {
             $scope.centerList = response.data;
         }, function (response) {
@@ -331,6 +332,12 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
         $http.get('/api/employee/salary').then(
             function (response) {
                 $scope.salaries = response.data;
+                // to insert 0 in place of null values of extraMonthlyAllowance
+                $scope.salaries.forEach(salary => {
+                    if(!salary.extraMonthlyAllowance) 
+                        salary.extraMonthlyAllowance = 0;
+                
+                });
             }, function (response) {
                 error(response.data.error);
             }
