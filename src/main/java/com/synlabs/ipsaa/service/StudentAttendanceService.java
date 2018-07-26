@@ -125,7 +125,7 @@ public class StudentAttendanceService extends BaseService
     }
 
 // shubham
-    int extra=countExtra(student,attendance,true);
+    int extra=countExtra(student,attendance,false);
     attendance.setExtraHours(attendance.getExtraHours()+extra);
     attendance.setCheckout(DateTime.now().toDate());
     attendanceRepository.saveAndFlush(attendance);

@@ -106,6 +106,8 @@ public class EmployeeSalaryResponse implements Response
     this.totalDeduction = employeeSalary.getTotalDeduction();
     this.netSalary = employeeSalary.getNetSalary();
     this.professionalTax = employeeSalary.getProfessionalTax();
+
+    // shubham
     this.extraMonthlyAllowance=employeeSalary.getExtraMonthlyAllowance();
   }
 

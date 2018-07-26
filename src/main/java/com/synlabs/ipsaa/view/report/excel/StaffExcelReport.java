@@ -24,16 +24,18 @@ public class StaffExcelReport {
 	String path;
 	int year;
 	int month;
+	private String er_code;
 	private EmployeePaySlipRepository employeePaySlipRepository;
 
 	public StaffExcelReport(List<EmployeeSalary> staff, StaffFilterRequest staffRequest, String path,
-			EmployeePaySlipRepository employeePaySlipRepository) {
+			EmployeePaySlipRepository employeePaySlipRepository,String er_code) {
 		this.staff = staff;
 		this.path = path;
 		this.staffRequest = staffRequest;
 		this.employeePaySlipRepository = employeePaySlipRepository;
 		this.year = staffRequest.getYear();
 		this.month = staffRequest.getMonth();
+		this.er_code=er_code;
 	}
 
 	public File createExcel() {
@@ -70,9 +72,8 @@ public class StaffExcelReport {
 
 	private boolean createList(EmployeeSalary staffR, Row row) // creating cells for each row
 	{
-
-		EmployeePaySlip slip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(staffR.getEmployee(), month,
-				year);
+		EmployeePaySlip slip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYearAndEmployerCode(staffR.getEmployee(), month,
+				year,er_code);
 		if (slip != null) {
 			Cell cell = row.createCell(0, Cell.CELL_TYPE_STRING);
 			cell.setCellValue(row.getRowNum());
@@ -98,7 +99,7 @@ public class StaffExcelReport {
 
 			cell = row.createCell(6, Cell.CELL_TYPE_STRING);
 			if (staffR.getEmployee().getProfile().getBan() != null) {
-				System.out.println(staffR.getEmployee().getProfile().getBan());
+				//System.out.println(staffR.getEmployee().getProfile().getBan());
 				cell.setCellValue(staffR.getEmployee().getProfile().getBan());
 			}
 			cell = row.createCell(7, Cell.CELL_TYPE_STRING);

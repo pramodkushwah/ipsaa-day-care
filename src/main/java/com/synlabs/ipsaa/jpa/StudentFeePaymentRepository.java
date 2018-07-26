@@ -2,6 +2,7 @@ package com.synlabs.ipsaa.jpa;
 
 import com.synlabs.ipsaa.entity.student.Student;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.enums.FeeDuration;
 import com.synlabs.ipsaa.enums.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,4 +26,11 @@ public interface StudentFeePaymentRepository extends JpaRepository<StudentFeePay
   StudentFeePaymentRequest findFirstByStudentOrderByCreatedDateDesc(Student student);
 
   StudentFeePaymentRequest findOneByTnxid(String tnxid);
+  // -----------------------------------------shubham ---------------------------------------------------------
+  List<StudentFeePaymentRequest> findByStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(ApprovalStatus ststus, FeeDuration period, int quarter, int year, String centerCode);
+  List<StudentFeePaymentRequest> findByStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(ApprovalStatus ststus, FeeDuration period, int quarter, int year);
+
+
+  List<StudentFeePaymentRequest> findByStudentActiveIsTrueAndStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(ApprovalStatus ststus, FeeDuration period, int quarter, int year, String centerCode);
+  List<StudentFeePaymentRequest> findByStudentActiveIsTrueAndStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(ApprovalStatus ststus, FeeDuration period, int quarter, int year);
 }

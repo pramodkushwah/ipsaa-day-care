@@ -160,6 +160,7 @@ public class EmployeePaySlipResponse implements Response
     this.otherAllowances = slip.getOtherAllowances();
     this.autoComment = slip.getAutoComment();
     this.comment = slip.getComment();
+    // shubam
   }
 
   public boolean isIslock() {
@@ -429,4 +430,5 @@ public class EmployeePaySlipResponse implements Response
   {
     return employerName;
   }
+
 }

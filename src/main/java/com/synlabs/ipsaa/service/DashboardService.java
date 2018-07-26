@@ -26,6 +26,8 @@ import com.synlabs.ipsaa.view.common.StatsResponse;
 import com.synlabs.ipsaa.view.common.UserResponse;
 import com.synlabs.ipsaa.view.inquiry.FollowUpReportResponse;
 import com.synlabs.ipsaa.view.staff.DashStaffResponse;
+import com.synlabs.ipsaa.view.staff.StaffNewJoinings;
+import com.synlabs.ipsaa.view.staff.StaffNewLeavings;
 import com.synlabs.ipsaa.view.student.DashStudentFeeResponse;
 import com.synlabs.ipsaa.view.student.DashStudentResponse;
 import com.synlabs.ipsaa.view.student.ParentSummaryResponse;
@@ -728,5 +730,136 @@ public class DashboardService extends BaseService
       list.add(response);
     }
     return list;
+  }
+
+  // -----------------------------------shubham---------------------------------------------------------------
+  public List<StaffNewJoinings> getNewJoinigList(DashboardRequest request)
+  {
+    List<Center> centers = getCenters(request);
+    Calendar cal = Calendar.getInstance();
+    Date today=cal.getTime();
+    cal.add(Calendar.MONTH, -2);
+    Date backDate=cal.getTime();
+
+    JPAQuery<Employee> query = new JPAQuery<>(entityManager);
+    QEmployee employee = QEmployee.employee;
+    query.select(employee).from(employee)
+            .where(employee.profile.doj.between(backDate,today))
+            .where(employee.costCenter.in(centers));
+    List<Employee> employees=query.fetch();
+    return employees.stream().map(StaffNewJoinings::new).collect(Collectors.toList());
+  }
+
+  public List<StaffNewLeavings> getNewLeavingsList(DashboardRequest request)
+  {
+    List<Center> centers = getCenters(request);
+    Calendar cal = Calendar.getInstance();
+    Date today=cal.getTime();
+    cal.add(Calendar.MONTH, -2);
+    Date backDate=cal.getTime();
+    JPAQuery<Employee> query = new JPAQuery<>(entityManager);
+    QEmployee employee = QEmployee.employee;
+    query.select(employee).from(employee)
+            .where(employee.profile.dol.between(backDate,today))
+            .where(employee.costCenter.in(centers));
+    List<Employee> employees=query.fetch();
+    return employees.stream().map(StaffNewLeavings::new).collect(Collectors.toList());
+  }
+  private int countNewJoinigs(List<Center> centers)
+  {
+    Calendar cal = Calendar.getInstance();
+    Date today=cal.getTime();
+    cal.add(Calendar.MONTH, -2);
+    Date backDate=cal.getTime();
+
+    JPAQuery<Integer> query = new JPAQuery<>(entityManager);
+    QEmployee employee = QEmployee.employee;
+    query.select(employee).from(employee)
+            .where(employee.profile.doj.between(backDate,today))
+            .where(employee.costCenter.in(centers));
+    return (int) query.fetchCount();
+  }
+  private int countNewLeavings(List<Center> centers)
+  {
+    Calendar cal = Calendar.getInstance();
+    Date today=cal.getTime();
+    cal.add(Calendar.MONTH, -2);
+    Date backDate=cal.getTime();
+
+    JPAQuery<Integer> query = new JPAQuery<>(entityManager);
+    QEmployee employee = QEmployee.employee;
+    query.select(employee).from(employee)
+            .where(employee.profile.dol.between(backDate,today))
+            .where(employee.costCenter.in(centers));
+    return (int) query.fetchCount();
+  }
+
+  public StatsResponse getStatsV2(DashboardRequest request)
+  {
+    Set<String> dashboards = new HashSet<>();
+    for (Role role : getUser().getRoles())
+    {
+      Collections.addAll(dashboards, StringUtils.isEmpty(role.getDashboard()) ? new String[0] : role.getDashboard().split(","));
+    }
+
+    dashboards = dashboards.stream().map(String::trim).collect(Collectors.toSet());
+
+    StatsResponse response = new StatsResponse();
+    List<Center> centers = getCenters(request);
+    int studentCount = countStudents(centers);
+    int corporateStudentCount = countStudents(centers, true);
+    for (String dashboard : dashboards)
+    {
+      switch (dashboard)
+      {
+        case "user":
+          response.setUsers(getUserCount(centers));
+          break;
+        case "student":
+          //1. total students
+          response.setStudents(studentCount);
+          response.setCorporateStudents(corporateStudentCount);
+
+          //2. present today
+          int presentStudent = countPresentStudents(centers);
+          response.setStudentPresent(presentStudent);
+          break;
+        case "parent":
+          response.setParentUsers(getStudentParentCount(centers));
+          break;
+        case "center":
+          //0. total centers from query
+          response.setCenters(centers.size());
+
+          //3. capacity and utilisation
+          long capacity = countCenterCapacity(centers);
+          response.setCapacity((int) capacity);
+          response.setUtilisation((100.0 * studentCount) / (capacity * 1.0));
+
+          break;
+        case "staff":
+          //4. staff count, total staff cost
+          int staffcount = countStaff(centers);
+          response.setStaffCount(staffcount);
+
+          //6.
+          int staffCost = staffCost(centers);
+          response.setStaffCost(staffCost);
+
+          int presentStaff = countPresentStaff(centers);
+          response.setStaffPresent(presentStaff);
+
+          int newJoinnigs=countNewJoinigs(centers);
+          response.setNewJoinings(newJoinnigs);
+
+          int newLeavings=countNewLeavings(centers);
+          response.setNewLeavings(newLeavings);
+          break;
+        case "followup":
+          calculateFollowUps(request, response);
+          break;
+      }
+    }
+    return response;
   }
 }
