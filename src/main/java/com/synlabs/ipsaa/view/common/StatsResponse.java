@@ -192,13 +192,14 @@ public void setStaffPresent(int staffPresent) {
 
 // -----------------------------------------------shubham --------------------------------------------------
   private int newJoinings;
-  private int newLivings;
-  public int getNewLivings() {
-    return newLivings;
+  private int newLeavings;
+
+  public int getNewLeavings() {
+    return newLeavings;
   }
 
-  public void setNewLivings(int newLivings) {
-    this.newLivings = newLivings;
+  public void setNewLeavings(int newLeavings) {
+    this.newLeavings = newLeavings;
   }
 
   public int getNewJoinings() {

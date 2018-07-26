@@ -49,12 +49,6 @@ public class ReportController {
 	@Autowired
 	private StaffAttendanceService staffAttendanceService;
 	@Autowired
-	private EmployeePaySlipRepository employeePaySlipRepository;
-
-	@Value("${ipsaa.export.directory}")
-	private String exportDir;
-
-	@Autowired
 	private FeeService feeService;
 	@Autowired
 	private StudentFeeRepository studentFeeRepository;
@@ -219,12 +213,7 @@ public class ReportController {
 	public void staffCollectionExcel(HttpServletResponse response, @RequestBody StaffFilterRequest staffRequest)
 			throws IOException {
 		// modifiy by shubham
-		List<EmployeeSalary> list = staffService.getEmployeeSalary();
-		if (staffRequest.getCenterCode() != null)
-			list.stream().filter(e -> e.getEmployee().getCostCenter().getName().equals(staffRequest.getCenterCode()));
-
-		StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDir, employeePaySlipRepository);
-		File file = excel.createExcel();
+		File file = staffService.getEmployeeSalary(staffRequest);
 
 		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
 				staffRequest.getEmployerCode(), staffRequest.getMonth(), staffRequest.getYear()));

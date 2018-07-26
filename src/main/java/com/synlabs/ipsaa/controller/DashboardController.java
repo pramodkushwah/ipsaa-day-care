@@ -6,6 +6,8 @@ import com.synlabs.ipsaa.view.common.StatsResponse;
 import com.synlabs.ipsaa.view.common.UserResponse;
 import com.synlabs.ipsaa.view.inquiry.FollowUpReportResponse;
 import com.synlabs.ipsaa.view.staff.DashStaffResponse;
+import com.synlabs.ipsaa.view.staff.StaffNewJoinings;
+import com.synlabs.ipsaa.view.staff.StaffNewLeavings;
 import com.synlabs.ipsaa.view.student.DashStudentFeeResponse;
 import com.synlabs.ipsaa.view.student.DashStudentResponse;
 import com.synlabs.ipsaa.view.student.ParentSummaryResponse;
@@ -91,4 +93,17 @@ public class DashboardController
     return dashboardService.followupReport(request);
   }
 
+  // ----------------------------------------shubham ----------------------------------------------------------
+  @PostMapping("/dash/newjoinings")
+  @Secured(DASHBOARD_STATS)
+  public List<StaffNewJoinings> getNewJoinings(@RequestBody DashboardRequest request)
+  {
+    return dashboardService.getNewJoinigList(request);
+  }
+  @PostMapping("/dash/newleavings")
+  @Secured(DASHBOARD_STATS)
+  public List<StaffNewLeavings> getNewLEavings(@RequestBody DashboardRequest request)
+  {
+    return dashboardService.getNewLeavingsList(request);
+  }
 }
