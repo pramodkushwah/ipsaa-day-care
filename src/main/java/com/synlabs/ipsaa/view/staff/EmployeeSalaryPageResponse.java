@@ -15,6 +15,10 @@ public class EmployeeSalaryPageResponse extends PageResponse
 {
   private List<EmployeeSalaryResponse> employeeSalaryList = new ArrayList<>();
 
+  public List<EmployeeSalaryResponse> getEmployeeSalaryList()
+  {
+    return employeeSalaryList;
+  }
   public EmployeeSalaryPageResponse(int pageSize, int pageNumber, int totalPages, List<EmployeeSalaryResponse> employeeSalaryList)
   {
     super(pageSize, pageNumber, totalPages);
@@ -28,8 +32,4 @@ public class EmployeeSalaryPageResponse extends PageResponse
 
   }
 
-  public List<EmployeeSalaryResponse> getEmployeeSalaryList()
-  {
-    return employeeSalaryList;
-  }
 }

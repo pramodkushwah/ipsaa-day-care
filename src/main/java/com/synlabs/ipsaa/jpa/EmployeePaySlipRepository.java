@@ -15,4 +15,7 @@ public interface EmployeePaySlipRepository extends JpaRepository<EmployeePaySlip
   EmployeePaySlip findOneByEmployeeAndMonthAndYear(Employee employee, Integer month, Integer year);
 
   List<EmployeePaySlip> findByEmployerIdAndMonthAndYear(Long employerId, Integer month, Integer year);
+  //------------------------------shubham-----------------------------------------------------------
+
+  EmployeePaySlip findOneByEmployeeAndMonthAndYearAndEmployerCode(Employee employee, Integer month, Integer year,String code);
 }

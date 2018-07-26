@@ -93,6 +93,7 @@ public class EmployeeSalaryRequest implements Request
     }
 
     //modify by shubham calculateGrossV2 by calculateGross
+    salary.setExtraMonthlyAllowance(extraMonthlyAllowance);
     salary.setGrossSalary(calculateGrossV2(salary));
     salary.update();
     return salary;

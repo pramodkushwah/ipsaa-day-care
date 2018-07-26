@@ -20,6 +20,7 @@ import com.synlabs.ipsaa.store.FileStore;
 import com.synlabs.ipsaa.view.batchimport.ImportEmployee;
 import com.synlabs.ipsaa.view.batchimport.ImportSalary;
 import com.synlabs.ipsaa.view.center.CenterRequest;
+import com.synlabs.ipsaa.view.report.excel.StaffExcelReport;
 import com.synlabs.ipsaa.view.staff.*;
 import org.apache.commons.io.FilenameUtils;
 import org.jxls.common.Context;
@@ -56,6 +57,9 @@ public class StaffService extends BaseService
 
   @Value("${ipsaa.export.directory}")
   private String exportDirectory;
+
+  @Autowired
+  private EmployeePaySlipRepository employeePaySlipRepository;
 
   @Autowired
   private FileStore fileStore;
@@ -165,8 +169,12 @@ public class StaffService extends BaseService
     return employeeRepository.findOne(request.getId());
   }
 // shubham
-  public List<EmployeeSalary> getEmployeeSalary(){
-   return employeeSalaryRepository.findByEmployeeActiveTrue();
+  public File getEmployeeSalary(StaffFilterRequest staffRequest){
+    List<EmployeeSalary> list;
+
+    list= employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
+    StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository,staffRequest.getEmployerCode());
+    return excel.createExcel(); // returning file
   }
 
   @Transactional

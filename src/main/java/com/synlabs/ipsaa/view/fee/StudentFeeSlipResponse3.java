@@ -17,69 +17,50 @@ public class StudentFeeSlipResponse3 implements Response
   private String     group;
   private String     program;
   private String     center;
-  //private int        month;
-  private String     transportFee;
-  private int        quarter;
   private int        year;
   private BigDecimal fee;
-  private BigDecimal extraCharge;
-  private BigDecimal latePaymentCharge;
   private BigDecimal totalFee;
-  private String     invoiceDate;
   private String     status;
-  private String     comments;
-  private String     feeDuration;
-  private BigDecimal deposit;
-  private BigDecimal annualFee;
   private BigDecimal payableAmount;
-  private BigDecimal cgst;
-  private BigDecimal sgst;
-  private BigDecimal igst;
-  private BigDecimal balance;
-  private BigDecimal adjust;
-  private String     autoComments;
-  private boolean generateActive;
 
  // private List<StudentFeePaymentResponse> payments;
 
-  public BigDecimal getIgst()
+
+  public StudentFeeSlipResponse3(StudentFeePaymentRequest slip)
   {
-    return igst;
-  }
-  public StudentFeeSlipResponse3(StudentFeePaymentRequest slip,StudentFeeRepository studentFeeRepository)
-  {
-    StudentFee fee=null;
-      fee = studentFeeRepository.findByStudent(slip.getStudent());
     this.center=slip.getStudent().getCenterName();
-    this.transportFee=fee.getTransportFee().toString();
     this.id = slip.getId();
     this.fullName = slip.getStudent().getProfile().getFullName();
     this.group = slip.getStudent().getGroup().getName();
     this.program = slip.getStudent().getProgram().getName();
-    //this.month = slip.getMonth();
-    this.quarter = slip.getQuarter();
     this.year = slip.getYear();
-    this.extraCharge = slip.getExtraCharge();
-    this.latePaymentCharge = slip.getLatePaymentCharge();
     this.totalFee = slip.getTotalFee();
     this.fee = slip.getBaseFee();
     this.status = slip.getPaymentStatus().name();
-    this.feeDuration = slip.getFeeDuration().name();
-    this.comments = slip.getComments();
-    this.invoiceDate = slip.getInvoiceDate() == null ? null : slip.getInvoiceDate().toString();
-    this.deposit = slip.getDeposit();
-    this.annualFee = slip.getAnnualFee();
     this.payableAmount = this.totalFee;
-    this.sgst = slip.getSgst();
-    this.cgst = slip.getCgst();
-    this.igst = slip.getIgst();
-    this.balance = slip.getBalance();
-    this.adjust = slip.getAdjust();
-    this.generateActive = slip.isGenerateActive();
 
-    this.adjust = this.adjust == null ? BigDecimal.ZERO : this.adjust;
-    this.balance = this.balance == null ? BigDecimal.ZERO : this.balance;
-    this.autoComments = slip.getAutoComments();
+    //this.transportFee=fee.getTransportFee().toString();
+    //StudentFee fee=null;
+    //fee = studentFeeRepository.findByStudent(slip.getStudent());
+    //this.month = slip.getMonth();
+    //this.quarter = slip.getQuarter();
+    //this.extraCharge = slip.getExtraCharge();
+    //this.latePaymentCharge = slip.getLatePaymentCharge();
+    //this.feeDuration = slip.getFeeDuration().name();
+    //this.comments = slip.getComments();
+    //this.invoiceDate = slip.getInvoiceDate() == null ? null : slip.getInvoiceDate().toString();
+    //this.deposit = slip.getDeposit();
+    //this.annualFee = slip.getAnnualFee();
+    //this.sgst = slip.getSgst();
+    //this.cgst = slip.getCgst();
+    //this.igst = slip.getIgst();
+    //this.balance = slip.getBalance();
+    //this.adjust = slip.getAdjust();
+    //this.generateActive = slip.isGenerateActive();
+
+//    this.adjust = this.adjust == null ? BigDecimal.ZERO : this.adjust;
+//    this.balance = this.balance == null ? BigDecimal.ZERO : this.balance;
+//    this.autoComments = slip.getAutoComments();
 //    if (slip.getPayments() != null && !slip.getPayments().isEmpty())
 //    {
 //      payments = new ArrayList<>(slip.getPayments().size());
@@ -88,50 +69,6 @@ public class StudentFeeSlipResponse3 implements Response
 //        this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
 //      });
 //    }
-  }
-
-  public boolean isGenerateActive() {
-	return generateActive;
-  }
-
-public String getAutoComments()
-  {
-    return autoComments;
-  }
-
-  public BigDecimal getAdjust()
-  {
-    return adjust;
-  }
-
-  public BigDecimal getBalance()
-  {
-    return balance;
-  }
-
-  public BigDecimal getCgst()
-  {
-    return cgst;
-  }
-
-  public BigDecimal getSgst()
-  {
-    return sgst;
-  }
-
-  public BigDecimal getPayableAmount()
-  {
-    return payableAmount;
-  }
-
-  public BigDecimal getDeposit()
-  {
-    return deposit;
-  }
-
-  public BigDecimal getAnnualFee()
-  {
-    return annualFee;
   }
 
   public Long getId()
@@ -153,17 +90,10 @@ public String getAutoComments()
   {
     return program;
   }
-
-//  public int getMonth()
-//  {
-//    return month;
-//  }
-
-  public int getQuarter()
+  public BigDecimal getPayableAmount()
   {
-    return quarter;
+    return payableAmount;
   }
-
   public int getYear()
   {
     return year;
@@ -174,24 +104,10 @@ public String getAutoComments()
     return fee;
   }
 
-  public BigDecimal getExtraCharge()
-  {
-    return extraCharge;
-  }
-
-  public BigDecimal getLatePaymentCharge()
-  {
-    return latePaymentCharge;
-  }
 
   public BigDecimal getTotalFee()
   {
     return totalFee;
-  }
-
-  public String getInvoiceDate()
-  {
-    return invoiceDate;
   }
 
   public String getStatus()
@@ -199,15 +115,97 @@ public String getAutoComments()
     return status;
   }
 
-  public String getComments()
-  {
-    return comments;
-  }
 
-  public String getFeeDuration()
-  {
-    return feeDuration;
-  }
+//
+//  public boolean isGenerateActive() {
+//	return generateActive;
+//  }
+//
+//public String getAutoComments()
+//  {
+//    return autoComments;
+//  }
+//
+//  public BigDecimal getAdjust()
+//  {
+//    return adjust;
+//  }
+//
+//public BigDecimal getIgst()
+//{
+//  return igst;
+//}
+//  public BigDecimal getBalance()
+//  {
+//    return balance;
+//  }
+//
+//  public BigDecimal getCgst()
+//  {
+//    return cgst;
+//  }
+//
+//  public BigDecimal getSgst()
+//  {
+//    return sgst;
+//  }
+//
+//  public int getQuarter()
+//  {
+//    return quarter;
+//  }
+//
+//  public BigDecimal getDeposit()
+//  {
+//    return deposit;
+//  }
+//
+//  public BigDecimal getAnnualFee()
+//  {
+//    return annualFee;
+//  }
+//  public String getInvoiceDate()
+//  {
+//    return invoiceDate;
+//  }
+//  public BigDecimal getExtraCharge()
+//  {
+//    return extraCharge;
+//  }
+//
+//  public BigDecimal getLatePaymentCharge()
+//  {
+//    return latePaymentCharge;
+//  }
+//
+//  public String getComments()
+//  {
+//    return comments;
+//  }
+//
+//  public String getFeeDuration()
+//  {
+//    return feeDuration;
+//  }
+//  public String getComments()
+//  {
+//    return comments;
+//  }
+//
+//  public String getFeeDuration()
+//  {
+//    return feeDuration;
+//  }
+
+
+
+//  public int getMonth()
+//  {
+//    return month;
+//  }
+
+
+
 
 //  public List<StudentFeePaymentResponse> getPayments()
 //  {
@@ -223,16 +221,16 @@ public String getAutoComments()
         ", group='" + group + '\'' +
         ", program='" + program + '\'' +
   //      ", month=" + month +
-        ", quarter=" + quarter +
+      //  ", quarter=" + quarter +
         ", year=" + year +
         ", fee=" + fee +
-        ", extraCharge=" + extraCharge +
-        ", latePaymentCharge=" + latePaymentCharge +
+       // ", extraCharge=" + extraCharge +
+       // ", latePaymentCharge=" + latePaymentCharge +
         ", totalFee=" + totalFee +
-        ", invoiceDate='" + invoiceDate + '\'' +
+       // ", invoiceDate='" + invoiceDate + '\'' +
         ", status='" + status + '\'' +
-        ", comment='" + comments + '\'' +
-        ", feeDuration='" + feeDuration + '\'' +
+       // ", comment='" + comments + '\'' +
+       // ", feeDuration='" + feeDuration + '\'' +
         '}';
   }
 }
