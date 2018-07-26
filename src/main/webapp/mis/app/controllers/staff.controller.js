@@ -414,6 +414,17 @@ app.controller('StaffController', function ($scope, $http, $localStorage, fileUp
             }
             $scope.workingStaff.profile.doj = $("#doj").val();
         });
+
+        $("#dol").on("dp.change", function() {
+          if (typeof $scope.workingStaff == "undefined") {
+            $scope.workingStaff = {};
+          }
+          if (typeof $scope.workingStaff.profile == "undefined") {
+            $scope.workingStaff.profile = {};
+          }
+          $scope.workingStaff.profile.dol = $("#dol").val();
+        });
+
         $("#dob").on("dp.change", function () {
             if (typeof $scope.workingStaff == 'undefined') {
                 $scope.workingStaff = {};
