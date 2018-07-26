@@ -2,18 +2,20 @@ package com.synlabs.ipsaa.view.staff;
 
 import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.staff.Employee;
+import com.synlabs.ipsaa.view.common.Request;
+import com.synlabs.ipsaa.view.common.Response;
 
 import java.util.Date;
 
-public class StaffNewLeavings {
+public class StaffNewLeavings  implements Response {
     private String name;
     private String designation;
     private Date dol;
     private String mobile;
-    private Center center;
+    private String center;
 
     public StaffNewLeavings(Employee employee) {
-       center= employee.getCostCenter();
+       center= employee.getCostCenter().getName();
        name=employee.getName();
        designation=employee.getDesignation();
        dol=employee.getProfile().getDol();
@@ -51,11 +53,11 @@ public class StaffNewLeavings {
         this.mobile = mobile;
     }
 
-    public Center getCenter() {
+    public String getCenter() {
         return center;
     }
 
-    public void setCenter(Center center) {
+    public void setCenter(String center) {
         this.center = center;
     }
 }

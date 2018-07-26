@@ -734,9 +734,7 @@ public class FeeService extends BaseService
         int i, rowNum = 1;
 
         rowNum = 0 + topHeader;
-        for (i = 0; i < slips.size(); i++) {
-          StudentFeePaymentRequest slip = slips.get(i);
-          // calculate extra hours
+        for (StudentFeePaymentRequest slip:slips) {
           FeeCollectionExcelReport2 report = new FeeCollectionExcelReport2(slip);
           report.export(feeCollectionReportSheet, rowNum);
           Raised = Raised.add(report.getRaisedAmount());
@@ -746,9 +744,11 @@ public class FeeService extends BaseService
           //rowNum++;
         }
         Row row = feeCollectionReportSheet.createRow(rowNum + topHeader);
-        row.createCell(10, Cell.CELL_TYPE_NUMERIC).setCellValue(Raised.doubleValue());
-        row.createCell(11, Cell.CELL_TYPE_NUMERIC).setCellValue(paid.doubleValue());
-        row.createCell(14, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
+        String formula="SUM(H3:H"+(rowNum+1)+")";
+        row.createCell(7, Cell.CELL_TYPE_FORMULA).setCellFormula(formula);
+
+        //row.createCell(11, Cell.CELL_TYPE_NUMERIC).setCellValue(paid.doubleValue());
+        //row.createCell(14, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
 
 
         workbook.write(fileOutputStream);
