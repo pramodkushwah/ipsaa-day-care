@@ -13,6 +13,7 @@ public class StaffNewLeavings  implements Response {
     private Date dol;
     private String mobile;
     private String center;
+    private boolean isActive;
 
     public StaffNewLeavings(Employee employee) {
        center= employee.getCostCenter().getName();
@@ -20,6 +21,15 @@ public class StaffNewLeavings  implements Response {
        designation=employee.getDesignation();
        dol=employee.getProfile().getDol();
        mobile=employee.getMobile();
+        this.isActive=employee.isActive();
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public String getName() {
