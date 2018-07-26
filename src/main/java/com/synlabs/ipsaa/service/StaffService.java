@@ -42,7 +42,9 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -654,7 +656,7 @@ public class StaffService extends BaseService
 //    return count <= 0;
 //  }
 
-  public void delete(StaffRequest request)
+  public void deleteV2(StaffRequest request)
   {
     Employee employee = employeeRepository.findOne(request.getId());
     if (employee == null)
@@ -664,6 +666,30 @@ public class StaffService extends BaseService
     employee.setActive(false);
     employeeRepository.saveAndFlush(employee);
     communicationService.sendStaffDeleteEmail(employee);
+  }
+  //update by shubham
+  public void delete(StaffRequest request)
+  {
+    Employee employee = employeeRepository.findOne(request.getId());
+    if (employee == null)
+    {
+      throw new NotFoundException(String.format("Emploee[%s] not found", request.getId()));
+    }
+    if (request.getDol() == null)
+    {
+      throw new ValidationException(String.format("Emploee[%s] date of leaving not found", request.getId()));
+    }
+    try{
+      DateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
+      Date date = (Date) parser.parse(request.getDol());
+      employee.getProfile().setDol(date);
+      employee.setActive(false);
+      employeeRepository.saveAndFlush(employee);
+      communicationService.sendStaffDeleteEmail(employee);
+    }catch (Exception e){
+
+    }
+
   }
 
   public void uploadStaffPic(StaffRequest request, MultipartFile file)
