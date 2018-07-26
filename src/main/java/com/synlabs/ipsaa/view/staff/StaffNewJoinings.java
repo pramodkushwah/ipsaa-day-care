@@ -16,6 +16,7 @@ public class StaffNewJoinings  implements Response {
     private String center;
     private boolean isActive;
 
+    private String employer;
     public StaffNewJoinings(Employee employee) {
        center= employee.getCostCenter().getName();
        name=employee.getName();
@@ -23,6 +24,15 @@ public class StaffNewJoinings  implements Response {
        doj=employee.getProfile().getDoj();
        mobile=employee.getMobile();
        this.isActive=employee.isActive();
+       this.employer=employee.getEmployer().getName();
+    }
+
+    public String getEmployer() {
+        return employer;
+    }
+
+    public void setEmployer(String employer) {
+        this.employer = employer;
     }
 
     public boolean isActive() {
