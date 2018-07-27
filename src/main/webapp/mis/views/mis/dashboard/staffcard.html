@@ -1,17 +1,31 @@
 <div class="col-lg-3 col-md-4 col-sm-4">
-  <div class="card card-stats" ng-click="showPanel('stafflist')">
+  <div class="card card-stats">
     <div class="card-header" data-background-color="orange">
       <i class="material-icons">person_pin</i>
     </div>
     <div class="card-content">
       <p class="category">Staff</p>
-      <h3 class="card-title">{{stats.staffCount | number}}</h3>
+      <h3 class="card-title" >{{stats.staffCount | number}}</h3>
+      <!-- ng-click="showPanel('stafflist', 'all')" -->
     </div>
     <div class="card-footer footer-bottom">
       <div class="stats">
-          <span>Present:{{stats.staffPresent | number}}</span>
+          <!-- <span>Present:{{stats.staffPresent | number}}</span> -->
           <!-- <span>Absent:{{stats.staffCount-stats.staffPresent | number}}</span> -->
-          <span>Staff Cost:{{stats.staffCost | number}}</span>
+          <!-- <span>Staff Cost:{{stats.staffCost | number}}</span> -->
+          <p style="margin: 0">
+            <a href="#" ng-click="showPanel('stafflist', 'present')">Present</a>
+            : {{stats.staffPresent | number}}
+          </p>
+          <p style="margin: 0">
+            <a href="#" ng-click="showPanel('stafflist', 'newjoinings')">New Joiners</a>
+            : {{stats.newJoinings | number}}
+          </p>
+          <p style="margin: 0">
+            <a href="#" ng-click="showPanel('stafflist', 'newleavings')">Leavers</a>
+            : {{stats.newLeavings | number}}
+          </p>
+
       </div>
     </div>
   </div>
