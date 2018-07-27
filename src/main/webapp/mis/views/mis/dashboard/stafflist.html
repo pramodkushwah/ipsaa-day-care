@@ -14,8 +14,13 @@
           <th>Mobile</th>
           <!-- <th>Email</th>
           <th ng-if="SALARY_READ">Basic Salary</th> -->
-          <th>Checkin</th>
-          <th>Expected Checkout</th>
+          <th ng-hide="staffPage.filter=='newjoinings' || staffPage.filter== 'newleavings'">Checkin</th>
+          <th ng-hide="staffPage.filter=='newleavings' || staffPage.filter== 'newjoinings'">Expected Checout</th>
+          <th>Center</th>
+          <th>Employer</th>
+          <th ng-show="staffPage.filter=='newjoinings'">Date of Joining</th>
+          <th ng-show="staffPage.filter=='newleavings'">Date of Leaving</th>
+          <th>Active</th>
         </tr>
         </thead>
         <tbody>
@@ -26,8 +31,14 @@
           <td>{{staff.mobile}}</td>
           <!-- <td>{{staff.email}}</td>
           <td ng-if="SALARY_READ">{{staff.basicSalary}}</td> -->
-          <td>{{staff.checkin}}</td>
-          <td>{{staff.expectedOut}}</td>
+          <td ng-hide="staffPage.filter=='newjoinings' || staffPage.filter== 'newleavings'">{{staff.checkin}}</td>
+          <td ng-hide="staffPage.filter=='newleavings' || staffPage.filter== 'newjoinings'">{{staff.expectedOut}}</td>
+          <td>{{staff.center}}</td>
+          <td>{{staff.employer}}</td>
+          <td ng-show="staffPage.filter=='newjoinings'">{{staff.doj}}</td>
+          <td ng-show="staffPage.filter=='newleavings'">{{staff.dol}}</td>
+          <td>{{staff.active}}</td>
+          
         </tr>
 
         <tr>
