@@ -60,10 +60,10 @@
             <thead class="text-primary">
             <tr>
               <th>Employee</th>
-              <th>Employer</th>
-              <th>Basic Salary</th>
-              <th>Allowances</th>
-              <th>Total Deductions</th>
+              <th>CTC</th>
+              <th>Present Days</th>
+              <th>Other Allowances</th>
+              <th>Other Deductions</th>
               <th>Net Salary</th>
               <th>Pay Slips</th>
             </tr>
@@ -72,13 +72,15 @@
             <tr ng-repeat="salary in salaries | filter: search">
               <td>{{salary.empName}}</td>
               <td>{{salary.employerName}}</td>
-              <td>{{salary.basic}}</td>
-              <td>{{salary.bonus + salary.conveyance + salary.entertainment + salary.hra + salary.medical + salary.arrears + salary.shoes +salary.special + salary.tiffin +
-                salary.uniform + salary.washing + salary.otherAllowances}}
-              </td>
+              <td>{{salary.presents}}</td>
+              <td>{{salary.otherAllowances}}</td>
+              <!-- {{salary.bonus + salary.conveyance + salary.entertainment + salary.hra + salary.medical + salary.arrears + salary.shoes +salary.special
+              + salary.tiffin + salary.uniform + salary.washing + salary.otherAllowances}} -->
 
-              <td>{{salary.esi + salary.pf + salary.otherDeductions + salary.retention + salary.tds + salary.advance +
-                salary.unpaidLeaveDeduction + salary.absentDeduction}}</td>
+              <td>{{salary.otherDeductions}}</td>
+              <!-- {{salary.esi + salary.pf + salary.otherDeductions + salary.retention + salary.tds + salary.advance + salary.unpaidLeaveDeduction
+              + salary.absentDeduction}} -->
+              
               <td>{{salary.netSalary}}</td>
               <td>
                 <div class="buttons">
