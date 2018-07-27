@@ -103,4 +103,8 @@ public class SalaryUtils
   {
     return salary.getBasic().add(salary.getHra()).add(salary.getConveyance()).add(salary.getSpecial()).add(salary.getExtraMonthlyAllowance()).subtract(salary.getPfr());
   }
+  public static BigDecimal calculateGrossV2(BigDecimal extraMonthlyAllowance,BigDecimal basic, BigDecimal hra, BigDecimal conveyance, BigDecimal special, BigDecimal pfr)
+  {
+    return basic.add(hra).add(conveyance).add(special).add(extraMonthlyAllowance).subtract(pfr);
+  }
 }
