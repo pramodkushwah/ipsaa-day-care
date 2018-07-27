@@ -1,6 +1,8 @@
 package com.synlabs.ipsaa.view.student;
 
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
+import com.synlabs.ipsaa.util.SalaryUtils;
+import com.synlabs.ipsaa.util.SalaryUtilsV2;
 import com.synlabs.ipsaa.view.common.Request;
 
 import java.math.BigDecimal;
@@ -86,7 +88,7 @@ public class EmployeeSalaryRequest implements Request
       salary.setPfr(ZERO);
     }
 
-    salary.setProfessionalTax(professionalTax == null ? ZERO : professionalTax);
+    salary.setProfessionalTax(SalaryUtilsV2.PROFESSIONAL_TAX);
     if (!profd)
     {
       salary.setProfessionalTax(ZERO);
@@ -94,8 +96,35 @@ public class EmployeeSalaryRequest implements Request
 
     //modify by shubham calculateGrossV2 by calculateGross
     salary.setExtraMonthlyAllowance(extraMonthlyAllowance);
-    salary.setGrossSalary(calculateGrossV2(salary));
-    salary.update();
+
+    salary.setBasic(SalaryUtilsV2.calculateBasic(salary.getCtc()));
+    salary.setHra(SalaryUtilsV2.calculateHra(salary.getBasic()));
+    salary.setConveyance(SalaryUtilsV2.CONVEYANCE);
+    salary.setBonus(SalaryUtilsV2.BOUNS);
+
+    // must be calculate after ctc basic hra bouns conveyance
+    salary.setSpecial(SalaryUtilsV2.calculateSpecial(salary));
+
+    if(pfd){
+      salary.setPfe(SalaryUtilsV2.calculatePfe(salary.getBasic()));
+      salary.setPfr(SalaryUtilsV2.calculatePfr(salary.getBasic()));
+    }
+    if(esid)
+      salary.setEsi(SalaryUtilsV2.calculateEsi(salary,SalaryUtilsV2.ESI_PERCENT));
+
+    salary.setGrossSalary(SalaryUtilsV2.calculateGross(salary));
+
+    if(profd)
+    salary.setProfessionalTax(SalaryUtilsV2.PROFESSIONAL_TAX);
+    else
+      salary.setProfessionalTax(ZERO);
+
+    BigDecimal totalDeduction=SalaryUtilsV2.calculateTotalDeduction(salary.getPfe(),salary.getPfr(),salary.getEsi(),salary.getProfessionalTax());
+    salary.setTotalDeduction(totalDeduction);
+    BigDecimal totalEaring=SalaryUtilsV2.calculateTotalEaring(salary.getCtc(),salary.getExtraMonthlyAllowance());
+    salary.setTotalEarning(totalEaring);
+    salary.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring,totalDeduction));
+    //salary.update();
     return salary;
   }
 

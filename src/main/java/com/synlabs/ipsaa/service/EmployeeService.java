@@ -45,6 +45,7 @@ public class EmployeeService extends BaseService
 
   private EmployeeSalary validateRequest(EmployeeSalaryRequest request)
   {
+
     if (request.getBasic() == null)
     {
       throw new ValidationException("Salary basic component missing");

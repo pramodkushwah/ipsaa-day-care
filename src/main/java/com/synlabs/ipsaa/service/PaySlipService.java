@@ -200,7 +200,7 @@ public class PaySlipService extends BaseService
       {
         case Present:
           present=present.add(BigDecimal.ONE);
-          System.out.println(present);
+         // System.out.println(present);
           break;
         case Absent:
           absents = absents.add(BigDecimal.ONE);
@@ -228,7 +228,7 @@ public class PaySlipService extends BaseService
     cal.set(Calendar.MONTH, month-1);// o to 11
     cal.set(Calendar.YEAR, year);
     totalDays=new BigDecimal(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-    System.out.println(totalDays);
+   // System.out.println(totalDays);
 
     BigDecimal totalAbsents = absents.add(leaves);
     BigDecimal presents = totalDays.subtract(totalAbsents);
@@ -238,10 +238,9 @@ public class PaySlipService extends BaseService
     payslip.setAutoComment(autoComment);
     // shubham
     if(payslip.getPresents()!=null){
-      payslip.update(salary, totalDays,payslip.getPresents());
+      payslip.updateV2(salary, totalDays,payslip.getPresents());
     }else
-    payslip.update(salary, totalDays,presents);
-
+      payslip.updateV2(salary, totalDays,presents);
     payslip.roundOff();
     return payslip;
   }

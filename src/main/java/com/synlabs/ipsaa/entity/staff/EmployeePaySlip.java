@@ -4,6 +4,7 @@ import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.common.BaseEntity;
 import com.synlabs.ipsaa.entity.common.LegalEntity;
 import com.synlabs.ipsaa.util.SalaryUtils;
+import com.synlabs.ipsaa.util.SalaryUtilsV2;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -594,6 +595,71 @@ public class EmployeePaySlip extends BaseEntity
     this.advance = employeeSalary.getAdvance();
 
     this.update();
+  }
+  @Transient
+  public void updateV2(EmployeeSalary employeeSalary, BigDecimal totalDays, BigDecimal presents)
+  {
+    this.totalDays = totalDays;
+    this.presents = presents;
+
+    BigDecimal ratio = presents.divide(totalDays, 6, BigDecimal.ROUND_CEILING);
+
+    this.ctc = ratio.multiply(employeeSalary.getCtc());
+    this.basic = ratio.multiply(SalaryUtilsV2.calculateBasic(ctc));
+
+    this.hra = ratio.multiply(SalaryUtilsV2.calculateHra(basic));
+
+    this.conveyance = ratio.multiply(employeeSalary.getConveyance());
+    this.bonus = ratio.multiply(employeeSalary.getBonus());
+
+    this.special =ratio.multiply(SalaryUtilsV2.calculateSpecial(ctc, basic, hra, conveyance, bonus));
+    
+
+    this.entertainment = employeeSalary.getEntertainment();
+    this.medical = employeeSalary.getMedical();
+    this.arrears = employeeSalary.getArrears();
+    this.shoes = employeeSalary.getShoes();
+    this.tiffin = employeeSalary.getTiffin();
+    this.uniform = employeeSalary.getUniform();
+    this.washing = employeeSalary.getWashing();
+    if (this.otherAllowances == null)
+    {
+      this.otherAllowances = ZERO;
+    }
+    if (this.otherDeductions == null)
+    {
+      this.otherDeductions = ZERO;
+    }
+
+    pfd = employeeSalary.isPfd();
+    esid = employeeSalary.isEsid();
+    profd = employeeSalary.isProfd();
+
+    this.pfe = employeeSalary.isPfd() ?
+            SalaryUtilsV2.calculatePfe(basic) :
+            ZERO;
+    this.pfr = employeeSalary.isPfd() ?
+            SalaryUtilsV2.calculatePfr(basic) :
+            ZERO;
+    this.grossSalary = ratio.multiply(SalaryUtilsV2.calculateGross(employeeSalary.getExtraMonthlyAllowance(),basic, hra, conveyance, special, pfr));
+
+    this.esi = employeeSalary.isEsid() ?
+            SalaryUtilsV2.calculateEsi(employeeSalary.isEsid(), grossSalary, SalaryUtils.ESI_PERCENT) :
+            ZERO;
+
+    this.professionalTax = employeeSalary.isProfd() ?
+            SalaryUtilsV2.PROFESSIONAL_TAX :
+            ZERO;
+
+    this.retention = employeeSalary.getRetention();
+    this.tds = employeeSalary.getTds();
+    this.advance = employeeSalary.getAdvance();
+    BigDecimal totalDeduction=SalaryUtilsV2.calculateTotalDeduction(pfe,pfr,esi,professionalTax);
+    this.setTotalDeduction(totalDeduction);
+    BigDecimal totalEaring=SalaryUtilsV2.calculateTotalEaring(ctc,employeeSalary.getExtraMonthlyAllowance());
+    this.setTotalEarning(totalEaring);
+    this.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring,totalDeduction));
+    //this.update();
   }
 
   @Transient
