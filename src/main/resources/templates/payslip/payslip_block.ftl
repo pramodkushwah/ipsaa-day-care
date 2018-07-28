@@ -6,7 +6,7 @@
             <td style="width: 180px;">Employee Code</td>
             <td style="width: 280px;">:&nbsp;&nbsp;${paySlip.eid}</td>
             <td style="width: 210px;">Income Tax Number (PAN)</td>
-            <td style="width: 350px;">:&nbsp;&nbsp;${paySlip.panNumber}</td>
+            <td style="width: 350px;">:&nbsp;&nbsp;${paySlip.pan}</td>
         </tr>
         <tr>
             <td style="width: 180px;">Employee Name</td>
