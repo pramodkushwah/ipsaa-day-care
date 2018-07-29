@@ -578,8 +578,8 @@ public class EmployeePaySlip extends BaseEntity
     this.pfr = employeeSalary.isPfd() ?
                calculatePfr(basic) :
                ZERO;
-
-    this.grossSalary = calculateGross(basic, hra, conveyance, special, pfr);
+// shubham update by shubham with v2
+    this.grossSalary = calculateGrossV2(employeeSalary.getExtraMonthlyAllowance(),basic, hra, conveyance, special, pfr);
 
     this.esi = employeeSalary.isEsid() ?
                calculateEsi(employeeSalary.isEsid(), grossSalary, SalaryUtils.ESI_PERCENT) :

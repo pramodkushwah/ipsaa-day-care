@@ -98,7 +98,8 @@ public class DashboardController
   @Secured(DASHBOARD_STATS)
   public List<StaffNewJoinings> getNewJoinings(@RequestBody DashboardRequest request)
   {
-    return dashboardService.getNewJoinigList(request);
+    List<StaffNewJoinings> list= dashboardService.getNewJoinigList(request);
+    return list;
   }
   @PostMapping("/dash/newleavings")
   @Secured(DASHBOARD_STATS)
