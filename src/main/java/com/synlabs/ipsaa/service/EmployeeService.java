@@ -58,10 +58,10 @@ public class EmployeeService extends BaseService
     {
       throw new ValidationException("Salary conveyance component missing");
     }
-    if (request.getEntertainment() == null)
+   /* if (request.getEntertainment() == null)
     {
       throw new ValidationException("Salary entertainment component missing");
-    }
+    }*/
     if (request.getHra() == null)
     {
       throw new ValidationException("Salary HRA component missing");
