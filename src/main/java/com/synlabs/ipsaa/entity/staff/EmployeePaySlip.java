@@ -613,7 +613,7 @@ public class EmployeePaySlip extends BaseEntity
     this.bonus = ratio.multiply(employeeSalary.getBonus());
 
     this.special =ratio.multiply(SalaryUtilsV2.calculateSpecial(ctc, basic, hra, conveyance, bonus));
-    
+
 
     this.entertainment = employeeSalary.getEntertainment();
     this.medical = employeeSalary.getMedical();
