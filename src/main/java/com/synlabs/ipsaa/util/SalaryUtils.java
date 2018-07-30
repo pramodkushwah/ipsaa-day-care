@@ -8,7 +8,7 @@ import static com.synlabs.ipsaa.util.BigDecimalUtils.*;
 
 public class SalaryUtils
 {
-  public static BigDecimal ESI_PERCENT      = new BigDecimal("1.75");
+  public static BigDecimal ESI_PERCENT     = new BigDecimal("1.75");
   public static BigDecimal PROFESSIONAL_TAX = new BigDecimal("200");
 
   public static int PFE_LIMIT = 15000;
@@ -97,5 +97,10 @@ public class SalaryUtils
       return BigDecimal.ZERO;
     }
     return gross.multiply(esiPercentage).divide(HUNDRED, 2);
+  }
+  //-----------------------------------------------------shubham-----------------------------------------------------
+  public static BigDecimal calculateGrossV2(EmployeeSalary salary)
+  {
+    return salary.getBasic().add(salary.getHra()).add(salary.getConveyance()).add(salary.getSpecial()).add(salary.getExtraMonthlyAllowance()).subtract(salary.getPfr());
   }
 }

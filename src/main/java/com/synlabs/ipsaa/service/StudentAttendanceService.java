@@ -121,6 +121,7 @@ public class StudentAttendanceService extends BaseService {
     }
 
 // shubham
+//<<<<<<< HEAD
 
     int extra = countExtra(student, attendance, false);
     attendance.setExtraHours(attendance.getExtraHours() + extra);

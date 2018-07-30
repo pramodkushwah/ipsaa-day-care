@@ -387,4 +387,14 @@ public class EmployeeSalary extends BaseEntity
         .setScale(0, ROUND_HALF_UP);
 
   }
+  //------------------------------------------shuhbham------------------------------------------------------
+  @Column(precision = 16, scale = 2,columnDefinition = "int default 0")
+  private BigDecimal extraMonthlyAllowance;
+
+  public BigDecimal getExtraMonthlyAllowance() {
+    return this.extraMonthlyAllowance;
+  }
+  public void setExtraMonthlyAllowance(BigDecimal extraMonthlyAllowance) {
+    this.extraMonthlyAllowance = extraMonthlyAllowance;
+  }
 }

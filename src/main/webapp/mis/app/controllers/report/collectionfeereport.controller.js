@@ -61,7 +61,7 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
 
         var reqUrl = '/api/report/collectionfee';
         reqUrl = type == "excel" ? reqUrl + '/excel' : reqUrl;
-        var resType = type == "table" ? 'json' : 'arrayBuffer';
+        var resType = type == "table" ? 'json' : 'arraybuffer';
         
         // need to send in post request body for confirmed and unconfirmed transactions
         if ( $scope.txnStatus != "all" ) {

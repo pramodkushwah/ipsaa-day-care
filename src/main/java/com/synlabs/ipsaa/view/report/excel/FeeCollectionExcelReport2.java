@@ -47,8 +47,8 @@ public class FeeCollectionExcelReport2
   public FeeCollectionExcelReport2(StudentFeePaymentRequest slip/*,BigDecimal extraHours*/)
   {
     this.slip=slip;
-    //this.extraHours=extraHours;
     Student student = slip.getStudent();
+
     admissionNumber = student.getAdmissionNumber();
     name = student.getName();
     id=student.getId();
@@ -59,11 +59,8 @@ public class FeeCollectionExcelReport2
     programName = student.getProgramName();
     groupName = student.getGroupName();
     feeDuration = slip.getFeeDuration().toString();
-    // extra entry
     motherName=student.getMother().getFullName();
     FatherName=student.getFather().getFullName();
-
-
     month = FeeUtils.getMonthName(slip.getMonth());
     year = slip.getYear();
     quarter = FeeUtils.getFYQuarter(slip.getQuarter());
@@ -104,67 +101,60 @@ public class FeeCollectionExcelReport2
     }
   }
 
-  public Sheet export(Sheet sheet, int rowNumber, PaymentStatus reportType)
+  public Sheet export(Sheet sheet, int rowNumber)
   {
     this.rowNum=rowNumber;
-    for(int i=0;i<slip.getPayments().size();i++){
-      if(id==4){
-        System.out.println("break");
-      }
-      StudentFeePaymentRecord record=slip.getPayments().get(i);
-      System.out.println("studentData "+id +" "+record.getPaidAmount());
+    if(slip.getPayments().size()>=1)
+      this.rowNum++;
+
+    for(StudentFeePaymentRecord record:slip.getPayments()){
+
       Row row = sheet.createRow(++this.rowNum);
       if(record.getTxnid()!=null)
       row.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(record.getTxnid());
+
       row.createCell(1, Cell.CELL_TYPE_STRING).setCellValue(id);
       row.createCell(2, Cell.CELL_TYPE_STRING).setCellValue(name);
       row.createCell(3, Cell.CELL_TYPE_STRING).setCellValue(centerName);
       row.createCell(4, Cell.CELL_TYPE_STRING).setCellValue(programName);
       row.createCell(5, Cell.CELL_TYPE_STRING).setCellValue(feeDuration);
-      row.createCell(6, Cell.CELL_TYPE_STRING).setCellValue(month);
-      row.createCell(7, Cell.CELL_TYPE_STRING).setCellValue(quarter);
-      row.createCell(8, Cell.CELL_TYPE_STRING).setCellValue(paymentStatus);
-      row.createCell(9, Cell.CELL_TYPE_STRING).setCellValue(paymentMode);
-      row.createCell(10, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getPaidAmount().doubleValue());
-      this.paidAmount.add(new BigDecimal(record.getPaidAmount().doubleValue()));
-      row.createCell(11, Cell.CELL_TYPE_STRING).setCellValue(raisedAmount.doubleValue());
-      row.createCell(12, Cell.CELL_TYPE_STRING).setCellValue(record.getConfirmed());
-      //row.createCell(13, Cell.CELL_TYPE_NUMERIC).setCellValue(extraHours.doubleValue());
-      row.createCell(14, Cell.CELL_TYPE_NUMERIC).setCellValue(dueAmount.doubleValue());
-      row.createCell(15, Cell.CELL_TYPE_STRING).setCellValue(motherName);
-      row.createCell(16, Cell.CELL_TYPE_STRING).setCellValue(FatherName);
-      row.createCell(17, Cell.CELL_TYPE_STRING).setCellValue(record.getPaymentDate().toString());
+      row.createCell(6, Cell.CELL_TYPE_STRING).setCellValue(quarter);
+      row.createCell(7, Cell.CELL_TYPE_STRING).setCellValue(paymentStatus);
+      row.createCell(8, Cell.CELL_TYPE_STRING).setCellValue(paymentMode);
+      row.createCell(9, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getPaidAmount().doubleValue());
 
-      //rowNumber++;
+      this.paidAmount.add(new BigDecimal(record.getPaidAmount().doubleValue()));
+
+      row.createCell(10, Cell.CELL_TYPE_STRING).setCellValue(raisedAmount.doubleValue());
+      row.createCell(11, Cell.CELL_TYPE_STRING).setCellValue(record.getConfirmed());
+      row.createCell(12, Cell.CELL_TYPE_NUMERIC).setCellValue(dueAmount.doubleValue());
+      row.createCell(13, Cell.CELL_TYPE_STRING).setCellValue(motherName);
+      row.createCell(14, Cell.CELL_TYPE_STRING).setCellValue(FatherName);
+      row.createCell(15, Cell.CELL_TYPE_STRING).setCellValue(record.getPaymentDate().toString());
     }
     return sheet;
   }
 
-  public static int createHeader(Sheet sheet, int rowNumber, PaymentStatus reportType)
+  public static int createHeader(Sheet sheet, int rowNumber)
   {
     Row row = sheet.createRow(rowNumber);
 
-    row.createCell(0, Cell.CELL_TYPE_STRING).setCellValue("TXN ID");
-    row.createCell(1, Cell.CELL_TYPE_STRING).setCellValue("Student Id");
-    row.createCell(2, Cell.CELL_TYPE_STRING).setCellValue("Student Name");
-    row.createCell(3, Cell.CELL_TYPE_STRING).setCellValue("Center Name");
-    row.createCell(4, Cell.CELL_TYPE_STRING).setCellValue("Program Name");
-    row.createCell(5, Cell.CELL_TYPE_STRING).setCellValue("Fee Duration");
-        row.createCell(6, Cell.CELL_TYPE_STRING).setCellValue("Month");
-        row.createCell(7, Cell.CELL_TYPE_STRING).setCellValue("Quarter");
-        row.createCell(8, Cell.CELL_TYPE_STRING).setCellValue("Payment Status");
-        row.createCell(9, Cell.CELL_TYPE_STRING).setCellValue("Payment Mode");
-        row.createCell(10, Cell.CELL_TYPE_STRING).setCellValue("Total Amount Pain");
-        row.createCell(11, Cell.CELL_TYPE_STRING).setCellValue("Raised Amount");
-        row.createCell(12, Cell.CELL_TYPE_STRING).setCellValue("Confirmed");
-     //   row.createCell(13, Cell.CELL_TYPE_STRING).setCellValue("Extra hours");
-        row.createCell(14, Cell.CELL_TYPE_STRING).setCellValue("Due Amount");
-
-        //
-        row.createCell(15, Cell.CELL_TYPE_STRING).setCellValue("Mother Name");
-    row.createCell(16, Cell.CELL_TYPE_STRING).setCellValue("Father Name");
-    row.createCell(17, Cell.CELL_TYPE_STRING).setCellValue("Payment Date");
-
+        row.createCell(0, Cell.CELL_TYPE_STRING).setCellValue("TXN ID");
+        row.createCell(1, Cell.CELL_TYPE_STRING).setCellValue("Student Id");
+        row.createCell(2, Cell.CELL_TYPE_STRING).setCellValue("Student Name");
+        row.createCell(3, Cell.CELL_TYPE_STRING).setCellValue("Center Name");
+        row.createCell(4, Cell.CELL_TYPE_STRING).setCellValue("Program Name");
+        row.createCell(5, Cell.CELL_TYPE_STRING).setCellValue("Fee Duration");
+        row.createCell(6, Cell.CELL_TYPE_STRING).setCellValue("Quarter");
+        row.createCell(7, Cell.CELL_TYPE_STRING).setCellValue("Payment Status");
+        row.createCell(8, Cell.CELL_TYPE_STRING).setCellValue("Payment Mode");
+        row.createCell(9, Cell.CELL_TYPE_STRING).setCellValue("Total Amount Pain");
+        row.createCell(10, Cell.CELL_TYPE_STRING).setCellValue("Raised Amount");
+        row.createCell(11, Cell.CELL_TYPE_STRING).setCellValue("Confirmed");
+        row.createCell(12, Cell.CELL_TYPE_STRING).setCellValue("Due Amount");
+        row.createCell(13, Cell.CELL_TYPE_STRING).setCellValue("Mother Name");
+        row.createCell(14, Cell.CELL_TYPE_STRING).setCellValue("Father Name");
+        row.createCell(15, Cell.CELL_TYPE_STRING).setCellValue("Payment Date");
 
     return rowNumber + 1;
   }

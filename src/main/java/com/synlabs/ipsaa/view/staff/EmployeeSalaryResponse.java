@@ -106,6 +106,9 @@ public class EmployeeSalaryResponse implements Response
     this.totalDeduction = employeeSalary.getTotalDeduction();
     this.netSalary = employeeSalary.getNetSalary();
     this.professionalTax = employeeSalary.getProfessionalTax();
+
+    // shubham
+    this.extraMonthlyAllowance=employeeSalary.getExtraMonthlyAllowance();
   }
 
   public BigDecimal getGrossSalary()
@@ -406,5 +409,17 @@ public class EmployeeSalaryResponse implements Response
   public void setEmployeeId(Long employeeId)
   {
     this.employeeId = employeeId;
+  }
+
+  //----------------------------------shubham -------------------------------------------------------------
+  // shubham
+  private BigDecimal extraMonthlyAllowance;
+
+  public BigDecimal getExtraMonthlyAllowance() {
+    return extraMonthlyAllowance;
+  }
+
+  public void setExtraMonthlyAllowance(BigDecimal extraMonthlyAllowance) {
+    this.extraMonthlyAllowance = extraMonthlyAllowance;
   }
 }
