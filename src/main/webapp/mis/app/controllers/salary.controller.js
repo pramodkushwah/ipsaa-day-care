@@ -67,8 +67,8 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
         profd: false,
         ctc: 0.0,
         basic: 0.0,
-        bonus: 0.0,
-        conveyance: 0.0,
+        bonus: 584,
+        conveyance: 1600,
         entertainment: 0.0,
         hra: 0.0,
         medical: 0.0,
@@ -99,41 +99,45 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
         var basic = salary.basic ? salary.basic : 0;
         return (basic * 40) / 100;
     }
-
+    // conveyance fixed 1600
+    // bonus fixed 584
     function calculateSpecial(salary) {
         return salary.ctc - salary.basic - salary.hra - salary.conveyance - salary.bonus;
     }
 
     function calculatePFR(salary) {
-        if (salary.pfd && salary.basic <= 15000) {
-            return ((salary.basic * 12) / 100).toFixed(0)/1;
-        } else {
+        if (salary.pfd)
+            if(salary.basic <= 15000) {
+                return ((salary.basic * 12) / 100).toFixed(0)/1;
+            } else {
+                return 1800;
+            }
+        else 
             return 0;
-        }
     }
 
     function calculatePFE(salary) {
-        if (salary.pfd && salary.basic <= 15000) {
-            return ((salary.basic * 12) / 100).toFixed(0)/1;
-        } else {
+        if (salary.pfd)
+            if (salary.basic <= 15000) {
+                return ((salary.basic * 12) / 100).toFixed(0) / 1;
+            } else {
+                return 1800;
+            }
+        else
             return 0;
-        }
     }
 
     function calculateGross(salary) {
-        return salary.basic +
-            salary.hra +
-            salary.conveyance +
-            salary.extraMonthlyAllowance +
-            salary.special -
-            salary.pfr;
+        return salary.ctc - 
+                salary.bonus - 
+                salary.pfr;
     }
 
     function calculateESI(salary) {
-        if(!salary.esid || salary.grossSalary > 210000){
+        if(!salary.esid || salary.grossSalary > 21000){
             return 0;
         }
-        return ((salary.grossSalary *1.75)/100).toFixed(0)/1;
+        return ((salary.grossSalary * 1.75)/100).toFixed(0)/1;
     }
 
     // $scope.$watch('runningSalary', function () {
@@ -185,8 +189,11 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
         $scope.runningSalary.special = calculateSpecial($scope.runningSalary);
         $scope.runningSalary.pfr = calculatePFR($scope.runningSalary);
         $scope.runningSalary.pfe = calculatePFE($scope.runningSalary);
-        $scope.runningSalary.esi = calculateESI($scope.runningSalary);
         $scope.runningSalary.grossSalary = calculateGross($scope.runningSalary);
+        $scope.runningSalary.esi = calculateESI($scope.runningSalary);
+        
+        $scope.runningSalary.totalDeduction = 0;
+        $scope.runningSalary.totalEarning = 0;
 
         if ($scope.runningSalary.pfd) {
             $scope.runningSalary.totalDeduction = $scope.runningSalary.totalDeduction + $scope.runningSalary.pfe;
@@ -198,17 +205,22 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
         }
 
         if ($scope.runningSalary.profd) {
+            $scope.runningSalary.professionalTax = 200;
             $scope.runningSalary.totalDeduction = $scope.runningSalary.totalDeduction + $scope.runningSalary.professionalTax;
+        }else {
+            $scope.runningSalary.professionalTax = 0;
         }
+        
 
-        $scope.runningSalary.netSalary =
-            $scope.runningSalary.grossSalary + $scope.runningSalary.bonus
-            - $scope.runningSalary.pfe - $scope.runningSalary.esi -$scope.runningSalary.professionalTax;
+        // RUNNING SALARY = CTC + EXTRA MONTHLY ALLOWANCE
+        $scope.runningSalary.totalEarning = $scope.runningSalary.ctc + $scope.runningSalary.extraMonthlyAllowance;
 
         //Roundoff
         $scope.runningSalary.totalEarning = Math.round(($scope.runningSalary.totalEarning * 100) / 100);
         $scope.runningSalary.totalDeduction = Math.round(($scope.runningSalary.totalDeduction * 100) / 100);
-        $scope.runningSalary.netSalary = Math.round(($scope.runningSalary.netSalary * 100) / 100); 
+        
+        // NET SALARY = TOTAL EARNINGS - TOTAL DEDUCTION
+        $scope.runningSalary.netSalary = $scope.runningSalary.totalEarning - $scope.runningSalary.totalDeduction; 
     }
 
     $scope.addSalary = function () {

@@ -57,6 +57,7 @@
           <table class="table table-condensed table-striped table-hover">
             <thead class="text-primary">
             <tr>
+              <th>Sr.No.</th>
               <th>EID</th>
               <th>Center</th>
               <th>Name</th>
@@ -74,6 +75,7 @@
             orderBy:'eid' |
             startFrom:currentPage*pageSize |
             limitTo:pageSize">
+              <td>{{$index+1}}</td>
               <td ng-click="showStaff(staff)">{{staff.eid}}</td>
               <td ng-click="showStaff(staff)">{{staff.centerCode}}</td>
               <td ng-click="showStaff(staff)">{{staff.name}}</td>

@@ -148,6 +148,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
         for (var i = ((pageNumber - 1) * pageSize); i < staffCount && elementCount < pageSize; i++, elementCount++) {
             staffPage.push(angular.copy(staffs[i]));
         }
+        staffPage.filter = $scope.stafflist.filter;
         count = Math.ceil($scope.BARSIZE / 2);
         i = pageNumber <= count ? 1 : pageNumber - (count - 1);
         for (; i <= pageNumber; i++) {
@@ -306,7 +307,8 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
         });
     }
 
-    $scope.showPanel = function (panel) {
+    $scope.showPanel = function (panel, filter) {
+        // additional parameter filter added for request with a filter, currently used for stafflist only
         $scope.showtab = panel;
         var req = {};
         if ($scope.selectedZone !== null) {
@@ -321,10 +323,18 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
 
         switch (panel) {
             case 'stafflist':
-                $http.post("/api/dash/staff", req).then(function (response) {
-                    // $scope.stafflist = response.data;
-                    $scope.stafflist = $filter('filter')(response.data, {present:true});
-                    console.log($scope.stafflist);
+                var url;
+                if(filter == 'present' || filter == "all") {
+                    url = "/api/dash/staff";
+                }
+                else
+                    url = "/api/dash/" + filter;
+
+                $http.post(url, req).then(function (response) {
+                    $scope.stafflist = filter == "present" 
+                                    ? $filter('filter')(response.data, {present:true})
+                                    : response.data;
+                    $scope.stafflist.filter = filter;
                     $scope.updateStaffPage(1);
                 });
                 $scope.refresh();
