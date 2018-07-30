@@ -675,20 +675,15 @@ public class StaffService extends BaseService
     {
       throw new NotFoundException(String.format("Emploee[%s] not found", request.getId()));
     }
-    if (request.getDol() == null)
+    // checking dol is present or not
+    if (employee.getProfile().getDol() == null)
     {
       throw new ValidationException(String.format("Emploee[%s] date of leaving not found", request.getId()));
     }
-    try{
-      DateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
-      Date date = (Date) parser.parse(request.getDol());
-      employee.getProfile().setDol(date);
       employee.setActive(false);
       employeeRepository.saveAndFlush(employee);
       communicationService.sendStaffDeleteEmail(employee);
-    }catch (Exception e){
 
-    }
 
   }
 

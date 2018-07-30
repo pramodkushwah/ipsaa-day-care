@@ -4,6 +4,7 @@ import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.common.BaseEntity;
 import com.synlabs.ipsaa.entity.common.LegalEntity;
 import com.synlabs.ipsaa.util.SalaryUtils;
+import com.synlabs.ipsaa.util.SalaryUtilsV2;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -596,6 +597,7 @@ public class EmployeePaySlip extends BaseEntity
     this.update();
   }
 
+
   @Transient
   public void update()
   {
@@ -624,6 +626,34 @@ public class EmployeePaySlip extends BaseEntity
   }
 
   @Transient
+  public void updateV2()
+  {
+    totalEarning=totalEarning.subtract(otherAllowances);
+
+    totalEarning = ZERO.add(bonus).add(grossSalary).add(otherAllowances == null ? ZERO : otherAllowances);
+
+    totalDeduction = ZERO;
+    if (esid)
+    {
+      totalDeduction = totalDeduction.add(esi == null ? ZERO : esi);
+    }
+    if (pfd)
+    {
+      totalDeduction = totalDeduction.add(pfe == null ? ZERO : pfe);
+    }
+    if (profd)
+    {
+      totalDeduction = totalDeduction.add(professionalTax == null ? ZERO : professionalTax);
+    }
+    totalDeduction = totalDeduction.add(otherDeductions == null ? ZERO : otherDeductions);
+    totalDeduction = totalDeduction.setScale(0, ROUND_HALF_UP);
+
+    netSalary = ZERO
+            .add(totalEarning == null ? ZERO : totalEarning)
+            .subtract(totalDeduction == null ? ZERO : totalDeduction)
+            .setScale(0, ROUND_HALF_UP);
+  }
+  @Transient
   public void roundOff()
   {
     basic = basic.setScale(0, BigDecimal.ROUND_HALF_UP);
@@ -632,5 +662,83 @@ public class EmployeePaySlip extends BaseEntity
     bonus = bonus.setScale(0, BigDecimal.ROUND_HALF_UP);
     special = special.setScale(0, BigDecimal.ROUND_HALF_UP);
     totalEarning = totalEarning.setScale(0, BigDecimal.ROUND_HALF_UP);
+  }
+  //------------------------------------shubham--------------------------------------------------------
+  @Column(precision = 16, scale = 2,columnDefinition = "int default 0")
+  private BigDecimal extraMonthlyAllowance;
+
+  public BigDecimal getExtraMonthlyAllowance() {
+    return extraMonthlyAllowance;
+  }
+
+  public void setExtraMonthlyAllowance(BigDecimal extraMonthlyAllowance) {
+    this.extraMonthlyAllowance = extraMonthlyAllowance;
+  }
+
+  @Transient
+  public void updateV2(EmployeeSalary employeeSalary, BigDecimal totalDays, BigDecimal presents)
+  {
+    this.totalDays = totalDays;
+    this.presents = presents;
+
+    BigDecimal ratio = presents.divide(totalDays, 6, BigDecimal.ROUND_CEILING);
+
+    this.ctc = ratio.multiply(employeeSalary.getCtc());
+    this.basic = ratio.multiply(SalaryUtilsV2.calculateBasic(ctc));
+
+    this.hra = ratio.multiply(SalaryUtilsV2.calculateHra(basic));
+
+    this.conveyance = ratio.multiply(employeeSalary.getConveyance());
+    this.bonus = ratio.multiply(employeeSalary.getBonus());
+
+    this.special =ratio.multiply(SalaryUtilsV2.calculateSpecial(ctc, basic, hra, conveyance, bonus));
+
+    this.extraMonthlyAllowance=ratio.multiply(employeeSalary.getExtraMonthlyAllowance());
+
+    this.entertainment = employeeSalary.getEntertainment();
+    this.medical = employeeSalary.getMedical();
+    this.arrears = employeeSalary.getArrears();
+    this.shoes = employeeSalary.getShoes();
+    this.tiffin = employeeSalary.getTiffin();
+    this.uniform = employeeSalary.getUniform();
+    this.washing = employeeSalary.getWashing();
+    if (this.otherAllowances == null)
+    {
+      this.otherAllowances = ZERO;
+    }
+    if (this.otherDeductions == null)
+    {
+      this.otherDeductions = ZERO;
+    }
+
+    pfd = employeeSalary.isPfd();
+    esid = employeeSalary.isEsid();
+    profd = employeeSalary.isProfd();
+
+    this.pfe = employeeSalary.isPfd() ?
+            SalaryUtilsV2.calculatePfe(basic) :
+            ZERO;
+    this.pfr = employeeSalary.isPfd() ?
+            SalaryUtilsV2.calculatePfr(basic) :
+            ZERO;
+    this.grossSalary = SalaryUtilsV2.calculateGross(employeeSalary);
+
+    this.esi = employeeSalary.isEsid() ?
+            SalaryUtilsV2.calculateEsi(employeeSalary.isEsid(), grossSalary, SalaryUtils.ESI_PERCENT) :
+            ZERO;
+
+    this.professionalTax = employeeSalary.isProfd() ?
+            SalaryUtilsV2.PROFESSIONAL_TAX :
+            ZERO;
+
+    this.retention = employeeSalary.getRetention();
+    this.tds = employeeSalary.getTds();
+    this.advance = employeeSalary.getAdvance();
+    BigDecimal totalDeduction=SalaryUtilsV2.calculateTotalDeduction(pfe,pfr,esi,professionalTax,otherDeductions,tds);
+    this.setTotalDeduction(totalDeduction);
+    BigDecimal totalEaring=SalaryUtilsV2.calculateTotalEaring(ctc,employeeSalary.getExtraMonthlyAllowance(),otherAllowances);
+    this.setTotalEarning(totalEaring);
+    this.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring,totalDeduction));
+    //this.update();
   }
 }
