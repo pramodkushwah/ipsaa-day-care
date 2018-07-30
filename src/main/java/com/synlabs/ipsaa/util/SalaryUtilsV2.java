@@ -35,20 +35,19 @@ public class SalaryUtilsV2
   {
     return calculateSpecial(salary.getCtc(), salary.getBasic(), salary.getHra(), salary.getConveyance(), salary.getBonus());
   }
-
   public static BigDecimal calculateSpecial(BigDecimal ctc, BigDecimal basic, BigDecimal hra, BigDecimal conveyance, BigDecimal bonus)
   {
     return ctc.subtract(basic).subtract(hra).subtract(conveyance).subtract(bonus);
   }
 
-  public static BigDecimal calculatePfe(EmployeeSalary salary)
-  {
-    if (salary.isEsid())
-    {
-      return ZERO;
-    }
-    return calculatePfe(salary.getBasic());
-  }
+//  public static BigDecimal calculatePfe(EmployeeSalary salary)
+//  {
+//    if (salary.isEsid())
+//    {
+//      return ZERO;
+//    }
+//    return calculatePfe(salary.getBasic());
+//  }
 
   public static BigDecimal calculatePfe(BigDecimal basic)
   {
@@ -59,14 +58,14 @@ public class SalaryUtilsV2
     return new BigDecimal(PFE_LIMIT).multiply(TWELVE).divide(HUNDRED, 2);
   }
 
-  public static BigDecimal calculatePfr(EmployeeSalary salary)
-  {
-    if (salary.isEsid())
-    {
-      return ZERO;
-    }
-    return calculatePfr(salary.getBasic());
-  }
+//  public static BigDecimal calculatePfr(EmployeeSalary salary)
+//  {
+//    if (salary.isEsid())
+//    {
+//      return ZERO;
+//    }
+//    return calculatePfr(salary.getBasic());
+//  }
 
   public static BigDecimal calculatePfr(BigDecimal basic)
   {
@@ -79,12 +78,12 @@ public class SalaryUtilsV2
 
   public static BigDecimal calculateGross(EmployeeSalary salary)
   {
-    return calculateGross(salary.getBasic(), salary.getHra(), salary.getConveyance(), salary.getSpecial(), salary.getPfr(),salary.getExtraMonthlyAllowance());
+    return calculateGross(salary.getCtc(),salary.getBonus(),salary.getPfr());
   }
 
-  public static BigDecimal calculateGross(BigDecimal basic, BigDecimal hra, BigDecimal conveyance, BigDecimal special, BigDecimal pfr,BigDecimal extraMonthlyAllowance)
+  public static BigDecimal calculateGross(BigDecimal ctc, BigDecimal bonus, BigDecimal pfr)
   {
-    return basic.add(hra).add(conveyance).add(special).add(extraMonthlyAllowance).subtract(pfr);
+    return ctc.subtract(bonus).subtract(pfr);
   }
 
   public static BigDecimal calculateEsi(EmployeeSalary salary, BigDecimal esiPercentage)
@@ -104,11 +103,11 @@ public class SalaryUtilsV2
     return gross.multiply(esiPercentage).divide(HUNDRED, 2);
   }
 
-  public static BigDecimal calculateTotalEaring(BigDecimal ctc,BigDecimal fixdMonthlyAllowance){
-    return ctc.add(fixdMonthlyAllowance);
+  public static BigDecimal calculateTotalEaring(BigDecimal ctc,BigDecimal fixdMonthlyAllowance,BigDecimal otherAllowance){
+    return ctc.add(fixdMonthlyAllowance).add(otherAllowance);
   }
-  public static BigDecimal calculateTotalDeduction(BigDecimal pf,BigDecimal pfr,BigDecimal esi,BigDecimal professionalTex){
-    return pf.add(pfr).add(esi).add(professionalTex);
+  public static BigDecimal calculateTotalDeduction(BigDecimal pf,BigDecimal pfr,BigDecimal esi,BigDecimal professionalTex,BigDecimal otherDeduction,BigDecimal tds){
+    return pf.add(pfr).add(esi).add(professionalTex).add(otherDeduction).add(tds);
   }
   public static BigDecimal calculateNetSalary(BigDecimal totalEaring,BigDecimal totalDeduction){
     return totalEaring.subtract(totalDeduction);
