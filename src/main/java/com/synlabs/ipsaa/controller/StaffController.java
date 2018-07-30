@@ -88,22 +88,14 @@ public class StaffController
     return staffService.list(request);
   }
 
-//  @DeleteMapping("{id}")
-//  @Secured(STAFF_WRITE)
-//  public void deleteStaff(@PathVariable Long id)
-//  {
-//    StaffRequest request = new StaffRequest();
-//    request.setId(id);
-//    staffService.delete(request);
-//  }
-///////////////////shubam////////////////////////////////////
   @DeleteMapping("{id}")
   @Secured(STAFF_WRITE)
-  public void deleteStaffV2(@PathVariable Long id,@RequestBody StaffRequest request)
+  public void deleteStaff(@PathVariable Long id)
   {
+    StaffRequest request = new StaffRequest();
+    request.setId(id);
     staffService.delete(request);
   }
-
   @Secured(STAFF_READ)
   @GetMapping("{id}")
   public StaffResponse findEmployee(@PathVariable(name = "id") Long id)
