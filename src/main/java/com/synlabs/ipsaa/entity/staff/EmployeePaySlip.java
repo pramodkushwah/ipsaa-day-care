@@ -682,26 +682,7 @@ public class EmployeePaySlip extends BaseEntity
     this.presents = presents;
 
     BigDecimal ratio = presents.divide(totalDays, 6, BigDecimal.ROUND_CEILING);
-
-    this.ctc = ratio.multiply(employeeSalary.getCtc());
-    this.basic = ratio.multiply(SalaryUtilsV2.calculateBasic(ctc));
-
-    this.hra = ratio.multiply(SalaryUtilsV2.calculateHra(basic));
-
-    this.conveyance = ratio.multiply(employeeSalary.getConveyance());
-    this.bonus = ratio.multiply(employeeSalary.getBonus());
-
-    this.special =ratio.multiply(SalaryUtilsV2.calculateSpecial(ctc, basic, hra, conveyance, bonus));
-
-    this.extraMonthlyAllowance=ratio.multiply(employeeSalary.getExtraMonthlyAllowance());
-
-    this.entertainment = employeeSalary.getEntertainment();
-    this.medical = employeeSalary.getMedical();
-    this.arrears = employeeSalary.getArrears();
-    this.shoes = employeeSalary.getShoes();
-    this.tiffin = employeeSalary.getTiffin();
-    this.uniform = employeeSalary.getUniform();
-    this.washing = employeeSalary.getWashing();
+    this.setCtc(employeeSalary.getCtc().multiply(ratio));
     if (this.otherAllowances == null)
     {
       this.otherAllowances = ZERO;
@@ -710,35 +691,48 @@ public class EmployeePaySlip extends BaseEntity
     {
       this.otherDeductions = ZERO;
     }
+    if(this.tds==null){
+      this.tds=ZERO;
+    }
+
+    //employeeSalary = SalaryUtilsV2.calculateCTC(employeeSalary,this.otherAllowances,this.otherDeductions,this.tds);
+
+    this.basic = SalaryUtilsV2.calculateBasic(this.ctc);
+    this.hra = SalaryUtilsV2.calculateHra(this.basic);
+    this.conveyance = ratio.multiply(SalaryUtilsV2.CONVEYANCE);
+    this.bonus = ratio.multiply(SalaryUtilsV2.BOUNS);
+    this.special =SalaryUtilsV2.calculateSpecial(this.ctc,this.basic, this.hra, this.conveyance, this.bonus);
+    this.extraMonthlyAllowance=ratio.multiply(this.extraMonthlyAllowance);
+
+    this.entertainment = employeeSalary.getEntertainment();
+    this.medical = employeeSalary.getMedical();
+    this.arrears = employeeSalary.getArrears();
+    this.shoes = employeeSalary.getShoes();
+    this.tiffin = employeeSalary.getTiffin();
+    this.uniform = employeeSalary.getUniform();
+    this.washing = employeeSalary.getWashing();
+
 
     pfd = employeeSalary.isPfd();
     esid = employeeSalary.isEsid();
     profd = employeeSalary.isProfd();
 
-    this.pfe = employeeSalary.isPfd() ?
-            SalaryUtilsV2.calculatePfe(basic) :
-            ZERO;
-    this.pfr = employeeSalary.isPfd() ?
-            SalaryUtilsV2.calculatePfr(basic) :
-            ZERO;
-    this.grossSalary = SalaryUtilsV2.calculateGross(employeeSalary);
+    this.pfe = SalaryUtilsV2.calculatePfe(this.basic);
+    this.pfr = SalaryUtilsV2.calculatePfr(this.basic);
 
-    this.esi = employeeSalary.isEsid() ?
-            SalaryUtilsV2.calculateEsi(employeeSalary.isEsid(), grossSalary, SalaryUtils.ESI_PERCENT) :
-            ZERO;
+    this.grossSalary = SalaryUtilsV2.calculateGross(this.ctc,this.bonus,this.pfr);
 
-    this.professionalTax = employeeSalary.isProfd() ?
-            SalaryUtilsV2.PROFESSIONAL_TAX :
-            ZERO;
+    this.esi = SalaryUtilsV2.calculateEsi(this.esid,this.grossSalary,SalaryUtilsV2.ESI_PERCENT);
+
+    if(this.profd)
+      this.professionalTax = SalaryUtilsV2.PROFESSIONAL_TAX;
 
     this.retention = employeeSalary.getRetention();
-    this.tds = employeeSalary.getTds();
     this.advance = employeeSalary.getAdvance();
-    BigDecimal totalDeduction=SalaryUtilsV2.calculateTotalDeduction(pfe,pfr,esi,professionalTax,otherDeductions,tds);
-    this.setTotalDeduction(totalDeduction);
-    BigDecimal totalEaring=SalaryUtilsV2.calculateTotalEaring(ctc,employeeSalary.getExtraMonthlyAllowance(),otherAllowances);
-    this.setTotalEarning(totalEaring);
-    this.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring,totalDeduction));
+
+    this.setTotalDeduction(SalaryUtilsV2.calculateTotalDeduction(this.pfe, this.pfr, this.esi, this.professionalTax, this.otherDeductions, this.tds));
+    this.setTotalEarning(SalaryUtilsV2.calculateTotalEaring(this.ctc, this.extraMonthlyAllowance,this.otherAllowances));
+    this.setNetSalary(SalaryUtilsV2.calculateNetSalary(this.totalEarning,this.totalDeduction));
     //this.update();
   }
 }

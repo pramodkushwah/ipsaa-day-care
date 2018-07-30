@@ -75,52 +75,10 @@ public class EmployeeSalaryRequest implements Request
     salary.setPfd(pfd);
     salary.setProfd(profd);
     salary.setEsi(esi == null ? ZERO : esi);
-    if (!esid)
-    {
-      salary.setEsi(ZERO);
-    }
-
-    salary.setPfe(pfe == null ? ZERO : pfe);
-    salary.setPfr(pfr == null ? ZERO : pfr);
-    if (!pfd)
-    {
-      salary.setPfe(ZERO);
-      salary.setPfr(ZERO);
-    }
-
-    salary.setProfessionalTax(SalaryUtilsV2.PROFESSIONAL_TAX);
-    if (!profd)
-    {
-      salary.setProfessionalTax(ZERO);
-    }
 
     //modify by shubham calculateGrossV2 by calculateGross
     salary.setExtraMonthlyAllowance(extraMonthlyAllowance);
-
-    salary.setBasic(SalaryUtilsV2.calculateBasic(salary.getCtc()));
-    salary.setHra(SalaryUtilsV2.calculateHra(salary.getBasic()));
-    salary.setConveyance(SalaryUtilsV2.CONVEYANCE);
-    salary.setBonus(SalaryUtilsV2.BOUNS);
-
-    // must be calculate after ctc basic hra bouns conveyance
-    salary.setSpecial(SalaryUtilsV2.calculateSpecial(salary));
-
-    if(pfd){
-      salary.setPfe(SalaryUtilsV2.calculatePfe(salary.getBasic()));
-      salary.setPfr(SalaryUtilsV2.calculatePfr(salary.getBasic()));
-    }
-    if(esid)
-      salary.setEsi(SalaryUtilsV2.calculateEsi(salary,SalaryUtilsV2.ESI_PERCENT));
-
-    salary.setGrossSalary(SalaryUtilsV2.calculateGross(salary));
-
-
-    BigDecimal totalDeduction=SalaryUtilsV2.calculateTotalDeduction(salary.getPfe(),salary.getPfr(),salary.getEsi(),salary.getProfessionalTax(),ZERO,ZERO);
-    salary.setTotalDeduction(totalDeduction);
-    BigDecimal totalEaring=SalaryUtilsV2.calculateTotalEaring(salary.getCtc(),salary.getExtraMonthlyAllowance(),ZERO);
-    salary.setTotalEarning(totalEaring);
-    salary.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring,totalDeduction));
-    //salary.update();
+    salary=SalaryUtilsV2.calculateCTC(salary);
     return salary;
   }
 

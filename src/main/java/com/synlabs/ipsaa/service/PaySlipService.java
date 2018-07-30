@@ -153,6 +153,7 @@ public class PaySlipService extends BaseService
 
     Employee employee = paySlip.getEmployee();
     EmployeeSalary salary = employeeSalaryRepository.findByEmployee(employee);
+
     if (salary !=null  && paySlip.isLock())
     {
       throw new ValidationException(String.format("Cannot change locked salary", mask(request.getId())));
@@ -176,6 +177,7 @@ public class PaySlipService extends BaseService
     paySlip.setOtherDeductions(request.getOtherDeductions() == null ? ZERO : request.getOtherDeductions());
 
     paySlip = calculatePayslip(employee, salary, year, month, paySlip);
+
     employeePaySlipRepository.saveAndFlush(paySlip);
     logger.info(String.format("Regenerated Payslip[eid=%s,month=%s,year=%s]",
                               employee.getEid(),
@@ -245,6 +247,7 @@ public class PaySlipService extends BaseService
     payslip.roundOff();
     return payslip;
   }
+
   // update by shubham
   @Transactional
   public EmployeePaySlip updatePaySlip(EmployeePaySlipRequest request) throws IOException, DocumentException
@@ -254,9 +257,7 @@ public class PaySlipService extends BaseService
     {
       throw new ValidationException(String.format("Cannot Locate PaySlip[id = %s]", mask(request.getId())));
     }
-    if(request.getPresents()!=null){
-      paySlip.setPresents(request.getPresents());
-    }
+
     paySlip.setComment(request.getComment());
     if(request.getOtherAllowances() == null)
       request.setOtherAllowances(ZERO);
@@ -265,28 +266,7 @@ public class PaySlipService extends BaseService
     if(request.getTds()==null)
       request.setTds(ZERO);
 
-    paySlip.setTds(paySlip.getTotalDeduction().subtract(paySlip.getTds()).add(request.getTds()));
-    paySlip.setTds(request.getTds());
-
-    paySlip.setTotalEarning(paySlip.getTotalEarning().subtract(paySlip.getOtherAllowances().add(request.getOtherAllowances())));
-    paySlip.setOtherAllowances(request.getOtherAllowances());
-
-    paySlip.setTotalDeduction(paySlip.getTotalEarning().subtract(paySlip.getTotalDeduction().add(request.getOtherDeductions())));
-    paySlip.setOtherDeductions(request.getOtherDeductions());
-
-    paySlip.setNetSalary(SalaryUtilsV2.calculateNetSalary(paySlip.getTotalEarning(),paySlip.getTotalDeduction()));
-
-    BigDecimal oldRatio=paySlip.getPresents().divide(paySlip.getTotalDays());
-    BigDecimal newRatio=request.getPresents().divide(paySlip.getTotalDays());
-
-    paySlip.setCtc(paySlip.getCtc().divide(oldRatio).multiply(newRatio));
-    paySlip.setBasic(paySlip.getBasic().divide(oldRatio).multiply(newRatio));
-    paySlip.setHra(paySlip.getHra().divide(oldRatio).multiply(newRatio));
-    paySlip.setConveyance(paySlip.getConveyance().divide(oldRatio).multiply(newRatio));
-    paySlip.setBonus(paySlip.getBonus().divide(oldRatio).multiply(newRatio));
-    paySlip.setSpecial(paySlip.getSpecial().divide(oldRatio).multiply(newRatio));
-    paySlip.setExtraMonthlyAllowance(paySlip.getExtraMonthlyAllowance().divide(oldRatio).multiply(newRatio));
-    //paySlip.update();
+   paySlip=SalaryUtilsV2.updateAndCalculateCTC(paySlip,request);
     employeePaySlipRepository.saveAndFlush(paySlip);
     return paySlip;
   }
