@@ -66,34 +66,34 @@ public class EmployeeService extends BaseService
     {
       throw new ValidationException("Salary HRA component missing");
     }
-    if (request.getMedical() == null)
-    {
-      throw new ValidationException("Salary medical component missing");
-    }
-    if (request.getArrears() == null)
-    {
-      throw new ValidationException("Salary arrears component missing");
-    }
-    if (request.getShoes() == null)
-    {
-      throw new ValidationException("Salary shoes component missing");
-    }
+//    if (request.getMedical() == null)
+//    {
+//      throw new ValidationException("Salary medical component missing");
+//    }
+//    if (request.getArrears() == null)
+//    {
+//      throw new ValidationException("Salary arrears component missing");
+//    }
+//    if (request.getShoes() == null)
+//    {
+//      throw new ValidationException("Salary shoes component missing");
+//    }
     if (request.getSpecial() == null)
     {
       throw new ValidationException("Salary special component missing");
     }
-    if (request.getTiffin() == null)
-    {
-      throw new ValidationException("Salary tiffin component missing");
-    }
-    if (request.getUniform() == null)
-    {
-      throw new ValidationException("Salary uniform component missing");
-    }
-    if (request.getWashing() == null)
-    {
-      throw new ValidationException("Salary washing component missing");
-    }
+//    if (request.getTiffin() == null)
+//    {
+//      throw new ValidationException("Salary tiffin component missing");
+//    }
+//    if (request.getUniform() == null)
+//    {
+//      throw new ValidationException("Salary uniform component missing");
+//    }
+//    if (request.getWashing() == null)
+//    {
+//      throw new ValidationException("Salary washing component missing");
+//    }
     if (request.isEsid() && request.getEsi() == null)
     {
       throw new ValidationException("Salary ESI component missing");
@@ -118,7 +118,6 @@ public class EmployeeService extends BaseService
     {
       throw new ValidationException("Salary retention component missing");
     }
-
     if ((StringUtils.isEmpty(request.getEid())))
     {
       throw new ValidationException("Employee not found for update");

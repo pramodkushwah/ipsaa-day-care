@@ -114,14 +114,10 @@ public class EmployeeSalaryRequest implements Request
 
     salary.setGrossSalary(SalaryUtilsV2.calculateGross(salary));
 
-    if(profd)
-    salary.setProfessionalTax(SalaryUtilsV2.PROFESSIONAL_TAX);
-    else
-      salary.setProfessionalTax(ZERO);
 
-    BigDecimal totalDeduction=SalaryUtilsV2.calculateTotalDeduction(salary.getPfe(),salary.getPfr(),salary.getEsi(),salary.getProfessionalTax());
+    BigDecimal totalDeduction=SalaryUtilsV2.calculateTotalDeduction(salary.getPfe(),salary.getPfr(),salary.getEsi(),salary.getProfessionalTax(),ZERO,ZERO);
     salary.setTotalDeduction(totalDeduction);
-    BigDecimal totalEaring=SalaryUtilsV2.calculateTotalEaring(salary.getCtc(),salary.getExtraMonthlyAllowance());
+    BigDecimal totalEaring=SalaryUtilsV2.calculateTotalEaring(salary.getCtc(),salary.getExtraMonthlyAllowance(),ZERO);
     salary.setTotalEarning(totalEaring);
     salary.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring,totalDeduction));
     //salary.update();
