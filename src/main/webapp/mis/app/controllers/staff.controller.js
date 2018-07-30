@@ -309,7 +309,7 @@ app.controller('StaffController', function ($scope, $http, $localStorage, fileUp
             refresh();
             ok("Staff  is deactivated.")
         }, function (response) {
-            error(response.data.error);
+            error("Date of Leaving not set for Employee Id: " + staff.eid);
         });
     };
 
@@ -322,7 +322,7 @@ app.controller('StaffController', function ($scope, $http, $localStorage, fileUp
             confirmButtonText: 'Yes'
         }).then(function () {
             $scope.deleteStaff(staff);
-        });
+        },function(){});
     };
 
     function loadAllStaff() {
@@ -379,7 +379,7 @@ app.controller('StaffController', function ($scope, $http, $localStorage, fileUp
             title: message,
             type: 'error',
             buttonsStyling: false,
-            confirmButtonClass: "btn btn-warning"
+            confirmButtonClass: "btn btn-danger"
         });
     }
 
