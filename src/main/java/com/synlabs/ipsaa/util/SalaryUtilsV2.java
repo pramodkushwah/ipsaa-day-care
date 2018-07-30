@@ -119,7 +119,7 @@ public class SalaryUtilsV2
 
   public static EmployeeSalary calculateCTC(EmployeeSalary salary) {
 
-    salary.setProfessionalTax(!salary.isProfd() ? SalaryUtilsV2.PROFESSIONAL_TAX : ZERO);
+    salary.setProfessionalTax(salary.isProfd() ? SalaryUtilsV2.PROFESSIONAL_TAX : ZERO);
 
     //modify by shubham calculateGrossV2 by calculateGross
     salary.setExtraMonthlyAllowance(salary.getExtraMonthlyAllowance());
@@ -150,7 +150,7 @@ public class SalaryUtilsV2
   }
   public static EmployeeSalary calculateCTC(EmployeeSalary salary,BigDecimal otherAllowance,BigDecimal extraDeduction,BigDecimal tds) {
 
-    salary.setProfessionalTax(!salary.isProfd() ? SalaryUtilsV2.PROFESSIONAL_TAX : ZERO);
+    salary.setProfessionalTax(salary.isProfd() ? SalaryUtilsV2.PROFESSIONAL_TAX : ZERO);
 
     //modify by shubham calculateGrossV2 by calculateGross
     salary.setExtraMonthlyAllowance(salary.getExtraMonthlyAllowance());
