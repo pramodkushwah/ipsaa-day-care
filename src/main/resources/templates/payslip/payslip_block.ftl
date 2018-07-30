@@ -3,13 +3,13 @@
 <table style="width: 100%" class="">
   <tbody>
   <tr>
-    <td style="width: 180px;">EId</td>
+    <td style="width: 180px;">Employee Code</td>
     <td style="width: 280px;">:&nbsp;&nbsp;${paySlip.eid}</td>
-    <td style="width: 210px;">Aadhar No.</td>
-    <td style="width: 350px;">:&nbsp;&nbsp;${paySlip.aadharNumber}</td>
+    <td style="width: 210px;">PAN</td>
+    <td style="width: 350px;">:&nbsp;&nbsp;${paySlip.pan}</td>
   </tr>
   <tr>
-    <td style="width: 180px;">Name</td>
+    <td style="width: 180px;">Employee Name</td>
     <td style="width: 280px;">:&nbsp;&nbsp;${paySlip.empName}</td>
     <td style="width: 210px;">UAN</td>
     <td style="width: 350px;">:&nbsp;&nbsp;${paySlip.uan}</td>
@@ -17,32 +17,26 @@
   <tr>
     <td style="width: 180px;">Designation</td>
     <td style="width: 280px;">:&nbsp;&nbsp;${paySlip.empDesignation}</td>
-    <td style="width: 210px;">ESI Number</td>
-    <td style="width: 350px;">:&nbsp;&nbsp;${paySlip.esin}</td>
-  </tr>
-  <tr>
-    <td style="width: 180px;">Month and year</td>
-    <td style="width: 280px;">:&nbsp;&nbsp;${paySlip.month} / ${paySlip.year?c}</td>
-    <td style="width: 210px;">Bank Acc. No.</td>
-    <td style="width: 350px;">:&nbsp;&nbsp;${paySlip.ban}</td>
-  </tr>
-  <tr>
-    <td style="width: 180px;">Date Of Joining</td>
-    <td style="width: 280px;">:&nbsp;&nbsp;${paySlip.month} / ${paySlip.year?c}</td>
-    <td style="width: 210px;">PRAN</td>
-    <td style="width: 350px;">:&nbsp;&nbsp;${paySlip.pran}</td>
+    <td style="width: 210px;vertical-align: top;">PF Acc No.</td>
+    <td style="width: 350px;vertical-align: top;">:&nbsp;&nbsp;${paySlip.pfan}</td>
   </tr>
   <tr>
     <td style="width: 180px;vertical-align: top;">Location</td>
     <td style="width: 280px;vertical-align: top;">:&nbsp;&nbsp;${paySlip.centerName}</td>
-    <td style="width: 210px;">PAN</td>
-    <td style="width: 350px;">:&nbsp;&nbsp;${paySlip.pan}</td>
+    <td style="width: 210px;">ESI Number</td>
+    <td style="width: 350px;">:&nbsp;&nbsp;${paySlip.esin}</td>
+  </tr>
+  <tr>
+    <td style="width: 210px;">Bank Acc. No.</td>
+    <td style="width: 350px;">:&nbsp;&nbsp;${paySlip.ban}</td>
+    <td style="width: 180px;">Date Of Joining</td>
+    <td style="width: 280px;">:&nbsp;&nbsp;${paySlip.month} / ${paySlip.year?c}</td>
   </tr>
   <tr>
     <td style="width: 210px;vertical-align: top;">Presents/Total</td>
     <td style="width: 210px;vertical-align: top;">:&nbsp;&nbsp;${paySlip.presents}/${paySlip.totalDays}</td>
-    <td style="width: 210px;vertical-align: top;">PF Acc No.</td>
-    <td style="width: 350px;vertical-align: top;">:&nbsp;&nbsp;${paySlip.pfan}</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
   </tr>
   </tbody>
 </table><#--Employee details table-->
@@ -58,38 +52,44 @@
     <td style="width: 121px;">&nbsp;</td>
   </tr>
   <tr>
-    <td style="width: 237px;">Basic</td>
+    <td style="width: 237px;">Basic Salary</td>
     <td style="width: 100px;">${paySlip.basic}</td>
-    <td style="width: 195px;">PF</td>
+    <td style="width: 195px;">Provident Fund</td>
     <td style="width: 121px;">${paySlip.pfe}</td>
   </tr>
   <tr>
-    <td style="width: 237px;">Conveyance</td>
-    <td style="width: 100px;">${paySlip.conveyance}</td>
-    <td style="width: 195px;">ESI</td>
+    <td style="width: 237px;">House Rent Allowance</td>
+    <td style="width: 100px;">${paySlip.hra}</td>
+    <td style="width: 195px;">ESIC</td>
     <td style="width: 121px;">${paySlip.esi}</td>
   </tr>
   <tr>
-    <td style="width: 237px;">HRA</td>
-    <td style="width: 100px;">${paySlip.hra}</td>
+    <td style="width: 237px;">Conveyance Allowance</td>
+    <td style="width: 100px;">${paySlip.conveyance}</td>
     <td style="width: 195px;">Professional Tax</td>
     <td style="width: 121px;">${paySlip.professionalTax}</td>
   </tr>
   <tr>
-    <td style="width: 237px;">Bonus</td>
-    <td style="width: 100px;">${paySlip.bonus}</td>
-    <td style="width: 195px;">TDS</td>
-    <td style="width: 121px;">${paySlip.tds}</td>
-  </tr>
-  <tr>
-    <td style="width: 237px;">Other Allowance</td>
-    <td style="width: 100px;">${paySlip.otherAllowances}</td>
+    <td style="width: 195px;">Special Allowance</td>
+    <td style="width: 121px;">${paySlip.special}</td>
     <td style="width: 195px;">Other Deductions</td>
     <td style="width: 121px;">${paySlip.otherDeductions}</td>
   </tr>
   <tr>
-    <td style="width: 195px;">Special</td>
-    <td style="width: 121px;">${paySlip.special}</td>
+    <td style="width: 237px;">Bonus</td>
+    <td style="width: 100px;">${paySlip.bonus}</td>
+    <td style="width: 237px;">&nbsp;</td>
+    <td style="width: 100px;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td style="width: 237px;">Fixed Monthly Allowance</td>
+    <td style="width: 100px;">${paySlip.bonus}</td>
+    <td style="width: 237px;">&nbsp;</td>
+    <td style="width: 100px;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td style="width: 237px;">Other Allowance</td>
+    <td style="width: 100px;">${paySlip.otherAllowances}</td>
     <td style="width: 237px;">&nbsp;</td>
     <td style="width: 100px;">&nbsp;</td>
   </tr>
@@ -102,7 +102,7 @@
   <tr>
     <td style="width: 237px;">&nbsp;</td>
     <td style="width: 100px;">&nbsp;</td>
-    <td style="width: 195px;"><strong>NET Salary</strong></td>
+    <td style="width: 195px;"><strong>NET Amount</strong></td>
     <td style="width: 121px;">${paySlip.netSalary}</td>
   </tr>
   </tbody>
@@ -113,20 +113,22 @@
 <table style="width: 100%;">
   <tbody>
   <tr>
-    <td style="text-align: center;">Amount (in words)</td>
-    <td style="text-align: center;"><strong>for ${paySlip.employerName}</strong></td>
-  </tr>
-  <tr>
-    <td>${amountWords}</td>
+    <td>Amount (in words):</td>
     <td>&nbsp;</td>
   </tr>
   <tr>
+    <td colspan="2"><strong>Indian Rupees</strong>
+      <span style="border-bottom:1px solid; padding: 0 20px;">${amountWords}</span>
+      <strong>Only</strong>
+    </td>
+  </tr>
+  <tr>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td style="text-align: center;">Authorized Signatory</td>
+    <td style="text-align: right;">Authorized Signatory</td>
   </tr>
   </tbody>
 </table>
