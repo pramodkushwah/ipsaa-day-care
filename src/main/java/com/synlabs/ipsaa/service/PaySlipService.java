@@ -13,6 +13,7 @@ import com.synlabs.ipsaa.enums.LeaveType;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.store.FileStore;
+import com.synlabs.ipsaa.util.SalaryUtilsV2;
 import com.synlabs.ipsaa.view.fee.lockSalaryRequest;
 import com.synlabs.ipsaa.view.staff.EmployeePaySlipRequest;
 import com.synlabs.ipsaa.view.staff.PaySlipRegenerateRequest;
@@ -261,12 +262,20 @@ public class PaySlipService extends BaseService
       request.setOtherAllowances(ZERO);
     if(request.getOtherDeductions() == null)
       request.setOtherDeductions(ZERO);
+    if(request.getTds()==null)
+      request.setTds(ZERO);
+
+    paySlip.setTds(paySlip.getTotalDeduction().subtract(paySlip.getTds()).add(request.getTds()));
+    paySlip.setTds(request.getTds());
 
     paySlip.setTotalEarning(paySlip.getTotalEarning().subtract(paySlip.getOtherAllowances().add(request.getOtherAllowances())));
     paySlip.setOtherAllowances(request.getOtherAllowances());
 
     paySlip.setTotalDeduction(paySlip.getTotalEarning().subtract(paySlip.getTotalDeduction().add(request.getOtherDeductions())));
     paySlip.setOtherDeductions(request.getOtherDeductions());
+
+    paySlip.setNetSalary(SalaryUtilsV2.calculateNetSalary(paySlip.getTotalEarning(),paySlip.getTotalDeduction()));
+
     BigDecimal oldRatio=paySlip.getPresents().divide(paySlip.getTotalDays());
     BigDecimal newRatio=request.getPresents().divide(paySlip.getTotalDays());
 
