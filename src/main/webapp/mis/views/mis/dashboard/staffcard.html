@@ -4,9 +4,10 @@
       <i class="material-icons">person_pin</i>
     </div>
     <div class="card-content">
-      <p class="category">Staff</p>
-      <h3 class="card-title" >{{stats.staffCount | number}}</h3>
-      <!-- ng-click="showPanel('stafflist', 'all')" -->
+      <a ng-click="showPanel('stafflist', 'all')" href="#">
+        <p class="category">Staff</p>
+        <h3 class="card-title" >{{stats.staffCount | number}}</h3>
+      </a>
     </div>
     <div class="card-footer footer-bottom">
       <div class="stats">
