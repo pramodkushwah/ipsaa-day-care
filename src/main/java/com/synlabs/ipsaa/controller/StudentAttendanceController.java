@@ -49,7 +49,7 @@ public class StudentAttendanceController
   }
 
   @Secured(STUDENT_READ)
-  @GetMapping("/corporate/{value}")
+  @GetMapping("/corporate/{isCorporate}")
   public List<StudentAttendanceResponse> studentList(@PathVariable("isCorporate") boolean isCorporate){
     return attendanceService.listOfStudents(isCorporate).stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
   }
