@@ -270,8 +270,6 @@ public class PaySlipService extends BaseService
     employeePaySlipRepository.saveAndFlush(paySlip);
     return paySlip;
   }
-
-
   public InputStream generatePayslipPdf(Long id) throws IOException, DocumentException
   {
     if (id == null)
