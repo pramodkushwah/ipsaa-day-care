@@ -3,6 +3,7 @@
     <i class="material-icons">person_pin</i>
   </div>
   <div class="card-content">
+    <i class="fa fa-spinner fa-fw fa-pulse fa-2x text-primary right" ng-show="staffLoading"></i>
     <h4 class="card-title">Staff</h4>
     <div class="table-responsive">
       <table class="table table-condensed table-striped table-hover">
@@ -30,12 +31,12 @@
           <td>{{staff.name}}</td>
           <td>{{staff.designation}}</td>
           <td>{{staff.mobile}}</td>
+          <td>{{staff.center}}</td>
+          <td>{{staff.employer}}</td>
           <!-- <td>{{staff.email}}</td>
           <td ng-if="SALARY_READ">{{staff.basicSalary}}</td> -->
           <td ng-hide="staffPage.filter=='newjoinings' || staffPage.filter== 'newleavings'">{{staff.checkin}}</td>
           <td ng-hide="staffPage.filter=='newleavings' || staffPage.filter== 'newjoinings'">{{staff.expectedOut}}</td>
-          <td>{{staff.center}}</td>
-          <td>{{staff.employer}}</td>
           <td ng-show="staffPage.filter=='newjoinings'">{{staff.doj}}</td>
           <td ng-show="staffPage.filter=='newleavings'">{{staff.dol}}</td>
         </tr>

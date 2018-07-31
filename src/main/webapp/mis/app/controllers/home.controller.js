@@ -323,6 +323,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
 
         switch (panel) {
             case 'stafflist':
+                $scope.staffLoading = true;
                 var url;
                 if(filter == 'present' || filter == "all") {
                     url = "/api/dash/staff";
@@ -334,8 +335,11 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
                     $scope.stafflist = filter == "present" 
                                     ? $filter('filter')(response.data, {present:true})
                                     : response.data;
+                    
+                    // saving filter field for later referance
                     $scope.stafflist.filter = filter;
                     $scope.updateStaffPage(1);
+                    $scope.staffLoading = false;
                 });
                 $scope.refresh();
                 break;
