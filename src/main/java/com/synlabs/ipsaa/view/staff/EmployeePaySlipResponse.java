@@ -93,7 +93,7 @@ public class EmployeePaySlipResponse implements Response
       this.empDesignation = employee.getDesignation() == null ? "" : employee.getDesignation();
       this.aadharNumber = employee.getAadharNumber() == null ? "" : employee.getAadharNumber();
       // shubham
-      this.dol=employee.getProfile().getDol();
+      this.doj=employee.getProfile().getDoj();
       EmployeeProfile profile = employee.getProfile();
       if (profile != null)
       {
@@ -438,7 +438,7 @@ public class EmployeePaySlipResponse implements Response
 //-----------------------------subham--------------------------------
   public BigDecimal ctc;
   public BigDecimal extraMonthlyAllowance;
-  public Date dol;
+  public Date doj;
   public BigDecimal getExtraMonthlyAllowance() {
     return extraMonthlyAllowance;
   }
@@ -446,12 +446,12 @@ public class EmployeePaySlipResponse implements Response
   public void setExtraMonthlyAllowance(BigDecimal extraMonthlyAllowance) {
     this.extraMonthlyAllowance = extraMonthlyAllowance;
   }
-  public Date getDol() {
-    return dol;
+  public Date getDoj() {
+    return doj;
   }
 
-  public void setDol(Date dol) {
-    this.dol = dol;
+  public void setDoj(Date doj) {
+    this.doj = doj;
   }
 
   public BigDecimal getCtc() {
