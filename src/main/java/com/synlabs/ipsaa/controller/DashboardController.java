@@ -62,7 +62,7 @@ public class DashboardController
   @Secured(DASHBOARD_STATS)
   public List<DashStaffResponse> getStaffList(@RequestBody DashboardRequest request)
   {
-    return dashboardService.listStaff(request);
+    return dashboardService.listStaffV2(request);
   }
 
   @PostMapping("/dash/studentfee")

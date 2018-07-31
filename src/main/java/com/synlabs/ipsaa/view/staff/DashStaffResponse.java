@@ -25,6 +25,7 @@ public class DashStaffResponse implements Response
   private Date expectedOut;
 
   public DashStaffResponse(EmployeeSalary employeeSalary){
+    ctc=employeeSalary.getCtc();
     eid=employeeSalary.getEmployee().getEid();
     name=employeeSalary.getEmployee().getName();
     designation= employeeSalary.getEmployee().getDesignation();
@@ -134,6 +135,15 @@ public void setPresent(boolean present) {
   private String center;
   private String employer;
   private BigDecimal netSalary;
+  private BigDecimal ctc;
+
+  public BigDecimal getCtc() {
+    return ctc;
+  }
+
+  public void setCtc(BigDecimal ctc) {
+    this.ctc = ctc;
+  }
 
   public String getEid() {
     return eid;
