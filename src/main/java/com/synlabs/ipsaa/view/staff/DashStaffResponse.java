@@ -25,14 +25,19 @@ public class DashStaffResponse implements Response
   private Date expectedOut;
 
   public DashStaffResponse(EmployeeSalary employeeSalary){
+    eid=employeeSalary.getEmployee().getEid();
     name=employeeSalary.getEmployee().getName();
     designation= employeeSalary.getEmployee().getDesignation();
     mobile=employeeSalary.getEmployee().getMobile();
     email=employeeSalary.getEmployee().getEmail();
     basicSalary =employeeSalary.getBasic();
+    center=employeeSalary.getEmployee().getCenterName();
+    employer=employeeSalary.getEmployee().getEmployer().getName();
+    netSalary=employeeSalary.getNetSalary();
   }
   
   public DashStaffResponse(EmployeeSalary employeeSalary,EmployeeAttendance employeeAttandence,Employee emp){
+    eid=employeeSalary.getEmployee().getEid();
     name=employeeSalary.getEmployee().getName();
     designation= employeeSalary.getEmployee().getDesignation();
     mobile=employeeSalary.getEmployee().getMobile();
@@ -49,6 +54,7 @@ public class DashStaffResponse implements Response
 
   public DashStaffResponse(Employee emp)
   {
+    eid=emp.getEid();
     name=emp.getName();
     designation= emp.getDesignation();
     mobile=emp.getMobile();
@@ -123,5 +129,41 @@ public void setPresent(boolean present) {
 	this.present = present;
 }
   
-  
+  ///-----------------------shubham-----------------------------------------
+  private String eid;
+  private String center;
+  private String employer;
+  private BigDecimal netSalary;
+
+  public String getEid() {
+    return eid;
+  }
+
+  public void setEid(String eid) {
+    this.eid = eid;
+  }
+
+  public String getCenter() {
+    return center;
+  }
+
+  public void setCenter(String center) {
+    this.center = center;
+  }
+
+  public String getEmployer() {
+    return employer;
+  }
+
+  public void setEmployer(String employer) {
+    this.employer = employer;
+  }
+
+  public BigDecimal getNetSalary() {
+    return netSalary;
+  }
+
+  public void setNetSalary(BigDecimal netSalary) {
+    this.netSalary = netSalary;
+  }
 }
