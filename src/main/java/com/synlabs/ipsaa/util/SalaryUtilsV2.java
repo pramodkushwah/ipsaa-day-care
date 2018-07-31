@@ -1,235 +1,256 @@
 package com.synlabs.ipsaa.util;
 
-import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
-import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
-import com.synlabs.ipsaa.view.staff.EmployeePaySlipRequest;
+import static com.synlabs.ipsaa.util.BigDecimalUtils.FORTY;
+import static com.synlabs.ipsaa.util.BigDecimalUtils.HUNDRED;
+import static com.synlabs.ipsaa.util.BigDecimalUtils.TWELVE;
+import static java.math.BigDecimal.ZERO;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import static com.synlabs.ipsaa.util.BigDecimalUtils.*;
-import static java.math.BigDecimal.ZERO;
+import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
+import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
+import com.synlabs.ipsaa.view.staff.EmployeePaySlipRequest;
 
-public class SalaryUtilsV2
-{
-  public static BigDecimal ESI_PERCENT     = new BigDecimal("1.75");
-  public static BigDecimal PROFESSIONAL_TAX = new BigDecimal("200");
+public class SalaryUtilsV2 {
+	public static BigDecimal ESI_PERCENT = new BigDecimal("1.75");
+	public static BigDecimal PROFESSIONAL_TAX = new BigDecimal("200");
 
-  public static BigDecimal TWALVEPERCENT=new BigDecimal("0.12");
+	public static BigDecimal TWALVEPERCENT = new BigDecimal("0.12");
 
-  public static BigDecimal CONVEYANCE =new BigDecimal(1600);
-  public static BigDecimal BOUNS =new BigDecimal(584);
+	public static BigDecimal CONVEYANCE = new BigDecimal(1600);
+	public static BigDecimal BOUNS = new BigDecimal(584);
 
-  public static int PFE_LIMIT = 15000;
-  public static int PFR_LIMIT = 15000;
+	public static int PFE_LIMIT = 15000;
+	public static int PFR_LIMIT = 15000;
 
-  public static int ESI_LIMIT = 21000;
+	public static int ESI_LIMIT = 21000;
 
-  public static BigDecimal calculateBasic(BigDecimal ctc)
-  {
-    return ctc.multiply(FORTY).divide(HUNDRED, 2);
-  }
+	public static BigDecimal calculateBasic(BigDecimal ctc) {
+		return ctc.multiply(FORTY).divide(HUNDRED, 2);
+	}
 
-  public static BigDecimal calculateHra(BigDecimal basic)
-  {
-    return basic.multiply(FORTY).divide(HUNDRED, 2);
-  }
+	public static BigDecimal calculateHra(BigDecimal basic) {
+		return basic.multiply(FORTY).divide(HUNDRED, 2);
+	}
 
-  public static BigDecimal calculateSpecial(EmployeeSalary salary)
-  {
-    return calculateSpecial(salary.getCtc(), salary.getBasic(), salary.getHra(), salary.getConveyance(), salary.getBonus());
-  }
-  public static BigDecimal calculateSpecial(BigDecimal ctc, BigDecimal basic, BigDecimal hra, BigDecimal conveyance, BigDecimal bonus)
-  {
-    return ctc.subtract(basic).subtract(hra).subtract(conveyance).subtract(bonus);
-  }
+	public static BigDecimal calculateSpecial(EmployeeSalary salary) {
+		return calculateSpecial(salary.getCtc(), salary.getBasic(), salary.getHra(), salary.getConveyance(),
+				salary.getBonus());
+	}
 
-//  public static BigDecimal calculatePfe(EmployeeSalary salary)
-//  {
-//    if (salary.isEsid())
-//    {
-//      return ZERO;
-//    }
-//    return calculatePfe(salary.getBasic());
-//  }
+	public static BigDecimal calculateSpecial(BigDecimal ctc, BigDecimal basic, BigDecimal hra, BigDecimal conveyance,
+			BigDecimal bonus) {
+		return ctc.subtract(basic).subtract(hra).subtract(conveyance).subtract(bonus);
+	}
 
-  public static BigDecimal calculatePfe(BigDecimal basic)
-  {
-    if (basic.intValue() <= PFE_LIMIT)
-    {
-      return basic.multiply(TWELVE).divide(HUNDRED, 2);
-    }
-    return new BigDecimal(PFE_LIMIT).multiply(TWELVE).divide(HUNDRED, 2);
-  }
+	// public static BigDecimal calculatePfe(EmployeeSalary salary)
+	// {
+	// if (salary.isEsid())
+	// {
+	// return ZERO;
+	// }
+	// return calculatePfe(salary.getBasic());
+	// }
 
-//  public static BigDecimal calculatePfr(EmployeeSalary salary)
-//  {
-//    if (salary.isEsid())
-//    {
-//      return ZERO;
-//    }
-//    return calculatePfr(salary.getBasic());
-//  }
+	public static BigDecimal calculatePfe(BigDecimal basic) {
+		if (basic.intValue() <= PFE_LIMIT) {
+			return basic.multiply(TWELVE).divide(HUNDRED, 2);
+		}
+		return new BigDecimal(PFE_LIMIT).multiply(TWELVE).divide(HUNDRED, 2);
+	}
 
-  public static BigDecimal calculatePfr(BigDecimal basic)
-  {
-    if (basic.intValue() <= PFE_LIMIT)
-    {
-      return basic.multiply(TWELVE).divide(HUNDRED, 2);
-    }
-    return new BigDecimal(PFE_LIMIT).multiply(TWELVE).divide(HUNDRED, 2);
-  }
+	// public static BigDecimal calculatePfr(EmployeeSalary salary)
+	// {
+	// if (salary.isEsid())
+	// {
+	// return ZERO;
+	// }
+	// return calculatePfr(salary.getBasic());
+	// }
 
-  public static BigDecimal calculateGross(EmployeeSalary salary)
-  {
-    return calculateGross(salary.getCtc(),salary.getBonus(),salary.getPfr());
-  }
+	public static BigDecimal calculatePfr(BigDecimal basic) {
+		if (basic.intValue() <= PFE_LIMIT) {
+			return basic.multiply(TWELVE).divide(HUNDRED, 2);
+		}
+		return new BigDecimal(PFE_LIMIT).multiply(TWELVE).divide(HUNDRED, 2);
+	}
 
-  public static BigDecimal calculateGross(BigDecimal ctc, BigDecimal bonus, BigDecimal pfr)
-  {
-    return ctc.subtract(bonus).subtract(pfr);
-  }
+	public static BigDecimal calculateGross(EmployeeSalary salary) {
+		return calculateGross(salary.getCtc(), salary.getBonus(), salary.getPfr());
+	}
 
-  public static BigDecimal calculateEsi(EmployeeSalary salary, BigDecimal esiPercentage)
-  {
-    return calculateEsi(salary.isEsid(), salary.getGrossSalary(), esiPercentage);
-  }
-  public static BigDecimal calculateEsi(boolean esid, BigDecimal gross, BigDecimal esiPercentage)
-  {
-    if (!esid)
-    {
-      return BigDecimal.ZERO;
-    }
-    if (gross.intValue() > ESI_LIMIT)
-    {
-      return BigDecimal.ZERO;
-    }
-    return gross.multiply(esiPercentage).divide(HUNDRED, 2);
-  }
+	public static BigDecimal calculateGross(BigDecimal ctc, BigDecimal bonus, BigDecimal pfr) {
+		return ctc.subtract(bonus).subtract(pfr);
+	}
 
-  public static BigDecimal calculateTotalEaring(BigDecimal ctc,BigDecimal fixdMonthlyAllowance,BigDecimal otherAllowance){
-    return ctc.add(fixdMonthlyAllowance).add(otherAllowance);
-  }
-  public static BigDecimal calculateTotalDeduction(BigDecimal pf,BigDecimal pfr,BigDecimal esi,BigDecimal professionalTex,BigDecimal otherDeduction,BigDecimal tds){
-    return pf.add(pfr).add(esi).add(professionalTex).add(otherDeduction).add(tds);
-  }
-  public static BigDecimal calculateNetSalary(BigDecimal totalEaring,BigDecimal totalDeduction){
-    return totalEaring.subtract(totalDeduction);
-  }
+	public static BigDecimal calculateEsi(EmployeeSalary salary, BigDecimal esiPercentage) {
+		return calculateEsi(salary.isEsid(), salary.getGrossSalary(), esiPercentage);
+	}
 
-  public static EmployeeSalary calculateCTC(EmployeeSalary salary) {
+	public static BigDecimal calculateEsi(boolean esid, BigDecimal gross, BigDecimal esiPercentage) {
+		if (!esid) {
+			return BigDecimal.ZERO;
+		}
+		if (gross.intValue() > ESI_LIMIT) {
+			return BigDecimal.ZERO;
+		}
+		return gross.multiply(esiPercentage).divide(HUNDRED, 2);
+	}
 
-    salary.setProfessionalTax(!salary.isProfd() ? SalaryUtilsV2.PROFESSIONAL_TAX : ZERO);
+	public static BigDecimal calculateTotalEaring(BigDecimal ctc, BigDecimal fixdMonthlyAllowance,
+			BigDecimal otherAllowance) {
+		if(fixdMonthlyAllowance==null) {
+			fixdMonthlyAllowance = ZERO;
+		}
+		return ctc.add(fixdMonthlyAllowance).add(otherAllowance);
+	}
 
-    //modify by shubham calculateGrossV2 by calculateGross
-    salary.setExtraMonthlyAllowance(salary.getExtraMonthlyAllowance());
-    salary.setBasic(SalaryUtilsV2.calculateBasic(salary.getCtc()));
-    salary.setHra(SalaryUtilsV2.calculateHra(salary.getBasic()));
-    salary.setConveyance(SalaryUtilsV2.CONVEYANCE);
-    salary.setBonus(SalaryUtilsV2.BOUNS);
+	public static BigDecimal calculateTotalDeduction(BigDecimal pf, BigDecimal pfr, BigDecimal esi,
+			BigDecimal professionalTex, BigDecimal otherDeduction, BigDecimal tds) {
+		if(tds==null) {
+			tds = ZERO;
+		}
+		if(otherDeduction==null) {
+			otherDeduction = ZERO;
+		}
+		if(professionalTex==null) {
+			professionalTex=ZERO;
+		}
+		return pf.add(pfr).add(esi).add(professionalTex).add(otherDeduction).add(tds);
+	}
 
-    // must be calculate after ctc basic hra bouns conveyance
-    salary.setSpecial(SalaryUtilsV2.calculateSpecial(salary));
-    if(salary.isPfd()){
-      salary.setPfe(SalaryUtilsV2.calculatePfe(salary.getBasic()));
-      salary.setPfr(SalaryUtilsV2.calculatePfr(salary.getBasic()));
-    }
-    salary.setGrossSalary(SalaryUtilsV2.calculateGross(salary));
+	public static BigDecimal calculateNetSalary(BigDecimal totalEaring, BigDecimal totalDeduction) {
+		return totalEaring.subtract(totalDeduction);
+	}
 
-    if(salary.isEsid()) {
-      salary.setEsi(SalaryUtilsV2.calculateEsi(salary, SalaryUtilsV2.ESI_PERCENT));
-    }
+	public static EmployeeSalary calculateCTC(EmployeeSalary salary) {
 
-    BigDecimal totalDeduction=SalaryUtilsV2.calculateTotalDeduction(salary.getPfe(),salary.getPfr(),salary.getEsi(),salary.getProfessionalTax(),ZERO,ZERO);
-    salary.setTotalDeduction(totalDeduction);
-    BigDecimal totalEaring=SalaryUtilsV2.calculateTotalEaring(salary.getCtc(),salary.getExtraMonthlyAllowance(),ZERO);
-    salary.setTotalEarning(totalEaring);
-    salary.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring,totalDeduction));
-    //salary.update();
-    return salary;
-  }
-  public static EmployeeSalary calculateCTC(EmployeeSalary salary,BigDecimal otherAllowance,BigDecimal extraDeduction,BigDecimal tds) {
+		salary.setProfessionalTax(salary.isProfd() ? SalaryUtilsV2.PROFESSIONAL_TAX : ZERO);
 
-    salary.setProfessionalTax(!salary.isProfd() ? SalaryUtilsV2.PROFESSIONAL_TAX : ZERO);
+		// modify by shubham calculateGrossV2 by calculateGross
+		salary.setExtraMonthlyAllowance(salary.getExtraMonthlyAllowance());
+		salary.setBasic(SalaryUtilsV2.calculateBasic(salary.getCtc()));
+		salary.setHra(SalaryUtilsV2.calculateHra(salary.getBasic()));
+		salary.setConveyance(SalaryUtilsV2.CONVEYANCE);
+		salary.setBonus(SalaryUtilsV2.BOUNS);
 
-    //modify by shubham calculateGrossV2 by calculateGross
-    salary.setExtraMonthlyAllowance(salary.getExtraMonthlyAllowance());
-    salary.setBasic(SalaryUtilsV2.calculateBasic(salary.getCtc()));
-    salary.setHra(SalaryUtilsV2.calculateHra(salary.getBasic()));
-    salary.setConveyance(SalaryUtilsV2.CONVEYANCE);
-    salary.setBonus(SalaryUtilsV2.BOUNS);
+		// must be calculate after ctc basic hra bouns conveyance
+		salary.setSpecial(SalaryUtilsV2.calculateSpecial(salary));
+		if (salary.isPfd()) {
+			salary.setPfe(SalaryUtilsV2.calculatePfe(salary.getBasic()));
+			salary.setPfr(SalaryUtilsV2.calculatePfr(salary.getBasic()));
+		}
+		salary.setGrossSalary(SalaryUtilsV2.calculateGross(salary));
 
-    // must be calculate after ctc basic hra bouns conveyance
-    salary.setSpecial(SalaryUtilsV2.calculateSpecial(salary));
-    if(salary.isPfd()){
-      salary.setPfe(SalaryUtilsV2.calculatePfe(salary.getBasic()));
-      salary.setPfr(SalaryUtilsV2.calculatePfr(salary.getBasic()));
-    }
+		if (salary.isEsid()) {
+			salary.setEsi(SalaryUtilsV2.calculateEsi(salary, SalaryUtilsV2.ESI_PERCENT));
+		}
 
-    salary.setGrossSalary(SalaryUtilsV2.calculateGross(salary));
+		BigDecimal totalDeduction = SalaryUtilsV2.calculateTotalDeduction(salary.getPfe(), salary.getPfr(),
+				salary.getEsi(), salary.getProfessionalTax(), ZERO, ZERO);
+		salary.setTotalDeduction(totalDeduction);
+		BigDecimal totalEaring = SalaryUtilsV2.calculateTotalEaring(salary.getCtc(), salary.getExtraMonthlyAllowance(),
+				ZERO);
+		salary.setTotalEarning(totalEaring);
+		salary.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring, totalDeduction));
+		// salary.update();
+		return salary;
+	}
 
-    if(salary.isEsid()) {
-      salary.setEsi(SalaryUtilsV2.calculateEsi(salary, SalaryUtilsV2.ESI_PERCENT));
-    }
+	public static EmployeeSalary calculateCTC(EmployeeSalary salary, BigDecimal otherAllowance,
+			BigDecimal extraDeduction, BigDecimal tds) {
 
-    BigDecimal totalDeduction=SalaryUtilsV2.calculateTotalDeduction(salary.getPfe(),salary.getPfr(),salary.getEsi(),salary.getProfessionalTax(),extraDeduction,tds);
-    salary.setTotalDeduction(totalDeduction);
-    BigDecimal totalEaring=SalaryUtilsV2.calculateTotalEaring(salary.getCtc(),salary.getExtraMonthlyAllowance(),otherAllowance);
-    salary.setTotalEarning(totalEaring);
-    salary.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring,totalDeduction));
-    //salary.update();
-    return salary;
-  }
+		salary.setProfessionalTax(salary.isProfd() ? SalaryUtilsV2.PROFESSIONAL_TAX : ZERO);
 
-  public static EmployeePaySlip updateAndCalculateCTC(EmployeePaySlip paySlip,EmployeePaySlipRequest request) {
+		// modify by shubham calculateGrossV2 by calculateGross
+		salary.setExtraMonthlyAllowance(salary.getExtraMonthlyAllowance());
+		salary.setBasic(SalaryUtilsV2.calculateBasic(salary.getCtc()));
+		salary.setHra(SalaryUtilsV2.calculateHra(salary.getBasic()));
+		salary.setConveyance(SalaryUtilsV2.CONVEYANCE);
+		salary.setBonus(SalaryUtilsV2.BOUNS);
 
-    BigDecimal newRatio=ZERO;
-    BigDecimal oldRatio= paySlip.getPresents().divide(paySlip.getTotalDays(),6,RoundingMode.CEILING);
-    if(request.getPresents()!=null){
-      newRatio=request.getPresents().divide(paySlip.getTotalDays(),6,RoundingMode.CEILING);
-      paySlip.setPresents(request.getPresents());
-    }else{
-      newRatio=paySlip.getPresents().divide(paySlip.getTotalDays(),6,RoundingMode.CEILING);
-    }
+		// must be calculate after ctc basic hra bouns conveyance
+		salary.setSpecial(SalaryUtilsV2.calculateSpecial(salary));
+		if (salary.isPfd()) {
+			salary.setPfe(SalaryUtilsV2.calculatePfe(salary.getBasic()));
+			salary.setPfr(SalaryUtilsV2.calculatePfr(salary.getBasic()));
+		}
 
+		salary.setGrossSalary(SalaryUtilsV2.calculateGross(salary));
 
-    paySlip.setCtc(paySlip.getCtc().divide(oldRatio,6,RoundingMode.CEILING).multiply(newRatio));
-    paySlip.setBasic(calculateBasic(paySlip.getCtc()));
-    paySlip.setHra(calculateHra(paySlip.getHra()));
-    paySlip.setConveyance(CONVEYANCE.multiply(newRatio));
-    paySlip.setBonus(BOUNS.multiply(newRatio));
-    paySlip.setSpecial(calculateSpecial(paySlip.getCtc(),paySlip.getBasic(),paySlip.getHra(),paySlip.getConveyance(),paySlip.getBonus()));
+		if (salary.isEsid()) {
+			salary.setEsi(SalaryUtilsV2.calculateEsi(salary, SalaryUtilsV2.ESI_PERCENT));
+		}
 
-    paySlip.setExtraMonthlyAllowance(paySlip.getExtraMonthlyAllowance().divide(oldRatio,6,RoundingMode.CEILING).multiply(newRatio));
+		BigDecimal totalDeduction = SalaryUtilsV2.calculateTotalDeduction(salary.getPfe(), salary.getPfr(),
+				salary.getEsi(), salary.getProfessionalTax(), extraDeduction, tds);
+		salary.setTotalDeduction(totalDeduction);
+		BigDecimal totalEaring = SalaryUtilsV2.calculateTotalEaring(salary.getCtc(), salary.getExtraMonthlyAllowance(),
+				otherAllowance);
+		salary.setTotalEarning(totalEaring);
+		salary.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring, totalDeduction));
+		// salary.update();
+		return salary;
+	}
 
-    //paySlip.setTds(paySlip.getTotalDeduction().subtract(paySlip.getTds()).add(request.getTds()));
-    paySlip.setTds(request.getTds());
+	public static EmployeePaySlip updateAndCalculateCTC(EmployeePaySlip paySlip, EmployeePaySlipRequest request) {
 
-    if(request.getOtherAllowances()!=null)
-    paySlip.setOtherAllowances(request.getOtherAllowances());
-    if(request.getOtherDeductions()!=null)
-    paySlip.setOtherDeductions(request.getOtherDeductions());
+		BigDecimal newRatio = ZERO;
+		BigDecimal oldRatio = paySlip.getPresents().divide(paySlip.getTotalDays(), 6, RoundingMode.CEILING);
+		if (request.getPresents() != null) {
+			newRatio = request.getPresents().divide(paySlip.getTotalDays(), 6, RoundingMode.CEILING);
+			paySlip.setPresents(request.getPresents());
+		} else {
+			newRatio = paySlip.getPresents().divide(paySlip.getTotalDays(), 6, RoundingMode.CEILING);
+		}
 
+		paySlip.setCtc(paySlip.getCtc().divide(oldRatio, 6, RoundingMode.CEILING).multiply(newRatio));
+		paySlip.setBasic(calculateBasic(paySlip.getCtc()));
+		paySlip.setHra(calculateHra(paySlip.getHra()));
+		paySlip.setConveyance(CONVEYANCE.multiply(newRatio));
+		paySlip.setBonus(BOUNS.multiply(newRatio));
+		paySlip.setSpecial(calculateSpecial(paySlip.getCtc(), paySlip.getBasic(), paySlip.getHra(),
+				paySlip.getConveyance(), paySlip.getBonus()));
 
-    if(paySlip.isPfd()){
-      paySlip.setPfe(SalaryUtilsV2.calculatePfe(paySlip.getBasic()));
-      paySlip.setPfr(SalaryUtilsV2.calculatePfr(paySlip.getBasic()));
-    }
+		if(paySlip.getExtraMonthlyAllowance()==null) {
+			paySlip.setExtraMonthlyAllowance(ZERO);
+		}else
+			paySlip.setExtraMonthlyAllowance(
+					paySlip.getExtraMonthlyAllowance().divide(oldRatio, 6, RoundingMode.CEILING).multiply(newRatio));
 
-    paySlip.setGrossSalary(SalaryUtilsV2.calculateGross(paySlip.getCtc(),paySlip.getBonus(),paySlip.getPfr()));
+		// paySlip.setTds(paySlip.getTotalDeduction().subtract(paySlip.getTds()).add(request.getTds()));
+		if (request.getTds() == null) {
+			paySlip.setTds(ZERO);
+		} else {
+			paySlip.setTds(request.getTds());
+		}
+		if (request.getOtherAllowances() != null)
+			paySlip.setOtherAllowances(request.getOtherAllowances());
+		if (request.getOtherDeductions() != null)
+			paySlip.setOtherDeductions(request.getOtherDeductions());
 
-    if(paySlip.isEsid()) {
-      paySlip.setEsi(calculateEsi(paySlip.isEsid(), paySlip.getGrossSalary(),ESI_PERCENT));
-    }
+		if (paySlip.isPfd()) {
+			paySlip.setPfe(SalaryUtilsV2.calculatePfe(paySlip.getBasic()));
+			paySlip.setPfr(SalaryUtilsV2.calculatePfr(paySlip.getBasic()));
+		}
 
-    BigDecimal totalDeduction=SalaryUtilsV2.calculateTotalDeduction(paySlip.getPfe(),paySlip.getPfr(),paySlip.getEsi(),PROFESSIONAL_TAX,paySlip.getOtherDeductions(),paySlip.getTds());
-    paySlip.setTotalDeduction(totalDeduction);
+		paySlip.setGrossSalary(SalaryUtilsV2.calculateGross(paySlip.getCtc(), paySlip.getBonus(), paySlip.getPfr()));
 
-    BigDecimal totalEaring=SalaryUtilsV2.calculateTotalEaring(paySlip.getCtc(),paySlip.getExtraMonthlyAllowance(),paySlip.getOtherAllowances());
-    paySlip.setTotalEarning(totalEaring);
+		if (paySlip.isEsid()) {
+			paySlip.setEsi(calculateEsi(paySlip.isEsid(), paySlip.getGrossSalary(), ESI_PERCENT));
+		}
 
-    paySlip.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring,totalDeduction));
+		BigDecimal totalDeduction = SalaryUtilsV2.calculateTotalDeduction(paySlip.getPfe(), paySlip.getPfr(),
+				paySlip.getEsi(), paySlip.getProfessionalTax(), paySlip.getOtherDeductions(), paySlip.getTds());
+		paySlip.setTotalDeduction(totalDeduction);
 
-    return paySlip;
-  }
+		BigDecimal totalEaring = SalaryUtilsV2.calculateTotalEaring(paySlip.getCtc(),
+				paySlip.getExtraMonthlyAllowance(), paySlip.getOtherAllowances());
+		paySlip.setTotalEarning(totalEaring);
+
+		paySlip.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring, totalDeduction));
+
+		return paySlip;
+	}
 }
