@@ -30,7 +30,7 @@
     <td style="width: 210px;">Bank Acc. No.</td>
     <td style="width: 350px;">:&nbsp;&nbsp;${paySlip.ban}</td>
     <td style="width: 180px;">Date Of Joining</td>
-    <td style="width: 280px;">:&nbsp;&nbsp;${paySlip.month} / ${paySlip.year?c}</td>
+    <td style="width: 280px;">:&nbsp;&nbsp;${paySlip.doj}</td>
   </tr>
   <tr>
     <td style="width: 210px;vertical-align: top;">Presents/Total</td>
@@ -83,7 +83,7 @@
   </tr>
   <tr>
     <td style="width: 237px;">Fixed Monthly Allowance</td>
-    <td style="width: 100px;">${paySlip.bonus}</td>
+    <td style="width: 100px;">${paySlip.extraMonthlyAllowance}</td>
     <td style="width: 237px;">&nbsp;</td>
     <td style="width: 100px;">&nbsp;</td>
   </tr>
