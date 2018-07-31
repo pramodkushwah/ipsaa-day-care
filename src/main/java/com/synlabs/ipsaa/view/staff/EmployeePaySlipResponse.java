@@ -8,6 +8,7 @@ import com.synlabs.ipsaa.entity.staff.EmployeeProfile;
 import com.synlabs.ipsaa.view.common.Response;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by Rakesh on 06-04-2018.
@@ -91,6 +92,8 @@ public class EmployeePaySlipResponse implements Response
       this.empName = employee.getName();
       this.empDesignation = employee.getDesignation() == null ? "" : employee.getDesignation();
       this.aadharNumber = employee.getAadharNumber() == null ? "" : employee.getAadharNumber();
+      // shubham
+      this.dol=employee.getProfile().getDol();
       EmployeeProfile profile = employee.getProfile();
       if (profile != null)
       {
@@ -162,6 +165,7 @@ public class EmployeePaySlipResponse implements Response
     this.comment = slip.getComment();
     // shubam
     this.ctc=slip.getCtc();
+    this.extraMonthlyAllowance=slip.getExtraMonthlyAllowance();
   }
 
   public boolean isIslock() {
@@ -433,6 +437,22 @@ public class EmployeePaySlipResponse implements Response
   }
 //-----------------------------subham--------------------------------
   public BigDecimal ctc;
+  public BigDecimal extraMonthlyAllowance;
+  public Date dol;
+  public BigDecimal getExtraMonthlyAllowance() {
+    return extraMonthlyAllowance;
+  }
+
+  public void setExtraMonthlyAllowance(BigDecimal extraMonthlyAllowance) {
+    this.extraMonthlyAllowance = extraMonthlyAllowance;
+  }
+  public Date getDol() {
+    return dol;
+  }
+
+  public void setDol(Date dol) {
+    this.dol = dol;
+  }
 
   public BigDecimal getCtc() {
     return ctc;
