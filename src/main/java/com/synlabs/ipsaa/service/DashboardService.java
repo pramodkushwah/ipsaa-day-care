@@ -733,6 +733,84 @@ public class DashboardService extends BaseService
   }
 
   // -----------------------------------shubham---------------------------------------------------------------
+  public List<DashStaffResponse> listStaffV2(DashboardRequest request)
+  {
+    List<Center> centers = getCenters(request);
+    JPAQuery<Employee> query = new JPAQuery<>(entityManager);
+    //JPAQuery<EmployeeAttendance> attquery = new JPAQuery<>(entityManager);
+    QEmployee employee = QEmployee.employee;
+    QEmployeeAttendance attendance = QEmployeeAttendance.employeeAttendance;
+    query.select(employee).from(employee)
+            .where(employee.active.isTrue())
+            .where(employee.costCenter.in(centers));
+
+    List<Employee> stafflist = query.fetch();
+
+//    attquery.select(attendance)
+//            .from(attendance)
+//            .where(attendance.employee.in(stafflist))
+//            .where(attendance.employee.costCenter.in(centers))
+//            .where(attendance.employee.active.isTrue())
+//            .where(attendance.attendanceDate.eq(LocalDate.now().toDate()));
+//
+//    List<EmployeeAttendance> attendances = attquery.fetch();
+
+    List<DashStaffResponse> response = new ArrayList<>(stafflist.size());
+
+    if (getFreshUser().hasPrivilege("SALARY_READ"))
+    {
+      JPAQuery<EmployeeSalary> salaryquery = new JPAQuery<>(entityManager);
+
+      QEmployeeSalary salary = QEmployeeSalary.employeeSalary;
+
+      salaryquery.select(salary).from(salary)
+              .where(salary.employee.costCenter.in(centers))
+              .where(salary.employee.in(stafflist))
+              .where(salary.employee.active.isTrue());
+
+      List<EmployeeSalary> salaries = salaryquery.fetch();
+      //Map<Long, EmployeeAttendance> attendanceMap = new HashMap<>();
+
+      Map<Long, EmployeeSalary> salaryMap = new HashMap<>();
+      for (EmployeeSalary sal : salaries)
+      {
+        salaryMap.put(sal.getEmployee().getId(), sal);
+      }
+//
+//      for (EmployeeAttendance attendanceRecord : attendances)
+//      {
+//        if(attendanceRecord.getCheckout() == null)
+//          attendanceMap.put(attendanceRecord.getEmployee().getId(), attendanceRecord);
+//      }
+
+      for (Employee emp : stafflist)
+      {
+        if (salaryMap.containsKey(emp.getId()))
+        {
+          response.add(new DashStaffResponse(salaryMap.get(emp.getId())));
+        }
+        else if(salaryMap.containsKey(emp.getId())){
+          response.add(new DashStaffResponse(salaryMap.get(emp.getId())));
+        }
+        else
+        {
+          response.add(new DashStaffResponse(emp));
+        }
+      }
+    }
+    else
+    {
+      for (Employee emp : stafflist)
+      {
+        response.add(new DashStaffResponse(emp));
+      }
+    }
+    return response;
+  }
+
+
+
+
   public List<StaffNewJoinings> getNewJoinigList(DashboardRequest request)
   {
     List<Center> centers = getCenters(request);
