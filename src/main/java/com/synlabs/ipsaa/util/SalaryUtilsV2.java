@@ -129,7 +129,7 @@ public class SalaryUtilsV2 {
 		salary.setProfessionalTax(salary.isProfd() ? SalaryUtilsV2.PROFESSIONAL_TAX : ZERO);
 
 		// modify by shubham calculateGrossV2 by calculateGross
-		salary.setExtraMonthlyAllowance(salary.getExtraMonthlyAllowance());
+
 		salary.setBasic(SalaryUtilsV2.calculateBasic(salary.getCtc()));
 		salary.setHra(SalaryUtilsV2.calculateHra(salary.getBasic()));
 		salary.setConveyance(SalaryUtilsV2.CONVEYANCE);
@@ -207,7 +207,7 @@ public class SalaryUtilsV2 {
 
 		paySlip.setCtc(paySlip.getCtc().divide(oldRatio, 6, RoundingMode.CEILING).multiply(newRatio));
 		paySlip.setBasic(calculateBasic(paySlip.getCtc()));
-		paySlip.setHra(calculateHra(paySlip.getHra()));
+		paySlip.setHra(calculateHra(paySlip.getBasic()));
 		paySlip.setConveyance(CONVEYANCE.multiply(newRatio));
 		paySlip.setBonus(BOUNS.multiply(newRatio));
 		paySlip.setSpecial(calculateSpecial(paySlip.getCtc(), paySlip.getBasic(), paySlip.getHra(),
