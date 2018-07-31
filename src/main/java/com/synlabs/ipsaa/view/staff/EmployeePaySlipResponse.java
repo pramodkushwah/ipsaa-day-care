@@ -161,6 +161,7 @@ public class EmployeePaySlipResponse implements Response
     this.autoComment = slip.getAutoComment();
     this.comment = slip.getComment();
     // shubam
+    this.ctc=slip.getCtc();
   }
 
   public boolean isIslock() {
@@ -430,5 +431,13 @@ public class EmployeePaySlipResponse implements Response
   {
     return employerName;
   }
+//-----------------------------subham--------------------------------
+  public BigDecimal ctc;
 
+  public BigDecimal getCtc() {
+    return ctc;
+  }
+  public void setCtc(BigDecimal ctc) {
+    this.ctc = ctc;
+  }
 }
