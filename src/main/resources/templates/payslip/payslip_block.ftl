@@ -78,8 +78,8 @@
   <tr>
     <td style="width: 237px;">Bonus</td>
     <td style="width: 100px;">${paySlip.bonus}</td>
-    <td style="width: 237px;">&nbsp;</td>
-    <td style="width: 100px;">&nbsp;</td>
+    <td style="width: 237px;">TDS</td>
+    <td style="width: 100px;">${paySlip.tds}</td>
   </tr>
   <tr>
     <td style="width: 237px;">Fixed Monthly Allowance</td>
