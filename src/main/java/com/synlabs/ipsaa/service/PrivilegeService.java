@@ -28,7 +28,7 @@ public class PrivilegeService extends BaseService
   @PostConstruct
   public void init()
   {
-    Field[] fields = IPSAAAuth.Privileges.class.getDeclaredFields();
+    Field[] fields = IPSAAAuth.Privileges.class.getDeclaredFields(); // taking variable name
     for (Field f : fields)
     {
       if (Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()))
@@ -42,7 +42,7 @@ public class PrivilegeService extends BaseService
           privilegeRepository.saveAndFlush(p);
           logger.info("Not in db, saved {}", f.getName());
 
-          if (f.getName().equals("HR_ADMIN"))
+          if (f.getName().equals("HR_ADMIN") || f.getName().equals("PAYSLIP_LOCK"))
           {
             continue;
           }
