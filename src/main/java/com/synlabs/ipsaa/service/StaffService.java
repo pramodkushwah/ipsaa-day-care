@@ -21,8 +21,11 @@ import com.synlabs.ipsaa.view.batchimport.ImportEmployee;
 import com.synlabs.ipsaa.view.batchimport.ImportSalary;
 import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.report.excel.StaffExcelReport;
+import com.synlabs.ipsaa.view.report.excel.uploadBankDetails;
 import com.synlabs.ipsaa.view.staff.*;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.*;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 import org.slf4j.Logger;
@@ -803,7 +806,59 @@ public class StaffService extends BaseService
 
   public List<Employee> listAll()
   {
+    try {
+     uploadData();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (InvalidFormatException e) {
+      e.printStackTrace();
+    }
+
     return employeeRepository.findByActiveIsTrue();
+  }
+  //-----------------------shubham-----------------------------------------
+
+  public static final String SAMPLE_XLSX_FILE_PATH = "C:\\Users\\shubham\\Desktop\\ipsaa\\payrol excel\\Bank Details.xlsx";
+  @Transactional
+  public void uploadData()throws IOException, InvalidFormatException {
+    Workbook workbook = WorkbookFactory.create(new File(SAMPLE_XLSX_FILE_PATH));
+    System.out.println("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
+    Sheet sheet = workbook.getSheetAt(0);
+    for (int i=0;i<=sheet.getPhysicalNumberOfRows();i++) {
+      if(i==0) continue;
+      Row row=sheet.getRow(i);
+
+      if(row!=null){
+        String eid=row.getCell(3).getStringCellValue();
+        if(eid.equals("Emp.Code"))
+          continue;
+        String accountNo;
+        if(row.getCell(5).getCellType()==Cell.CELL_TYPE_STRING){
+          accountNo=row.getCell(5).getStringCellValue();
+        }else{
+          accountNo=String.valueOf(row.getCell(5).getNumericCellValue());
+        }
+        String holdername=row.getCell(6).getStringCellValue();
+        String ifsc=row.getCell(7).getStringCellValue();
+        String bankName=row.getCell(8).getStringCellValue();
+        String branch=row.getCell(9).getStringCellValue();
+        Employee e=employeeRepository.findByEid(eid);
+        if(e!=null){
+
+            e.getProfile().setHolderName(holdername);
+            e.getProfile().setBankName(bankName);
+            e.getProfile().setBranchName(branch);
+            e.getProfile().setIfscCode(ifsc);
+            employeeRepository.saveAndFlush(e);
+        }
+        else{
+          System.out.println(String.format("EmployeeId not found [%s] ",eid));
+        }
+      }
+
+
+    }
+    workbook.close();
   }
 
 }
