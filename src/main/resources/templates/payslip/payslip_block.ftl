@@ -67,7 +67,7 @@
     <td style="width: 237px;">Conveyance Allowance</td>
     <td style="width: 100px;">${paySlip.conveyance}</td>
     <td style="width: 195px;">Professional Tax</td>
-    <td style="width: 121px;">${paySlip.professionalTax}</td>
+    <td style="width: 121px;"><#if paySlip.professionalTax??>${paySlip.professionalTax}</#if></td>
   </tr>
   <tr>
     <td style="width: 195px;">Special Allowance</td>
@@ -83,7 +83,7 @@
   </tr>
   <tr>
     <td style="width: 237px;">Fixed Monthly Allowance</td>
-    <td style="width: 100px;">${paySlip.extraMonthlyAllowance}</td>
+    <td style="width: 100px;"><#if paySlip.extraMonthlyAllowance??>${paySlip.extraMonthlyAllowance}</#if></td>
     <td style="width: 237px;">&nbsp;</td>
     <td style="width: 100px;">&nbsp;</td>
   </tr>
