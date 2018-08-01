@@ -46,7 +46,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
                 $scope.months.push({moy: mnth + 1, name: allmonths[mnth]});
             }
             $scope.selectedMonth = moment().month() + 1;
-            $scope.selectedQuarter = ((Math.ceil((moment().month()) / 3)) + 1);
+            $scope.selectedQuarter = ((Math.floor((moment().month()) / 3)) + 1);
             $scope.quarterlyYear = moment().year();
             $scope.monthlyYear = moment().year();
 

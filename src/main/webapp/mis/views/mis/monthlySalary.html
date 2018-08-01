@@ -181,7 +181,7 @@
             <button class="btn btn-rose btn-fill" ng-click="regeneratePaySlip(paySlip)" ng-disabled="paySlip.disableRegenerateBtn || paySlip.islock">
               <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="paySlip.disableRegenerateBtn"></i>regenerate
             </button>
-            <button class="btn btn-rose btn-fill" ng-click="lockControls(paySlip)"> Lock </button>
+            <button class="btn btn-rose btn-fill" ng-click="lockControls(paySlip)" ng-disabled="paySlip.islock"> Lock </button>
             <button class="btn" ng-click="paySlip = {}">Cancel</button>
           </div>
         </div>
