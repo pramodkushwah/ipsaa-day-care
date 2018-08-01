@@ -621,8 +621,13 @@ public class EmployeePaySlip extends BaseEntity {
 		esid = employeeSalary.isEsid();
 		profd = employeeSalary.isProfd();
 
-		this.pfe = SalaryUtilsV2.calculatePfe(this.basic);
-		this.pfr = SalaryUtilsV2.calculatePfr(this.basic);
+		if(pfd){
+			this.pfe = SalaryUtilsV2.calculatePfe(this.basic);
+			this.pfr = SalaryUtilsV2.calculatePfr(this.basic);
+		}else{
+			this.pfe=ZERO;
+			this.pfr=ZERO;
+		}
 
 		this.grossSalary = SalaryUtilsV2.calculateGross(this.ctc, this.bonus, this.pfr);
 
