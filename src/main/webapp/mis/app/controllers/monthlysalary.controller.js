@@ -118,6 +118,7 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
 
     $scope.lockControls = function(paySlip) {
 
+        // if salary lock set from backend then disable lock button
         if(paySlip.islock) {          
             error("Salary already locked");    
             return false;
@@ -138,7 +139,7 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
                 });
             },
             function (response) {
-                error("Salary already locked");
+                error(response.data.error);
             }
         );
     }
