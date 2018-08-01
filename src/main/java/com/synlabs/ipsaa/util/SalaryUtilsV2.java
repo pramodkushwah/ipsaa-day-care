@@ -140,6 +140,9 @@ public class SalaryUtilsV2 {
 		if (salary.isPfd()) {
 			salary.setPfe(SalaryUtilsV2.calculatePfe(salary.getBasic()));
 			salary.setPfr(SalaryUtilsV2.calculatePfr(salary.getBasic()));
+		}else{
+			salary.setPfe(ZERO);
+			salary.setPfr(ZERO);
 		}
 		salary.setGrossSalary(SalaryUtilsV2.calculateGross(salary));
 
@@ -233,12 +236,17 @@ public class SalaryUtilsV2 {
 		if (paySlip.isPfd()) {
 			paySlip.setPfe(SalaryUtilsV2.calculatePfe(paySlip.getBasic()));
 			paySlip.setPfr(SalaryUtilsV2.calculatePfr(paySlip.getBasic()));
+		}else{
+			paySlip.setPfe(ZERO);
+			paySlip.setPfr(ZERO);
 		}
 
 		paySlip.setGrossSalary(SalaryUtilsV2.calculateGross(paySlip.getCtc(), paySlip.getBonus(), paySlip.getPfr()));
 
 		if (paySlip.isEsid()) {
 			paySlip.setEsi(calculateEsi(paySlip.isEsid(), paySlip.getGrossSalary(), ESI_PERCENT));
+		}else{
+			paySlip.setEsi(ZERO);
 		}
 
 		BigDecimal totalDeduction = SalaryUtilsV2.calculateTotalDeduction(paySlip.getPfe(), paySlip.getPfr(),

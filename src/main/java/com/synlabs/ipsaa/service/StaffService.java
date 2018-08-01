@@ -21,7 +21,6 @@ import com.synlabs.ipsaa.view.batchimport.ImportEmployee;
 import com.synlabs.ipsaa.view.batchimport.ImportSalary;
 import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.report.excel.StaffExcelReport;
-import com.synlabs.ipsaa.view.report.excel.uploadBankDetails;
 import com.synlabs.ipsaa.view.staff.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -806,23 +805,21 @@ public class StaffService extends BaseService
 
   public List<Employee> listAll()
   {
-    try {
-     uploadData();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (InvalidFormatException e) {
-      e.printStackTrace();
-    }
-
+//    try {
+//     uploadData();
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    } catch (InvalidFormatException e) {
+//      e.printStackTrace();
+//    }
     return employeeRepository.findByActiveIsTrue();
   }
   //-----------------------shubham-----------------------------------------
-
+// not in use
   public static final String SAMPLE_XLSX_FILE_PATH = "C:\\Users\\shubham\\Desktop\\ipsaa\\payrol excel\\Bank Details.xlsx";
   @Transactional
   public void uploadData()throws IOException, InvalidFormatException {
     Workbook workbook = WorkbookFactory.create(new File(SAMPLE_XLSX_FILE_PATH));
-    System.out.println("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
     Sheet sheet = workbook.getSheetAt(0);
     for (int i=0;i<=sheet.getPhysicalNumberOfRows();i++) {
       if(i==0) continue;
@@ -849,6 +846,7 @@ public class StaffService extends BaseService
             e.getProfile().setBankName(bankName);
             e.getProfile().setBranchName(branch);
             e.getProfile().setIfscCode(ifsc);
+          System.out.println(String.format("EmployeeId details added [%s] ",eid));
             employeeRepository.saveAndFlush(e);
         }
         else{
@@ -860,5 +858,4 @@ public class StaffService extends BaseService
     }
     workbook.close();
   }
-
 }
