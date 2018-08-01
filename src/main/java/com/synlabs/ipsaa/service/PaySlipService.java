@@ -127,6 +127,7 @@ public class PaySlipService extends BaseService
     employeePaySlipRepository.saveAndFlush(payslip);
     return payslip;
   }
+
   @Transactional
   public boolean lockSalary(EmployeePaySlipRequest request){
     EmployeePaySlip paySlip = employeePaySlipRepository.findOne(request.getId());
@@ -136,12 +137,13 @@ public class PaySlipService extends BaseService
     }
     if (paySlip.isLock())
     {
-      throw new ValidationException(String.format("salary is already locked", mask(request.getId())));
+      throw new ValidationException(String.format("Salary already locked", mask(request.getId())));
     }
     paySlip.setLock(true);
     employeePaySlipRepository.saveAndFlush(paySlip);
     return true;
   }
+
   @Transactional
   public EmployeePaySlip reGeneratePaySlip(EmployeePaySlipRequest request) throws IOException, DocumentException, ParseException
   {
