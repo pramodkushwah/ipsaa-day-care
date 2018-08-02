@@ -733,6 +733,31 @@ public class DashboardService extends BaseService
   }
 
   // -----------------------------------shubham---------------------------------------------------------------
+  public List<DashStaffResponse> listStaffV2(DashboardRequest request)
+  {
+    List<Center> centers = getCenters(request);
+    List<DashStaffResponse> response = new ArrayList<>();
+    JPAQuery<EmployeeSalary> salaryquery = new JPAQuery<>(entityManager);
+
+    QEmployeeSalary salary = QEmployeeSalary.employeeSalary;
+
+    salaryquery.select(salary).from(salary)
+            .where(salary.employee.costCenter.in(centers))
+            .where(salary.employee.active.isTrue());
+
+    List<EmployeeSalary> salaries = salaryquery.fetch();
+
+    if (getFreshUser().hasPrivilege("SALARY_READ"))
+    {
+      response=salaries.stream().map(DashStaffResponse::new).collect(Collectors.toList());
+    }
+    else
+    {
+      List<Employee> employees=salaries.stream().map(salary1 -> getEmployee()).collect(Collectors.toList());
+      response=employees.stream().map(DashStaffResponse::new).collect(Collectors.toList());
+    }
+    return response;
+  }
   public List<StaffNewJoinings> getNewJoinigList(DashboardRequest request)
   {
     List<Center> centers = getCenters(request);

@@ -96,7 +96,6 @@ public class StaffController
     request.setId(id);
     staffService.delete(request);
   }
-
   @Secured(STAFF_READ)
   @GetMapping("{id}")
   public StaffResponse findEmployee(@PathVariable(name = "id") Long id)

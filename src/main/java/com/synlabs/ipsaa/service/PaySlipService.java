@@ -13,6 +13,7 @@ import com.synlabs.ipsaa.enums.LeaveType;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.store.FileStore;
+import com.synlabs.ipsaa.util.SalaryUtilsV2;
 import com.synlabs.ipsaa.view.fee.lockSalaryRequest;
 import com.synlabs.ipsaa.view.staff.EmployeePaySlipRequest;
 import com.synlabs.ipsaa.view.staff.PaySlipRegenerateRequest;
@@ -126,6 +127,7 @@ public class PaySlipService extends BaseService
     employeePaySlipRepository.saveAndFlush(payslip);
     return payslip;
   }
+
   @Transactional
   public boolean lockSalary(EmployeePaySlipRequest request){
     EmployeePaySlip paySlip = employeePaySlipRepository.findOne(request.getId());
@@ -135,12 +137,13 @@ public class PaySlipService extends BaseService
     }
     if (paySlip.isLock())
     {
-      throw new ValidationException(String.format("salary is already locked", mask(request.getId())));
+      throw new ValidationException(String.format("Salary already locked", mask(request.getId())));
     }
     paySlip.setLock(true);
     employeePaySlipRepository.saveAndFlush(paySlip);
     return true;
   }
+
   @Transactional
   public EmployeePaySlip reGeneratePaySlip(EmployeePaySlipRequest request) throws IOException, DocumentException, ParseException
   {
@@ -152,6 +155,7 @@ public class PaySlipService extends BaseService
 
     Employee employee = paySlip.getEmployee();
     EmployeeSalary salary = employeeSalaryRepository.findByEmployee(employee);
+
     if (salary !=null  && paySlip.isLock())
     {
       throw new ValidationException(String.format("Cannot change locked salary", mask(request.getId())));
@@ -163,7 +167,7 @@ public class PaySlipService extends BaseService
     // shubham
      if(request.getPresents()!=null){
       paySlip.setPresents(request.getPresents());
-      }
+     }
     else if(paySlip.getPresents()==null && request.getPresents()==null){
       Calendar cal = Calendar.getInstance();
       cal.set(Calendar.MONTH, month-1);// o to 11
@@ -175,6 +179,7 @@ public class PaySlipService extends BaseService
     paySlip.setOtherDeductions(request.getOtherDeductions() == null ? ZERO : request.getOtherDeductions());
 
     paySlip = calculatePayslip(employee, salary, year, month, paySlip);
+
     employeePaySlipRepository.saveAndFlush(paySlip);
     logger.info(String.format("Regenerated Payslip[eid=%s,month=%s,year=%s]",
                               employee.getEid(),
@@ -200,7 +205,7 @@ public class PaySlipService extends BaseService
       {
         case Present:
           present=present.add(BigDecimal.ONE);
-          System.out.println(present);
+         // System.out.println(present);
           break;
         case Absent:
           absents = absents.add(BigDecimal.ONE);
@@ -228,7 +233,7 @@ public class PaySlipService extends BaseService
     cal.set(Calendar.MONTH, month-1);// o to 11
     cal.set(Calendar.YEAR, year);
     totalDays=new BigDecimal(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-    System.out.println(totalDays);
+   // System.out.println(totalDays);
 
     BigDecimal totalAbsents = absents.add(leaves);
     BigDecimal presents = totalDays.subtract(totalAbsents);
@@ -238,15 +243,14 @@ public class PaySlipService extends BaseService
     payslip.setAutoComment(autoComment);
     // shubham
     if(payslip.getPresents()!=null){
-      payslip.update(salary, totalDays,payslip.getPresents());
+      payslip.updateV2(salary, totalDays,payslip.getPresents());
     }else
-    payslip.update(salary, totalDays,presents);
-
+      payslip.updateV2(salary, totalDays,presents);
     payslip.roundOff();
     return payslip;
   }
 
-
+  // update by shubham
   @Transactional
   public EmployeePaySlip updatePaySlip(EmployeePaySlipRequest request) throws IOException, DocumentException
   {
@@ -255,17 +259,19 @@ public class PaySlipService extends BaseService
     {
       throw new ValidationException(String.format("Cannot Locate PaySlip[id = %s]", mask(request.getId())));
     }
-    if(request.getPresents()!=null){
-      paySlip.setPresents(request.getPresents());
-    }
+
     paySlip.setComment(request.getComment());
-    paySlip.setOtherAllowances(request.getOtherAllowances() == null ? ZERO : request.getOtherAllowances());
-    paySlip.setOtherDeductions(request.getOtherDeductions() == null ? ZERO : request.getOtherDeductions());
-    paySlip.update();
+    if(request.getOtherAllowances() == null)
+      request.setOtherAllowances(ZERO);
+    if(request.getOtherDeductions() == null)
+      request.setOtherDeductions(ZERO);
+    if(request.getTds()==null)
+      request.setTds(ZERO);
+
+   paySlip=SalaryUtilsV2.updateAndCalculateCTC(paySlip,request);
     employeePaySlipRepository.saveAndFlush(paySlip);
     return paySlip;
   }
-
   public InputStream generatePayslipPdf(Long id) throws IOException, DocumentException
   {
     if (id == null)

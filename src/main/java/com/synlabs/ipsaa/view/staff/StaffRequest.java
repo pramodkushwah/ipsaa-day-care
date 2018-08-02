@@ -316,4 +316,14 @@ public class StaffRequest implements Request
     return toEntity(new Employee());
   }
 
+  //-----------------------------shubham--------------------------------------------------------
+  private String dol;
+
+  public String getDol() {
+    return dol;
+  }
+
+  public void setDol(String dol) {
+    this.dol = dol;
+  }
 }

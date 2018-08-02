@@ -206,18 +206,22 @@ public class StaffExcelReport {
 				cell.setCellValue((slip.getOtherDeductions().intValue()));
 
 			cell = row.createCell(32, Cell.CELL_TYPE_STRING);
+			if (slip.getOtherDeductions() != null)
+				cell.setCellValue((slip.getExtraMonthlyAllowance().intValue()));
+
+			cell = row.createCell(33, Cell.CELL_TYPE_STRING);
 			if (slip.getTds() != null)
 				cell.setCellValue((slip.getTds().intValue()));
 
-			cell = row.createCell(33, Cell.CELL_TYPE_STRING);
+			cell = row.createCell(34, Cell.CELL_TYPE_STRING);
 			if (slip.getNetSalary() != null)
 				cell.setCellValue((slip.getNetSalary().intValue()));
 			// comment
-			cell = row.createCell(34, Cell.CELL_TYPE_STRING);
+			cell = row.createCell(35, Cell.CELL_TYPE_STRING);
 			if (slip.getComment() != null)
 				cell.setCellValue((slip.getComment()));
 
-			cell = row.createCell(35, Cell.CELL_TYPE_BOOLEAN);
+			cell = row.createCell(36, Cell.CELL_TYPE_BOOLEAN);
 			cell.setCellValue(slip.isLock());
 			
 			return true;
@@ -313,15 +317,18 @@ public class StaffExcelReport {
 		cell.setCellValue(("Other Deduction"));
 
 		cell = row.createCell(32, Cell.CELL_TYPE_STRING);
-		cell.setCellValue(("TDS"));
+		cell.setCellValue(("Extra Monthly Fixed Allowance"));
 
 		cell = row.createCell(33, Cell.CELL_TYPE_STRING);
-		cell.setCellValue(("NET Salary"));
+		cell.setCellValue(("TDS"));
 
 		cell = row.createCell(34, Cell.CELL_TYPE_STRING);
-		cell.setCellValue(("REMARK"));
+		cell.setCellValue(("NET Salary"));
 
 		cell = row.createCell(35, Cell.CELL_TYPE_STRING);
+		cell.setCellValue(("REMARK"));
+
+		cell = row.createCell(36, Cell.CELL_TYPE_STRING);
 		cell.setCellValue("LOCK");
 	}
 }

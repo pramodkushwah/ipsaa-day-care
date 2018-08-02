@@ -1,6 +1,8 @@
 package com.synlabs.ipsaa.view.student;
 
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
+import com.synlabs.ipsaa.util.SalaryUtils;
+import com.synlabs.ipsaa.util.SalaryUtilsV2;
 import com.synlabs.ipsaa.view.common.Request;
 
 import java.math.BigDecimal;
@@ -73,29 +75,10 @@ public class EmployeeSalaryRequest implements Request
     salary.setPfd(pfd);
     salary.setProfd(profd);
     salary.setEsi(esi == null ? ZERO : esi);
-    if (!esid)
-    {
-      salary.setEsi(ZERO);
-    }
-
-    salary.setPfe(pfe == null ? ZERO : pfe);
-    salary.setPfr(pfr == null ? ZERO : pfr);
-    if (!pfd)
-    {
-      salary.setPfe(ZERO);
-      salary.setPfr(ZERO);
-    }
-
-    salary.setProfessionalTax(professionalTax == null ? ZERO : professionalTax);
-    if (!profd)
-    {
-      salary.setProfessionalTax(ZERO);
-    }
 
     //modify by shubham calculateGrossV2 by calculateGross
-    salary.setExtraMonthlyAllowance(extraMonthlyAllowance);
-    salary.setGrossSalary(calculateGrossV2(salary));
-    salary.update();
+    salary.setExtraMonthlyAllowance(extraMonthlyAllowance==null ?ZERO:extraMonthlyAllowance);
+    salary=SalaryUtilsV2.calculateCTC(salary);
     return salary;
   }
 

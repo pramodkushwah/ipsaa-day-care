@@ -51,24 +51,18 @@
         <div class="col-md-3">
           <div class="form-group">
             <label class="control-label">Bonus*</label>
-            <input class="form-control" name="bonus" type="number" required ng-model="runningSalary.bonus" ng-readonly="show">
+            <input class="form-control" name="bonus" type="number" required ng-model="runningSalary.bonus" readonly>
             <span class="material-input"></span>
           </div>
         </div>
         <div class="col-md-3">
           <div class="form-group">
             <label class="control-label">Conveyance*</label>
-            <input class="form-control" name="conveyance" type="number" required ng-model="runningSalary.conveyance" ng-change="onChange()" ng-readonly="show">
+            <input class="form-control" name="conveyance" type="number" required ng-model="runningSalary.conveyance" ng-change="onChange()" readonly>
             <span class="material-input"></span>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="control-label">Entertainment*</label>
-            <input class="form-control" name="entertainment" type="number" required ng-model="runningSalary.entertainment" ng-readonly="show">
-            <span class="material-input"></span>
-          </div>
-        </div>
+        
         <div class="col-md-3">
           <div class="form-group">
             <label class="control-label">HRA*</label>
@@ -76,52 +70,11 @@
             <span class="material-input"></span>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="control-label">Medical*</label>
-            <input class="form-control" name="medical" type="number" required ng-model="runningSalary.medical" ng-readonly="show">
-            <span class="material-input"></span>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="control-label">Arrears*</label>
-            <input class="form-control" name="arrears" type="number" required ng-model="runningSalary.arrears" ng-readonly="show">
-            <span class="material-input"></span>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="control-label">Shoes*</label>
-            <input class="form-control" name="shoes" type="number" required ng-model="runningSalary.shoes" ng-readonly="show">
-            <span class="material-input"></span>
-          </div>
-        </div>
+        
         <div class="col-md-3">
           <div class="form-group">
             <label class="control-label">Special*</label>
-            <input class="form-control" name="special" type="number" required ng-model="runningSalary.special" ng-readonly="show">
-            <span class="material-input"></span>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="control-label">Tiffin*</label>
-            <input class="form-control" name="tiffin" type="number" required ng-model="runningSalary.tiffin" ng-readonly="show">
-            <span class="material-input"></span>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="control-label">Uniform*</label>
-            <input class="form-control" name="uniform" type="number" required ng-model="runningSalary.uniform" ng-readonly="show">
-            <span class="material-input"></span>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="control-label">Washing*</label>
-            <input class="form-control" name="washing" type="number" required ng-model="runningSalary.washing" ng-readonly="show">
+            <input class="form-control" name="special" type="number" required ng-model="runningSalary.special" readonly>
             <span class="material-input"></span>
           </div>
         </div>
@@ -151,7 +104,7 @@
             <label class="control-label">ESI*</label>
             <input class="form-control" name="esi" type="number"
                    ng-disabled="!runningSalary.esid"
-                   required ng-model="runningSalary.esi" ng-readonly="show">
+                   required ng-model="runningSalary.esi" readonly>
             <span class="material-input"></span>
           </div>
         </div>
@@ -161,7 +114,7 @@
             <label class="control-label">PF*(employee)</label>
             <input class="form-control" name="pf" type="number"
                    ng-disabled="!runningSalary.pfd"
-                   required ng-model="runningSalary.pfe"  ng-readonly="show">
+                   required ng-model="runningSalary.pfe" readonly>
             <span class="material-input"></span>
           </div>
         </div>
@@ -171,18 +124,18 @@
             <label class="control-label">PF*</label>
             <input class="form-control" name="pf" type="number"
                    ng-disabled="!runningSalary.pfd"
-                   required ng-model="runningSalary.pfr"  ng-readonly="show">
+                   required ng-model="runningSalary.pfr" readonly>
             <span class="material-input"></span>
           </div>
         </div>
 
         <div class="col-md-3">
           <div class="form-group">
-            <input type="checkbox" name="esid" ng-model="runningSalary.profd" ng-change="onChange()">
+            <input type="checkbox" name="pftax" ng-model="runningSalary.profd" ng-change="onChange()">
             <label class="control-label">Professional Tax*</label>
             <input class="form-control" name="pf" type="number"
                    ng-disabled="!runningSalary.profd"
-                   required ng-model="runningSalary.professionalTax"  ng-readonly="show">
+                   required ng-model="runningSalary.professionalTax"  readonly>
             <span class="material-input"></span>
           </div>
         </div>
@@ -195,31 +148,7 @@
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="control-label">TDS*</label>
-            <input class="form-control" name="tds" type="number" required ng-model="runningSalary.tds" ng-change="onChange()" ng-readonly="show">
-            <span class="material-input"></span>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="control-label">Advance*</label>
-            <input class="form-control" name="advance" type="number" required ng-model="runningSalary.advance" ng-change="onChange()" ng-readonly="show">
-            <span class="material-input"></span>
-          </div>
-        </div>
-      </div>
-      <!--<div class="row">-->
-        <!--<div class="col-md-12">-->
-          <!--<div class="form-group">-->
-            <!--<label class="control-label"><b>Net Deductions</b></label>-->
-            <!--<input class="form-control" name="deduction" type="number" required ng-model="runningSalary.totalDeduction" ng-readonly="true">-->
-            <!--<span class="material-input"></span>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
+
       <div class="row">
         <div class="col-md-12">
           <div class="form-group">

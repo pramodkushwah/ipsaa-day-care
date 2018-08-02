@@ -12,24 +12,16 @@ public class StudentFeeSlipResponse2 implements Response
   private Long id;
   private String     fatherName;
   private String     motherName;
-
   private String     fullName;
   private String     group;
   private String     program;
   private BigDecimal fee;
   private BigDecimal extraCharge;
- // private BigDecimal latePaymentCharge;
   private BigDecimal totalFee;
- // private String     invoiceDate;
   private String     status;
- // private String     comments;
- // private String     feeDuration;
- // private BigDecimal deposit;
- // private BigDecimal annualFee;
   private BigDecimal payableAmount;
   private BigDecimal balance;
   private BigDecimal adjust;
- // private String     autoComments;
   private boolean generateActive;
 
   private List<StudentFeePaymentResponse> payments;
@@ -43,19 +35,11 @@ public class StudentFeeSlipResponse2 implements Response
     this.fullName = slip.getStudent().getProfile().getFullName();
     this.group = slip.getStudent().getGroup().getName();
     this.program = slip.getStudent().getProgram().getName();
-   // this.month = slip.getMonth();
-   // this.quarter = slip.getQuarter();
-   // this.year = slip.getYear();
+
     this.extraCharge = slip.getExtraCharge();
-   // this.latePaymentCharge = slip.getLatePaymentCharge();
     this.totalFee = slip.getTotalFee();
     this.fee = slip.getBaseFee();
     this.status = slip.getPaymentStatus().name();
-   // this.feeDuration = slip.getFeeDuration().name();
-   // this.comments = slip.getComments();
-   // this.invoiceDate = slip.getInvoiceDate() == null ? null : slip.getInvoiceDate().toString();
-   // this.deposit = slip.getDeposit();
-   // this.annualFee = slip.getAnnualFee();
     this.payableAmount = this.totalFee;
     this.balance = slip.getBalance();
     this.adjust = slip.getAdjust();
@@ -70,6 +54,7 @@ public class StudentFeeSlipResponse2 implements Response
       slip.getPayments().forEach(payment -> {
         payments.add(new StudentFeePaymentResponse(payment));
         this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
+        System.out.println("break");
       });
     }
   }

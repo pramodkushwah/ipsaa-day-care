@@ -23,6 +23,8 @@ import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.report.excel.StaffExcelReport;
 import com.synlabs.ipsaa.view.staff.*;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.*;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 import org.slf4j.Logger;
@@ -42,7 +44,9 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -654,7 +658,7 @@ public class StaffService extends BaseService
 //    return count <= 0;
 //  }
 
-  public void delete(StaffRequest request)
+  public void deleteV2(StaffRequest request)
   {
     Employee employee = employeeRepository.findOne(request.getId());
     if (employee == null)
@@ -664,6 +668,25 @@ public class StaffService extends BaseService
     employee.setActive(false);
     employeeRepository.saveAndFlush(employee);
     communicationService.sendStaffDeleteEmail(employee);
+  }
+  //update by shubham
+  public void delete(StaffRequest request)
+  {
+    Employee employee = employeeRepository.findOne(request.getId());
+    if (employee == null)
+    {
+      throw new NotFoundException(String.format("Emploee[%s] not found", request.getId()));
+    }
+    // checking dol is present or not
+    if (employee.getProfile().getDol() == null)
+    {
+      throw new ValidationException(String.format("Emploee[%s] date of leaving not found", request.getId()));
+    }
+      employee.setActive(false);
+      employeeRepository.saveAndFlush(employee);
+      communicationService.sendStaffDeleteEmail(employee);
+
+
   }
 
   public void uploadStaffPic(StaffRequest request, MultipartFile file)
@@ -782,7 +805,57 @@ public class StaffService extends BaseService
 
   public List<Employee> listAll()
   {
+//    try {
+//     uploadData();
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    } catch (InvalidFormatException e) {
+//      e.printStackTrace();
+//    }
     return employeeRepository.findByActiveIsTrue();
   }
+  //-----------------------shubham-----------------------------------------
+// not in use
+  public static final String SAMPLE_XLSX_FILE_PATH = "C:\\Users\\shubham\\Desktop\\ipsaa\\payrol excel\\Bank Details.xlsx";
+  @Transactional
+  public void uploadData()throws IOException, InvalidFormatException {
+    Workbook workbook = WorkbookFactory.create(new File(SAMPLE_XLSX_FILE_PATH));
+    Sheet sheet = workbook.getSheetAt(0);
+    for (int i=0;i<=sheet.getPhysicalNumberOfRows();i++) {
+      if(i==0) continue;
+      Row row=sheet.getRow(i);
 
+      if(row!=null){
+        String eid=row.getCell(3).getStringCellValue();
+        if(eid.equals("Emp.Code"))
+          continue;
+        String accountNo;
+        if(row.getCell(5).getCellType()==Cell.CELL_TYPE_STRING){
+          accountNo=row.getCell(5).getStringCellValue();
+        }else{
+          accountNo=String.valueOf(row.getCell(5).getNumericCellValue());
+        }
+        String holdername=row.getCell(6).getStringCellValue();
+        String ifsc=row.getCell(7).getStringCellValue();
+        String bankName=row.getCell(8).getStringCellValue();
+        String branch=row.getCell(9).getStringCellValue();
+        Employee e=employeeRepository.findByEid(eid);
+        if(e!=null){
+
+            e.getProfile().setHolderName(holdername);
+            e.getProfile().setBankName(bankName);
+            e.getProfile().setBranchName(branch);
+            e.getProfile().setIfscCode(ifsc);
+          System.out.println(String.format("EmployeeId details added [%s] ",eid));
+            employeeRepository.saveAndFlush(e);
+        }
+        else{
+          System.out.println(String.format("EmployeeId not found [%s] ",eid));
+        }
+      }
+
+
+    }
+    workbook.close();
+  }
 }

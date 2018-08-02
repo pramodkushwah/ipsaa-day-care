@@ -119,13 +119,13 @@ public class StudentAttendanceService extends BaseService {
     if (attendance.getCheckout() != null) {
       throw new ValidationException("Student has already clocked out!");
     }
-
+    attendance.setCheckout(DateTime.now().toDate());
 // shubham
-//<<<<<<< HEAD
+
 
     int extra = countExtra(student, attendance, false);
     attendance.setExtraHours(attendance.getExtraHours() + extra);
-    attendance.setCheckout(DateTime.now().toDate());
+   
     attendanceRepository.saveAndFlush(attendance);
     eventBus.post(attendance);
   }

@@ -10,6 +10,7 @@ import com.synlabs.ipsaa.service.UserService;
 import com.synlabs.ipsaa.view.center.CenterListRequest;
 import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.center.CenterResponse;
+import com.synlabs.ipsaa.view.center.CenterResponseV2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
@@ -31,10 +32,10 @@ public class CenterController
 
   @GetMapping
   @Secured(CENTER_READ)
-  public List<CenterResponse> list(@RequestParam(required = false, name = "zone") String zone,
+  public List<CenterResponseV2> list(@RequestParam(required = false, name = "zone") String zone,
                                    @RequestParam(required = false, name = "city") String city)
   {
-    return centerService.list(new CenterListRequest(zone, city)).stream().map(CenterResponse::new).collect(Collectors.toList());
+    return centerService.list(new CenterListRequest(zone, city)).stream().map(CenterResponseV2::new).collect(Collectors.toList());
   }
 
   @GetMapping("all")
@@ -67,6 +68,7 @@ public class CenterController
     Center center = centerService.updateCenter(request);
     return new CenterResponse(center);
   }
+
   @Secured(CENTER_DELETE)
   @DeleteMapping(path = "{centerId}")
   public void deleteCenter(@PathVariable Long centerId)

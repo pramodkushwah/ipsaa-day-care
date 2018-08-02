@@ -46,7 +46,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
                 $scope.months.push({moy: mnth + 1, name: allmonths[mnth]});
             }
             $scope.selectedMonth = moment().month() + 1;
-            $scope.selectedQuarter = ((Math.ceil((moment().month()) / 3)) + 1);
+            $scope.selectedQuarter = ((Math.floor((moment().month()) / 3)) + 1);
             $scope.quarterlyYear = moment().year();
             $scope.monthlyYear = moment().year();
 
@@ -148,6 +148,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
         for (var i = ((pageNumber - 1) * pageSize); i < staffCount && elementCount < pageSize; i++, elementCount++) {
             staffPage.push(angular.copy(staffs[i]));
         }
+        staffPage.filter = $scope.stafflist.filter;
         count = Math.ceil($scope.BARSIZE / 2);
         i = pageNumber <= count ? 1 : pageNumber - (count - 1);
         for (; i <= pageNumber; i++) {
@@ -306,7 +307,8 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
         });
     }
 
-    $scope.showPanel = function (panel) {
+    $scope.showPanel = function (panel, filter) {
+        // additional parameter filter added for request with a filter, currently used for stafflist only
         $scope.showtab = panel;
         var req = {};
         if ($scope.selectedZone !== null) {
@@ -321,11 +323,23 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
 
         switch (panel) {
             case 'stafflist':
-                $http.post("/api/dash/staff", req).then(function (response) {
-                    // $scope.stafflist = response.data;
-                    $scope.stafflist = $filter('filter')(response.data, {present:true});
-                    console.log($scope.stafflist);
+                $scope.staffLoading = true;
+                var url;
+                if(filter == 'present' || filter == "all") {
+                    url = "/api/dash/staff";
+                }
+                else
+                    url = "/api/dash/" + filter;
+
+                $http.post(url, req).then(function (response) {
+                    $scope.stafflist = filter == "present" 
+                                    ? $filter('filter')(response.data, {present:true})
+                                    : response.data;
+                    
+                    // saving filter field for later referance
+                    $scope.stafflist.filter = filter;
                     $scope.updateStaffPage(1);
+                    $scope.staffLoading = false;
                 });
                 $scope.refresh();
                 break;
