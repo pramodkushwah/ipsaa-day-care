@@ -8,6 +8,7 @@ import com.synlabs.ipsaa.entity.staff.EmployeeProfile;
 import com.synlabs.ipsaa.view.common.Response;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by Rakesh on 06-04-2018.
@@ -91,6 +92,8 @@ public class EmployeePaySlipResponse implements Response
       this.empName = employee.getName();
       this.empDesignation = employee.getDesignation() == null ? "" : employee.getDesignation();
       this.aadharNumber = employee.getAadharNumber() == null ? "" : employee.getAadharNumber();
+      // shubham
+      this.doj=employee.getProfile().getDoj();
       EmployeeProfile profile = employee.getProfile();
       if (profile != null)
       {
@@ -161,6 +164,8 @@ public class EmployeePaySlipResponse implements Response
     this.autoComment = slip.getAutoComment();
     this.comment = slip.getComment();
     // shubam
+    this.ctc=slip.getCtc();
+    this.extraMonthlyAllowance=slip.getExtraMonthlyAllowance();
   }
 
   public boolean isIslock() {
@@ -430,5 +435,29 @@ public class EmployeePaySlipResponse implements Response
   {
     return employerName;
   }
+//-----------------------------subham--------------------------------
+  public BigDecimal ctc;
+  public BigDecimal extraMonthlyAllowance;
+  public Date doj;
+  public BigDecimal getExtraMonthlyAllowance() {
+    return extraMonthlyAllowance;
+  }
 
+  public void setExtraMonthlyAllowance(BigDecimal extraMonthlyAllowance) {
+    this.extraMonthlyAllowance = extraMonthlyAllowance;
+  }
+  public Date getDoj() {
+    return doj;
+  }
+
+  public void setDoj(Date doj) {
+    this.doj = doj;
+  }
+
+  public BigDecimal getCtc() {
+    return ctc;
+  }
+  public void setCtc(BigDecimal ctc) {
+    this.ctc = ctc;
+  }
 }

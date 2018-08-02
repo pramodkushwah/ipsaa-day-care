@@ -30,7 +30,7 @@
     <td style="width: 210px;">Bank Acc. No.</td>
     <td style="width: 350px;">:&nbsp;&nbsp;${paySlip.ban}</td>
     <td style="width: 180px;">Date Of Joining</td>
-    <td style="width: 280px;">:&nbsp;&nbsp;${paySlip.month} / ${paySlip.year?c}</td>
+    <td style="width: 280px;">:&nbsp;&nbsp;${paySlip.doj}</td>
   </tr>
   <tr>
     <td style="width: 210px;vertical-align: top;">Presents/Total</td>
@@ -67,7 +67,7 @@
     <td style="width: 237px;">Conveyance Allowance</td>
     <td style="width: 100px;">${paySlip.conveyance}</td>
     <td style="width: 195px;">Professional Tax</td>
-    <td style="width: 121px;">${paySlip.professionalTax}</td>
+    <td style="width: 121px;"><#if paySlip.professionalTax??>${paySlip.professionalTax}</#if></td>
   </tr>
   <tr>
     <td style="width: 195px;">Special Allowance</td>
@@ -78,12 +78,12 @@
   <tr>
     <td style="width: 237px;">Bonus</td>
     <td style="width: 100px;">${paySlip.bonus}</td>
-    <td style="width: 237px;">&nbsp;</td>
-    <td style="width: 100px;">&nbsp;</td>
+    <td style="width: 237px;">TDS</td>
+    <td style="width: 100px;">${paySlip.tds}</td>
   </tr>
   <tr>
     <td style="width: 237px;">Fixed Monthly Allowance</td>
-    <td style="width: 100px;">${paySlip.bonus}</td>
+    <td style="width: 100px;"><#if paySlip.extraMonthlyAllowance??>${paySlip.extraMonthlyAllowance}</#if></td>
     <td style="width: 237px;">&nbsp;</td>
     <td style="width: 100px;">&nbsp;</td>
   </tr>

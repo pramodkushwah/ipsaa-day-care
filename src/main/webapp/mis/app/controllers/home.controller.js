@@ -46,7 +46,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
                 $scope.months.push({moy: mnth + 1, name: allmonths[mnth]});
             }
             $scope.selectedMonth = moment().month() + 1;
-            $scope.selectedQuarter = ((Math.ceil((moment().month()) / 3)) + 1);
+            $scope.selectedQuarter = ((Math.floor((moment().month()) / 3)) + 1);
             $scope.quarterlyYear = moment().year();
             $scope.monthlyYear = moment().year();
 
@@ -323,6 +323,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
 
         switch (panel) {
             case 'stafflist':
+                $scope.staffLoading = true;
                 var url;
                 if(filter == 'present' || filter == "all") {
                     url = "/api/dash/staff";
@@ -334,8 +335,11 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
                     $scope.stafflist = filter == "present" 
                                     ? $filter('filter')(response.data, {present:true})
                                     : response.data;
+                    
+                    // saving filter field for later referance
                     $scope.stafflist.filter = filter;
                     $scope.updateStaffPage(1);
+                    $scope.staffLoading = false;
                 });
                 $scope.refresh();
                 break;

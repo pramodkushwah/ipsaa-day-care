@@ -77,7 +77,7 @@ public class EmployeeSalaryRequest implements Request
     salary.setEsi(esi == null ? ZERO : esi);
 
     //modify by shubham calculateGrossV2 by calculateGross
-    salary.setExtraMonthlyAllowance(extraMonthlyAllowance);
+    salary.setExtraMonthlyAllowance(extraMonthlyAllowance==null ?ZERO:extraMonthlyAllowance);
     salary=SalaryUtilsV2.calculateCTC(salary);
     return salary;
   }

@@ -592,6 +592,7 @@ public class EmployeePaySlip extends BaseEntity {
 		if (this.otherDeductions == null) {
 			this.otherDeductions = ZERO;
 		}
+		this.tds=employeeSalary.getTds();
 		if (this.tds == null) {
 			this.tds = ZERO;
 		}
@@ -604,6 +605,7 @@ public class EmployeePaySlip extends BaseEntity {
 		this.conveyance = ratio.multiply(SalaryUtilsV2.CONVEYANCE);
 		this.bonus = ratio.multiply(SalaryUtilsV2.BOUNS);
 		this.special = SalaryUtilsV2.calculateSpecial(this.ctc, this.basic, this.hra, this.conveyance, this.bonus);
+		this.extraMonthlyAllowance=employeeSalary.getExtraMonthlyAllowance();
 		if (extraMonthlyAllowance != null)
 			this.extraMonthlyAllowance = ratio.multiply(this.extraMonthlyAllowance);
 
@@ -619,8 +621,13 @@ public class EmployeePaySlip extends BaseEntity {
 		esid = employeeSalary.isEsid();
 		profd = employeeSalary.isProfd();
 
-		this.pfe = SalaryUtilsV2.calculatePfe(this.basic);
-		this.pfr = SalaryUtilsV2.calculatePfr(this.basic);
+		if(pfd){
+			this.pfe = SalaryUtilsV2.calculatePfe(this.basic);
+			this.pfr = SalaryUtilsV2.calculatePfr(this.basic);
+		}else{
+			this.pfe=ZERO;
+			this.pfr=ZERO;
+		}
 
 		this.grossSalary = SalaryUtilsV2.calculateGross(this.ctc, this.bonus, this.pfr);
 

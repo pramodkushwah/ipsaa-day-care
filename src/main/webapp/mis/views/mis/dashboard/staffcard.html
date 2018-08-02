@@ -13,18 +13,19 @@
       <div class="stats">
           <!-- <span>Present:{{stats.staffPresent | number}}</span> -->
           <!-- <span>Absent:{{stats.staffCount-stats.staffPresent | number}}</span> -->
-          <!-- <span>Staff Cost:{{stats.staffCost | number}}</span> -->
-          <p style="margin: 0">
+          
+          <!-- <p style="margin: 0">
             <a href="#" ng-click="showPanel('stafflist', 'present')">Present</a>
             : {{stats.staffPresent | number}}
-          </p>
+          </p> -->
           <p style="margin: 0">
             <a href="#" ng-click="showPanel('stafflist', 'newjoinings')">New Joiners</a>
             : {{stats.newJoinings | number}}
           </p>
           <p style="margin: 0">
             <a href="#" ng-click="showPanel('stafflist', 'newleavings')">Leavers</a>
-            : {{stats.newLeavings | number}}
+            : {{stats.newLeavings | number}} &nbsp;&nbsp;&nbsp;
+            <span>Staff Cost: {{stats.staffCost | number}}</span>
           </p>
 
       </div>
