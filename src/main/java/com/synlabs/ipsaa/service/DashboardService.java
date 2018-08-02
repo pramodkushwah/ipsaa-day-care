@@ -833,6 +833,7 @@ public class DashboardService extends BaseService
     List<Center> centers = getCenters(request);
     int studentCount = countStudents(centers);
     int corporateStudentCount = countStudents(centers, true);
+
     for (String dashboard : dashboards)
     {
       switch (dashboard)

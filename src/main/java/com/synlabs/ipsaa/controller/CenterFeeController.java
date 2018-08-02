@@ -37,11 +37,12 @@ public class CenterFeeController
   {
     return feeService.listCenterCharge(new CenterFeeRequest(centerId)).stream().map(CenterChargeResponse::new).collect(Collectors.toList());
   }
+
   @Secured(CENTERFEE_READ)
   @GetMapping("export")
   public String listCenterExport()
   {
-    System.out.print("get");
+    //System.out.print("get");
     try{
     ExcelExporterCenterPrograms c=  new ExcelExporterCenterPrograms();
      c.createExcel(feeService.listCenterProgramFee());
@@ -95,9 +96,7 @@ public class CenterFeeController
     Request request = new Request()
     {
     };
-
       feeService.deleteCenterProgramFee(request.unmask(id));
-
   }
 
   @PostMapping("/fee/")
@@ -119,5 +118,4 @@ public class CenterFeeController
     request.setId(slipId);
     return new CenterProgramFeeResponse(feeService.getProgramFee(request));
   }
-
 }
