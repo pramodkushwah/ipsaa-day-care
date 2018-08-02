@@ -1,6 +1,9 @@
 <div style="text-align: center;">
   <hr/>
   <div>
-    <strong>Contact Number</strong> : ${paySlip.employerPhone} <strong>Website</strong> : www.ipsaa.in
+      <p>
+          <strong>Telephone Number</strong> : ${paySlip.employerPhone}</p>
+      <p>
+          <strong>Website</strong> : www.ipsaa.in</p>
   </div>
 </div>
