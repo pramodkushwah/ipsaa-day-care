@@ -341,6 +341,10 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
             error(response.data.error);
         });
 
+        // if previous salaries response exist first clear then load new
+        if ($scope.salaries) 
+            $scope.salaries.length = 0;
+        
         $http.get('/api/employee/salary').then(
             function (response) {
                 $scope.salaries = response.data;
