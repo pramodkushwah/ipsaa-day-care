@@ -111,24 +111,25 @@
 <div>&nbsp;</div>
 
 <table style="width: 100%;">
-  <tbody>
-  <tr>
-    <td>Amount (in words):</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="2"><strong>Indian Rupees</strong>
-      <span style="border-bottom:1px solid; padding: 0 20px;">${amountWords}</span>
-      <strong>Only</strong>
-    </td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td style="text-align: right;">Authorized Signatory</td>
-  </tr>
-  </tbody>
+    <tbody>
+        <tr>
+            <td>Amount (in words):</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <strong>Indian Rupees </strong>
+                <span style="padding: 0 15px;border-bottom: 1px solid">${amountWords}</span>
+                <strong>Only</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td style="text-align: right;">Authorized Signatory</td>
+        </tr>
+    </tbody>
 </table>
