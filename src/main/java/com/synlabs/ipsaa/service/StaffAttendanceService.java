@@ -2,6 +2,7 @@ package com.synlabs.ipsaa.service;
 
 import com.google.common.eventbus.EventBus;
 import com.querydsl.jpa.impl.JPAQuery;
+import com.synlabs.ipsaa.config.Local;
 import com.synlabs.ipsaa.entity.attendance.EmployeeAttendance;
 import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.center.Holiday;
@@ -9,6 +10,7 @@ import com.synlabs.ipsaa.entity.center.QHoliday;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.entity.staff.EmployeeLeave;
 import com.synlabs.ipsaa.enums.AttendanceStatus;
+import com.synlabs.ipsaa.enums.LeaveStatus;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.EmployeeAttendanceRepository;
@@ -551,5 +553,65 @@ public class StaffAttendanceService extends BaseService
     {
       employeeAttendanceRepository.delete(id);
     }
+  }
+  /////////////////////////////Avneet
+  public List<EmployeeAttendance> employeeAttendanceList() {
+
+    if (getEmployee() == null)
+    {
+      throw new ValidationException("Current user is not authorised to get attendance for any center!");
+    }
+
+    List<Employee> employees = employeeRepository.findByActiveTrueAndCostCenterIn(userService.getUserCenters());
+    List<EmployeeAttendance> attendances = attendanceRepository.findByEmployeeInAndAttendanceDate(employees,LocalDate.now().toDate());
+    List<Holiday> holidays = holidayRepository.findDistinctByCentersInAndHolidayDate(userService.getUserCenters(), LocalDate.now().toDate());
+    List<EmployeeLeave> employeeLeave=employeeLeaveRepository.findByEmployeeInAndDate(employees,LocalDate.now().toDate());
+
+
+    Set<String> set = new HashSet<>();
+    for (Holiday holiday : holidays) {
+      for(Center center : holiday.getCenters()) {
+        set.add(center.getCode());
+      }
+    }
+
+    EmployeeAttendance attendance;
+    List<EmployeeAttendance> employeeAttendances = new ArrayList<>();
+    int j=0;
+    int sizeOfEmployeeAttendances=employeeAttendances.size();
+
+    for(Employee employee:employees){
+      if(j<sizeOfEmployeeAttendances && employee.getId().equals(attendances.get(j).getEmployee())){
+        employeeAttendances.add(attendances.get(j));
+        j++;
+      }
+      else{
+        attendance=new EmployeeAttendance();
+        attendance.setEmployee(employee);
+        attendance.setCenter(employee.getCostCenter());
+        attendance.setAttendanceDate(LocalDate.now().toDate());
+        attendance.setStatus(AttendanceStatus.Absent);
+
+        if(set.contains(employee.getCostCenter().getCode())){
+          attendance.setCalendarHoliday(true);
+          attendance.setStatus(AttendanceStatus.Holiday);
+        }
+        employeeAttendances.add(attendance);
+      }
+
+      }
+    int i=0;
+    int sizeOfEmployeeLeave=employeeLeave.size();
+    for(EmployeeAttendance attendanceOfEmplyee :employeeAttendances){
+        if(employeeAttendances!=null && i<sizeOfEmployeeAttendances && attendanceOfEmplyee.getEmployee().equals(employeeLeave.get(i).getEmployee()) ){
+              attendanceOfEmplyee.setOnLeave(true);
+              attendanceOfEmplyee.setLeaveStatus(employeeLeave.get(i).getLeaveStatus());
+              attendanceOfEmplyee.setLeaveId(mask(employeeLeave.get(i).getId()));
+              attendanceOfEmplyee.setHalfLeave(employeeLeave.get(i).getHalfLeave());
+              attendanceOfEmplyee.setStatus(AttendanceStatus.Leave);
+            }
+        }
+
+    return employeeAttendances;
   }
 }
