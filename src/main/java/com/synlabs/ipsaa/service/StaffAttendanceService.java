@@ -581,7 +581,7 @@ public class StaffAttendanceService extends BaseService
     int sizeOfEmployeeAttendances=employeeAttendances.size();
 
     for(Employee employee:employees){
-      if(j<sizeOfEmployeeAttendances && employee.getId().equals(attendances.get(j).getEmployee())){
+      if(j<sizeOfEmployeeAttendances && employee.getId().equals(attendances.get(j).getEmployee().getId())){
         employeeAttendances.add(attendances.get(j));
         j++;
       }
@@ -603,15 +603,16 @@ public class StaffAttendanceService extends BaseService
     int i=0;
     int sizeOfEmployeeLeave=employeeLeave.size();
     for(EmployeeAttendance attendanceOfEmplyee :employeeAttendances){
-        if(employeeAttendances!=null && i<sizeOfEmployeeAttendances && attendanceOfEmplyee.getEmployee().equals(employeeLeave.get(i).getEmployee()) ){
+        if(employeeLeave!=null && i<sizeOfEmployeeLeave && attendanceOfEmplyee.getEmployee().getId().equals(employeeLeave.get(i).getEmployee().getId()) ){
               attendanceOfEmplyee.setOnLeave(true);
               attendanceOfEmplyee.setLeaveStatus(employeeLeave.get(i).getLeaveStatus());
               attendanceOfEmplyee.setLeaveId(mask(employeeLeave.get(i).getId()));
               attendanceOfEmplyee.setHalfLeave(employeeLeave.get(i).getHalfLeave());
               attendanceOfEmplyee.setStatus(AttendanceStatus.Leave);
+              i++;
+              System.out.println(attendanceOfEmplyee.getEmployee().getName());
             }
-        }
-
+    }
     return employeeAttendances;
   }
 }
