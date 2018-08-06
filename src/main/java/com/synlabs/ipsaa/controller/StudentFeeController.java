@@ -4,6 +4,7 @@ import com.itextpdf.text.DocumentException;
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
 import com.synlabs.ipsaa.service.DocumentService;
+import com.synlabs.ipsaa.service.StudentFeeService;
 import com.synlabs.ipsaa.service.StudentService;
 import com.synlabs.ipsaa.view.fee.*;
 import com.synlabs.ipsaa.view.student.StudentRequest;
@@ -27,6 +28,9 @@ public class StudentFeeController
 
   @Autowired
   private StudentService studentService;
+
+  @Autowired
+  private StudentFeeService studentFeeService;
 
   @Autowired
   private DocumentService documentService;
@@ -65,7 +69,6 @@ public class StudentFeeController
     }
     return new StudentFeeResponse();
   }
-
   @Secured(STUDENTFEE_READ)
   @GetMapping("/{studentId}/fee/ledger")
   public List<StudentFeeLedgerResponse> listStudentLedger(@PathVariable(name = "studentId") Long studentId)
@@ -75,9 +78,10 @@ public class StudentFeeController
 
   @Secured(STUDENTFEE_WRITE)
   @PostMapping("/fee/")
-  public StudentFeeResponse saveStudentFee(@RequestBody StudentFeeRequest request)
+  public StudentFeeResponse saveStudentFee(@RequestBody StudentFeeRequestV2 request)
   {
-    return new StudentFeeResponse(studentService.saveStudentFee(request));
+    //return new StudentFeeResponse(studentService.saveStudentFee(request));
+    return new StudentFeeResponse(studentFeeService.studentFeeService(request));
   }
 
   @Secured(STUDENTFEE_WRITE)

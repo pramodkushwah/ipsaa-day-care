@@ -20,6 +20,9 @@ public class StudentFee extends BaseEntity
   @Column(precision = 16, scale = 2)
   private BigDecimal stationary;
 
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal annualCharges;
   @Column(precision = 16, scale = 2)
   private BigDecimal finalAnnualCharges;
   @Column(precision = 16, scale = 2)
@@ -28,6 +31,14 @@ public class StudentFee extends BaseEntity
   private BigDecimal finalMonthlyFee;
   @Column(precision = 16, scale = 2)
   private BigDecimal finalDepositFee;
+
+  public BigDecimal getAnnualCharges() {
+    return annualCharges;
+  }
+
+  public void setAnnualCharges(BigDecimal annualCharges) {
+    this.annualCharges = annualCharges;
+  }
 
   public BigDecimal getAdmissionFee() {
     return admissionFee;

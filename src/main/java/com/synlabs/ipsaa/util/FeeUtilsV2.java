@@ -1,5 +1,6 @@
 package com.synlabs.ipsaa.util;
 
+import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
 import com.synlabs.ipsaa.enums.FeeDuration;
@@ -8,7 +9,7 @@ import com.synlabs.ipsaa.ex.ValidationException;
 
 import java.math.BigDecimal;
 
-public class FeeUtils
+public class FeeUtilsV2
 {
   private static final String months[] = new String[] { "Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
@@ -147,6 +148,25 @@ public class FeeUtils
     return finalFee;
   }
 
+  public static BigDecimal calculateGST(StudentFee slip, GST type)
+  {
+    slip.setCgst(new BigDecimal(9));
+    slip.setSgst(new BigDecimal(9));
+    slip.setIgst(new BigDecimal(18));
+    BigDecimal finalFee = ZERO;
+    finalFee = finalFee.add(slip.getBaseFee());
+    if (slip.getAnnualCharges() != null)
+    {
+      finalFee = finalFee.add(slip.getAnnualCharges());
+    }
+    BigDecimal gst = type == GST.CGST ? slip.getCgst() == null ? ZERO : slip.getCgst() :
+                     type == GST.SGST ? slip.getSgst() == null ? ZERO : slip.getSgst() :
+                     type == GST.IGST ? slip.getIgst() == null ? ZERO : slip.getIgst() : ZERO;
+    finalFee = finalFee.multiply(gst)
+            .divide(HUNDRED, 2, BigDecimal.ROUND_CEILING);
+    return finalFee;
+  }
+
   public static BigDecimal calculateGST(StudentFeePaymentRequest slip, GST type)
   {
     BigDecimal finalFee = ZERO;
@@ -227,15 +247,29 @@ public class FeeUtils
     return finalFee;
   }
 
-  public static void validateStudentFee(StudentFee fee)
+  public static void validateStudentFee(StudentFee fee, CenterProgramFee centerProgramFee)
   {
-    validateStudentFee(fee, true);
+    validateStudentFee(fee, true,centerProgramFee);
   }
 
-  public static boolean validateStudentFee(StudentFee fee, boolean thrEx)
+  public static boolean validateStudentFee(StudentFee fee, boolean thrEx,CenterProgramFee centerProgramFee)
   {
-    //calculate fee calculation diff
-    BigDecimal calculateFinalFee = FeeUtils.calculateFinalFee(fee);
+    BigDecimal calculateFinalFee=ZERO;
+    // check formal
+    /*if(fee.getStudent().isFormal){
+
+  }*/
+      //else
+    if(/* check formal not equal && */ centerProgramFee.getProgram().getId()==26 ||centerProgramFee.getProgram().getId()==30 ){
+      calculateFinalFee= FeeUtilsV2.calculateFinalFee(fee);
+      fee.setFinalAnnualCharges(FeeUtilsV2.calculateGST(fee,GST.IGST));
+      // calculate ratio
+    }else{
+      calculateFinalFee= FeeUtilsV2.calculateFinalFee(fee);
+    }
+
+
+
     BigDecimal diff = calculateFinalFee.subtract(fee.getFinalFee());
 
     //compare diff with tolerance
