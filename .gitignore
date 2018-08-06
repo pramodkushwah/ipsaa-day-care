@@ -11,7 +11,7 @@ package-lock.json
 /src/main/webapp/mis/index.html
 /src/main/webapp/pp/index.html
 /src/main/webapp/pp/checkout.html
-#/src/main/resources/application.properties
+/src/main/resources/application.properties
 
 .*log
 /target
