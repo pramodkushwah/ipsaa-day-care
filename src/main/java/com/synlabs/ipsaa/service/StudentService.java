@@ -1843,6 +1843,8 @@ public class StudentService extends BaseService
     return repository.findByActiveTrueAndCenter(center);
   }
 
+//<<<<<<< HEAD
+//=======
 
   // -------------------------------------shubham ----------------------------------------------------------------
 
@@ -1871,4 +1873,5 @@ public class StudentService extends BaseService
     }
     return slip2.stream().map(StudentFeeSlipResponse3::new).collect(Collectors.toList());
   }
+//>>>>>>> bf013c7db40b19f757f12092cc8c19bea24b1735
 }

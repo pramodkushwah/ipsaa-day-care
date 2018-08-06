@@ -17,4 +17,10 @@ public interface StudentAttendanceRepository extends JpaRepository<StudentAttend
   StudentAttendance findByStudentAndAttendanceDate(Student student, Date date);
   List<StudentAttendance> findByStudentAndCreatedDateBetween(Student student,Date from, Date to);
   List<StudentAttendance> findByCenterAndAttendanceDateBetweenOrderByStudentAdmissionNumberAsc(Center center, Date from, Date to);
+
+
+  //Avneet
+  List<StudentAttendance> findByStudentInAndAttendanceDateOrderByIdAsc(List<Student> students,Date date);
+  List<StudentAttendance> findByStudentCenterInAndStudentActiveTrueAndAttendanceDateAndCheckoutNotNull(List<Center> center,Date date);
+
 }

@@ -119,8 +119,8 @@ public class CenterService extends BaseService
     {
       throw new ValidationException(String.format("Cannot locate center[id=%s]",request.getMaskId()));
     }
-    System.out.println("employes "+employeeService.findEmployeeByCenter(center) +" "+request.getId());
-    System.out.println("em");
+   // System.out.println("employes "+employeeService.findEmployeeByCenter(center) +" "+request.getId());
+   // System.out.println("em");
    if(employeeService.findEmployeeByCenter(center)!=null && employeeService.findEmployeeByCenter(center).size()>0){
 
      throw new ValidationException(String.format("Cannot delete this center ! employee detected",request.getMaskId()));
@@ -140,14 +140,11 @@ public class CenterService extends BaseService
   }
   public Center updateCenter(CenterRequest request)
   {
-
     Center center = centerRepository.getOne(request.getId());
-
     if (center == null)
     {
       throw new NotFoundException("Missing center");
     }
-
     center = request.toEntity(center);
 
     City city = cityRepository.findOneByName(request.getCity());
