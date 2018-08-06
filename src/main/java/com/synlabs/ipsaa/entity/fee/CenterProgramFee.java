@@ -13,7 +13,17 @@ import java.math.BigDecimal;
 @Entity
 public class CenterProgramFee extends BaseEntity
 {
+// shubham-------------------------------------------------shubham---------------------------------------------------------
+private BigDecimal addmissionFee;
 
+  public BigDecimal getAddmissionFee() {
+    return addmissionFee;
+  }
+
+  public void setAddmissionFee(BigDecimal addmissionFee) {
+    this.addmissionFee = addmissionFee;
+  }
+// shubham-------------------------------------------------shubham---------------------------------------------------------
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   private Center center;
 

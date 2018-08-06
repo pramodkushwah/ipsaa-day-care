@@ -12,6 +12,80 @@ import java.math.BigDecimal;
 @Entity
 public class StudentFee extends BaseEntity
 {
+  // ---------------------------------------------------shubham------------------------------------------------------
+  @Column(precision = 16, scale = 2)
+  private BigDecimal admissionFee;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal uniformCharges;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal stationary;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal finalAnnualCharges;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal finalAdmissionFee;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal finalMonthlyFee;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal finalDepositFee;
+
+  public BigDecimal getAdmissionFee() {
+    return admissionFee;
+  }
+
+  public void setAdmissionFee(BigDecimal admissionFee) {
+    this.admissionFee = admissionFee;
+  }
+
+  public BigDecimal getUniformCharges() {
+    return uniformCharges;
+  }
+
+  public void setUniformCharges(BigDecimal uniformCharges) {
+    this.uniformCharges = uniformCharges;
+  }
+
+  public BigDecimal getStationary() {
+    return stationary;
+  }
+
+  public void setStationary(BigDecimal stationary) {
+    this.stationary = stationary;
+  }
+
+  public BigDecimal getFinalAnnualCharges() {
+    return finalAnnualCharges;
+  }
+
+  public void setFinalAnnualCharges(BigDecimal finalAnnualCharges) {
+    this.finalAnnualCharges = finalAnnualCharges;
+  }
+
+  public BigDecimal getFinalAdmissionFee() {
+    return finalAdmissionFee;
+  }
+
+  public void setFinalAdmissionFee(BigDecimal finalAdmissionFee) {
+    this.finalAdmissionFee = finalAdmissionFee;
+  }
+
+  public BigDecimal getFinalMonthlyFee() {
+    return finalMonthlyFee;
+  }
+
+  public void setFinalMonthlyFee(BigDecimal finalMonthlyFee) {
+    this.finalMonthlyFee = finalMonthlyFee;
+  }
+
+  public BigDecimal getFinalDepositFee() {
+    return finalDepositFee;
+  }
+
+  public void setFinalDepositFee(BigDecimal finalDepositFee) {
+    this.finalDepositFee = finalDepositFee;
+  }
+
+  // ---------------------------------------------------shubham------------------------------------------------------
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   private Student student;
 
