@@ -199,6 +199,31 @@
           </div>
 
           <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <div class="checkbox" style="padding-top: 45px;">
+                        <label>
+                            <input type="checkbox" name="formal_school" ng-model="workingStudent.formalSchool" 
+                            ng-change="addFormalSchool(workingStudent.formalSchool)">
+                             Formal School
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="control-label">
+                        <span ng-show="formal_school">*</span>School Name
+                    </label>
+                    <input class="form-control" name="expectedOut" type="text" 
+                    ng-model="workingStudent.schoolName" ng-required="formal_school" 
+                    ng-readonly="showstudent" ng-disabled="!formal_school">
+                    <span class="material-input"></span>
+                </div>
+            </div>
+          </div>
+
+          <div class="row">
             <div class="col-md-12">
               <div class="form-group">
                 <label class="control-label">*Comment</label>

@@ -504,6 +504,15 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
         }
     };
 
+    $scope.addFormalSchool = function(formal_school_check) {
+        if(formal_school_check) 
+            $scope.formal_school = true;
+        else {
+            $scope.formal_school = false;
+            $scope.workingStudent.schoolName = '';
+        }
+    }
+
     $scope.siblingCenterChanged = function (center) {
         $scope.siblingCenter = center;
     };
