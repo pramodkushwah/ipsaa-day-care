@@ -28,6 +28,11 @@ public class StudentSummaryResponse implements Response
 
   private Boolean corporate;
 
+ //Avneet
+  private Boolean formalSchool;
+
+  private String schoolName;
+
   private final DateFormat formatter = new SimpleDateFormat("hh:mm a");
 
   public StudentSummaryResponse() {}
@@ -43,6 +48,8 @@ public class StudentSummaryResponse implements Response
     this.lastName = student.getProfile().getLastName();
     this.center = new CenterSummaryResponse(student.getCenter());
     this.corporate = student.isCorporate();
+    this.formalSchool=student.isFormalSchool();
+    this.schoolName=student.getSchoolName();
   }
 
   public Boolean getCorporate()
@@ -85,9 +92,11 @@ public class StudentSummaryResponse implements Response
     return lastName;
   }
 
-  public CenterSummaryResponse getCenter()
-  {
-    return center;
-  }
+  public CenterSummaryResponse getCenter() { return center; }
+
+  public Boolean getFormalSchool() { return formalSchool; }
+
+  public String getSchoolName() { return schoolName; }
+
 
 }
