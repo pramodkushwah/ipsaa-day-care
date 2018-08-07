@@ -8,12 +8,16 @@ app.controller('InquiryController', function ($scope, $http, $stateParams, $stat
         "Website",
         "Newspaper",
         "Signboards",
+        "Facebook",
+        "Adword",
+        "Organic",
         "Others"];
     $scope.inquiryTypes = [
         "Web",
         "Walkin",
         "Call",
-        "Email"];
+        "Email",
+        "Newspaper"];
     $scope.dispositions = [
         "NewInquiry",
         "Followup",
