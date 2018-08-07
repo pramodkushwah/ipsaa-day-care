@@ -44,14 +44,27 @@ public class StudentFeeService {
 
 
 
-    public StudentFee studentFeeService(StudentFeeRequestV2 request) {
-        if (request.getBaseFee() == null)
+    public StudentFee saveStudentFee(StudentFeeRequestV2 request) {
+        if (request.getFinalBaseFee() == null)
         {
             throw new ValidationException("Base Fee not found");
         }
-        if (request.getDiscount() == null)
+        if (request.getFinalAdmissionCharges() == null)
         {
-            throw new ValidationException("Discount not found");
+            throw new ValidationException("Admission Fee not found");
+        }
+        if (request.getFinalAnnualFee() == null)
+        {
+            throw new ValidationException("Annual Fee not found");
+        }
+        if (request.getFinalSecurityDeposit() == null)
+        {
+            throw new ValidationException("Security Fee not found");
+        }
+
+        if (request.getDiscountBaseFee() == null)
+        {
+            throw new ValidationException(" Base Discount not found");
         }
         if (request.getFinalFee() == null)
         {
@@ -61,29 +74,24 @@ public class StudentFeeService {
         if(request.getCenterProgramFeeId()==null){
             throw new ValidationException("Center program fee not found");
         }
-
         CenterProgramFee centerProgramFee=centerProgramFeeRepository.findOne(request.getCenterProgramFeeId());
-
         if(centerProgramFee==null){
             throw new NotFoundException(String.format("Center program fee not found [%s]", request.getCenterProgramFeeId()));
         }
-
         Student student = studentRepository.findOne(request.getStudentId());
         if (student == null)
         {
             throw new NotFoundException(String.format("Student not fount [%s]", request.getMaskedStudentId()));
         }
-
         StudentFee studentFee = studentFeeRepository.findByStudent(student);
         if (studentFee != null)
         {
             throw new ValidationException(String.format("Student fee already exits for student[admission_number=%s]", student.getAdmissionNumber()));
         }
         studentFee = request.toEntity(null);
-
-        FeeUtilsV2.validateStudentFee(studentFee,centerProgramFee);
-
         studentFee.setStudent(student);
+        FeeUtilsV2.validateStudentFee(studentFee,centerProgramFee);
+        //return studentFee;
         return studentFeeRepository.saveAndFlush(studentFee);
     }
 }

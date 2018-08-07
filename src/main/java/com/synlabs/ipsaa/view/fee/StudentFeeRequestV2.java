@@ -6,6 +6,8 @@ import com.synlabs.ipsaa.view.common.Request;
 
 import java.math.BigDecimal;
 
+import static java.math.BigDecimal.ZERO;
+
 public class StudentFeeRequestV2 implements Request
 {
   private Long        id;
@@ -14,7 +16,15 @@ public class StudentFeeRequestV2 implements Request
   private Long        centerProgramFeeId;
   private String      comment;
   private BigDecimal  baseFee;// monthly fee
-  private BigDecimal  discount;
+  private BigDecimal  discountBaseFee;
+  private BigDecimal  discountAnnualCharges;
+  private BigDecimal  discountAdmissionCharges;
+  private BigDecimal  discountSecurityDeposit;
+
+  private BigDecimal  finalBaseFee;
+  private BigDecimal  finalAnnualFee;
+  private BigDecimal  finalAdmissionCharges;
+  private BigDecimal  finalSecurityDeposit;
 
   private BigDecimal  annualFee;
   private BigDecimal  admissionCharges;
@@ -38,7 +48,72 @@ public class StudentFeeRequestV2 implements Request
   }
 
   public Long getCenterProgramFeeId() {
-    return unmask(centerProgramFeeId);
+    return this.centerProgramFeeId;
+    //return unmask(centerProgramFeeId);
+  }
+
+  public BigDecimal getFinalBaseFee() {
+    return finalBaseFee;
+  }
+
+  public void setFinalBaseFee(BigDecimal finalBaseFee) {
+    this.finalBaseFee = finalBaseFee;
+  }
+
+  public BigDecimal getFinalAnnualFee() {
+    return finalAnnualFee;
+  }
+
+  public void setFinalAnnualFee(BigDecimal finalAnnualFee) {
+    this.finalAnnualFee = finalAnnualFee;
+  }
+
+  public BigDecimal getFinalAdmissionCharges() {
+    return finalAdmissionCharges;
+  }
+
+  public void setFinalAdmissionCharges(BigDecimal finalAdmissionCharges) {
+    this.finalAdmissionCharges = finalAdmissionCharges;
+  }
+
+  public BigDecimal getFinalSecurityDeposit() {
+    return finalSecurityDeposit;
+  }
+
+  public void setFinalSecurityDeposit(BigDecimal finalSecurityDeposit) {
+    this.finalSecurityDeposit = finalSecurityDeposit;
+  }
+
+  public BigDecimal getDiscountBaseFee() {
+    return discountBaseFee;
+  }
+
+  public void setDiscountBaseFee(BigDecimal discountBaseFee) {
+    this.discountBaseFee = discountBaseFee;
+  }
+
+  public BigDecimal getDiscountAnnualCharges() {
+    return discountAnnualCharges;
+  }
+
+  public void setDiscountAnnualCharges(BigDecimal discountAnnualCharges) {
+    this.discountAnnualCharges = discountAnnualCharges;
+  }
+
+  public BigDecimal getDiscountAdmissionCharges() {
+    return discountAdmissionCharges;
+  }
+
+  public void setDiscountAdmissionCharges(BigDecimal discountAdmissionCharges) {
+    this.discountAdmissionCharges = discountAdmissionCharges;
+  }
+
+  public BigDecimal getDiscountSecurityDeposit() {
+    return discountSecurityDeposit;
+  }
+
+  public void setDiscountSecurityDeposit(BigDecimal discountSecurityDeposit) {
+    this.discountSecurityDeposit = discountSecurityDeposit;
   }
 
   public void setCenterProgramFeeId(Long centerProgramFeeId) {
@@ -91,18 +166,30 @@ public class StudentFeeRequestV2 implements Request
     {
       studentFee = new StudentFee();
     }
-    studentFee.setUniformCharges(uniformCharges);
-    studentFee.setStationary(stationary);
-    studentFee.setAdmissionFee(admissionCharges);
-    studentFee.setAnnualCharges(annualFee);
-    studentFee.setFinalDepositFee(securityDeposit);
-    studentFee.setBaseFee(baseFee);
-    studentFee.setFinalFee(finalFee);
-    studentFee.setComment(comment);
+    studentFee.setUniformCharges(uniformCharges==null?ZERO:uniformCharges);
+    studentFee.setStationary(stationary==null?ZERO:stationary);
+
+    studentFee.setFinalFee(finalFee==null?ZERO:finalFee);
+    studentFee.setComment(comment==null?"":comment);
     studentFee.setFeeDuration(getFeeDuration());
-    studentFee.setTransportFee(transportFee == null ? BigDecimal.ZERO : transportFee);
-    studentFee.setDiscount(discount == null ? BigDecimal.ZERO : discount);
-    studentFee.setAdjust(adjust == null ? BigDecimal.ZERO : adjust);
+    studentFee.setTransportFee(transportFee == null ? ZERO : transportFee);
+
+    studentFee.setFinalAdmissionFee(finalAdmissionCharges==null?ZERO:finalAdmissionCharges);
+    studentFee.setFinalDepositFee(finalSecurityDeposit==null?ZERO:finalSecurityDeposit);
+    studentFee.setFinalAnnualCharges(finalAnnualFee==null?ZERO:finalAnnualFee);
+    studentFee.setFinalBaseFee(finalBaseFee==null?ZERO:finalBaseFee);
+
+    studentFee.setBaseFeeDiscount(discountBaseFee == null ? ZERO : discountBaseFee);
+    studentFee.setAddmissionFeeDiscount(discountAdmissionCharges==null?ZERO:discountAdmissionCharges);
+    studentFee.setDepositFeeDiscount(discountSecurityDeposit==null?ZERO:discountSecurityDeposit);
+    studentFee.setAnnualFeeDiscount(discountAnnualCharges==null?ZERO:discountAnnualCharges);
+
+    studentFee.setDepositFee(securityDeposit==null?ZERO:securityDeposit);
+    studentFee.setBaseFee(baseFee==null?ZERO:baseFee);
+    studentFee.setAdmissionFee(admissionCharges==null?ZERO:admissionCharges);
+    studentFee.setAnnualCharges(annualFee==null?ZERO:annualFee);
+
+    studentFee.setAdjust(adjust == null ? ZERO : adjust);
     return studentFee;
   }
 
@@ -188,16 +275,6 @@ public class StudentFeeRequestV2 implements Request
     this.baseFee = baseFee;
   }
 
-  public BigDecimal getDiscount()
-  {
-    return discount;
-  }
-
-  public void setDiscount(BigDecimal discount)
-  {
-    this.discount = discount;
-  }
-
   public BigDecimal getFinalFee()
   {
     return finalFee;
@@ -233,7 +310,7 @@ public class StudentFeeRequestV2 implements Request
         "centerId=" + centerId +
         ", studentId=" + studentId +
         ", baseFee=" + baseFee +
-        ", discount=" + discount +
+        ", discount=" + discountBaseFee +
         ", finalFee=" + finalFee +
         ", comment='" + comment + '\'' +
         ", feeDuration=" + feeDuration +

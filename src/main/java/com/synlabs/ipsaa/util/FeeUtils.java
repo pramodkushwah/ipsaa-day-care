@@ -69,7 +69,7 @@ public class FeeUtils
     {
       case 1:
         return 1;
-      case 2:
+      case 2:  // first quater
         return 4;
       case 3:
         return 7;
@@ -195,9 +195,9 @@ public class FeeUtils
 
   public static BigDecimal calculateFinalFee(StudentFee studentFee)
   {
-    studentFee.setDiscount(studentFee.getDiscount() == null ?
+    studentFee.setBaseFeeDiscount(studentFee.getBaseFeeDiscount() == null ?
                            BigDecimal.ZERO :
-                           studentFee.getDiscount());
+                           studentFee.getBaseFeeDiscount());
     studentFee.setTransportFee(studentFee.getTransportFee() == null ?
                                BigDecimal.ZERO :
                                studentFee.getTransportFee());
@@ -206,7 +206,7 @@ public class FeeUtils
                          studentFee.getAdjust());
 
     BigDecimal baseFee = studentFee.getBaseFee();
-    BigDecimal discount = studentFee.getDiscount();
+    BigDecimal discount = studentFee.getBaseFeeDiscount();
     BigDecimal transportFee = studentFee.getTransportFee();
     BigDecimal adjust = studentFee.getAdjust();
     FeeDuration feeDuration = studentFee.getFeeDuration();

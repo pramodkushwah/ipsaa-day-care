@@ -81,7 +81,7 @@ public class StudentFeeController
   public StudentFeeResponse saveStudentFee(@RequestBody StudentFeeRequestV2 request)
   {
     //return new StudentFeeResponse(studentService.saveStudentFee(request));
-    return new StudentFeeResponse(studentFeeService.studentFeeService(request));
+    return new StudentFeeResponse(studentFeeService.saveStudentFee(request));
   }
 
   @Secured(STUDENTFEE_WRITE)
