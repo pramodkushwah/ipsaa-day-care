@@ -13,7 +13,6 @@ public class StudentFeeRequestV2 implements Request
   private Long        id;
   private Long        centerId;
   private Long        studentId;
-  private Long        centerProgramFeeId;
   private String      comment;
   private BigDecimal  baseFee;// monthly fee
   private BigDecimal  discountBaseFee;
@@ -45,11 +44,6 @@ public class StudentFeeRequestV2 implements Request
   public StudentFeeRequestV2(Long centerId)
   {
     this.centerId = centerId;
-  }
-
-  public Long getCenterProgramFeeId() {
-    return this.centerProgramFeeId;
-    //return unmask(centerProgramFeeId);
   }
 
   public BigDecimal getFinalBaseFee() {
@@ -114,10 +108,6 @@ public class StudentFeeRequestV2 implements Request
 
   public void setDiscountSecurityDeposit(BigDecimal discountSecurityDeposit) {
     this.discountSecurityDeposit = discountSecurityDeposit;
-  }
-
-  public void setCenterProgramFeeId(Long centerProgramFeeId) {
-    this.centerProgramFeeId = centerProgramFeeId;
   }
 
   public BigDecimal getAnnualFee() {

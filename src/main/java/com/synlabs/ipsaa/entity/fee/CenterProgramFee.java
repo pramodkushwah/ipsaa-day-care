@@ -21,6 +21,7 @@ private BigDecimal addmissionFee;
   }
 
   public void setAddmissionFee(BigDecimal addmissionFee) {
+
     this.addmissionFee = addmissionFee;
   }
 // shubham-------------------------------------------------shubham---------------------------------------------------------

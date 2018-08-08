@@ -51,6 +51,8 @@ public class FeeUtilsV2
 
   public static BigDecimal calculateFinalFee(StudentFee fee,boolean isGst)
   {
+    fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(THREE));
+    fee.setTransportFee(fee.getTransportFee().multiply(THREE));
 
     BigDecimal totalFee = fee.getFinalBaseFee()
                           .add(fee.getFinalDepositFee())
@@ -65,6 +67,8 @@ public class FeeUtilsV2
       gstAmmount=calculateGST(fee.getFinalBaseFee(),fee.getFinalAnnualCharges(),GST.IGST);
       fee.setGstAmount(gstAmmount);
       totalFee.add(gstAmmount);
+    }else{
+      fee.setGstAmount(ZERO);
     }
 
     BigDecimal diff = totalFee.subtract(fee.getFinalFee());

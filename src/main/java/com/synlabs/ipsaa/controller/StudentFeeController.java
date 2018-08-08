@@ -86,9 +86,9 @@ public class StudentFeeController
 
   @Secured(STUDENTFEE_WRITE)
   @PutMapping("/fee/")
-  public StudentFeeResponse updateStudentFee(@RequestBody StudentFeeRequest request)
+  public StudentFeeResponse updateStudentFee(@RequestBody StudentFeeRequestV2 request)
   {
-    return new StudentFeeResponse(studentService.updateStudentFee(request));
+    return new StudentFeeResponse(studentFeeService.updateStudentFee(request));
   }
 
   @Secured(STUDENTFEE_SLIP_WRITE)
@@ -97,7 +97,13 @@ public class StudentFeeController
   {
     return studentService.generateFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
   }
-  
+
+  @Secured(STUDENTFEE_SLIP_WRITE)
+  @PostMapping("/feeslip/generateFee")
+  public StudentFeeSlipResponse generateSingleStudentsSlip(@RequestBody Long studentId){
+    return studentFeeService.generateFirstFeeSlip(studentId);
+  }
+
   @Secured(STUDENTFEE_SLIP_WRITE)
   @PostMapping("/feeslip/generate-all")
   public List<StudentFeeSlipResponse> generateStudentsSlip(@RequestBody List<Long> ids){
