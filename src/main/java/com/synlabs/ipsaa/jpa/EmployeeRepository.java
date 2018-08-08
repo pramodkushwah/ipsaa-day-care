@@ -50,4 +50,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, Repos
   List<Employee> findByActiveAndCostCenter(Boolean active, Center center);
 
   Employee findOneByBiometricId(Integer biometricId);
+
+  //Avneet
+  List<Employee> findByActiveTrueAndCostCenterInOrderByIdAsc(List<Center> centers);
 }

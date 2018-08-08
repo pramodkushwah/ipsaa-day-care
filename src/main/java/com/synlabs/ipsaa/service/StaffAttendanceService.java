@@ -505,14 +505,16 @@ public class StaffAttendanceService extends BaseService {
 			throw new ValidationException("Current user is not authorised to get attendance for any center!");
 		}
 
-		List<Employee> employees = employeeRepository.findByActiveTrueAndCostCenterIn(userService.getUserCenters());
-		List<EmployeeAttendance> attendances = attendanceRepository.findByEmployeeInAndAttendanceDate(employees,
+		List<Employee> employees = employeeRepository.findByActiveTrueAndCostCenterInOrderByIdAsc(userService.getUserCenters());
+		List<EmployeeAttendance> attendances = attendanceRepository.findByEmployeeInAndAttendanceDateOrderByEmployeeIdAsc(employees,
 				LocalDate.now().toDate());
 		List<Holiday> holidays = holidayRepository.findDistinctByCentersInAndHolidayDate(userService.getUserCenters(),
 				LocalDate.now().toDate());
-		List<EmployeeLeave> employeeLeave = employeeLeaveRepository.findByEmployeeInAndDate(employees,
+		List<EmployeeLeave> employeeLeave = employeeLeaveRepository.findByEmployeeInAndDateOrderByEmployeeIdAsc(employees,
 				LocalDate.now().toDate());
 
+        System.out.println(attendances+"%n");
+        System.out.println(employeeLeave);
 		Set<String> set = new HashSet<>();
 		for (Holiday holiday : holidays) {
 			for (Center center : holiday.getCenters()) {
@@ -527,6 +529,11 @@ public class StaffAttendanceService extends BaseService {
 
 		for (Employee employee : employees) {
 			if (j < sizeOfEmployeeAttendances && employee.getId().equals(attendances.get(j).getEmployee().getId())) {
+
+			  System.out.println(attendances.get(j).getEmployee().getName()+" "+attendances.get(j).getCheckin()+" "+attendances.get(j).getCheckout());
+			  if(attendances.get(j).getEmployee().getEid().equals("E129")){
+                System.out.println();
+              }
 				employeeAttendances.add(attendances.get(j));
 				j++;
 			} else {
