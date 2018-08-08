@@ -325,7 +325,7 @@ public class StudentAttendanceService extends BaseService {
 				true);
 
 		List<StudentAttendance> studentAttendance = attendanceRepository
-				.findByStudentInAndAttendanceDateOrderByIdAsc(students, LocalDate.now().toDate());
+				.findByStudentInAndAttendanceDateOrderByStudentIdAsc(students, LocalDate.now().toDate());
 
 		List<StudentAttendance> list = calculateList(students, studentAttendance);
 		return list;
@@ -352,7 +352,7 @@ public class StudentAttendanceService extends BaseService {
 		}
 		System.out.println(corporateOrNot.size());
 		List<StudentAttendance> attendances = attendanceRepository
-				.findByStudentInAndAttendanceDateOrderByIdAsc(corporateOrNot, LocalDate.now().toDate());
+				.findByStudentInAndAttendanceDateOrderByStudentIdAsc(corporateOrNot, LocalDate.now().toDate());
 		return calculateList(corporateOrNot, attendances);
 	}
 
