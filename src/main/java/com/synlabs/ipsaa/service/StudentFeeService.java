@@ -30,6 +30,8 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
+import static java.math.BigDecimal.ZERO;
+
 
 @Service
 public class StudentFeeService {
@@ -129,7 +131,6 @@ public class StudentFeeService {
         {
             throw new ValidationException("Security Fee not found");
         }
-
         if (request.getDiscountBaseFee() == null)
         {
             throw new ValidationException(" Base Discount not found");
@@ -156,123 +157,36 @@ public class StudentFeeService {
         studentFee = request.toEntity(null);
         studentFee.setStudent(student);
         FeeUtilsV2.validateStudentFee(studentFee,centerProgramFee);
-        return studentFee;
-        //return studentFeeRepository.saveAndFlush(studentFee);
+        //return studentFee;
+        return studentFeeRepository.saveAndFlush(studentFee);
     }
-
     @Transactional
-    public List<StudentFeePaymentRequest> generateFeeSlips(StudentFeeSlipRequest request)
-    {
-        LocalDate today = LocalDate.now();
-         QStudentFee qStudentFee = QStudentFee.studentFee;
-        JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
-        query.select(qStudentFee)
-                .from(qStudentFee)
-                .where(qStudentFee.feeDuration.eq(FeeDuration.Quarterly))
-                .where(qStudentFee.student.approvalStatus.eq(ApprovalStatus.Approved))
-                .where(qStudentFee.student.active.isTrue())
-                .where(qStudentFee.student.corporate.isFalse())
-                .where(qStudentFee.student.center.code.eq(request.getCenterCode()));
-        List<StudentFee> feelist = query.fetch();
-
-        List<StudentFeePaymentRequest> newslips = new LinkedList<>();
-        List<StudentFeePaymentRequest> allslips = new LinkedList<>();
-
-        int requestQuarter = request.getQuarter();
-        int requestYear = request.getYear();
-                //TODO date check to make sure fee slips are only generated += 15 days from start of quarter
-                //validateQuarter(request);
-                for (StudentFee fee : feelist)
-                {
-                    StudentFeePaymentRequest slip = feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(), FeeDuration.Quarterly, requestQuarter, requestYear);
-                    if (slip == null)
-                    {
-                        BigDecimal baseFee = fee.getFinalFee();
-                        slip = new StudentFeePaymentRequest();
-                        slip.setStudent(fee.getStudent());
-                        slip.setFeeDuration(FeeDuration.Quarterly);
-                        slip.setInvoiceDate(today.toDate());
-                        slip.setYear(requestYear);
-                        slip.setPaymentStatus(PaymentStatus.Raised);
-                        slip.setQuarter(requestQuarter);
-                        slip.setTotalFee(baseFee);
-                        slip.setReGenerateSlip(true);
-                        slip.setExtraCharge(BigDecimal.ZERO);
-                        slip.setLatePaymentCharge(BigDecimal.ZERO);
-                        slip.setAnnualFee(BigDecimal.ZERO);
-                        slip.setCgst(fee.getCgst());
-                        slip.setSgst(fee.getSgst());
-                        slip.setIgst(fee.getIgst());
-
-                        slip.setAnnualFee(fee.getAnnualCharges());
-                        slip.setFinalAnnualCharges(fee.getFinalAnnualCharges());
-
-                        slip.setDeposit(fee.getDepositFee());
-                        slip.setFinalDepositFee(fee.getFinalDepositFee());
-
-                        slip.setBaseFee(baseFee);
-                        slip.setFinalBaseFee(fee.getFinalBaseFee());
-
-                        slip.setAdmissionFee(fee.getAdmissionFee());
-                        slip.setFinalAdmissionFee(fee.getFinalAdmissionFee());
-
-                        slip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount());
-                        slip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount());
-                        slip.setDepositFeeDiscount(fee.getDepositFeeDiscount());
-                        slip.setBaseFeeDiscount(fee.getBaseFeeDiscount());
-
-                        slip.setGstAmount(fee.getGstAmount());
-
-                        if (requestQuarter == 2)
-                        {
-                            CenterProgramFee programFee = centerProgramFeeRepository.findByProgramIdAndCenterId(slip.getStudent().getProgram().getId(), slip.getStudent().getCenter().getId());
-                            if (programFee == null)
-                            {
-                                continue;
-                            }
-                            BigDecimal annualFee = BigDecimal.valueOf(programFee.getAnnualFee());
-                            slip.setAnnualFee(annualFee);
-
-                        }
-                      //  calculateBaseFee(slip);
-                        slip.setTotalFee(FeeUtils.calculateTotalFee(slip));
-                        newslips.add(slip);
-                    }
-                    allslips.add(slip);
-                }
-        //4. if payment entry is not present, create a new one and send across
-        feePaymentRepository.save(newslips);
-        return allslips;
-    }
-
-    public StudentFeeSlipResponse generateFirstFeeSlip(Long studentId) {
+    public StudentFeeSlipResponse generateFirstFeeSlip(Long studentId,boolean isFirst) {
         StudentFee fee=studentFeeRepository.findByStudentId(studentId);
         if(fee==null){
-            throw new NotFoundException(String.format("Student not fount [%s]", studentId));
+            throw new NotFoundException(String.format("Student fee not fount [%s]", studentId));
         }
         Calendar cal = Calendar. getInstance();
+        int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));
         cal.setTime(fee.getStudent().getProfile().getAdmissionDate());
-        StudentFeePaymentRequest slip = feePaymentRepository.findOneByStudentAndFeeDurationAndYear(fee.getStudent(),FeeDuration.Quarterly,cal.get(Calendar.YEAR));
-        if(slip==null){
-            BigDecimal finalFee = fee.getFinalFee();
+        StudentFeePaymentRequest slip;
+        List<StudentFeePaymentRequest> slips = feePaymentRepository.findByStudentAndFeeDurationAndYear(fee.getStudent(),FeeDuration.Quarterly,cal.get(Calendar.YEAR));
+        if(slips==null && slips.isEmpty()){
             slip = new StudentFeePaymentRequest();
             slip.setStudent(fee.getStudent());
             slip.setFeeDuration(FeeDuration.Quarterly);
             slip.setInvoiceDate(LocalDate.now().toDate());
             slip.setYear(cal.get(Calendar.YEAR));
             slip.setPaymentStatus(PaymentStatus.Raised);
-            slip.setQuarter(FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH)));
-            slip.setTotalFee(finalFee);
-            slip.setReGenerateSlip(true);
-            slip.setExtraCharge(BigDecimal.ZERO);
-            slip.setLatePaymentCharge(BigDecimal.ZERO);
-            slip.setAnnualFee(BigDecimal.ZERO);
+            slip.setQuarter(quarter);
+            slip.setTotalFee(ZERO);
+            slip.setGenerateActive(true);
+            slip.setExtraCharge(ZERO);
+            slip.setLatePaymentCharge(ZERO);
+            slip.setAnnualFee(ZERO);
             slip.setCgst(fee.getCgst());
             slip.setSgst(fee.getSgst());
             slip.setIgst(fee.getIgst());
-
-            slip.setAnnualFee(fee.getAnnualCharges());
-            slip.setFinalAnnualCharges(fee.getFinalAnnualCharges());
 
             slip.setDeposit(fee.getDepositFee());
             slip.setFinalDepositFee(fee.getFinalDepositFee());
@@ -288,8 +202,31 @@ public class StudentFeeService {
             slip.setDepositFeeDiscount(fee.getDepositFeeDiscount());
             slip.setBaseFeeDiscount(fee.getBaseFeeDiscount());
 
+            slip.setUniformCharges(fee.getUniformCharges());
+            slip.setStationary(fee.getStationary());
+            slip.setTransportFee(fee.getTransportFee());
+
             slip.setGstAmount(fee.getGstAmount());
-            // calculate feeslip
+            BigDecimal baseFeeRatio=ZERO;
+            if (isFirst)
+            {
+                baseFeeRatio=FeeUtilsV2.calculateFeeRatioForQuarter(slip.getStudent().getProfile().getAdmissionDate());
+
+                slip.setAnnualFee(fee.getAnnualCharges());
+                slip.setAdmissionFee(fee.getAdmissionFee());
+
+                slip.setFinalAnnualCharges(fee.getFinalAnnualCharges());
+                slip.setFinalAdmissionFee(fee.getFinalAdmissionFee());
+
+            }else if(FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH)) == 2){
+                slip.setAdmissionFee(ZERO);
+                slip.setAnnualFee(fee.getFinalAnnualCharges());
+            }else{
+                slip.setAdmissionFee(ZERO);
+                slip.setAnnualFee(ZERO);
+            }
+            slip.setTotalFee(FeeUtilsV2.calculateFinalFee(slip,baseFeeRatio));
+            feePaymentRepository.saveAndFlush(slip);
         }else{
             throw new NotFoundException(String.format("Pay Slip Already Exist", studentId));
         }

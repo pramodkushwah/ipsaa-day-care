@@ -76,20 +76,6 @@ public class StudentFeeController
     return studentService.listFeeLedger(new StudentFeeLedgerRequest(studentId)).stream().map(StudentFeeLedgerResponse::new).collect(Collectors.toList());
   }
 
-  @Secured(STUDENTFEE_WRITE)
-  @PostMapping("/fee/")
-  public StudentFeeResponse saveStudentFee(@RequestBody StudentFeeRequestV2 request)
-  {
-    //return new StudentFeeResponse(studentService.saveStudentFee(request));
-    return new StudentFeeResponse(studentFeeService.saveStudentFee(request));
-  }
-
-  @Secured(STUDENTFEE_WRITE)
-  @PutMapping("/fee/")
-  public StudentFeeResponse updateStudentFee(@RequestBody StudentFeeRequestV2 request)
-  {
-    return new StudentFeeResponse(studentFeeService.updateStudentFee(request));
-  }
 
   @Secured(STUDENTFEE_SLIP_WRITE)
   @PostMapping("/feeslip/generate")
@@ -98,11 +84,7 @@ public class StudentFeeController
     return studentService.generateFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
   }
 
-  @Secured(STUDENTFEE_SLIP_WRITE)
-  @PostMapping("/feeslip/generateFee")
-  public StudentFeeSlipResponse generateSingleStudentsSlip(@RequestBody Long studentId){
-    return studentFeeService.generateFirstFeeSlip(studentId);
-  }
+
 
   @Secured(STUDENTFEE_SLIP_WRITE)
   @PostMapping("/feeslip/generate-all")
@@ -202,5 +184,28 @@ public class StudentFeeController
     IOUtils.copy(is, out);
     out.flush();
     is.close();
+  }
+  //----------------------------------shubham-----------------------------------------
+  @Secured(STUDENTFEE_WRITE)
+  @PostMapping("/fee/")
+  public StudentFeeResponse saveStudentFee(@RequestBody StudentFeeRequestV2 request)
+  {
+    //return new StudentFeeResponse(studentService.saveStudentFee(request));
+    return new StudentFeeResponse(studentFeeService.saveStudentFee(request));
+  }
+
+  @Secured(STUDENTFEE_WRITE)
+  @PutMapping("/fee/")
+  public StudentFeeResponse updateStudentFee(@RequestBody StudentFeeRequestV2 request)
+  {
+    return new StudentFeeResponse(studentFeeService.updateStudentFee(request));
+  }
+
+  @Secured(STUDENTFEE_SLIP_WRITE)
+  @PostMapping("/feeslip/generateFee")
+  public StudentFeeSlipResponse generateSingleStudentsSlip(@RequestParam Long studentId){
+    StudentFeeRequestV2 request=new StudentFeeRequestV2();
+    request.setStudentId(studentId);
+    return studentFeeService.generateFirstFeeSlip(request.getStudentId(),true);
   }
 }

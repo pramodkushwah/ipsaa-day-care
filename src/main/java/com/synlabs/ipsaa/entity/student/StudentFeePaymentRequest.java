@@ -17,7 +17,8 @@ public class StudentFeePaymentRequest extends BaseEntity
   private BigDecimal uniformCharges;
   @Column(precision = 16, scale = 2)
   private BigDecimal stationary;
-
+  @Column(precision = 16, scale = 2)
+  private BigDecimal transportFee;
 
   @Column(precision = 16, scale = 2)
   private BigDecimal annualFee;
@@ -128,6 +129,14 @@ public class StudentFeePaymentRequest extends BaseEntity
   
   @Column(columnDefinition = "bit(1) default 0")
   private boolean generateActive = false;
+
+  public BigDecimal getTransportFee() {
+    return transportFee;
+  }
+
+  public void setTransportFee(BigDecimal transportFee) {
+    this.transportFee = transportFee;
+  }
 
   public boolean isGenerateActive() {
 	return generateActive;

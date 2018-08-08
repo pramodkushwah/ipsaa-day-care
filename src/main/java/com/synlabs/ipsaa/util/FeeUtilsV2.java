@@ -51,16 +51,15 @@ public class FeeUtilsV2
 
   public static BigDecimal calculateFinalFee(StudentFee fee,boolean isGst)
   {
-    fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(THREE));
-    fee.setTransportFee(fee.getTransportFee().multiply(THREE));
+    fee.setFinalBaseFee(fee.getBaseFee().add(fee.getTransportFee()).multiply(THREE));
+    //fee.setTransportFee(fee.getTransportFee().multiply(THREE));
 
     BigDecimal totalFee = fee.getFinalBaseFee()
                           .add(fee.getFinalDepositFee())
                           .add(fee.getFinalAdmissionFee())
                           .add(fee.getFinalAnnualCharges())
                           .add(fee.getUniformCharges())
-                          .add(fee.getStationary())
-                          .add(fee.getTransportFee());
+                          .add(fee.getStationary());
     BigDecimal gstAmmount;
 
     if(isGst){
@@ -81,39 +80,43 @@ public class FeeUtilsV2
     }
     return totalFee;
   }
+  public static BigDecimal calculateFinalFee(StudentFeePaymentRequest fee,BigDecimal ratio)
+  {
+    fee.setFinalBaseFee(fee.getBaseFee().add(fee.getTransportFee()).multiply(ratio));
+    //fee.setTransportFee(fee.getTransportFee().multiply(ratio));
+    BigDecimal totalFee = fee.getFinalBaseFee()
+            .add(fee.getFinalDepositFee())
+            .add(fee.getFinalAdmissionFee())
+            .add(fee.getFinalAnnualCharges())
+            .add(fee.getUniformCharges())
+            .add(fee.getStationary());
+    BigDecimal gstAmmount;
 
-  private static BigDecimal calculateFinalFee(BigDecimal baseFee, BigDecimal discount, BigDecimal adjust, BigDecimal transportFee,BigDecimal ratio) {
-    BigDecimal finalFee = baseFee;
-    if (discount != null && !discount.equals(ZERO))
-    {
-      BigDecimal discountAmount = baseFee.multiply(discount)
-              .divide(HUNDRED, 2, BigDecimal.ROUND_CEILING);
-      finalFee = baseFee.subtract(discountAmount);
+    if(fee.getIgst()!=null && fee.getIgst().intValue()!=0){
+      gstAmmount=calculateGST(fee.getFinalBaseFee(),fee.getFinalAnnualCharges(),GST.IGST);
+      fee.setGstAmount(gstAmmount);
+      totalFee.add(gstAmmount);
+    }else{
+      fee.setGstAmount(ZERO);
     }
-    if (adjust != null && !adjust.equals(ZERO))
-    {
-      finalFee = finalFee.add(adjust);
-    }
-    finalFee=finalFee.add(transportFee);
-    finalFee = finalFee.multiply(ratio);
-    return finalFee;
+    return totalFee;
   }
 
   public static void validateStudentFee(StudentFee fee, CenterProgramFee centerProgramFee)
   {
     fee.setBaseFee(new BigDecimal(centerProgramFee.getFee()));
-    fee.setAdmissionFee(centerProgramFee.getAddmissionFee());
+    fee.setAdmissionFee(centerProgramFee.getAddmissionFee()==null?ZERO:centerProgramFee.getAddmissionFee());
     fee.setDepositFee(new BigDecimal(centerProgramFee.getDeposit()));
     fee.setAnnualCharges(new BigDecimal(centerProgramFee.getAnnualFee()));
 
 
-    fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(),fee.getBaseFeeDiscount(),fee.getFinalBaseFee()));
+    fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(),fee.getBaseFeeDiscount(),fee.getFinalBaseFee(),"Base Fee"));
 
-    fee.setFinalAnnualCharges(calculateDiscountAmmount(fee.getAnnualCharges(),fee.getAnnualFeeDiscount(),fee.getFinalAnnualCharges()));
+    fee.setFinalAnnualCharges(calculateDiscountAmmount(fee.getAnnualCharges(),fee.getAnnualFeeDiscount(),fee.getFinalAnnualCharges(),"Annual Charges"));
 
-    fee.setFinalDepositFee(calculateDiscountAmmount(fee.getDepositFee(),fee.getDepositFeeDiscount(),fee.getFinalDepositFee()));
+    fee.setFinalDepositFee(calculateDiscountAmmount(fee.getDepositFee(),fee.getDepositFeeDiscount(),fee.getFinalDepositFee(),"Deposit Fee"));
 
-    fee.setFinalAdmissionFee(calculateDiscountAmmount(fee.getAdmissionFee(),fee.getAddmissionFeeDiscount(),fee.getFinalAdmissionFee()));
+    fee.setFinalAdmissionFee(calculateDiscountAmmount(fee.getAdmissionFee(),fee.getAddmissionFeeDiscount(),fee.getFinalAdmissionFee(),"Addmission Fee"));
 
     if(fee.getStudent().isFormalSchool()){
      fee.setIgst(new BigDecimal(18));
@@ -129,7 +132,7 @@ public class FeeUtilsV2
 
   }
 
-  private static BigDecimal calculateDiscountAmmount(BigDecimal ammount, BigDecimal discount,BigDecimal discountAmout) {
+  private static BigDecimal calculateDiscountAmmount(BigDecimal ammount, BigDecimal discount,BigDecimal discountAmout,String discountName) {
     BigDecimal finalAmount=ZERO;
     ammount=ammount==null?ZERO:ammount;
 
@@ -148,75 +151,10 @@ public class FeeUtilsV2
     if (Math.abs(diff.doubleValue()) >= FEE_DISCOUNT_CALCULATION_TOLERANCE)
     {
         throw new ValidationException(
-            String.format("Final Fee calculation discount error![Request Final Fee=%s,Calculated Final Fee=%s]", discountAmout, finalAmount));
+            String.format(discountName+" calculation discount error![Request Final Fee=%s,Calculated Final Fee=%s]", discountAmout, finalAmount));
     }
     return finalAmount;
   }
-
-//  public static boolean validateStudentFee(StudentFee fee, boolean thrEx,CenterProgramFee centerProgramFee)
-//  {
-//    BigDecimal feeRatio=calculateFeeRatioForQuarter(fee.getStudent().getProfile().getAdmissionDate());
-//    BigDecimal calculateFinalFee=ZERO;
-//    if(fee.getStudent().isFormalSchool()){
-//      calculateFinalFee= FeeUtilsV2.calculateFinalFee(fee,true,feeRatio);
-//    }
-//    else if(!fee.getStudent().isFormalSchool() && centerProgramFee.getProgram().getId()==26 ||centerProgramFee.getProgram().getId()==30 ){
-//      calculateFinalFee= FeeUtilsV2.calculateFinalFee(fee,true,feeRatio);
-//      // calculate ratio
-//    }else{
-//      calculateFinalFee= FeeUtilsV2.calculateFinalFee(fee,false,feeRatio);
-//    }
-//    BigDecimal diff = calculateFinalFee.subtract(fee.getFinalFee());
-//
-//    //compare diff with tolerance
-//    if (Math.abs(diff.doubleValue()) >= FEE_CALCULATION_TOLERANCE)
-//    {
-//      if (thrEx)
-//      {
-//        throw new ValidationException(
-//            String.format("Final Fee calculation error![Request Final Fee=%s,Calculated Final Fee=%s]", fee.getFinalFee(), calculateFinalFee));
-//      }
-//      else
-//      {
-//        return false;
-//      }
-//    }
-//    return true;
-//  }
-  //  public static BigDecimal calculateFinalFee(StudentFee studentFee,boolean isGst,BigDecimal ratio)
-//  {
-//    studentFee.setDiscount(studentFee.getDiscount() == null ?
-//                           ZERO :
-//                           studentFee.getDiscount());
-//    studentFee.setTransportFee(studentFee.getTransportFee() == null ?
-//                               ZERO :
-//                               studentFee.getTransportFee());
-//    studentFee.setAdjust(studentFee.getAdjust() == null ?
-//                         ZERO :
-//                         studentFee.getAdjust());
-//    studentFee.setUniformCharges(studentFee.getUniformCharges()==null?ZERO:studentFee.getUniformCharges());
-//    studentFee.setStationary(studentFee.getStationary()==null?ZERO:studentFee.getStationary());
-//    studentFee.setAdmissionFee(studentFee.getAdmissionFee()==null?ZERO:studentFee.getAdmissionFee());
-//
-//    BigDecimal baseFee = studentFee.getBaseFee();
-//    BigDecimal discount = studentFee.getDiscount();
-//    BigDecimal transportFee = studentFee.getTransportFee();
-//    BigDecimal adjust = studentFee.getAdjust();
-//    BigDecimal annualFee=studentFee.getAnnualCharges();
-//    BigDecimal uniform=studentFee.getUniformCharges();
-//    BigDecimal stationary=studentFee.getStationary();
-//    BigDecimal addmissionFee=studentFee.getAdmissionFee();
-//    BigDecimal deposit=studentFee.getFinalDepositFee();
-//
-//    BigDecimal totalFee = calculateFinalFee(baseFee, discount, adjust,transportFee,ratio);
-//    if(isGst)
-//    studentFee.setFinalFee(calculateGST(totalFee,annualFee,GST.IGST));
-//    else
-//      studentFee.setFinalFee(totalFee.add(annualFee));
-//    BigDecimal finalFee=studentFee.getFinalFee().add(addmissionFee).add(uniform).add(stationary).add(deposit);
-//    studentFee.setFinalFee(finalFee);
-//    return finalFee;
-//  }
 
   public static int quarterStartMonth(int quarter)
   {
@@ -260,16 +198,18 @@ public class FeeUtilsV2
       return 4;
   }
 
-  private static BigDecimal calculateFeeRatioForQuarter(Date admissionDate) {
+  public static BigDecimal calculateFeeRatioForQuarter(Date admissionDate) {
     Calendar cal = Calendar. getInstance();
     cal.setTime(admissionDate);
     int currMonth = cal.get(Calendar.MONTH);
     currMonth=currMonth+1;// for removing 0 to one indexing
     int currDay = cal.get(Calendar.DATE);
-
-    double feeMonthRatio=quarterEndMonth(getQuarter(currMonth))-currMonth;
-    if(currDay>15){
+    int quarterEnd=quarterEndMonth(getQuarter(currMonth));
+    double feeMonthRatio=quarterEnd-currMonth;
+    if(15<currDay){
       feeMonthRatio=feeMonthRatio+0.5;
+    }else{
+      feeMonthRatio=feeMonthRatio+1.00;
     }
     return new BigDecimal(feeMonthRatio);
   }
