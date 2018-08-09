@@ -37,8 +37,6 @@ public class StudentFeePaymentRequest extends BaseEntity
   private BigDecimal baseFee;
 
   @Column(precision = 16, scale = 2)
-  private BigDecimal depositFee;
-  @Column(precision = 16, scale = 2)
   private BigDecimal finalDepositFee;
 
   @Column(precision = 16, scale = 2)
@@ -116,6 +114,8 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(unique = true)
   private String tnxid;
 
+  private boolean isExpire = true;
+
   private boolean reGenerateSlip = true;
 
   @Column(precision = 16, scale = 2)
@@ -129,6 +129,8 @@ public class StudentFeePaymentRequest extends BaseEntity
   
   @Column(columnDefinition = "bit(1) default 0")
   private boolean generateActive = false;
+
+  private BigDecimal balance;
 
   public BigDecimal getTransportFee() {
     return transportFee;
@@ -146,7 +148,13 @@ public void setGenerateActive(boolean generateActive) {
 	this.generateActive = generateActive;
 }
 
-private BigDecimal balance;
+  public boolean isExpire() {
+    return isExpire;
+  }
+
+  public void setExpire(boolean expire) {
+    isExpire = expire;
+  }
 
   public BigDecimal getAdjust()
   {
@@ -468,14 +476,6 @@ private BigDecimal balance;
 
   public void setFinalBaseFee(BigDecimal finalBaseFee) {
     this.finalBaseFee = finalBaseFee;
-  }
-
-  public BigDecimal getDepositFee() {
-    return depositFee;
-  }
-
-  public void setDepositFee(BigDecimal depositFee) {
-    this.depositFee = depositFee;
   }
 
   public BigDecimal getFinalDepositFee() {

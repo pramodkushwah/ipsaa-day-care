@@ -65,7 +65,7 @@ public class FeeUtilsV2
     if(isGst){
       gstAmmount=calculateGST(fee.getFinalBaseFee(),fee.getFinalAnnualCharges(),GST.IGST);
       fee.setGstAmount(gstAmmount);
-      totalFee.add(gstAmmount);
+      totalFee=totalFee.add(gstAmmount);
     }else{
       fee.setGstAmount(ZERO);
     }
@@ -95,7 +95,7 @@ public class FeeUtilsV2
     if(fee.getIgst()!=null && fee.getIgst().intValue()!=0){
       gstAmmount=calculateGST(fee.getFinalBaseFee(),fee.getFinalAnnualCharges(),GST.IGST);
       fee.setGstAmount(gstAmmount);
-      totalFee.add(gstAmmount);
+      totalFee=totalFee.add(gstAmmount);
     }else{
       fee.setGstAmount(ZERO);
     }
