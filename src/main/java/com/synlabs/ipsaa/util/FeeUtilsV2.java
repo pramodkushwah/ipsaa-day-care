@@ -29,6 +29,8 @@ public class FeeUtilsV2
   public static final int IPSAA_CLUB_REGULAR_PROGRAM_ID=30;
 
 
+
+
   public static BigDecimal calculateGST(BigDecimal baseFee,BigDecimal annualFee, GST type)
   {
     BigDecimal finalFee = ZERO;
@@ -89,7 +91,9 @@ public class FeeUtilsV2
             .add(fee.getFinalAdmissionFee())
             .add(fee.getFinalAnnualCharges())
             .add(fee.getUniformCharges())
-            .add(fee.getStationary());
+            .add(fee.getStationary())
+            .add(fee.getExtraCharge())
+            .add(fee.getLatePaymentCharge());
     BigDecimal gstAmmount;
 
     if(fee.getIgst()!=null && fee.getIgst().intValue()!=0){

@@ -51,8 +51,8 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(precision = 16, scale = 2)
   private BigDecimal gstAmount;
 
-
-
+  @Column(precision = 16, scale = 2)
+  private BigDecimal feeRatio;
 
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -114,7 +114,8 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(unique = true)
   private String tnxid;
 
-  private boolean isExpire = true;
+  @Column(columnDefinition = "bit(1) default 0")
+  private boolean isExpire = false;
 
   private boolean reGenerateSlip = true;
 
@@ -130,7 +131,28 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(columnDefinition = "bit(1) default 0")
   private boolean generateActive = false;
 
+
+  @Column(precision = 16, scale = 2)
   private BigDecimal balance;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal lastQuarterBalance;
+
+  public BigDecimal getFeeRatio() {
+    return feeRatio;
+  }
+
+  public void setFeeRatio(BigDecimal feeRatio) {
+    this.feeRatio = feeRatio;
+  }
+
+  public BigDecimal getLastQuarterBalance() {
+    return lastQuarterBalance;
+  }
+
+  public void setLastQuarterBalance(BigDecimal lastQuarterBalance) {
+    this.lastQuarterBalance = lastQuarterBalance;
+  }
 
   public BigDecimal getTransportFee() {
     return transportFee;

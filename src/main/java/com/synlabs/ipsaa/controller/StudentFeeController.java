@@ -75,12 +75,6 @@ public class StudentFeeController
   {
     return studentService.listFeeLedger(new StudentFeeLedgerRequest(studentId)).stream().map(StudentFeeLedgerResponse::new).collect(Collectors.toList());
   }
-
-
-
-
-
-
   @Secured(STUDENTFEE_SLIP_WRITE)
   @PostMapping("/feeslip/generate-all")
   public List<StudentFeeSlipResponse> generateStudentsSlip(@RequestBody List<Long> ids){
@@ -111,13 +105,7 @@ public class StudentFeeController
     }
   }
 
-  @Secured(STUDENTFEE_SLIP_WRITE)
-  @PostMapping("/feeslip/regenerate")
-  // Called when slip regenerate button is pressed
-  public StudentFeeSlipResponse reGenerateStudentSlip(@RequestBody StudentFeeSlipRequest request)
-  {
-    return new StudentFeeSlipResponse(studentService.regenerateStudentSlip(request));
-  }
+
 
   @Secured(STUDENTFEE_SLIP_READ)
   @PostMapping("/feeslip/list")
@@ -126,13 +114,6 @@ public class StudentFeeController
     return studentService.listFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
   }
 
-  @Secured(STUDENTFEE_SLIP_WRITE)
-  @PostMapping("/feeslip")
-  // Called when slip save button is pressed
-  public StudentFeeSlipResponse updateSlip(@RequestBody SaveFeeSlipRequest request)
-  {
-    return new StudentFeeSlipResponse(studentService.updateSlip(request));
-  }
 
   @Secured(STUDENTFEE_RECEIPT_READ)
   @PutMapping("/payfee/{id}")
@@ -198,10 +179,10 @@ public class StudentFeeController
 
   @Secured(STUDENTFEE_SLIP_WRITE)
   @PostMapping("/feeslip/generateFee")
-  public StudentFeeSlipResponse generateSingleStudentsSlip(@RequestParam Long studentId){
+  public StudentFeeSlipResponse generateSingleStudentsSlip(@RequestParam Long slipId){
     StudentFeeRequestV2 request=new StudentFeeRequestV2();
-    request.setStudentId(studentId);
-    return new StudentFeeSlipResponse(studentFeeService.generateFirstFeeSlip(request.getStudentId()));
+    request.setId(slipId);
+    return new StudentFeeSlipResponse(studentFeeService.generateFirstFeeSlip(request.getId()));
   }
 
   @Secured(STUDENTFEE_SLIP_WRITE)
@@ -210,4 +191,18 @@ public class StudentFeeController
   {
     return studentFeeService.generateFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
   }
+    @Secured(STUDENTFEE_SLIP_WRITE)
+    @PostMapping("/feeslip/regenerate")
+    public StudentFeeSlipResponse reGenerateStudentSlip(@RequestBody StudentFeeSlipRequestV2 request)
+    {
+        return new StudentFeeSlipResponse(studentFeeService.regenerateStudentSlip(request));
+    }
+
+    @Secured(STUDENTFEE_SLIP_WRITE)
+    @PostMapping("/feeslip")
+    // Called when slip save button is pressed
+    public StudentFeeSlipResponse updateSlip(@RequestBody StudentFeeSlipRequestV2 request)
+    {
+        return new StudentFeeSlipResponse(studentFeeService.updateSlip(request));
+    }
 }
