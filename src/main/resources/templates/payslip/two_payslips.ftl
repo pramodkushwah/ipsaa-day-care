@@ -18,16 +18,17 @@
         <tr style="height: 100px;">
           <td style="width: 200px">
             <img src="http://portal.ipsaa.in/assets/img/Ipsaa-logo.png"/>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <strong style="font-size: 24pt;">Pay Slip</strong>
+            <span style="width: 70%;text-align: right;display: inline-block;">
+              <strong style="width: 50%;display: inline-block;">${paySlip.employerName}</strong><br>
+              <span style="word-break: break-word;width: 50%;display: inline-block;">${paySlip.employerAddress}</span>
+            </span>
           </td>
         </tr>
         <tr style="height: 20px;">
           <td style="text-align: center">
-            Center copy
+            <strong style="font-size: 20pt;">Pay Slip</strong><br>
+            ${paySlip.month} / ${paySlip.year?c}
+            <p style="margin:0;margin-top:5px;">Center copy</p>
           </td>
         </tr>
         <tr style="vertical-align: top;">
@@ -47,16 +48,17 @@
         <tr style="height: 100px;">
           <td style="width: 200px">
             <img src="http://portal.ipsaa.in/assets/img/Ipsaa-logo.png"/>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <strong style="font-size: 24pt;">Pay Slip</strong>
+            <span style="width: 70%;text-align: right;display: inline-block;">
+              <strong style="width: 50%;display: inline-block;">${paySlip.employerName}</strong><br>
+              <span style="word-break: break-word;width: 50%;display: inline-block;">${paySlip.employerAddress}</span>
+            </span>
           </td>
         </tr>
         <tr style="height: 20px;">
           <td style="text-align: center">
-            Employee copy
+            <strong style="font-size: 18pt;">Pay Slip</strong><br>
+            ${paySlip.month} / ${paySlip.year?c}
+            <p style="margin:0;margin-top:5px;">Employee copy</p>
           </td>
         </tr>
         <tr style="vertical-align: top;">

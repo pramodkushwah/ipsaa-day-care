@@ -1,346 +1,382 @@
 <div class="card">
 
-  <div class="card-header card-header-tabs" data-background-color="rose">
-    <div class="nav-tabs-navigation">
-      <div class="nav-tabs-wrapper">
-        <ul class="nav nav-tabs" data-tabs="tabs">
-          <li class="active">
-            <a data-toggle="tab" ng-click="selectTab(0)">Profile</a>
-          </li>
-          <li class="">
-            <a data-toggle="tab" ng-click="selectTab(1)">Photo</a>
-          </li>
-          <li class="">
-            <a data-toggle="tab" ng-click="selectTab(2)">Address</a>
-          </li>
-          <li class="">
-            <a data-toggle="tab" ng-click="selectTab(3)">Permanent Address</a>
-          </li>
-        </ul>
-      </div>
+    <div class="card-header card-header-tabs" data-background-color="rose">
+        <div class="nav-tabs-navigation">
+            <div class="nav-tabs-wrapper">
+                <ul class="nav nav-tabs" data-tabs="tabs">
+                    <li class="active">
+                        <a data-toggle="tab" ng-click="selectTab(0)">Profile</a>
+                    </li>
+                    <li class="">
+                        <a data-toggle="tab" ng-click="selectTab(1)">Photo</a>
+                    </li>
+                    <li class="">
+                        <a data-toggle="tab" ng-click="selectTab(2)">Address</a>
+                    </li>
+                    <li class="">
+                        <a data-toggle="tab" ng-click="selectTab(3)">Permanent Address</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="card-content">
-    <div class="tab-content">
-      <div class="tab-pane active" id="staffprofile">
-        <h4 class="card-title">{{workingStaff.mode}} Staff </h4>
-        <div class="row">
-          <div class="col-md-2" ng-hide="addstaff">
-            <div class="form-group">
-              <label class="control-label">Employee Id</label>
-              <input class="form-control" name="eid" type="text" required ng-model="workingStaff.eid" ng-readonly="showstaff||editstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-2">
-            <div class="form-group">
-              <label class="control-label">First Name*</label>
-              <input class="form-control" name="firstName" type="text" required ng-model="workingStaff.firstName" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-2">
-            <div class="form-group">
-              <label class="control-label">Last Name*</label>
-              <input class="form-control" name="lastName" type="text" required ng-model="workingStaff.lastName" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Email</label>
-              <input class="form-control" name="email" type="text" ng-model="workingStaff.email" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Gender*</label>
-              <select class="form-control" data-style="select-with-transition" title="Single Select" data-size="7" ng-model="workingStaff.profile.gender"
-                      ng-disabled="showstaff">
-                <option value="" selected="selected">Select</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Marital Status*</label>
-              <select class="form-control" data-style="select-with-transition" title="Single Select" data-size="7" ng-model="workingStaff.maritalStatus"
-                      ng-disabled="showstaff">
-                <option value="" selected="selected">Select</option>
-                <option value="Married">Married</option>
-                <option value="Unmarried">Unmarried</option>
-                <option value="Widow">Widow</option>
-                <option value="Divorced">Divorced</option>
-              </select>
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">DoJ (YYYY-MM-DD)*</label>
-              <input id="doj" class="form-control datepicker" name="doj" type="text" required ng-model="workingStaff.profile.doj" ng-readonly="showstaff">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">DOB (YYYY-MM-DD)*</label>
-              <input id="dob" class="form-control datepicker" name="dob" type="text" required ng-model="workingStaff.profile.dob" ng-readonly="showstaff">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Location*</label>
-              <select class="form-control" data-style="select-with-transition" title="Single Select" data-size="7" ng-model="workingStaff.costCenterId"
-                      ng-disabled="showstaff">
-                <option value="" selected="selected">Select</option>
-                <option value="{{center.id}}" ng-repeat="center in centers">{{center.name}}</option>
-              </select>
-              <span class="material-input"></span>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Mobile*</label>
-              <input class="form-control" name="nickName" type="text" required ng-model="workingStaff.mobile" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Additional Phone(s)*</label>
-              <input class="form-control" name="secondaryNumbers" type="text" ng-model="workingStaff.secondaryNumbers" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Employee Type*</label>
-              <select class="form-control" data-style="select-with-transition" title="Single Select" data-size="7" ng-model="workingStaff.type"
-                      ng-disabled="showstaff">
-                <option value="" selected="selected">Select</option>
-                <option value="Teacher">Teacher</option>
-                <option value="Staff">Staff</option>
-              </select>
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Designation*</label>
-              <input class="form-control" name="designation" type="text" required ng-model="workingStaff.designation" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label for="expectedIn" class="control-label">Expected In</label>
-              <input class="form-control timepicker" id="expectedIn" type="text" ng-model="workingStaff.expectedIn" ng-readonly="showstaff">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label for="expectedOut" class="control-label">Expected Out</label>
-              <input class="form-control timepicker" id="expectedOut" type="text" ng-model="workingStaff.expectedOut" ng-readonly="showstaff">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label for="expectedOut" class="control-label">Expected Hours</label>
-              <input class="form-control" id="expectedHours" type="text" ng-model="workingStaff.expectedHours" ng-readonly="showstaff">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label for="expectedOut" class="control-label">Reporting Manager:</label>
-              <input class="form-control dropdown-toggle" data-toggle="dropdown" id="reportingManager" ng-model="workingStaff.searchReportingManager" type="text"
-                     ng-readonly="showstaff">
-              <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                <li ng-repeat="staff in allStaff | filter: {name: workingStaff.searchReportingManager}">
-                  <a ng-click="selectReportingManager(staff)">{{staff.name}}</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Cost Center*</label>
-              <select class="form-control"
-                      ng-options="le.id as le.code+' ('+le.name+')' for le in legalEntityList"
-                      ng-model="workingStaff.employerId"
-                      ng-disabled="showstaff">
-              </select>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Biometric Id*</label>
-              <input class="form-control" type="number" required ng-model="workingStaff.biometricId" ng-readonly="showstaff">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Aadhar Number*</label>
-              <input class="form-control" ng-model="workingStaff.aadharNumber" ng-readonly="showstaff">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">PAN*</label>
-              <input class="form-control" ng-model="workingStaff.profile.pan" ng-readonly="showstaff">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">UAN*</label>
-              <input class="form-control" ng-model="workingStaff.profile.uan" ng-readonly="showstaff">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">ESIN*</label>
-              <input class="form-control" ng-model="workingStaff.profile.esin" ng-readonly="showstaff">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">PFAN*</label>
-              <input class="form-control" ng-model="workingStaff.profile.pfan" ng-readonly="showstaff">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">PRAN*</label>
-              <input class="form-control" ng-model="workingStaff.profile.pran" ng-readonly="showstaff">
-            </div>
-          </div>
+    <div class="card-content">
+        <div class="tab-content">
+            <div class="tab-pane active" id="staffprofile">
+                <h4 class="card-title">{{workingStaff.mode}} Staff </h4>
+                <div class="row">
+                    <div class="col-md-2" ng-hide="addstaff">
+                        <div class="form-group">
+                            <label class="control-label">Employee Id</label>
+                            <input class="form-control" name="eid" type="text" required ng-model="workingStaff.eid" ng-readonly="showstaff||editstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">First Name*</label>
+                            <input class="form-control" name="firstName" type="text" required ng-model="workingStaff.firstName" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Last Name*</label>
+                            <input class="form-control" name="lastName" type="text" required ng-model="workingStaff.lastName" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Email</label>
+                            <input class="form-control" name="email" type="text" ng-model="workingStaff.email" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Gender*</label>
+                            <select class="form-control" data-style="select-with-transition" title="Single Select" data-size="7" ng-model="workingStaff.profile.gender"
+                                ng-disabled="showstaff">
+                                <option value="" selected="selected">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Marital Status*</label>
+                            <select class="form-control" data-style="select-with-transition" title="Single Select" data-size="7" ng-model="workingStaff.maritalStatus"
+                                ng-disabled="showstaff">
+                                <option value="" selected="selected">Select</option>
+                                <option value="Married">Married</option>
+                                <option value="Unmarried">Unmarried</option>
+                                <option value="Widow">Widow</option>
+                                <option value="Divorced">Divorced</option>
+                            </select>
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">DoJ (YYYY-MM-DD)*</label>
+                            <input id="doj" class="form-control datepicker" name="doj" type="text" required ng-model="workingStaff.profile.doj" ng-readonly="showstaff">
+                        </div>
+                    </div>
 
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Bank Acc No.*</label>
-              <input class="form-control" ng-model="workingStaff.profile.ban" ng-readonly="showstaff">
-            </div>
-          </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">DoL (YYYY-MM-DD)*</label>
+                            <input id="dol" class="form-control datepicker" name="dol" type="text" required ng-model="workingStaff.profile.dol" ng-readonly="showstaff">
+                        </div>
+                    </div>
 
-        </div>
-      </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">DOB (YYYY-MM-DD)*</label>
+                            <input id="dob" class="form-control datepicker" name="dob" type="text" required ng-model="workingStaff.profile.dob" ng-readonly="showstaff">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Location*</label>
+                            <select class="form-control" data-style="select-with-transition" title="Single Select" data-size="7" ng-model="workingStaff.costCenterId"
+                                ng-disabled="showstaff">
+                                <option value="" selected="selected">Select</option>
+                                <option value="{{center.id}}" ng-repeat="center in centers">{{center.name}}</option>
+                            </select>
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Mobile*</label>
+                            <input class="form-control" name="nickName" type="text" required ng-model="workingStaff.mobile" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Additional Phone(s)*</label>
+                            <input class="form-control" name="secondaryNumbers" type="text" ng-model="workingStaff.secondaryNumbers" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Employee Type*</label>
+                            <select class="form-control" data-style="select-with-transition" title="Single Select" data-size="7" ng-model="workingStaff.type"
+                                ng-disabled="showstaff">
+                                <option value="" selected="selected">Select</option>
+                                <option value="Teacher">Teacher</option>
+                                <option value="Staff">Staff</option>
+                            </select>
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Designation*</label>
+                            <input class="form-control" name="designation" type="text" required ng-model="workingStaff.designation" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="expectedIn" class="control-label">Expected In</label>
+                            <input class="form-control timepicker" id="expectedIn" type="text" ng-model="workingStaff.expectedIn" ng-readonly="showstaff">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="expectedOut" class="control-label">Expected Out</label>
+                            <input class="form-control timepicker" id="expectedOut" type="text" ng-model="workingStaff.expectedOut" ng-readonly="showstaff">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="expectedOut" class="control-label">Expected Hours</label>
+                            <input class="form-control" id="expectedHours" type="text" ng-model="workingStaff.expectedHours" ng-readonly="showstaff">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="expectedOut" class="control-label">Reporting Manager:</label>
+                            <input class="form-control dropdown-toggle" data-toggle="dropdown" id="reportingManager" ng-model="workingStaff.searchReportingManager"
+                                type="text" ng-readonly="showstaff">
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li ng-repeat="staff in allStaff | filter: {name: workingStaff.searchReportingManager}">
+                                    <a ng-click="selectReportingManager(staff)">{{staff.name}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Cost Center*</label>
+                            <select class="form-control" ng-options="le.id as le.code+' ('+le.name+')' for le in legalEntityList" ng-model="workingStaff.employerId"
+                                ng-disabled="showstaff">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Biometric Id*</label>
+                            <input class="form-control" type="number" required ng-model="workingStaff.biometricId" ng-readonly="showstaff">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Aadhar Number*</label>
+                            <input class="form-control" ng-model="workingStaff.aadharNumber" ng-readonly="showstaff">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">PAN*</label>
+                            <input class="form-control" ng-model="workingStaff.profile.pan" ng-readonly="showstaff">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">UAN*</label>
+                            <input class="form-control" ng-model="workingStaff.profile.uan" ng-readonly="showstaff">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">ESIN*</label>
+                            <input class="form-control" ng-model="workingStaff.profile.esin" ng-readonly="showstaff">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">PFAN*</label>
+                            <input class="form-control" ng-model="workingStaff.profile.pfan" ng-readonly="showstaff">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">PRAN*</label>
+                            <input class="form-control" ng-model="workingStaff.profile.pran" ng-readonly="showstaff">
+                        </div>
+                    </div>
 
-      <div class="tab-pane" id="staffphoto">
-        <input id="staffimg" type="file" style="display:none" accept="image/*" onchange="angular.element(this).scope().setFiles(this)"/>
-        <div class="row">
-          <div class="col-lg-6">
-            <div class="card">
-              <div class="photo">
-                <img ng-src="{{staffImageURI}}"/>
-              </div>
-            </div>
-          </div>
-        </div>
-        <button class="btn btn-rose btn-round" ng-click="browseImage()" ng-hide="workingStaff.mode=='Show'">Select Photo</button>
-        <button class="btn btn-rose btn-round" ng-click="uploadImage()" ng-hide="workingStaff.mode=='Show'">Update</button>
-      </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Bank Acc No.*</label>
+                            <input class="form-control" ng-model="workingStaff.profile.ban" ng-readonly="showstaff">
+                        </div>
+                    </div>
 
-      <div class="tab-pane" id="staffaddress">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="form-group">
-              <label class="control-label">*Address</label>
-              <input class="form-control" type="text" required ng-model="workingStaff.profile.address.address" ng-readonly="showstaff">
-              <span class="material-input"></span>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Name As Per Bank*</label>
+                            <input class="form-control" ng-model="workingStaff.profile.holderName" ng-readonly="showstaff">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">IFSC Code*</label>
+                            <input class="form-control" ng-model="workingStaff.profile.ifscCode" ng-readonly="showstaff">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Bank Name*</label>
+                            <input class="form-control" ng-model="workingStaff.profile.bankName" ng-readonly="showstaff">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Branch Name*</label>
+                            <input class="form-control" ng-model="workingStaff.profile.branchName" ng-readonly="showstaff">
+                        </div>
+                    </div>
+
+                </div>
             </div>
-          </div>
+
+            <div class="tab-pane" id="staffphoto">
+                <input id="staffimg" type="file" style="display:none" accept="image/*" onchange="angular.element(this).scope().setFiles(this)"
+                />
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="photo">
+                                <img ng-src="{{staffImageURI}}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-rose btn-round" ng-click="browseImage()" ng-hide="workingStaff.mode=='Show'">Select Photo</button>
+                <button class="btn btn-rose btn-round" ng-click="uploadImage()" ng-hide="workingStaff.mode=='Show'">Update</button>
+            </div>
+
+            <div class="tab-pane" id="staffaddress">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">*Address</label>
+                            <input class="form-control" type="text" required ng-model="workingStaff.profile.address.address" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">*City</label>
+                            <input class="form-control" name="city" type="text" required ng-model="workingStaff.profile.address.city" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">*State</label>
+                            <input class="form-control" name="state" type="text" required ng-model="workingStaff.profile.address.state" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">*Zipcode</label>
+                            <input class="form-control" name="zipcode" type="text" required ng-model="workingStaff.profile.address.zipcode" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">*Phone</label>
+                            <input class="form-control" name="zipcode" type="text" required ng-model="workingStaff.profile.address.phone" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="staffpermanentaddress">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">*address</label>
+                            <input class="form-control" type="text" required ng-model="workingStaff.profile.permanentAddress.address" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">*City</label>
+                            <input class="form-control" name="city" type="text" required ng-model="workingStaff.profile.permanentAddress.city" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">*State</label>
+                            <input class="form-control" name="state" type="text" required ng-model="workingStaff.profile.permanentAddress.state" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">*Zipcode</label>
+                            <input class="form-control" name="zipcode" type="text" required ng-model="workingStaff.profile.permanentAddress.zipcode"
+                                ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">*Phone</label>
+                            <input class="form-control" name="zipcode" type="text" required ng-model="workingStaff.profile.permanentAddress.phone" ng-readonly="showstaff">
+                            <span class="material-input"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane active" id="controls">
+                <div class="category form-category">
+                    *Required Fields
+                </div>
+                <div class="form-footer text-right" ng-show="editstaff" ng-hide="showstaff">
+                    <button class="btn btn-rose" ng-click="downloadApptLetter(workingStaff.id)">
+                        <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableSave"></i>Download Appointment Letter
+                    </button>
+                    <button class="btn btn-rose btn-fill" ng-click="saveStaff(workingStaff)" ng-disabled="disableSave || StaffForm.$invalid">
+                        <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableSave"></i>
+                        Save
+                    </button>
+                    <button class="btn btn-default" ng-click="cancelStaff()">Cancel</button>
+                </div>
+            </div>
         </div>
-        <div class="row">
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">*City</label>
-              <input class="form-control" name="city" type="text" required ng-model="workingStaff.profile.address.city" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">*State</label>
-              <input class="form-control" name="state" type="text" required ng-model="workingStaff.profile.address.state" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">*Zipcode</label>
-              <input class="form-control" name="zipcode" type="text" required ng-model="workingStaff.profile.address.zipcode" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">*Phone</label>
-              <input class="form-control" name="zipcode" type="text" required ng-model="workingStaff.profile.address.phone" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="tab-pane" id="staffpermanentaddress">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="form-group">
-              <label class="control-label">*address</label>
-              <input class="form-control" type="text" required ng-model="workingStaff.profile.permanentAddress.address" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">*City</label>
-              <input class="form-control" name="city" type="text" required ng-model="workingStaff.profile.permanentAddress.city" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">*State</label>
-              <input class="form-control" name="state" type="text" required ng-model="workingStaff.profile.permanentAddress.state" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">*Zipcode</label>
-              <input class="form-control" name="zipcode" type="text" required ng-model="workingStaff.profile.permanentAddress.zipcode" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">*Phone</label>
-              <input class="form-control" name="zipcode" type="text" required ng-model="workingStaff.profile.permanentAddress.phone" ng-readonly="showstaff">
-              <span class="material-input"></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="tab-pane active" id="controls">
-        <div class="category form-category">
-          *Required Fields
-        </div>
-        <div class="form-footer text-right" ng-show="editstaff" ng-hide="showstaff">
-          <button class="btn btn-rose" ng-click="downloadApptLetter(workingStaff.id)">
-            <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableSave"></i>Download Appointment Letter
-          </button>
-          <button class="btn btn-rose btn-fill" ng-click="saveStaff(workingStaff)" ng-disabled="disableSave || StaffForm.$invalid">
-            <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableSave"></i>
-            Save
-          </button>
-          <button class="btn btn-default" ng-click="cancelStaff()">Cancel</button>
-        </div>
-      </div>
     </div>
-  </div>
 </div>

@@ -116,12 +116,40 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
         );
     };
 
+    $scope.lockControls = function(paySlip) {
+
+        // if salary lock set from backend then disable lock button
+        if(paySlip.islock) {          
+            error("Salary already locked");    
+            return false;
+        }
+
+        $http.put('/api/employee/payslip/lock', {
+            id: paySlip.id,
+            lock : true
+        }).then(
+            function (response) {
+                ok('Salary Slip locked');
+                paySlip.islock = true;
+                
+                // lock for the salary table entry
+                $scope.salaries.find(function(salary){
+                    if(salary.id == paySlip.id)
+                        salary.islock = true;
+                });
+            },
+            function (response) {
+                error(response.data.error);
+            }
+        );
+    }
+
     function error(message) {
         swal({
             title: message,
             type: 'error',
             buttonsStyling: false,
-            confirmButtonClass: "btn btn-warning"
+            confirmButtonClass: "btn btn-danger"
         });
     }
 
@@ -130,7 +158,7 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
             title: message,
             type: 'success',
             buttonsStyling: false,
-            confirmButtonClass: "btn btn-warning"
+            confirmButtonClass: "btn btn-success"
         });
     }
 });

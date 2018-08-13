@@ -11,10 +11,7 @@ import java.util.List;
 public interface StudentFeeRepository extends JpaRepository<StudentFee, Long>
 {
   StudentFee findByStudent(Student student);
-
   StudentFee findByStudentId(Long id);
-
   List<StudentFee> findByStudentIn(List<Student> students);
-
   List<StudentFee> findByStudentCenterIdOrderByStudentProgramCode(Long centerId);
 }

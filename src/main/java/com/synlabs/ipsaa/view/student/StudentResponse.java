@@ -53,7 +53,11 @@ public class StudentResponse implements Response
 
   private ApprovalStatus approvalStatus;
 
-public StudentResponse(Student student)
+  /////Avneet
+  private boolean formalSchool;
+  private String schoolName;
+
+  public StudentResponse(Student student)
   {
     this.id = mask(student.getId());
     this.active = student.isActive();
@@ -77,6 +81,8 @@ public StudentResponse(Student student)
     this.expectedOut = student.getExpectedOut();
     this.approvalStatus = student.getApprovalStatus();
     this.corporate = student.isCorporate();
+    this.formalSchool=student.isFormalSchool();
+    this.schoolName=student.getSchoolName();
     if (student.getParents() != null && !student.getParents().isEmpty())
     {
       this.parents = new ArrayList<>(student.getParents().size());
@@ -211,5 +217,8 @@ public StudentResponse(Student student)
   {
     return studentImageData;
   }
-  
+
+  public boolean isFormalSchool() { return formalSchool; }
+
+  public String getSchoolName() { return schoolName; }
 }

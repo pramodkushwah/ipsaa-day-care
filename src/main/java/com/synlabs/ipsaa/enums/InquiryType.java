@@ -8,5 +8,7 @@ public enum InquiryType
   Web,
   Walkin,
   Call,
-  Email
+  Email,
+  // shubham
+  Newspaper
 }

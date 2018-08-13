@@ -470,7 +470,6 @@ public class CommunicationService
                                                 paymentBaseUrl + "/" +
                                                     BaseService.mask(slip.getId()) + "/" +
                                                     BaseService.mask(parent.getId()));
-        body = body.concat("<div style=\"position:fixed;bottom:0;\"><img src=\"https://s3.ap-south-1.amazonaws.com/ipsaaprod/static-image/email-footer.jpg\" /></div>");
         email.setBody(body);
         email.setHtml(true);
         emails.add(email);

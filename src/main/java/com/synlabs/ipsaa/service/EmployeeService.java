@@ -3,7 +3,6 @@ package com.synlabs.ipsaa.service;
 import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
-import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
@@ -39,7 +38,6 @@ public class EmployeeService extends BaseService
     }
     return employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterActiveTrueAndEmployeeCostCenterCode(request.getCenterCode(), request.getPageable());
   }
-
   public EmployeeSalary save(EmployeeSalaryRequest request)
   {
     return employeeSalaryRepository.saveAndFlush(validateRequest(request));
@@ -47,6 +45,7 @@ public class EmployeeService extends BaseService
 
   private EmployeeSalary validateRequest(EmployeeSalaryRequest request)
   {
+
     if (request.getBasic() == null)
     {
       throw new ValidationException("Salary basic component missing");
@@ -59,42 +58,42 @@ public class EmployeeService extends BaseService
     {
       throw new ValidationException("Salary conveyance component missing");
     }
-    if (request.getEntertainment() == null)
+   /* if (request.getEntertainment() == null)
     {
       throw new ValidationException("Salary entertainment component missing");
-    }
+    }*/
     if (request.getHra() == null)
     {
       throw new ValidationException("Salary HRA component missing");
     }
-    if (request.getMedical() == null)
-    {
-      throw new ValidationException("Salary medical component missing");
-    }
-    if (request.getArrears() == null)
-    {
-      throw new ValidationException("Salary arrears component missing");
-    }
-    if (request.getShoes() == null)
-    {
-      throw new ValidationException("Salary shoes component missing");
-    }
+//    if (request.getMedical() == null)
+//    {
+//      throw new ValidationException("Salary medical component missing");
+//    }
+//    if (request.getArrears() == null)
+//    {
+//      throw new ValidationException("Salary arrears component missing");
+//    }
+//    if (request.getShoes() == null)
+//    {
+//      throw new ValidationException("Salary shoes component missing");
+//    }
     if (request.getSpecial() == null)
     {
       throw new ValidationException("Salary special component missing");
     }
-    if (request.getTiffin() == null)
-    {
-      throw new ValidationException("Salary tiffin component missing");
-    }
-    if (request.getUniform() == null)
-    {
-      throw new ValidationException("Salary uniform component missing");
-    }
-    if (request.getWashing() == null)
-    {
-      throw new ValidationException("Salary washing component missing");
-    }
+//    if (request.getTiffin() == null)
+//    {
+//      throw new ValidationException("Salary tiffin component missing");
+//    }
+//    if (request.getUniform() == null)
+//    {
+//      throw new ValidationException("Salary uniform component missing");
+//    }
+//    if (request.getWashing() == null)
+//    {
+//      throw new ValidationException("Salary washing component missing");
+//    }
     if (request.isEsid() && request.getEsi() == null)
     {
       throw new ValidationException("Salary ESI component missing");
@@ -119,7 +118,6 @@ public class EmployeeService extends BaseService
     {
       throw new ValidationException("Salary retention component missing");
     }
-
     if ((StringUtils.isEmpty(request.getEid())))
     {
       throw new ValidationException("Employee not found for update");
@@ -164,5 +162,8 @@ public class EmployeeService extends BaseService
   public List<EmployeeSalary> list()
   {
     return employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
+  }
+  public List<Employee> findEmployeeByCenter(Center Center){
+    return employeeRepository.findByCostCenter(Center);
   }
 }

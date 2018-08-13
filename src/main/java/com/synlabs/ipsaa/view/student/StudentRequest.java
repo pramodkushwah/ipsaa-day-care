@@ -39,12 +39,17 @@ public class StudentRequest implements Request
   private Long    siblingId;
   private boolean corporate;
 
+  //Avneet
+  private boolean formalSchool;
+  private String schoolName;
+
   private StudentFeeRequest fee;
 
   @JsonFormat(pattern = "HH:mm", timezone = "IST")
   private Date expectedIn;
   @JsonFormat(pattern = "HH:mm", timezone = "IST")
   private Date expectedOut;
+
 
   public StudentFeeRequest getFee()
   {
@@ -268,6 +273,14 @@ public class StudentRequest implements Request
     this.parents = parents;
   }
 
+  public boolean isFormalSchool() { return formalSchool; }
+
+  public void setFormalSchool(boolean formalSchool) { this.formalSchool = formalSchool; }
+
+  public String getSchoolName() { return schoolName; }
+
+  public void setSchoolName(String schoolName) { this.schoolName = schoolName;  }
+
   public StudentRequest()
   {
   }
@@ -303,6 +316,11 @@ public class StudentRequest implements Request
     studentProfile.setNickName(getNickName());
     studentProfile.setGender(Gender.valueOf(getGender()));
     student.setCorporate(isCorporate());
+    student.setFormalSchool(isFormalSchool());
+
+    if(student.isFormalSchool()){
+        student.setSchoolName(getSchoolName());
+    }
 
     studentProfile.setDob(parseDate(getDob()));
     studentProfile.setAdmissionDate(parseDate(getAdmissionDate()));

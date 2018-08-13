@@ -45,6 +45,7 @@ public class StudentFeeSlipResponse implements Response
 
   public StudentFeeSlipResponse(StudentFeePaymentRequest slip)
   {
+
     this.id = slip.getId();
     this.fullName = slip.getStudent().getProfile().getFullName();
     this.group = slip.getStudent().getGroup().getName();

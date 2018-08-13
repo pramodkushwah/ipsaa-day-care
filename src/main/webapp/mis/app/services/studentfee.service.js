@@ -51,8 +51,7 @@ app.service('StudentFeeService', function ($http) {
                 transportFee = transportFee * 12;
                 break;
         }
-        const finalFee = fee.finalFee;
-        // const finalFee = fee.finalFee - transportFee;
+        const finalFee = fee.finalFee - transportFee;
         var totalgst = 0;
         if (fee.cgst) {
             totalgst += fee.cgst;

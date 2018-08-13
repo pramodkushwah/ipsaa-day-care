@@ -8,12 +8,13 @@ import com.synlabs.ipsaa.entity.common.SerialNumberSequence;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
-import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.enums.LeaveStatus;
 import com.synlabs.ipsaa.enums.LeaveType;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.store.FileStore;
+import com.synlabs.ipsaa.util.SalaryUtilsV2;
+import com.synlabs.ipsaa.view.fee.lockSalaryRequest;
 import com.synlabs.ipsaa.view.staff.EmployeePaySlipRequest;
 import com.synlabs.ipsaa.view.staff.PaySlipRegenerateRequest;
 import org.joda.time.Days;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -83,14 +85,14 @@ public class PaySlipService extends BaseService
       throw new ValidationException(String.format("Cannot locate Employer[id = %s]", mask(employerId)));
     }
 
-    List<Employee> employees = employeeRepository.findByActiveIsTrueAndApprovalStatusAndEmployerId(ApprovalStatus.Approved,legalEntity.getId());
+    List<Employee> employees = employeeRepository.findByActiveIsTrueAndEmployerId(legalEntity.getId());
     for (Employee emp : employees)
     {
+
       EmployeePaySlip employeePaySlip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(emp, month, year);
       if (employeePaySlip == null)
       {
         EmployeeSalary employeeSalary = employeeSalaryRepository.findByEmployee(emp);
-       
         if (employeeSalary != null)
         {
           if (employeeSalary.getCtc() == null)
@@ -101,7 +103,7 @@ public class PaySlipService extends BaseService
         }
       }
     }
-    return employeePaySlipRepository.findByEmployerIdAndEmployeeApprovalStatusAndMonthAndYear(legalEntity.getId(),ApprovalStatus.Approved, month, year);
+    return employeePaySlipRepository.findByEmployerIdAndMonthAndYear(legalEntity.getId(), month, year);
   }
 
   private EmployeePaySlip generateNewPayslip(Employee employee, EmployeeSalary salary, int year, int month) throws ParseException
@@ -113,9 +115,33 @@ public class PaySlipService extends BaseService
     payslip.setCenter(employee.getCostCenter());
     payslip.setMonth(month);
     payslip.setYear(year);
+    // shubham
+    if(payslip.getPresents()==null ){
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.MONTH, month-1);// o to 11
+      cal.set(Calendar.YEAR, year);
+      int totalDays=cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+      payslip.setPresents(new BigDecimal(totalDays));
+    }
     payslip = calculatePayslip(employee, salary, year, month, payslip);
     employeePaySlipRepository.saveAndFlush(payslip);
     return payslip;
+  }
+
+  @Transactional
+  public boolean lockSalary(EmployeePaySlipRequest request){
+    EmployeePaySlip paySlip = employeePaySlipRepository.findOne(request.getId());
+    if (paySlip == null)
+    {
+      throw new ValidationException(String.format("Cannot Locate PaySlip[id = %s]", mask(request.getId())));
+    }
+    if (paySlip.isLock())
+    {
+      throw new ValidationException(String.format("Salary already locked", mask(request.getId())));
+    }
+    paySlip.setLock(true);
+    employeePaySlipRepository.saveAndFlush(paySlip);
+    return true;
   }
 
   @Transactional
@@ -126,16 +152,34 @@ public class PaySlipService extends BaseService
     {
       throw new ValidationException(String.format("Cannot Locate PaySlip[id = %s]", mask(request.getId())));
     }
+
     Employee employee = paySlip.getEmployee();
     EmployeeSalary salary = employeeSalaryRepository.findByEmployee(employee);
+
+    if (salary !=null  && paySlip.isLock())
+    {
+      throw new ValidationException(String.format("Cannot change locked salary", mask(request.getId())));
+    }
 
     Integer year = paySlip.getYear();
     Integer month = paySlip.getMonth();
     paySlip.setComment(request.getComment());
+    // shubham
+     if(request.getPresents()!=null){
+      paySlip.setPresents(request.getPresents());
+     }
+    else if(paySlip.getPresents()==null && request.getPresents()==null){
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.MONTH, month-1);// o to 11
+      cal.set(Calendar.YEAR, year);
+      int totalDays=cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+      paySlip.setPresents(new BigDecimal(totalDays));
+    }
     paySlip.setOtherAllowances(request.getOtherAllowances() == null ? ZERO : request.getOtherAllowances());
     paySlip.setOtherDeductions(request.getOtherDeductions() == null ? ZERO : request.getOtherDeductions());
 
     paySlip = calculatePayslip(employee, salary, year, month, paySlip);
+
     employeePaySlipRepository.saveAndFlush(paySlip);
     logger.info(String.format("Regenerated Payslip[eid=%s,month=%s,year=%s]",
                               employee.getEid(),
@@ -152,13 +196,17 @@ public class PaySlipService extends BaseService
     Date to = LocalDate.fromDateFields(from).plusMonths(1).minusDays(1).toDate();
     List<EmployeeAttendance> attendances = attendanceRepository.findByEmployeeAndAttendanceDateBetween(employee, from, to);
     attendances = attendanceService.fillAbsent(from, to, employee, employee.getCostCenter(), attendances, false);
-
     BigDecimal leaves = ZERO;
     BigDecimal absents = ZERO;
+    BigDecimal present = ZERO;
     for (EmployeeAttendance attendance : attendances)
     {
       switch (attendance.getStatus())
       {
+        case Present:
+          present=present.add(BigDecimal.ONE);
+         // System.out.println(present);
+          break;
         case Absent:
           absents = absents.add(BigDecimal.ONE);
           break;
@@ -180,17 +228,29 @@ public class PaySlipService extends BaseService
     //2. deduct unpaid leaves and absents and append autoComment
 //    BigDecimal days = new BigDecimal("31");
     BigDecimal totalDays = new BigDecimal(Days.daysBetween(LocalDate.fromDateFields(from), LocalDate.fromDateFields(to).plusDays(1)).getDays());
-//    BigDecimal totalAbsents = absents.add(leaves);
-    BigDecimal totalAbsents = BigDecimal.ZERO;
+    // shubham get no of months
+    Calendar cal = Calendar.getInstance();
+    cal.set(Calendar.MONTH, month-1);// o to 11
+    cal.set(Calendar.YEAR, year);
+    totalDays=new BigDecimal(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+   // System.out.println(totalDays);
+
+    BigDecimal totalAbsents = absents.add(leaves);
     BigDecimal presents = totalDays.subtract(totalAbsents);
     autoComment = absents.doubleValue() > 0 ? autoComment + String.format("Absents : %s\n", absents) : autoComment;
+    autoComment = presents.doubleValue() > 0 ? autoComment + String.format("Present : %s\n", presents) : autoComment;
     autoComment = leaves.doubleValue() > 0 ? autoComment + String.format("Leaves : %s\n", leaves) : autoComment;
     payslip.setAutoComment(autoComment);
-    payslip.update(salary, totalDays, presents);
+    // shubham
+    if(payslip.getPresents()!=null){
+      payslip.updateV2(salary, totalDays,payslip.getPresents());
+    }else
+      payslip.updateV2(salary, totalDays,presents);
     payslip.roundOff();
     return payslip;
   }
 
+  // update by shubham
   @Transactional
   public EmployeePaySlip updatePaySlip(EmployeePaySlipRequest request) throws IOException, DocumentException
   {
@@ -201,13 +261,17 @@ public class PaySlipService extends BaseService
     }
 
     paySlip.setComment(request.getComment());
-    paySlip.setOtherAllowances(request.getOtherAllowances() == null ? ZERO : request.getOtherAllowances());
-    paySlip.setOtherDeductions(request.getOtherDeductions() == null ? ZERO : request.getOtherDeductions());
-    paySlip.update();
+    if(request.getOtherAllowances() == null)
+      request.setOtherAllowances(ZERO);
+    if(request.getOtherDeductions() == null)
+      request.setOtherDeductions(ZERO);
+    if(request.getTds()==null)
+      request.setTds(ZERO);
+
+   paySlip=SalaryUtilsV2.updateAndCalculateCTC(paySlip,request);
     employeePaySlipRepository.saveAndFlush(paySlip);
     return paySlip;
   }
-
   public InputStream generatePayslipPdf(Long id) throws IOException, DocumentException
   {
     if (id == null)
@@ -257,7 +321,7 @@ public class PaySlipService extends BaseService
     {
       throw new ValidationException(String.format("Cannot locate LegalEntity[id=%s]", mask(request.getLegalEntityId())));
     }
-    List<EmployeePaySlip> payslips = employeePaySlipRepository.findByEmployerIdAndEmployeeApprovalStatusAndMonthAndYear(one.getId(),ApprovalStatus.Approved, request.getMonth(), request.getYear());
+    List<EmployeePaySlip> payslips = employeePaySlipRepository.findByEmployerIdAndMonthAndYear(one.getId(), request.getMonth(), request.getYear());
 
     logger.info(String.format("Regenerating all payslip for [legal=%s,month=%s,year=%s,count=%s]",
                               one.getName(), request.getMonth(), request.getYear(), payslips.size()));
