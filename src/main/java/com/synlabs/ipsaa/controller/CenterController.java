@@ -10,6 +10,7 @@ import com.synlabs.ipsaa.service.UserService;
 import com.synlabs.ipsaa.view.center.CenterListRequest;
 import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.center.CenterResponse;
+import com.synlabs.ipsaa.view.center.CenterResponseV2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
@@ -67,6 +68,7 @@ public class CenterController
     Center center = centerService.updateCenter(request);
     return new CenterResponse(center);
   }
+
   @Secured(CENTER_DELETE)
   @DeleteMapping(path = "{centerId}")
   public void deleteCenter(@PathVariable Long centerId)

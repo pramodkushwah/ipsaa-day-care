@@ -23,6 +23,7 @@
           <th ng-show="staffPage.filter=='newjoinings'">Date of Joining</th>
           <th ng-show="staffPage.filter=='newleavings'">Date of Leaving</th>
           <th ng-show="staffPage.filter=='all'">CTC</th>
+          <th ng-show="staffPage.filter=='newleavings' || staffPage.filter== 'newjoinings'">Active</th>
         </tr>
         </thead>
         <tbody>
@@ -41,6 +42,7 @@
           <td ng-show="staffPage.filter=='newjoinings'">{{staff.doj}}</td>
           <td ng-show="staffPage.filter=='newleavings'">{{staff.dol}}</td>
           <td ng-show="staffPage.filter=='all'">{{staff.ctc}}</td>
+          <td ng-show="staffPage.filter=='newleavings' || staffPage.filter== 'newjoinings'">{{staff.active}}</td>
         </tr>
 
         <tr>

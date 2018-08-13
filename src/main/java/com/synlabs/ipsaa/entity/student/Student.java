@@ -45,6 +45,11 @@ public class Student extends BaseEntity
 
   private boolean corporate = false;
 
+  /////Avneet
+  private boolean formalSchool=false;
+
+  private String schoolName;
+
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
       name = "std_parent",
@@ -314,4 +319,19 @@ public class Student extends BaseEntity
     }
     return addresses;
   }
+
+  public boolean isFormalSchool() {
+    return formalSchool;
+  }
+
+  public void setFormalSchool(boolean formalSchool) { this.formalSchool = formalSchool; }
+
+  public void setSchoolName(String schoolName) {
+    this.schoolName = schoolName;
+  }
+
+  public String getSchoolName() {
+    return schoolName;
+  }
+
 }
