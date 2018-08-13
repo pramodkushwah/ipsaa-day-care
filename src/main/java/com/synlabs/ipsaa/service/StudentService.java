@@ -520,6 +520,12 @@ public class StudentService extends BaseService {
 		student.setActive(false);
 		studentRepository.saveAndFlush(student);
 
+		// Avneet
+
+		StudentProfile profile = student.getProfile();
+		profile.setLeavingDate(LocalDate.now().toDate());
+		studentProfileRepository.saveAndFlush(profile);
+
 		List<StudentParent> parents = student.getParents();
 		for (StudentParent parent : parents) {
 			if (parent.isAccount()) {
