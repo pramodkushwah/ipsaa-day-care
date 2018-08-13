@@ -22,7 +22,9 @@ import com.synlabs.ipsaa.util.BigDecimalUtils;
 import com.synlabs.ipsaa.util.FeeUtils;
 import com.synlabs.ipsaa.view.center.CenterChargeRequest;
 import com.synlabs.ipsaa.view.center.CenterFeeRequest;
+import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.center.CenterProgramFeeRequest;
+import com.synlabs.ipsaa.view.center.ProgramResponse;
 import com.synlabs.ipsaa.view.fee.*;
 import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport;
 import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport2;
@@ -31,11 +33,13 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.hibernate.criterion.Order;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -762,4 +766,23 @@ public class FeeService extends BaseService
   }
   //--------------------------------------shubham ---------------------------------------------------------------
 
+
+  ///////////Avneet
+  public List<Program> programByCenter(Long id){
+      List<Program> list=new ArrayList<>();
+
+      List<CenterProgramFee> centers=centerProgramFeeRepository.findByCenterIdOrderByProgramId(id);
+      List<Program> programs=programRepository.findAll();
+
+      int size= centers.size();
+      int j=0;
+
+      for(Program p:programs){
+        if(j<size && p.getId().equals(centers.get(j).getProgram().getId())){
+            list.add(p);
+            j++;
+        }
+      }
+      return list;
+  }
 }

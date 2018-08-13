@@ -118,4 +118,12 @@ public class CenterFeeController
     request.setId(slipId);
     return new CenterProgramFeeResponse(feeService.getProgramFee(request));
   }
+
+  ///////Avneet
+  @PostMapping("/programs")
+  public List<ProgramResponse> getProgramsByCenter(@RequestBody CenterFeeRequest request){
+
+    return feeService.programByCenter(request.getCenterId()).stream().map(ProgramResponse:: new).collect(Collectors.toList());
+  }
+
 }

@@ -513,9 +513,7 @@ public class StaffAttendanceService extends BaseService {
 		List<EmployeeLeave> employeeLeave = employeeLeaveRepository.findByEmployeeInAndDateOrderByEmployeeIdAsc(employees,
 				LocalDate.now().toDate());
 
-        System.out.println(attendances+"%n");
-        System.out.println(employeeLeave);
-		Set<String> set = new HashSet<>();
+        Set<String> set = new HashSet<>();
 		for (Holiday holiday : holidays) {
 			for (Center center : holiday.getCenters()) {
 				set.add(center.getCode());
@@ -529,11 +527,6 @@ public class StaffAttendanceService extends BaseService {
 
 		for (Employee employee : employees) {
 			if (j < sizeOfEmployeeAttendances && employee.getId().equals(attendances.get(j).getEmployee().getId())) {
-
-			  System.out.println(attendances.get(j).getEmployee().getName()+" "+attendances.get(j).getCheckin()+" "+attendances.get(j).getCheckout());
-			  if(attendances.get(j).getEmployee().getEid().equals("E129")){
-                System.out.println();
-              }
 				employeeAttendances.add(attendances.get(j));
 				j++;
 			} else {
