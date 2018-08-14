@@ -54,7 +54,6 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(precision = 16, scale = 2)
   private BigDecimal feeRatio;
 
-
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   private Student student;
 
@@ -554,6 +553,7 @@ public void setGenerateActive(boolean generateActive) {
     BigDecimal paidAmount = BigDecimal.ZERO;
     for (StudentFeePaymentRecord payment : payments)
     {
+      if(payment.getActive())
       if (payment.getPaymentStatus() == PaymentStatus.Paid
           || payment.getPaymentStatus() == PaymentStatus.PartiallyPaid)
       {

@@ -84,7 +84,11 @@ public class FeeUtilsV2
   }
   public static BigDecimal calculateFinalFee(StudentFeePaymentRequest fee,BigDecimal ratio)
   {
+    if(ratio!=null)
     fee.setFinalBaseFee(fee.getBaseFee().add(fee.getTransportFee()).multiply(ratio));
+    else{
+      fee.setFinalBaseFee(fee.getBaseFee().add(fee.getTransportFee()).multiply(THREE));
+    }
     //fee.setTransportFee(fee.getTransportFee().multiply(ratio));
     BigDecimal totalFee = fee.getFinalBaseFee()
             .add(fee.getFinalDepositFee())

@@ -15,13 +15,17 @@ import com.synlabs.ipsaa.util.FeeUtilsV2;
 import com.synlabs.ipsaa.util.QuarterYearUtil;
 import com.synlabs.ipsaa.view.fee.*;
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -33,6 +37,9 @@ import static java.math.BigDecimal.ZERO;
 @Service
 public class StudentFeeService {
 
+    private static final Logger logger = LoggerFactory.getLogger(StudentFeeService.class);
+    @Autowired
+    private DocumentService documentService;
     @Autowired
     private CenterProgramFeeRepository centerProgramFeeRepository;
 
@@ -317,7 +324,7 @@ public class StudentFeeService {
             thisQuarterSlip.setFinalDepositFee(fee.getFinalDepositFee()==null?ZERO:fee.getFinalDepositFee());
 
             thisQuarterSlip.setBaseFee(fee.getBaseFee());
-            thisQuarterSlip.setFinalBaseFee(fee.getFinalBaseFee());
+            thisQuarterSlip.setFinalBaseFee(fee.getFinalBaseFee()==null?ZERO:fee.getFinalBaseFee());
 
             thisQuarterSlip.setDepositFeeDiscount(fee.getDepositFeeDiscount()==null?ZERO:fee.getDepositFeeDiscount());
             thisQuarterSlip.setBaseFeeDiscount(fee.getBaseFeeDiscount()==null?ZERO:fee.getBaseFeeDiscount());
@@ -328,18 +335,18 @@ public class StudentFeeService {
 
             thisQuarterSlip.setGstAmount(fee.getGstAmount());
 
-            thisQuarterSlip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount());
-             thisQuarterSlip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount());
+            thisQuarterSlip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
+             thisQuarterSlip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount()==null?ZERO:fee.getAnnualFeeDiscount());
 
-             thisQuarterSlip.setAnnualFee(fee.getAnnualCharges());
-             thisQuarterSlip.setAdmissionFee(fee.getAdmissionFee());
+             thisQuarterSlip.setAnnualFee(fee.getAnnualCharges()==null?ZERO:fee.getAnnualCharges());
+             thisQuarterSlip.setAdmissionFee(fee.getAdmissionFee()==null?ZERO:fee.getAdmissionFee());
 
-             thisQuarterSlip.setFinalAnnualCharges(fee.getFinalAnnualCharges());
-             thisQuarterSlip.setFinalAdmissionFee(fee.getFinalAdmissionFee());
+             thisQuarterSlip.setFinalAnnualCharges(fee.getFinalAnnualCharges()==null?ZERO:fee.getFinalAnnualCharges());
+             thisQuarterSlip.setFinalAdmissionFee(fee.getFinalAdmissionFee()==null?ZERO:fee.getFinalAdmissionFee());
 
-             thisQuarterSlip.setTotalFee(FeeUtilsV2.calculateFinalFee(slip,slip.getFeeRatio()));
+             thisQuarterSlip.setTotalFee(FeeUtilsV2.calculateFinalFee(thisQuarterSlip,thisQuarterSlip.getFeeRatio()));
              //thisQuarterSlip.setBalance(balanc.add(slip.getTotalFee()));
-            return  feePaymentRepository.saveAndFlush(slip);
+            return  feePaymentRepository.saveAndFlush(thisQuarterSlip);
         }
         else {
                 throw new NotFoundException(String.format("Pay Slip not found", request.getStudentId()));
@@ -453,6 +460,159 @@ public class StudentFeeService {
             slip.setLastQuarterBalance(request.getLatePaymentCharge());
         slip.setTotalFee(FeeUtilsV2.calculateFinalFee(slip,slip.getFeeRatio()));
        return feePaymentRepository.saveAndFlush(slip);
+    }
+
+    @Transactional
+    public StudentFeePaymentRequest payFee(SaveFeeSlipRequest request)
+    {
+        if (request.getPaidAmount() == null)
+        {
+            throw new ValidationException("Paid amount is missing");
+        }
+
+        if (StringUtils.isEmpty(request.getPaymentMode()))
+        {
+            throw new ValidationException("Payment mode is missing.");
+        }
+        StudentFeePaymentRequest slip = feePaymentRepository.findOne(request.getId());
+
+        if (slip == null)
+        {
+            throw new NotFoundException("Missing slip");
+        }
+        double alreadypaid=0;
+        double uniformPaid=0;
+        double stationaryPaid=0;
+        double transportPaid=0;
+        double admissionPaid=0;
+        double annualPaid=0;
+        double programFeePaid=0;
+        double depositePaid=0;
+
+        for(StudentFeePaymentRecord payments:slip.getPayments()){
+            if(payments.getPaidAmount()!=null && payments.getActive())
+             alreadypaid+=payments.getPaidAmount().intValue();
+            if(payments.getUniformPaidAmount()!=null && payments.getActive())
+             uniformPaid+=payments.getUniformPaidAmount().intValue();
+            if(payments.getStationaryPaidAmount()!=null && payments.getActive())
+            stationaryPaid+=payments.getStationaryPaidAmount().intValue();
+            if(payments.getTransportPaidAmount()!=null && payments.getActive())
+            transportPaid+=payments.getTransportPaidAmount().intValue();
+            if(payments.getAddmissionPaidAmount()!=null && payments.getActive())
+            admissionPaid=+payments.getAddmissionPaidAmount().intValue();
+            if(payments.getAnnualPaidAmount()!=null && payments.getActive())
+            annualPaid+=payments.getAnnualPaidAmount().intValue();
+            if(payments.getProgramPaidAmount()!=null && payments.getActive())
+            programFeePaid+=payments.getProgramPaidAmount().intValue();
+            if(payments.getDepositPaidAmount()!=null && payments.getActive())
+            depositePaid+=payments.getDepositPaidAmount().intValue();
+        }
+        slip.setComments(request.getComments());
+        slip.setReGenerateSlip(true);
+        slip.setReceiptSerial(null);
+        slip.setReceiptFileName(null);
+
+        if (slip.getTotalFee().intValue() <= (alreadypaid + request.getPaidAmount().intValue()))
+        {
+            slip.setPaymentStatus(PaymentStatus.Paid);
+        }
+        else
+        {
+            slip.setPaymentStatus(PaymentStatus.PartiallyPaid);
+        }
+        StudentFeePaymentRecord record = new StudentFeePaymentRecord();
+        record.setActive(true);
+
+        BigDecimal paidAmount=request.getPaidAmount();
+
+        if(slip.getUniformCharges().intValue()>(uniformPaid) || uniformPaid==0){
+            BigDecimal amount=slip.getUniformCharges().subtract(new BigDecimal(uniformPaid));
+                if(amount.subtract(paidAmount).intValue()<0){
+                    record.setUniformPaidAmount(amount);
+                    paidAmount=paidAmount.subtract(amount);
+                }else{
+                    record.setUniformPaidAmount(paidAmount);
+                    paidAmount=ZERO;
+                }
+        }
+
+        if(slip.getStationary().intValue()>(stationaryPaid) || stationaryPaid==0 ){
+            BigDecimal amount=slip.getStationary().subtract(new BigDecimal(stationaryPaid));
+            if(amount.subtract(paidAmount).intValue()<0){
+                record.setStationaryPaidAmount(amount);
+                paidAmount=paidAmount.subtract(amount);
+            }else{
+                record.setStationaryPaidAmount(paidAmount);
+                paidAmount=ZERO;
+            }
+        }
+
+        if(slip.getTransportFee().intValue()>(transportPaid) || transportPaid==0) {
+            BigDecimal amount = slip.getTransportFee().subtract(new BigDecimal(transportPaid));
+            if (amount.subtract(paidAmount).intValue() < 0) {
+                record.setTransportPaidAmount(amount);
+                paidAmount = paidAmount.subtract(amount);
+            } else {
+                record.setTransportPaidAmount(paidAmount);
+                paidAmount = ZERO;
+            }
+        }
+        if(slip.getFinalAnnualCharges().intValue()>(annualPaid)|| annualPaid==0)  {
+            BigDecimal amount = slip.getFinalAnnualCharges().subtract(new BigDecimal(annualPaid));
+            if (amount.subtract(paidAmount).intValue() < 0) {
+                record.setAnnualPaidAmount(amount);
+                paidAmount = paidAmount.subtract(amount);
+            } else {
+                record.setAnnualPaidAmount(paidAmount);
+                paidAmount = ZERO;
+            }
+        }
+
+        if(slip.getFinalAdmissionFee().intValue()>(admissionPaid) || admissionPaid==0){
+            BigDecimal amount=slip.getFinalAdmissionFee().subtract(new BigDecimal(admissionPaid));
+            if (amount.subtract(paidAmount).intValue() < 0) {
+                record.setAddmissionPaidAmount(amount);
+                paidAmount=paidAmount.subtract(amount);
+            }else{
+                record.setAddmissionPaidAmount(paidAmount);
+                paidAmount=ZERO;
+            }
+        }
+        if(slip.getFinalBaseFee().intValue()>(programFeePaid) || programFeePaid==0){  // final base fee
+            BigDecimal amount=slip.getFinalBaseFee().subtract(new BigDecimal(programFeePaid));
+            if (amount.subtract(paidAmount).intValue() < 0) {
+                record.setProgramPaidAmount(amount);
+                paidAmount=paidAmount.subtract(amount);
+            }else{
+                record.setProgramPaidAmount(paidAmount);
+                paidAmount=ZERO;
+            }
+        }
+        if(slip.getDeposit().intValue()>(depositePaid) || depositePaid==0){
+            BigDecimal amount=slip.getFinalDepositFee().subtract(new BigDecimal(depositePaid));
+            if (amount.subtract(paidAmount).intValue() < 0) {
+                record.setDepositPaidAmount(amount);
+                paidAmount=paidAmount.subtract(amount);
+            }else{
+                record.setDepositPaidAmount(paidAmount);
+                paidAmount=ZERO;
+            }
+        }
+        record.setStudent(slip.getStudent());
+        record.setRequest(slip);
+        record.setPaidAmount(request.getPaidAmount());
+        record.setPaymentMode(request.getPaymentMode());
+        record.setTxnid(request.getTxnid());
+        record.setPaymentStatus(PaymentStatus.Paid);
+        record.setConfirmed(request.getConfirmed());
+        record.setPaymentDate(request.getPaymentDate() == null ? new Date() : request.getPaymentDate());
+
+        feePaymentRepository.saveAndFlush(slip);
+        paymentRecordRepository.saveAndFlush(record);
+        logger.info(String.format("Student Fee payment recoded successfully.%s", record));
+
+        documentService.generateFeeReceiptPdf(slip);
+        return slip;
     }
 
 }

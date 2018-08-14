@@ -22,6 +22,7 @@ import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.store.FileStore;
 import com.synlabs.ipsaa.util.BigDecimalUtils;
 import com.synlabs.ipsaa.util.FeeUtils;
+import com.synlabs.ipsaa.util.FeeUtilsV2;
 import com.synlabs.ipsaa.view.batchimport.ImportStudentFull;
 import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.common.PageResponse;
@@ -1375,11 +1376,11 @@ public class StudentService extends BaseService
       throw new NotFoundException("Missing slip");
     }
 
-   // BigDecimal total = slip.getBaseFee();
+    // BigDecimal total = slip.getBaseFee();
 
     int alreadypaid
-        = (slip.getPayments() == null || slip.getPayments().isEmpty()) ? 0 :
-          slip.getPayments().stream().mapToInt(p -> p.getPaidAmount().intValue()).sum();
+            = (slip.getPayments() == null || slip.getPayments().isEmpty()) ? 0 :
+            slip.getPayments().stream().mapToInt(p -> p.getPaidAmount().intValue()).sum();
 
    /* if (request.getExtraCharge() != null)
     {
@@ -1400,7 +1401,7 @@ public class StudentService extends BaseService
 
     slip.setExtraCharge(request.getExtraCharge());
     slip.setLatePaymentCharge(request.getLatePaymentCharge());
-   // slip.setTotalFee(total);
+    // slip.setTotalFee(total);
     slip.setTotalFee(FeeUtils.calculateTotalFee(slip));
     slip.setComments(request.getComments());
     slip.setReGenerateSlip(true);
@@ -1452,7 +1453,11 @@ public class StudentService extends BaseService
       throw new ValidationException("Confirmed Receipt cannot update.");
     }
 
+    if(request.getConfirmed())
     receipt.setConfirmed(request.getConfirmed());
+    else{
+      receipt.setActive(false);
+    }
     return paymentRecordRepository.saveAndFlush(receipt);
   }
 

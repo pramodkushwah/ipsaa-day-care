@@ -125,24 +125,6 @@ public class StudentFeeController
   }
 
   @Secured(STUDENTFEE_RECEIPT_WRITE)
-  @PostMapping("/payfee")
-  //record payment button
-  public StudentFeeSlipResponse payFee(@RequestBody SaveFeeSlipRequest request)
-  {
-    return new StudentFeeSlipResponse(studentService.payFee(request));
-  }
-
- @Secured(STUDENTFEE_RECEIPT_WRITE)
- // @Secured(STUDENTFEE_RECEIPT_CONFIRM)
-
-  @PutMapping("/payfee")
-  //Confirm payment
-  public StudentFeePaymentResponse updatePayFee(@RequestBody SaveFeeSlipRequest request)
-  {
-    return new StudentFeePaymentResponse(studentService.updatePayFee(request));
-  }
-
-  @Secured(STUDENTFEE_RECEIPT_WRITE)
   @GetMapping("/download/receipt/{slipId}")
   public void downloadReceipt(@PathVariable("slipId") Long slipId, HttpServletResponse response) throws IOException
   {
@@ -205,4 +187,22 @@ public class StudentFeeController
     {
         return new StudentFeeSlipResponse(studentFeeService.updateSlip(request));
     }
+
+    @Secured(STUDENTFEE_RECEIPT_WRITE)
+    @PostMapping("/payfee")
+    //record payment button
+    public StudentFeeSlipResponse payFee(@RequestBody SaveFeeSlipRequest request)
+    {
+        return new StudentFeeSlipResponse(studentFeeService.payFee(request));
+    }
+
+    @Secured(STUDENTFEE_RECEIPT_WRITE)
+    // @Secured(STUDENTFEE_RECEIPT_CONFIRM)
+    @PutMapping("/payfee")
+    //Confirm payment
+    public StudentFeePaymentResponse updatePayFee(@RequestBody SaveFeeSlipRequest request)
+    {
+        return new StudentFeePaymentResponse(studentService.updatePayFee(request));
+    }
+
 }
