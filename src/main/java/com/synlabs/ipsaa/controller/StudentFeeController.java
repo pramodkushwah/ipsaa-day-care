@@ -107,12 +107,6 @@ public class StudentFeeController
 
 
 
-  @Secured(STUDENTFEE_SLIP_READ)
-  @PostMapping("/feeslip/list")
-  public List<StudentFeeSlipResponse> listStudentSlips(@RequestBody StudentFeeSlipRequest request)
-  {
-    return studentService.listFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
-  }
 
 
   @Secured(STUDENTFEE_RECEIPT_READ)
@@ -144,7 +138,16 @@ public class StudentFeeController
     is.close();
   }
   //----------------------------------shubham-----------------------------------------
-  @Secured(STUDENTFEE_WRITE)
+
+    @Secured(STUDENTFEE_SLIP_READ)
+    @PostMapping("/feeslip/list")
+    public List<StudentFeeSlipResponse> listStudentSlips(@RequestBody StudentFeeSlipRequest request)
+    {
+        return studentService.listFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
+    }
+
+
+    @Secured(STUDENTFEE_WRITE)
   @PostMapping("/fee/")
   public StudentFeeResponse saveStudentFee(@RequestBody StudentFeeRequestV2 request)
   {
@@ -202,7 +205,7 @@ public class StudentFeeController
     //Confirm payment
     public StudentFeePaymentResponse updatePayFee(@RequestBody SaveFeeSlipRequest request)
     {
-        return new StudentFeePaymentResponse(studentService.updatePayFee(request));
+        return new StudentFeePaymentResponse(studentFeeService.updatePayFee(request));
     }
 
 }

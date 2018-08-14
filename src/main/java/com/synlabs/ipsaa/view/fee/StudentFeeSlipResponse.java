@@ -78,8 +78,10 @@ public class StudentFeeSlipResponse implements Response
     {
       payments = new ArrayList<>(slip.getPayments().size());
       slip.getPayments().forEach(payment -> {
-        payments.add(new StudentFeePaymentResponse(payment));
-        this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
+        if(payment.getActive()){
+          payments.add(new StudentFeePaymentResponse(payment));
+          this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
+        }
       });
     }
   }

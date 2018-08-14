@@ -1454,8 +1454,9 @@ public class StudentService extends BaseService
     }
 
     if(request.getConfirmed())
-    receipt.setConfirmed(request.getConfirmed());
+      receipt.setConfirmed(request.getConfirmed());
     else{
+
       receipt.setActive(false);
     }
     return paymentRecordRepository.saveAndFlush(receipt);
