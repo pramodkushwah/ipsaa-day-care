@@ -13,6 +13,47 @@ import java.util.List;
 @Entity
 public class StudentFeePaymentRequest extends BaseEntity
 {
+  @Column(precision = 16, scale = 2)
+  private BigDecimal uniformCharges;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal stationary;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal transportFee;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal annualFee;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal finalAnnualCharges;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal admissionFee;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal finalAdmissionFee;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal finalBaseFee;
+
+  @Column(precision = 16, scale = 2, nullable = false)
+  private BigDecimal baseFee;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal finalDepositFee;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal baseFeeDiscount;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal annualFeeDiscount;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal addmissionFeeDiscount;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal depositFeeDiscount;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal gstAmount;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal feeRatio;
+
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   private Student student;
 
@@ -38,9 +79,6 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(unique = true, length = 200)
   private String receiptFileName;
 
-  @Column(precision = 16, scale = 2, nullable = false)
-  private BigDecimal baseFee;
-
   @Column(precision = 16, scale = 2)
   private BigDecimal extraCharge;
 
@@ -55,9 +93,6 @@ public class StudentFeePaymentRequest extends BaseEntity
 
   @Column(precision = 16, scale = 2)
   private BigDecimal deposit;
-
-  @Column(precision = 16, scale = 2)
-  private BigDecimal annualFee;
 
   @Column(precision = 16, scale = 2)
   private BigDecimal adjust;
@@ -78,6 +113,9 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(unique = true)
   private String tnxid;
 
+  @Column(columnDefinition = "bit(1) default 0")
+  private boolean isExpire = false;
+
   private boolean reGenerateSlip = true;
 
   @Column(precision = 16, scale = 2)
@@ -92,6 +130,37 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(columnDefinition = "bit(1) default 0")
   private boolean generateActive = false;
 
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal balance;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal lastQuarterBalance;
+
+  public BigDecimal getFeeRatio() {
+    return feeRatio;
+  }
+
+  public void setFeeRatio(BigDecimal feeRatio) {
+    this.feeRatio = feeRatio;
+  }
+
+  public BigDecimal getLastQuarterBalance() {
+    return lastQuarterBalance;
+  }
+
+  public void setLastQuarterBalance(BigDecimal lastQuarterBalance) {
+    this.lastQuarterBalance = lastQuarterBalance;
+  }
+
+  public BigDecimal getTransportFee() {
+    return transportFee;
+  }
+
+  public void setTransportFee(BigDecimal transportFee) {
+    this.transportFee = transportFee;
+  }
+
   public boolean isGenerateActive() {
 	return generateActive;
 }
@@ -100,7 +169,13 @@ public void setGenerateActive(boolean generateActive) {
 	this.generateActive = generateActive;
 }
 
-private BigDecimal balance;
+  public boolean isExpire() {
+    return isExpire;
+  }
+
+  public void setExpire(boolean expire) {
+    isExpire = expire;
+  }
 
   public BigDecimal getAdjust()
   {
@@ -376,12 +451,109 @@ private BigDecimal balance;
     this.receiptFileName = receiptFileName;
   }
 
+  public BigDecimal getUniformCharges() {
+    return uniformCharges;
+  }
+
+  public void setUniformCharges(BigDecimal uniformCharges) {
+    this.uniformCharges = uniformCharges;
+  }
+
+  public BigDecimal getStationary() {
+    return stationary;
+  }
+
+  public void setStationary(BigDecimal stationary) {
+    this.stationary = stationary;
+  }
+
+  public BigDecimal getFinalAnnualCharges() {
+    return finalAnnualCharges;
+  }
+
+  public void setFinalAnnualCharges(BigDecimal finalAnnualCharges) {
+    this.finalAnnualCharges = finalAnnualCharges;
+  }
+
+  public BigDecimal getAdmissionFee() {
+    return admissionFee;
+  }
+
+  public void setAdmissionFee(BigDecimal admissionFee) {
+    this.admissionFee = admissionFee;
+  }
+
+  public BigDecimal getFinalAdmissionFee() {
+    return finalAdmissionFee;
+  }
+
+  public void setFinalAdmissionFee(BigDecimal finalAdmissionFee) {
+    this.finalAdmissionFee = finalAdmissionFee;
+  }
+
+  public BigDecimal getFinalBaseFee() {
+    return finalBaseFee;
+  }
+
+  public void setFinalBaseFee(BigDecimal finalBaseFee) {
+    this.finalBaseFee = finalBaseFee;
+  }
+
+  public BigDecimal getFinalDepositFee() {
+    return finalDepositFee;
+  }
+
+  public void setFinalDepositFee(BigDecimal finalDepositFee) {
+    this.finalDepositFee = finalDepositFee;
+  }
+
+  public BigDecimal getBaseFeeDiscount() {
+    return baseFeeDiscount;
+  }
+
+  public void setBaseFeeDiscount(BigDecimal baseFeeDiscount) {
+    this.baseFeeDiscount = baseFeeDiscount;
+  }
+
+  public BigDecimal getAnnualFeeDiscount() {
+    return annualFeeDiscount;
+  }
+
+  public void setAnnualFeeDiscount(BigDecimal annualFeeDiscount) {
+    this.annualFeeDiscount = annualFeeDiscount;
+  }
+
+  public BigDecimal getAddmissionFeeDiscount() {
+    return addmissionFeeDiscount;
+  }
+
+  public void setAddmissionFeeDiscount(BigDecimal addmissionFeeDiscount) {
+    this.addmissionFeeDiscount = addmissionFeeDiscount;
+  }
+
+  public BigDecimal getDepositFeeDiscount() {
+    return depositFeeDiscount;
+  }
+
+  public void setDepositFeeDiscount(BigDecimal depositFeeDiscount) {
+    this.depositFeeDiscount = depositFeeDiscount;
+  }
+
+  public BigDecimal getGstAmount() {
+    return gstAmount;
+  }
+
+  public void setGstAmount(BigDecimal gstAmount) {
+    this.gstAmount = gstAmount;
+  }
+
   @Transient
   public BigDecimal getPaidAmount()
   {
     BigDecimal paidAmount = BigDecimal.ZERO;
     for (StudentFeePaymentRecord payment : payments)
     {
+      if(payment.getActive())
       if (payment.getPaymentStatus() == PaymentStatus.Paid
           || payment.getPaymentStatus() == PaymentStatus.PartiallyPaid)
       {

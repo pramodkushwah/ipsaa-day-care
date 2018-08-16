@@ -37,6 +37,18 @@ public class StudentFeePaymentRecord extends BaseEntity
 
   private Boolean confirmed = false;
 
+  @Column(columnDefinition = "bit(1) default 1")
+  private Boolean active = true;
+
+  private BigDecimal uniformPaidAmount;
+  private BigDecimal stationaryPaidAmount;
+  private BigDecimal annualPaidAmount;
+  private BigDecimal addmissionPaidAmount;
+  private BigDecimal depositPaidAmount;
+  private BigDecimal programPaidAmount;
+  private BigDecimal transportPaidAmount;
+
+
   @Override
   public String toString()
   {
@@ -49,6 +61,70 @@ public class StudentFeePaymentRecord extends BaseEntity
         ", paidAmount=" + paidAmount +
         ", confirmed=" + confirmed +
         '}';
+  }
+
+  public Boolean getActive() {
+    return active;
+  }
+
+  public void setActive(Boolean active) {
+    this.active = active;
+  }
+
+  public BigDecimal getUniformPaidAmount() {
+    return uniformPaidAmount;
+  }
+
+  public void setUniformPaidAmount(BigDecimal uniformPaidAmount) {
+    this.uniformPaidAmount = uniformPaidAmount;
+  }
+
+  public BigDecimal getStationaryPaidAmount() {
+    return stationaryPaidAmount;
+  }
+
+  public void setStationaryPaidAmount(BigDecimal stationaryPaidAmount) {
+    this.stationaryPaidAmount = stationaryPaidAmount;
+  }
+
+  public BigDecimal getAnnualPaidAmount() {
+    return annualPaidAmount;
+  }
+
+  public void setAnnualPaidAmount(BigDecimal annualPaidAmount) {
+    this.annualPaidAmount = annualPaidAmount;
+  }
+
+  public BigDecimal getAddmissionPaidAmount() {
+    return addmissionPaidAmount;
+  }
+
+  public void setAddmissionPaidAmount(BigDecimal addmissionPaidAmount) {
+    this.addmissionPaidAmount = addmissionPaidAmount;
+  }
+
+  public BigDecimal getDepositPaidAmount() {
+    return depositPaidAmount;
+  }
+
+  public void setDepositPaidAmount(BigDecimal depositPaidAmount) {
+    this.depositPaidAmount = depositPaidAmount;
+  }
+
+  public BigDecimal getProgramPaidAmount() {
+    return programPaidAmount;
+  }
+
+  public void setProgramPaidAmount(BigDecimal programPaidAmount) {
+    this.programPaidAmount = programPaidAmount;
+  }
+
+  public BigDecimal getTransportPaidAmount() {
+    return transportPaidAmount;
+  }
+
+  public void setTransportPaidAmount(BigDecimal transportPaidAmount) {
+    this.transportPaidAmount = transportPaidAmount;
   }
 
   public Boolean getConfirmed()

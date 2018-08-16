@@ -56,16 +56,13 @@ public class UserMenuBuilder
   }
 
   public Menu buildForUser(User user) {
-
     Menu navigation = new Menu();
-
     for (MenuItem submenu : submannuMap.values()) {
       if (user.hasPrivilege(submenu.getP())) {
         MenuItem parent = mannuMap.get(submenu.getParent());
         navigation.add(parent, submenu);
       }
     }
-
     return navigation;
   }
 }
