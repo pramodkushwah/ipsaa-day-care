@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 public class StudentFeeSlipRequestV2 implements Request
 {
-  private Long slipId;
+  private Long id;
   private Long   studentId;
   private BigDecimal extraCharge;
   private BigDecimal latePaymentCharge;
@@ -18,12 +18,12 @@ public class StudentFeeSlipRequestV2 implements Request
   private String reportType;
   private Boolean confirm;
 
-  public Long getSlipId() {
-    return unmask(slipId);
+  public Long getId() {
+    return unmask(id);
   }
 
-  public void setSlipId(Long slipId) {
-    this.slipId = slipId;
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public Long getStudentId() {

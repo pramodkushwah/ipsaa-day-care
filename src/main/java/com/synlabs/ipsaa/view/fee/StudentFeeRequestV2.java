@@ -1,5 +1,6 @@
 package com.synlabs.ipsaa.view.fee;
 
+import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.enums.FeeDuration;
 import com.synlabs.ipsaa.view.common.Request;
@@ -150,12 +151,22 @@ public class StudentFeeRequestV2 implements Request
     this.stationary = stationary;
   }
 
-  public StudentFee toEntity(StudentFee studentFee)
+  public StudentFee toEntity(StudentFee studentFee, CenterProgramFee fee)
   {
     if (studentFee == null)
     {
       studentFee = new StudentFee();
+      studentFee.setBaseFee(new BigDecimal(fee.getFee()));
+      studentFee.setAdmissionFee(fee.getAddmissionFee());
+      studentFee.setAnnualCharges(new BigDecimal(fee.getAnnualFee()));
+      studentFee.setDepositFee(new BigDecimal(fee.getDeposit()));
+    }else{
+      studentFee.setDepositFee(securityDeposit==null?ZERO:securityDeposit);
+      studentFee.setBaseFee(baseFee==null?ZERO:baseFee);
+      studentFee.setAdmissionFee(admissionCharges==null?ZERO:admissionCharges);
+      studentFee.setAnnualCharges(annualFee==null?ZERO:annualFee);
     }
+
     studentFee.setUniformCharges(uniformCharges==null?ZERO:uniformCharges);
     studentFee.setStationary(stationary==null?ZERO:stationary);
 
@@ -174,10 +185,7 @@ public class StudentFeeRequestV2 implements Request
     studentFee.setDepositFeeDiscount(discountSecurityDeposit==null?ZERO:discountSecurityDeposit);
     studentFee.setAnnualFeeDiscount(discountAnnualCharges==null?ZERO:discountAnnualCharges);
 
-    studentFee.setDepositFee(securityDeposit==null?ZERO:securityDeposit);
-    studentFee.setBaseFee(baseFee==null?ZERO:baseFee);
-    studentFee.setAdmissionFee(admissionCharges==null?ZERO:admissionCharges);
-    studentFee.setAnnualCharges(annualFee==null?ZERO:annualFee);
+
 
     studentFee.setAdjust(adjust == null ? ZERO : adjust);
     return studentFee;

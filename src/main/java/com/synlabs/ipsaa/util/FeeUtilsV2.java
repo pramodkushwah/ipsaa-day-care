@@ -53,10 +53,11 @@ public class FeeUtilsV2
 
   public static BigDecimal calculateFinalFee(StudentFee fee,boolean isGst)
   {
-    fee.setFinalBaseFee(fee.getBaseFee().add(fee.getTransportFee()).multiply(THREE));
+    fee.setFinalBaseFee(fee.getBaseFee().multiply(THREE));
     //fee.setTransportFee(fee.getTransportFee().multiply(THREE));
 
     BigDecimal totalFee = fee.getFinalBaseFee()
+                          .add(fee.getTransportFee().multiply(THREE))
                           .add(fee.getFinalDepositFee())
                           .add(fee.getFinalAdmissionFee())
                           .add(fee.getFinalAnnualCharges())
@@ -84,13 +85,16 @@ public class FeeUtilsV2
   }
   public static BigDecimal calculateFinalFee(StudentFeePaymentRequest fee,BigDecimal ratio)
   {
+    BigDecimal finalRatio;
     if(ratio!=null)
-    fee.setFinalBaseFee(fee.getBaseFee().add(fee.getTransportFee()).multiply(ratio));
+    finalRatio=ratio;
     else{
-      fee.setFinalBaseFee(fee.getBaseFee().add(fee.getTransportFee()).multiply(THREE));
+      finalRatio=THREE;
     }
-    //fee.setTransportFee(fee.getTransportFee().multiply(ratio));
+      fee.setFinalBaseFee(fee.getBaseFee().add(fee.getTransportFee()).multiply(finalRatio));
+
     BigDecimal totalFee = fee.getFinalBaseFee()
+            .add(fee.getTransportFee().multiply(finalRatio))
             .add(fee.getFinalDepositFee())
             .add(fee.getFinalAdmissionFee())
             .add(fee.getFinalAnnualCharges())
@@ -112,11 +116,6 @@ public class FeeUtilsV2
 
   public static void validateStudentFee(StudentFee fee, CenterProgramFee centerProgramFee)
   {
-    fee.setBaseFee(new BigDecimal(centerProgramFee.getFee()));
-    fee.setAdmissionFee(centerProgramFee.getAddmissionFee()==null?ZERO:centerProgramFee.getAddmissionFee());
-    fee.setDepositFee(new BigDecimal(centerProgramFee.getDeposit()));
-    fee.setAnnualCharges(new BigDecimal(centerProgramFee.getAnnualFee()));
-
 
     fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(),fee.getBaseFeeDiscount(),fee.getFinalBaseFee(),"Base Fee"));
 

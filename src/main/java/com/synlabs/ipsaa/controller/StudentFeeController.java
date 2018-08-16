@@ -35,12 +35,7 @@ public class StudentFeeController
   @Autowired
   private DocumentService documentService;
 
-  @GetMapping("fee")
-  @Secured(STUDENTFEE_READ)
-  public List<StudentFeeResponse> list(@RequestParam(required = false) Long centerId)
-  {
-    return studentService.listFee(new StudentFeeRequest(centerId)).stream().map(StudentFeeResponse::new).collect(Collectors.toList());
-  }
+
 
   @PostMapping("/paymentLink/")
   @Secured(STUDENTFEE_READ)
@@ -139,13 +134,19 @@ public class StudentFeeController
   }
   //----------------------------------shubham-----------------------------------------
 
+  @GetMapping("fee")
+  @Secured(STUDENTFEE_READ)
+  public List<StudentFeeResponse> list(@RequestParam(required = false) Long centerId)
+  {
+    return studentService.listFee(new StudentFeeRequest(centerId)).stream().map(StudentFeeResponse::new).collect(Collectors.toList());
+  }
+
     @Secured(STUDENTFEE_SLIP_READ)
     @PostMapping("/feeslip/list")
     public List<StudentFeeSlipResponse> listStudentSlips(@RequestBody StudentFeeSlipRequest request)
     {
-        return studentService.listFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
+        return studentFeeService.listFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
     }
-
 
     @Secured(STUDENTFEE_WRITE)
   @PostMapping("/fee/")
@@ -174,12 +175,14 @@ public class StudentFeeController
   @PostMapping("/feeslip/generate")
   public List<StudentFeeSlipResponse> generateStudentSlips(@RequestBody StudentFeeSlipRequest request)
   {
+    //return studentService.generateFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
     return studentFeeService.generateFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
   }
     @Secured(STUDENTFEE_SLIP_WRITE)
     @PostMapping("/feeslip/regenerate")
     public StudentFeeSlipResponse reGenerateStudentSlip(@RequestBody StudentFeeSlipRequestV2 request)
     {
+      //return new StudentFeeSlipResponse(studentService.regenerateStudentSlip(request));
         return new StudentFeeSlipResponse(studentFeeService.regenerateStudentSlip(request));
     }
 
