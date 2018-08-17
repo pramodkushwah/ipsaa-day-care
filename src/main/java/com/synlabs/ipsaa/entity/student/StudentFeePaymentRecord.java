@@ -47,7 +47,16 @@ public class StudentFeePaymentRecord extends BaseEntity
   private BigDecimal depositPaidAmount;
   private BigDecimal programPaidAmount;
   private BigDecimal transportPaidAmount;
+  @Column(length = 200)
+  private String comment;
 
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
 
   @Override
   public String toString()

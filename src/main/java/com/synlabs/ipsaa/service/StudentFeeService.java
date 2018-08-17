@@ -477,7 +477,7 @@ public class StudentFeeService {
         if(request.getExtraCharge()!=null)
             slip.setExtraCharge(request.getExtraCharge());
         if(request.getLatePaymentCharge()!=null)
-            slip.setLastQuarterBalance(request.getLatePaymentCharge());
+            slip.setLatePaymentCharge(request.getLatePaymentCharge());
         slip.setTotalFee(FeeUtilsV2.calculateFinalFee(slip,slip.getFeeRatio()));
        return feePaymentRepository.saveAndFlush(slip);
     }
@@ -669,6 +669,8 @@ public class StudentFeeService {
             receipt.setConfirmed(request.getConfirmed());
         else {
             receipt.setActive(false);
+            if(request.getComments()!=null)
+            receipt.setComment(request.getComments());
             paymentRecordRepository.saveAndFlush(receipt);
 
             StudentFeePaymentRequest slip = feePaymentRepository.findOne(receipt.getRequest().getId());
