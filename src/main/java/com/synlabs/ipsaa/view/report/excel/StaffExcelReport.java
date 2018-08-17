@@ -49,15 +49,16 @@ public class StaffExcelReport {
 				int rownum = 0;
 				boolean isCreateList = true;
 				Row row = null;
+				if (rownum == 0) {
+					row=feeCollectionReportSheet.createRow(0);
+					setupheaders(row);
+					rownum++;
+				}
 				for (EmployeeSalary satffSalary : this.staff) {
 					if(isCreateList==true) {
 						row = feeCollectionReportSheet.createRow(rownum++);
-					} 
-					if (rownum == 1) {
-						setupheaders(row);
-						//rownum++;
-					} else
-						isCreateList = createList(satffSalary, row);
+					}
+					isCreateList = createList(satffSalary, row);
 				}
 				workbook.write(fileOutputStream);
 				workbook.dispose();
