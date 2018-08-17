@@ -53,7 +53,7 @@ public class FeeUtilsV2
 
   public static BigDecimal calculateFinalFee(StudentFee fee,boolean isGst)
   {
-    fee.setFinalBaseFee(fee.getBaseFee().multiply(THREE));
+    fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(THREE));
     //fee.setTransportFee(fee.getTransportFee().multiply(THREE));
 
     BigDecimal totalFee = fee.getFinalBaseFee()
