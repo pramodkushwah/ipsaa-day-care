@@ -7,6 +7,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
     $scope.sendPaymentLinkDisable = false;
     $scope.slectedElementList = []
     $scope.generateSlip = false;
+    $scope.selectedPeriod = 'Quarterly';
     $scope.monthNames = [
         'January',
         'February',
@@ -219,22 +220,12 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
             return false;
         }
 
-        if (!$scope.selectedPeriod) {
-            error("Select Period");
-            return false;
-        }
-
-        if ($scope.selectedPeriod === 'Monthly' && !$scope.selectedMonth) {
-            error("Select Month");
-            return false;
-        }
-
-        if ($scope.selectedPeriod === 'Quarterly' && !$scope.selectedQuarter) {
+        if (!$scope.selectedQuarter) {
             error("Select Quarter");
             return false;
         }
 
-        if ($scope.selectedPeriod === 'Yearly' && !$scope.selectedYear) {
+        if (!$scope.selectedYear) {
             error("Select Year");
             return false;
         }

@@ -42,9 +42,10 @@
                   <th>Fee</th>
                   <th>Annual Charges</th>
                   <th>Security Deposit</th>
-                  <th>CGST</th>
+                  <th>Admission Fee</th>
+                  <!-- <th>CGST</th>
                   <th>SGST</th>
-                  <th>IGST</th>
+                  <th>IGST</th> -->
                   <th>Actions</th>
                 </tr>
                 </thead>
@@ -54,9 +55,10 @@
                   <td>{{fee.fee}}</td>
                   <td>{{fee.annualFee}}</td>
                   <td>{{fee.deposit}}</td>
-                  <td>{{fee.cgst}}</td>
+                  <td>fee.admissionFee</td>
+                  <!-- <td>{{fee.cgst}}</td>
                   <td>{{fee.sgst}}</td>
-                  <td>{{fee.igst}}</td>
+                  <td>{{fee.igst}}</td> -->
                   <td>
                     <div class="buttons">
                       <button type="button" class="btn btn-primary btn-xs" ng-click="editProgramFee(fee)">edit</button>
@@ -248,58 +250,32 @@
               </div>
             </div>
 
-            <div class="col-md-1" ng-show="insertProgramFee.center_state.toUpperCase() == 'HARYANA'">
+            <div class="col-md-6">
               <div class="form-group">
-                <div class="checkbox" style="padding-top: 45px;">
-                  <label>
-                    <input type="checkbox"
-                           ng-change="cgstChecked(insertProgramFee)"
-                           ng-model="insertProgramFee.isCgst">
-                  </label>
-                </div>
+                <label class="control-label">Admission Fee*</label>
+                <input class="form-control" name="fee" type="number" required ng-model="insertProgramFee.admissionFee">
               </div>
             </div>
-            <div class="col-md-4" ng-show="insertProgramFee.center_state.toUpperCase() == 'HARYANA'">
+            
+            <div class="col-md-4" ng-if="insertProgramFee.cgst" ng-show="insertProgramFee.center_state.toUpperCase() == 'HARYANA'">
               <div class="form-group">
                 <label class="control-label">C-GST</label>
-                <input class="form-control" name="cgst" type="number" ng-disabled="!insertProgramFee.isCgst" ng-model="insertProgramFee.cgst">
+                <input class="form-control" name="cgst" type="number" ng-model="insertProgramFee.cgst" readonly>
               </div>
             </div>
 
-            <div class="col-md-1" ng-show="insertProgramFee.center_state.toUpperCase() == 'HARYANA'">
-              <div class="form-group">
-                <div class="checkbox" style="padding-top: 45px;">
-                  <label>
-                    <input type="checkbox"
-                           ng-change="sgstChecked(insertProgramFee)"
-                           ng-model="insertProgramFee.isSgst">
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4" ng-show="insertProgramFee.center_state.toUpperCase() == 'HARYANA'">
+            <div class="col-md-4" ng-if="insertProgramFee.sgst" ng-show="insertProgramFee.center_state.toUpperCase() == 'HARYANA'">
               <div class="form-group">
                 <label class="control-label">S-GST</label>
-                <input class="form-control" name="sgst" type="number" ng-disabled="!insertProgramFee.isSgst" ng-model="insertProgramFee.sgst">
+                <input class="form-control" name="sgst" type="number" ng-model="insertProgramFee.sgst" readonly>
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-1" ng-show="insertProgramFee.center_state.toUpperCase() != 'HARYANA'">
-              <div class="form-group">
-                <div class="checkbox" style="padding-top: 45px;">
-                  <label>
-                    <input type="checkbox"
-                           ng-change="igstChecked(insertProgramFee)"
-                           ng-model="insertProgramFee.isIgst">
-                  </label>
-                </div>
-              </div>
-            </div>
+          <div class="row" ng-if="insertProgramFee.igst">
             <div class="col-md-4" ng-show="insertProgramFee.center_state.toUpperCase() != 'HARYANA'">
               <div class="form-group">
                 <label class="control-label">I-GST</label>
-                <input class="form-control" name="sgst" type="number" ng-disabled="!insertProgramFee.isIgst" ng-model="insertProgramFee.igst">
+                <input class="form-control" name="sgst" type="number" ng-model="insertProgramFee.igst" readonly>
               </div>
             </div>
           </div>

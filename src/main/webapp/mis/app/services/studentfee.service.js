@@ -1,30 +1,67 @@
 app.service('StudentFeeService', function ($http) {
     var service = {};
 
-    //needs baseFee, feeDuration, discount and adjust
-    service.calculateFinalFee = function (fee, duration) {
-        const baseFee = fee.baseFee;
-        const discount = fee.discount;
-        const adjust = fee.adjust;
-        var transportFee = fee.transportFee;
+    // initailize fee, discounts and final fee 
+    service.initializeFee = function(fee) {
+      fee.annualFee = fee.annualFee | 0;
+      fee.discountAnnualCharges = fee.discountAnnualCharges | 0;
+      fee.finalAnnualFee = fee.discountAnnualCharges
+        ? fee.finalAnnualFee
+        : fee.annualFee | 0;
 
-        if (typeof duration == 'undefined') {
-            duration = fee.feeDuration;
-        }
-        var finalFee = baseFee - (baseFee * discount) / 100;
-        finalFee = finalFee + adjust;
-        finalFee = finalFee.toFixed(0) / 1;
-        switch (duration) {
-            case 'Quarterly':
-                finalFee = finalFee * 3;
-                transportFee = transportFee * 3;
-                break;
-            case 'Yearly':
-                finalFee = finalFee * 12;
-                transportFee = transportFee * 12;
-                break;
-        }
-        fee.finalFee = finalFee + transportFee;
+      fee.admissionCharges = fee.admissionCharges | 0;
+      fee.discountAdmissionCharges = fee.discountAdmissionCharges | 0;
+      fee.finalAdmissionCharges = fee.discountAdmissionCharges
+        ? fee.finalAdmissionCharges
+        : fee.admissionCharges | 0;
+
+      fee.baseFee = fee.baseFee | 0;
+      fee.discountBaseFee = fee.discountBaseFee | 0;
+      fee.finalBaseFee = fee.discountBaseFee
+        ? fee.finalBaseFee
+        : fee.baseFee | 0;
+
+      fee.securityDeposit = fee.securityDeposit | 0;
+      fee.discountSecurityDeposit = fee.discountSecurityDeposit | 0;
+      fee.finalSecurityDeposit = fee.discountSecurityDeposit
+        ? fee.finalSecurityDeposit
+        : fee.securityDeposit | 0;
+
+      fee.transportFee = fee.transportFee | 0;
+      fee.finalTransportFees = fee.transportFee ? fee.transportFee * 3 : 0;
+
+      fee.uniformCharges = fee.uniformCharges | 0;
+      fee.stationary = fee.stationary | 0;
+    }
+
+    service.calculateFinalFee = function(fee) {
+      var final = 0;
+      if (fee.finalAnnualFee > 0 ) {
+        final += Number(fee.finalAnnualFee);
+      }
+      if( fee.finalAdmissionCharges > 0 ) {
+        final += Number(fee.finalAdmissionCharges);
+      }
+      if(fee.finalBaseFee > 0 ) {
+        final += Number(fee.finalBaseFee * 3);
+      }
+      if(fee.finalTransportFees > 0 ) {
+        final += Number(fee.finalTransportFees);
+      }
+
+      if(fee.uniformCharges > 0) {
+        final += Number(fee.uniformCharges);
+      }
+
+      if(fee.stationary > 0 ) {
+        final += Number(fee.stationary);
+      }
+
+      if(fee.gstFee > 0 ) {
+        final += Number(fee.gstFee);
+      }
+
+      fee.finalFee = final;
     }
 
     //needs baseFee and finalFee
@@ -42,32 +79,15 @@ app.service('StudentFeeService', function ($http) {
 
     //needs finalFee, cgst and sgst
     service.calculateGstFee = function (fee) {
-        var transportFee = fee.transportFee;
-        switch (fee.feeDuration) {
-            case 'Quarterly':
-                transportFee = transportFee * 3;
-                break;
-            case 'Yearly':
-                transportFee = transportFee * 12;
-                break;
+      if (fee.formalSchool) {
+        fee.gstFee = (fee.finalAnnualFee + (fee.finalBaseFee * 3)) * 0.18;
+      } else {
+        if (fee.program.code === 'ICLUB' || fee.program.code === 'CLUBREG') {
+          fee.gstFee = (fee.finalAnnualFee + fee.finalBaseFee * 3) * 0.18;
+        } else {
+          fee.gstFee = 0;
         }
-        const finalFee = fee.finalFee - transportFee;
-        var totalgst = 0;
-        if (fee.cgst) {
-            totalgst += fee.cgst;
-            fee.cGstAmount = (finalFee * fee.cgst) / 100;
-        }
-        if (fee.sgst) {
-            totalgst += fee.sgst;
-            fee.sGstAmount = (finalFee * fee.sgst) / 100;
-        }
-        if (fee.igst) {
-            totalgst += fee.igst;
-            fee.iGstAmount = (finalFee * fee.igst) / 100;
-        }
-        fee.gstFee = finalFee + ((finalFee * totalgst) / 100);
-        // fee.gstFeeAdjust = (fee.gstFee - Math.trunc(fee.gstFee)).toFixed(2);
-        // fee.gstFee = Math.trunc(fee.gstFee)
+      }
     }
 
     return service;
