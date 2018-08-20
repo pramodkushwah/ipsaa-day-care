@@ -12,14 +12,17 @@ public class StudentFeeResponse extends StudentSummaryResponse
   private String comment;
   private String feeDuration;
   private boolean found = true;
-  private BigDecimal baseFee;
-  private BigDecimal finalFee;
-  private BigDecimal discount;
-  private BigDecimal transportFee;
+
   private BigDecimal adjust;
   private BigDecimal cgst;
   private BigDecimal sgst;
   private BigDecimal igst;
+
+
+  private BigDecimal baseFee;
+  private BigDecimal finalFee;
+  private BigDecimal discount;
+  private BigDecimal transportFee;
 
   private BigDecimal  discountBaseFee;
   private BigDecimal  discountAnnualCharges;

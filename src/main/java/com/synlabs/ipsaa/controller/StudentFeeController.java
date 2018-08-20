@@ -100,10 +100,6 @@ public class StudentFeeController
     }
   }
 
-
-
-
-
   @Secured(STUDENTFEE_RECEIPT_READ)
   @PutMapping("/payfee/{id}")
   public StudentFeePaymentResponse getReceipt(@PathVariable("id") Long id)
@@ -112,7 +108,6 @@ public class StudentFeeController
     request.setId(id);
     return new StudentFeePaymentResponse(studentService.getReceipt(request));
   }
-
   @Secured(STUDENTFEE_RECEIPT_WRITE)
   @GetMapping("/download/receipt/{slipId}")
   public void downloadReceipt(@PathVariable("slipId") Long slipId, HttpServletResponse response) throws IOException

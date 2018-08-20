@@ -135,7 +135,7 @@ public class StudentFeePaymentRequest extends BaseEntity
   private BigDecimal balance;
 
   @Column(precision = 16, scale = 2)
-  private BigDecimal lastQuarterBalance;
+  private BigDecimal finalFee;
 
   public BigDecimal getFeeRatio() {
     return feeRatio;
@@ -145,12 +145,12 @@ public class StudentFeePaymentRequest extends BaseEntity
     this.feeRatio = feeRatio;
   }
 
-  public BigDecimal getLastQuarterBalance() {
-    return lastQuarterBalance;
+  public BigDecimal getFinalFee() {
+    return finalFee;
   }
 
-  public void setLastQuarterBalance(BigDecimal lastQuarterBalance) {
-    this.lastQuarterBalance = lastQuarterBalance;
+  public void setFinalFee(BigDecimal finalFee) {
+    this.finalFee = finalFee;
   }
 
   public BigDecimal getTransportFee() {
