@@ -3,6 +3,7 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
     $scope.disableSave = false;
     $scope.STUDENTFEE_WRITE = Auth.hasPrivilege('STUDENTFEE_WRITE');
     $scope.showBreakdown = false;
+    $scope.discountTypes = [];
 
     function debounce(func, wait, immediate) {
         var timeout;
@@ -40,26 +41,11 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
         $scope.insertStudentFee = {mode: "Add"};
     };
 
-    $scope.finalFeeChanged = function (fee) {
-        fee.transportFee = 0;
-        StudentFeeService.calculateDiscount(fee);
-        StudentFeeService.calculateGstFee(fee);
-    };
-
-    $scope.durationChange = function (fee) {
-        StudentFeeService.calculateFinalFee(fee);
-        StudentFeeService.calculateGstFee(fee);
-    };
-
-    $scope.transportFeeChanged = function (fee) {
-        StudentFeeService.calculateFinalFee(fee);
-    };
-
     $scope.calculateDiscount = function(base, final, targetDiscount) {
       if (base > 0) {
         if (base - final > 0) {
           $scope.insertStudentFee[targetDiscount] =
-          ((base - final) / base) * 100;
+          (((base - final) / base) * 100).toFixed(2);
           StudentFeeService.calculateGstFee($scope.insertStudentFee);
           StudentFeeService.calculateFinalFee($scope.insertStudentFee);
         }
@@ -184,7 +170,6 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
                 function (response) {
                     $scope.insertStudentFee = response.data;
                     $scope.insertStudentFee.mode = !mode ? 'Show' : mode;
-                    // $scope.insertStudentFee.oldFee = $scope.insertStudentFee.baseFee;
                     $scope.insertStudentFee.adjust = $scope.insertStudentFee.adjust ? $scope.insertStudentFee.adjust : 0;
                     StudentFeeService.initializeFee($scope.insertStudentFee);
                     StudentFeeService.calculateGstFee($scope.insertStudentFee);
