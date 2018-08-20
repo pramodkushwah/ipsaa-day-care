@@ -551,6 +551,7 @@ public class StudentFeeService {
         BigDecimal paidAmount=request.getPaidAmount();
 
         slip.setUniformCharges(slip.getUniformCharges()==null?ZERO:slip.getUniformCharges());
+
         if(slip.getUniformCharges().intValue()>(uniformPaid) || uniformPaid==0){
             BigDecimal amount=slip.getUniformCharges().subtract(new BigDecimal(uniformPaid));
                 if(amount.subtract(paidAmount).intValue()<0){
@@ -561,8 +562,6 @@ public class StudentFeeService {
                     paidAmount=ZERO;
                 }
         }
-
-
         slip.setStationary(slip.getStationary()==null?ZERO:slip.getStationary());
         if(slip.getStationary().intValue()>(stationaryPaid) || stationaryPaid==0 ){
             BigDecimal amount=slip.getStationary().subtract(new BigDecimal(stationaryPaid));

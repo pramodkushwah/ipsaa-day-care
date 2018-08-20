@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.synlabs.ipsaa.util.FeeUtils.ZERO;
+
 public class StudentFeeSlipResponse implements Response
 {
   private Long id;
@@ -53,7 +55,74 @@ public class StudentFeeSlipResponse implements Response
   private BigDecimal depositFeeDiscount;
   private BigDecimal gstAmount;
   private BigDecimal feeRatio;
+
+  private BigDecimal uniformPaidAmountTotal=ZERO;
+  private BigDecimal stationaryPaidAmountTotal=ZERO;
+  private BigDecimal annualPaidAmountTotal=ZERO;
+  private BigDecimal addmissionPaidAmountTotal=ZERO;
+  private BigDecimal depositPaidAmountTotal=ZERO;
+  private BigDecimal programPaidAmountTotal=ZERO;
+  private BigDecimal transportPaidAmountTotal=ZERO;
+
+
   private List<StudentFeePaymentResponse> payments;
+
+
+  public BigDecimal getUniformPaidAmountTotal() {
+    return uniformPaidAmountTotal;
+  }
+
+  public void setUniformPaidAmountTotal(BigDecimal uniformPaidAmountTotal) {
+    this.uniformPaidAmountTotal = uniformPaidAmountTotal;
+  }
+
+  public BigDecimal getStationaryPaidAmountTotal() {
+    return stationaryPaidAmountTotal;
+  }
+
+  public void setStationaryPaidAmountTotal(BigDecimal stationaryPaidAmountTotal) {
+    this.stationaryPaidAmountTotal = stationaryPaidAmountTotal;
+  }
+
+  public BigDecimal getAnnualPaidAmountTotal() {
+    return annualPaidAmountTotal;
+  }
+
+  public void setAnnualPaidAmountTotal(BigDecimal annualPaidAmountTotal) {
+    this.annualPaidAmountTotal = annualPaidAmountTotal;
+  }
+
+  public BigDecimal getAddmissionPaidAmountTotal() {
+    return addmissionPaidAmountTotal;
+  }
+
+  public void setAddmissionPaidAmountTotal(BigDecimal addmissionPaidAmountTotal) {
+    this.addmissionPaidAmountTotal = addmissionPaidAmountTotal;
+  }
+
+  public BigDecimal getDepositPaidAmountTotal() {
+    return depositPaidAmountTotal;
+  }
+
+  public void setDepositPaidAmountTotal(BigDecimal depositPaidAmountTotal) {
+    this.depositPaidAmountTotal = depositPaidAmountTotal;
+  }
+
+  public BigDecimal getProgramPaidAmountTotal() {
+    return programPaidAmountTotal;
+  }
+
+  public void setProgramPaidAmountTotal(BigDecimal programPaidAmountTotal) {
+    this.programPaidAmountTotal = programPaidAmountTotal;
+  }
+
+  public BigDecimal getTransportPaidAmountTotal() {
+    return transportPaidAmountTotal;
+  }
+
+  public void setTransportPaidAmountTotal(BigDecimal transportPaidAmountTotal) {
+    this.transportPaidAmountTotal = transportPaidAmountTotal;
+  }
 
   public BigDecimal getIgst()
   {
@@ -111,6 +180,15 @@ public class StudentFeeSlipResponse implements Response
       payments = new ArrayList<>(slip.getPayments().size());
       slip.getPayments().forEach(payment -> {
         if(payment.getActive()){
+
+          uniformPaidAmountTotal=  uniformPaidAmountTotal.add(payment.getUniformPaidAmount()==null?ZERO:payment.getUniformPaidAmount());
+          stationaryPaidAmountTotal=stationaryPaidAmountTotal.add(payment.getStationaryPaidAmount()==null?ZERO:payment.getStationaryPaidAmount());
+          annualPaidAmountTotal=annualPaidAmountTotal.add(payment.getAnnualPaidAmount()==null?ZERO:payment.getAnnualPaidAmount());
+          addmissionPaidAmountTotal=addmissionPaidAmountTotal.add(payment.getAddmissionPaidAmount()==null?ZERO:payment.getAddmissionPaidAmount());
+          depositPaidAmountTotal=depositPaidAmountTotal.add(payment.getDepositPaidAmount()==null?ZERO:payment.getDepositPaidAmount());
+          programPaidAmountTotal=programPaidAmountTotal.add(payment.getProgramPaidAmount()==null?ZERO:payment.getProgramPaidAmount());
+          transportPaidAmountTotal=transportPaidAmountTotal.add(payment.getTransportPaidAmount()==null?ZERO:payment.getTransportPaidAmount());
+
           payments.add(new StudentFeePaymentResponse(payment));
           this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
         }
