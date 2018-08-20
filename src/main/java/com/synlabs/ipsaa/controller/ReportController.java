@@ -337,10 +337,12 @@ public class ReportController {
                     String str[]=callBackTime.split(":");
 
                     Calendar cal= Calendar.getInstance();
-                    cal.setTime(callBackDate);
-                    cal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(str[0]));
-                    cal.set(Calendar.MINUTE,Integer.parseInt(str[1]));
-                    System.out.println(cal.getTime());
+                    if(callBackDate!=null && str!=null){
+                        cal.setTime(callBackDate);
+                        cal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(str[0]));
+                        cal.set(Calendar.MINUTE,Integer.parseInt(str[1]));
+                       // System.out.println(cal.getTime());
+                    }
 
                     /*if (inquiryDate != null && !inquiryDate.isEmpty() && i<15) {
 						Date date = format1.parse(inquiryDate);
@@ -369,7 +371,7 @@ public class ReportController {
                         if (iscenter != null) {
                             inquiry.setCenter(iscenter);
 
-                            Program isProgram = programRepository.findByName(program);
+                            Program isProgram = programRepository.findByCode(program);
                             if (isProgram != null) {
                                 inquiry.setProgram(isProgram);
                             }
@@ -389,18 +391,21 @@ public class ReportController {
                             inquiry.setMotherMobile(motherMobile);
                             inquiry.setMotherEmail(motherEmail);
                             inquiry.setInquiryType(InquiryType.valueOf(inquiryType));
+                            inquiry.setInquiryDate(inquiryDate);
+                            //inquiry.setStatus(CallDisposition.valueOf(deposition));
 
                             if (list.contains(leadsource)) {
                                 int j = list.indexOf(leadsource);
-                                String enumLeadSource = list.get(j).toString();
+                                //String enumLeadSource = list.get(j).toString();
                                 inquiry.setLeadSource(list.get(j));
                             }
 
-                            System.out.println(cal.getTime());
+                           // System.out.println(cal.getTime());
+                            //inquiryEventLog.setCallDisposition(CallDisposition.valueOf(deposition));
                             inquiryEventLog.setCallBackNumber(callBackNumber);
                             inquiryEventLog.setComment(comments);
-                         //   inquiryEventLog.setCallBack(cal);
-                            System.out.println(inquiry);
+                            inquiryEventLog.setCallBack(cal.getTime());
+                           // System.out.println(inquiry);
 						/*try {
 							date=simpleDateFormat.parse(inquiryDate);
 						} catch (ParseException e) {
@@ -417,10 +422,12 @@ public class ReportController {
 
 
 
-						/*System.out.println(inquiry.getChildName()+" "+inquiry.getInquiryDate()+" "+inquiryEventLog.getCallBack()+ i);
-						inquiryRepository.saveAndFlush(inquiry);
+						System.out.println(inquiry.getChildName()+"  "+ inquiry.getInquiryDate()+ "  "+ inquiryEventLog.getCallBack()+ i);
+						logs.add(inquiryEventLog);
+						inquiry.setLogs(logs);
+						//inquiryRepository.saveAndFlush(inquiry);
 						inquiryEventLog.setInquiry(inquiry);
-						inquiryEventLogRepository.saveAndFlush(inquiryEventLog);*/
+						//inquiryEventLogRepository.saveAndFlush(inquiryEventLog);
                         }
 
                     }
