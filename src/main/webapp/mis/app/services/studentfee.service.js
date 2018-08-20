@@ -45,6 +45,9 @@ app.service('StudentFeeService', function ($http) {
       if(fee.finalBaseFee > 0 ) {
         final += Number(fee.finalBaseFee * 3);
       }
+      if(fee.finalSecurityDeposit > 0) {
+        final += Number(fee.finalSecurityDeposit);
+      }
       if(fee.finalTransportFees > 0 ) {
         final += Number(fee.finalTransportFees);
       }
