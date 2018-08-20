@@ -193,6 +193,7 @@ public class StudentFeeService {
         BigDecimal balance=ZERO;
         List<StudentFeePaymentRequest> slips = feePaymentRepository.findByStudentAndFeeDuration(fee.getStudent(),FeeDuration.Quarterly);
         boolean isAllConfirm=true;
+
         if(slips!=null && !slips.isEmpty()){
         for(StudentFeePaymentRequest s:slips){
             for(StudentFeePaymentRecord p:s.getPayments()){
@@ -255,10 +256,10 @@ public class StudentFeeService {
 
             slip.setDepositFeeDiscount(fee.getDepositFeeDiscount()==null?ZERO:fee.getDepositFeeDiscount());
             slip.setBaseFeeDiscount(fee.getBaseFeeDiscount()==null?ZERO:fee.getBaseFeeDiscount());
-
             slip.setUniformCharges(fee.getUniformCharges()==null?ZERO:fee.getUniformCharges());
             slip.setStationary(fee.getStationary()==null?ZERO:fee.getStationary());
             slip.setTransportFee(fee.getTransportFee()==null?ZERO:fee.getTransportFee());
+
 
             slip.setGstAmount(fee.getGstAmount());
             BigDecimal baseFeeRatio=THREE;
