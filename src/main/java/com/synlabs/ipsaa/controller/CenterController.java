@@ -35,7 +35,7 @@ public class CenterController
   public List<CenterResponse> list(@RequestParam(required = false, name = "zone") String zone,
                                    @RequestParam(required = false, name = "city") String city)
   {
-    return centerService.list(new CenterListRequest(zone, city)).stream().map(CenterResponse::new).collect(Collectors.toList());
+    return centerService.list(new CenterListRequest(zone, city)).stream().map(CenterResponseV2::new).collect(Collectors.toList());
   }
 
   @GetMapping("all")
