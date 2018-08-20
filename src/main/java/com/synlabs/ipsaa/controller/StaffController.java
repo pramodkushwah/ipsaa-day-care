@@ -87,6 +87,12 @@ public class StaffController
   {
     return staffService.list(request);
   }
+  @Secured(STAFF_READ)
+  @GetMapping("new")
+  public StaffSummaryPageResponse staff()
+  {
+    return new StaffSummaryPageResponse(staffService.listV2());
+  }
 
   @DeleteMapping("{id}")
   @Secured(STAFF_WRITE)
