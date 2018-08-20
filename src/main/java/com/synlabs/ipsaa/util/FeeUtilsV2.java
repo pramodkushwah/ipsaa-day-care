@@ -49,7 +49,8 @@ public class FeeUtilsV2 {
     public static BigDecimal calculateFinalFee(StudentFee fee, boolean isGst) {
         //fee.setTransportFee(fee.getTransportFee().multiply(THREE));
 
-        BigDecimal totalFee = fee.getFinalBaseFee().multiply(THREE)
+        fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(THREE));
+        BigDecimal totalFee = fee.getFinalBaseFee()
                 .add(fee.getTransportFee().multiply(THREE))
                 .add(fee.getFinalDepositFee())
                 .add(fee.getFinalAdmissionFee())
@@ -83,9 +84,9 @@ public class FeeUtilsV2 {
         else {
             finalRatio = THREE;
         }
-       // fee.setFinalBaseFee(fee.getBaseFee().add(fee.getTransportFee()).multiply(finalRatio));
+        fee.setFinalBaseFee(fee.getBaseFee().add(fee.getTransportFee()).multiply(finalRatio));
 
-        BigDecimal totalFee = fee.getFinalBaseFee().multiply(finalRatio)
+        BigDecimal totalFee = fee.getFinalBaseFee()
                 .add(fee.getTransportFee().multiply(finalRatio))
                 .add(fee.getFinalDepositFee())
                 .add(fee.getFinalAdmissionFee())
