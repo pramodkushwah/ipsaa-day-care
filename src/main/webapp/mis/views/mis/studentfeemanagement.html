@@ -129,7 +129,7 @@
                 <label class="control-label">Final Annual Charges</label>
                 <input class="form-control" type="text" ng-model="insertStudentFee.finalAnnualFee" required 
                 ng-readonly="insertStudentFee.mode=='Show' || insertStudentFee.annualFee <= 0" 
-                ng-change="calculateDiscount(insertStudentFee.annualFee, insertStudentFee.finalAnnualFee, 'discountAnnualCharges')"
+                ng-change="calculateDiscount('annualFee', 'finalAnnualFee', 'discountAnnualCharges')"
                 >
               </div>
             </div>
@@ -153,7 +153,7 @@
                 <label class="control-label">Final Admission Charges</label>
                 <input class="form-control" type="text" ng-model="insertStudentFee.finalAdmissionCharges" required 
                 ng-readonly="insertStudentFee.mode=='Show' || insertStudentFee.admissionCharges <= 0" 
-                ng-change="calculateDiscount(insertStudentFee.admissionCharges, insertStudentFee.finalAdmissionCharges, 'discountAdmissionCharges')">
+                ng-change="calculateDiscount('admissionCharges', 'finalAdmissionCharges', 'discountAdmissionCharges')">
               </div>
             </div>
 
@@ -176,7 +176,7 @@
                 <label class="control-label">Final Monthly Fees Amount</label>
                 <input class="form-control" type="text" ng-model="insertStudentFee.finalBaseFee" required 
                 ng-readonly="insertStudentFee.mode=='Show' || insertStudentFee.baseFee <= 0" 
-                ng-change="calculateDiscount(insertStudentFee.baseFee, insertStudentFee.finalBaseFee, 'discountBaseFee')">
+                ng-change="calculateDiscount('baseFee', 'finalBaseFee', 'discountBaseFee')">
               </div>
             </div>
 
@@ -199,7 +199,7 @@
                 <label class="control-label">Final Security Deposit Fees</label>
                 <input class="form-control" type="text" ng-model="insertStudentFee.finalSecurityDeposit" required 
                 ng-readonly="insertStudentFee.mode=='Show' || insertStudentFee.securityDeposit <= 0" 
-                ng-change="calculateDiscount(insertStudentFee.securityDeposit, insertStudentFee.finalSecurityDeposit, 'discountSecurityDeposit')">
+                ng-change="calculateDiscount('securityDeposit', 'finalSecurityDeposit', 'discountSecurityDeposit')">
               </div>
             </div>
             
@@ -228,7 +228,7 @@
 
             <div class="col-md-6">
               <div class="form-group">
-                <label class="control-label" ng-readonly="true">Stationery Charges</label>
+                <label class="control-label" ng-readonly="true" data-error="dsds">Stationery Charges</label>
                 <input class="form-control" type="text" ng-model="insertStudentFee.stationary" ng-readonly="insertStudentFee.mode=='Show'"
                   ng-change="monthlyStationeryChargesChanged(insertStudentFee)">
               </div>
