@@ -36,7 +36,6 @@ public class StudentFeeSlipResponse implements Response
   private String     autoComments;
   private boolean generateActive;
 
-  private BigDecimal lastQuarterBalance;
 
   private BigDecimal uniformCharges;
   private BigDecimal stationary;
@@ -88,8 +87,6 @@ public class StudentFeeSlipResponse implements Response
     this.balance = slip.getBalance();
     this.adjust = slip.getAdjust();
     this.generateActive = slip.isGenerateActive();
-
-    this.lastQuarterBalance=slip.getLastQuarterBalance();
     this.uniformCharges=slip.getUniformCharges();
     this.stationary=slip.getStationary();
     this.transportFee=slip.getTransportFee();
@@ -219,14 +216,6 @@ public class StudentFeeSlipResponse implements Response
 
   public void setGenerateActive(boolean generateActive) {
     this.generateActive = generateActive;
-  }
-
-  public BigDecimal getLastQuarterBalance() {
-    return lastQuarterBalance;
-  }
-
-  public void setLastQuarterBalance(BigDecimal lastQuarterBalance) {
-    this.lastQuarterBalance = lastQuarterBalance;
   }
 
   public BigDecimal getUniformCharges() {

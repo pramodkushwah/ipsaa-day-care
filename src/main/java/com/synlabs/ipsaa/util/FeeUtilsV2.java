@@ -47,10 +47,9 @@ public class FeeUtilsV2 {
     }
 
     public static BigDecimal calculateFinalFee(StudentFee fee, boolean isGst) {
-        fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(THREE));
         //fee.setTransportFee(fee.getTransportFee().multiply(THREE));
 
-        BigDecimal totalFee = fee.getFinalBaseFee()
+        BigDecimal totalFee = fee.getFinalBaseFee().multiply(THREE)
                 .add(fee.getTransportFee().multiply(THREE))
                 .add(fee.getFinalDepositFee())
                 .add(fee.getFinalAdmissionFee())
@@ -84,9 +83,9 @@ public class FeeUtilsV2 {
         else {
             finalRatio = THREE;
         }
-        fee.setFinalBaseFee(fee.getBaseFee().add(fee.getTransportFee()).multiply(finalRatio));
+       // fee.setFinalBaseFee(fee.getBaseFee().add(fee.getTransportFee()).multiply(finalRatio));
 
-        BigDecimal totalFee = fee.getFinalBaseFee()
+        BigDecimal totalFee = fee.getFinalBaseFee().multiply(finalRatio)
                 .add(fee.getTransportFee().multiply(finalRatio))
                 .add(fee.getFinalDepositFee())
                 .add(fee.getFinalAdmissionFee())
@@ -121,8 +120,9 @@ public class FeeUtilsV2 {
             fee.setIgst(new BigDecimal(18));
             fee.setFinalFee(calculateFinalFee(fee, true));
         } else if (centerProgramFee.getProgram().getId() == IPSAA_CLUB_PROGRAM_ID || centerProgramFee.getProgram().getId() == IPSAA_CLUB_REGULAR_PROGRAM_ID) {
-            fee.setIgst(new BigDecimal(18));
-            fee.setFinalFee(calculateFinalFee(fee, true));
+            throw new ValidationException(String.format("can not save or update ipsaa club studnet from here"));
+            //fee.setIgst(new BigDecimal(18));
+            //fee.setFinalFee(calculateFinalFee(fee, true));
         } else {
             fee.setIgst(new BigDecimal(0));
             fee.setFinalFee(calculateFinalFee(fee, false));

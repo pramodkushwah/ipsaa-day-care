@@ -238,7 +238,6 @@ public class StudentFeeService {
             slip.setCgst(fee.getCgst());
             slip.setSgst(fee.getSgst());
             slip.setIgst(fee.getIgst());
-            slip.setLastQuarterBalance(balance);
             slip.setDeposit(fee.getDepositFee()==null?ZERO:fee.getDepositFee());
             slip.setFinalDepositFee(fee.getFinalDepositFee()==null?ZERO:fee.getFinalDepositFee());
 
@@ -292,9 +291,10 @@ public class StudentFeeService {
                     slip.setAnnualFee(ZERO);
                     slip.setFinalAnnualCharges(ZERO);
                 }
+
                 slip.setBalance(balance);
                 slip.setTotalFee(FeeUtilsV2.calculateFinalFee(slip,baseFeeRatio));
-
+                slip.setFinalFee(slip.getTotalFee());
                 slip.setTotalFee(slip.getTotalFee().add(balance));
 
                 for(StudentFeePaymentRequest lastQuarter:lastQuarterSlips){  // expiring all old slips
@@ -363,8 +363,9 @@ public class StudentFeeService {
              thisQuarterSlip.setFinalAdmissionFee(fee.getFinalAdmissionFee()==null?ZERO:fee.getFinalAdmissionFee());
 
              thisQuarterSlip.setTotalFee(FeeUtilsV2.calculateFinalFee(thisQuarterSlip,thisQuarterSlip.getFeeRatio()));
+             thisQuarterSlip.setFinalFee(thisQuarterSlip.getTotalFee()); // without balance
              thisQuarterSlip.setTotalFee(thisQuarterSlip.getTotalFee()
-                            .add(thisQuarterSlip.getLastQuarterBalance()==null?ZERO:thisQuarterSlip.getLastQuarterBalance()));
+                            .add(thisQuarterSlip.getBalance()==null?ZERO:thisQuarterSlip.getBalance()));
 
              return  feePaymentRepository.saveAndFlush(thisQuarterSlip);
         }
