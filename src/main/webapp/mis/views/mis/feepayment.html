@@ -8,27 +8,8 @@
       <span class="material-input"></span>
     </div>
   </div>
-  <div class="col-md-2">
-    <div class="form-group">
-      <label class="control-label">Period:</label>
-      <select class="form-control" ng-model="selectedPeriod">
-        <option value="Monthly">Monthly</option>
-        <option value="Quarterly">Quarterly</option>
-        <option value="Yearly">Yearly</option>
-      </select>
-      <span class="material-input"></span>
-    </div>
-  </div>
 
-  <div class="col-md-2" ng-show="selectedPeriod == 'Monthly'">
-    <div class="form-group">
-      <label class="control-label">Month:</label>
-      <select class="form-control" ng-model="selectedMonth" ng-options="month.moy as month.name for month in months" ng-change="filterChange()">
-      </select>
-      <span class="material-input"></span>
-    </div>
-  </div>
-  <div class="col-md-2" ng-show="selectedPeriod == 'Quarterly'">
+  <div class="col-md-2">
     <div class="form-group">
       <label class="control-label">Quarter:</label>
       <select class="form-control" ng-model="selectedQuarter" ng-options="quarter as quarter.name for quarter in quarters"></select>
@@ -44,7 +25,7 @@
       <span class="material-input"></span>
     </div>
   </div>
-  <button class="btn btn-info" ng-click="getFeeSlips()">GET</button>
+  <button class="btn btn-info mt-4" ng-click="getFeeSlips()">GET</button>
 </div>
 
 
@@ -66,7 +47,6 @@
         </div>
         <span class="label label-info">{{selectedCenter.code}}</span>
         <span class="label label-info">{{selectedPeriod}}</span>
-        <span class="label label-info" ng-show="selectedPeriod == 'Monthly'">{{months[selectedMonth-1].name}}</span>
         <span class="label label-info" ng-show="selectedPeriod == 'Quarterly'">{{selectedQuarter.name}}</span>
         <span class="label label-info">{{selectedYear}}</span>
         <div class="table-responsive">
@@ -117,6 +97,28 @@
         <span class="label label-info">{{selected.center}}</span>
         <span class="label label-info">{{selected.program}}</span>
         <span class="label label-info">{{selected.group}}</span>
+        <a class="pointer right" ng-click="toggleHide()">
+          View Fees Details
+          
+          <i class="fa fa-bars" aria-hidden="true" ng-show="!showFeeDetails"></i>
+          <i class="fa fa-times" aria-hidden="true" ng-show="showFeeDetails"></i>
+        </a>
+        <div class="row panel-body" ng-show="showFeeDetails">
+
+          <table class="table table-bordered table-responsive table-striped">
+            <tr>
+              <th>Fee / Charges</th>
+              <th>Final Amount</th>
+              <th>Paid Amount</th>
+            </tr>
+            <tr ng-repeat="feeType in feeTypes">
+              <td><strong>{{feeType.type}}</strong></td>
+              <td>{{selected[feeType['final']]}}</td>
+              <td>{{selected[feeType['paid']]}}</td>
+            </tr>
+          </table>
+
+        </div>
 
         <div class="row">
           <div class="col-md-3">
@@ -243,7 +245,7 @@
                 <th>Mode</th>
                 <th>Amount</th>
                 <th>Date</th>
-                <th>Confirm</th>
+                <th>Action</th>
               </tr>
               <tr ng-repeat="payment in selected.payments">
                 <td>{{payment.txnid}}</td>
@@ -258,6 +260,7 @@
                     <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="payment.disabled"></i>
                     {{payment.confirmed?'confirmed':'confirm'}}
                   </button>
+                  <button class="btn btn-sm" ng-hide="payment.confirmed" ng-click="showCommentField()">Reject</button>
                 </td>
               </tr>
               </thead>

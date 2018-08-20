@@ -5,6 +5,9 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
 
     $scope.selectedYear = moment().year();
     $scope.showYear = true;
+    $scope.showFeeDetails = false;
+    $scope.selectedPeriod = 'Quarterly';
+    $scope.commentField = false;
     $scope.selected = {};
 
     $scope.years = [moment().year() - 1,moment().year()];
@@ -20,6 +23,20 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
         {value: 3, name: "FYQ2"},
         {value: 4, name: "FYQ3"}
     ];
+
+    $scope.feeTypes = [
+      { type: 'Base Fee', final: 'finalBaseFee', paid: 'programPaidAmountTotal' },
+      { type: 'Admission Charges', final: 'finalAdmissionFee', paid: 'addmissionPaidAmountTotal' },
+      { type: 'Annual Charges', final: 'finalAnnualCharges', paid: 'annualPaidAmountTotal' },
+      { type: 'Transport Fees', final: 'transportFee', paid: 'transportPaidAmountTotal' },
+      { type: 'Uniform Charges', final: 'uniformCharges', paid: 'uniformPaidAmountTotal' },
+      { type: 'Stationery Charges', final: 'stationary', paid: 'stationaryPaidAmountTotal' },
+    ];
+
+  $scope.toggleHide = function() {
+    $scope.showFeeDetails = !$scope.showFeeDetails;
+  }
+
 
     $http.get('/api/center/').then(function (response) {
         $scope.centers = response.data;
@@ -42,22 +59,12 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
             return;
         }
 
-        if (!$scope.selectedPeriod) {
-            error("Select Period");
-            return;
-        }
-
-        if ($scope.selectedPeriod === 'Monthly' && !$scope.selectedMonth) {
-            error("Select Month");
-            return;
-        }
-
-        if ($scope.selectedPeriod === 'Quarterly' && !$scope.selectedQuarter) {
+        if (!$scope.selectedQuarter) {
             error("Select Quarter");
             return;
         }
 
-        if ($scope.selectedPeriod === 'Yearly' && !$scope.selectedYear) {
+        if (!$scope.selectedYear) {
             error("Select Year");
             return;
         }
@@ -67,8 +74,9 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
             period: $scope.selectedPeriod
         };
 
-        if($scope.selectedPeriod == 'Monthly') postobject.month = $scope.selectedMonth ? $scope.selectedMonth : 0;
-        else if($scope.selectedPeriod == 'Quarterly') postobject.quarter = $scope.selectedQuarter.value ? $scope.selectedQuarter.value: 0;
+        postobject.quarter = $scope.selectedQuarter.value 
+        ? $scope.selectedQuarter.value
+        : 0;
 
         postobject.year  = $scope.selectedYear;
 
@@ -134,6 +142,26 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
             );
         }
     };
+
+    $scope.showCommentField = function() {
+      $scope.commentField = !$scope.commentField;
+    }
+
+    $scope.declineTransaction = function(receipt) {
+      if (receipt && receipt.id) {
+        receipt.disabled = true;
+        $http.put('/api/student/payfee', { id: receipt.id, confirmed: false, comments: $scope.declineComment }).then(
+          function (response) {
+            receipt.disabled = false;
+            $scope.getFeeSlips();
+            ok("success");
+          }, function (response) {
+            receipt.disabled = false;
+            error(response.data.error);
+          }
+        );
+      }
+    }
 
     function ok(message) {
         swal({
