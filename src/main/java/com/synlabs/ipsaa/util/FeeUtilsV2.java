@@ -6,7 +6,6 @@ import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
 import com.synlabs.ipsaa.enums.FeeDuration;
 import com.synlabs.ipsaa.enums.GST;
 import com.synlabs.ipsaa.ex.ValidationException;
-import sun.util.resources.cldr.CalendarData;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,6 +18,7 @@ import static java.math.BigDecimal.ZERO;
 
 public class FeeUtilsV2 {
     private static final String months[] = new String[]{"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
 
     private static BigDecimal HUNDRED = new BigDecimal(100);
     public static final double FEE_CALCULATION_TOLERANCE = 5.0;
@@ -47,7 +47,7 @@ public class FeeUtilsV2 {
     }
 
     public static BigDecimal calculateFinalFee(StudentFee fee, boolean isGst) {
-        fee.setFinalBaseFee(fee.getBaseFee().multiply(THREE));
+        fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(THREE));
         //fee.setTransportFee(fee.getTransportFee().multiply(THREE));
 
         BigDecimal totalFee = fee.getFinalBaseFee()
