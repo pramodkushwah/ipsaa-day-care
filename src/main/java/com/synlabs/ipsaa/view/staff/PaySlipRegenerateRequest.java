@@ -3,11 +3,14 @@ package com.synlabs.ipsaa.view.staff;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.view.common.Request;
 
+import java.util.List;
+
 public class PaySlipRegenerateRequest implements Request
 {
   private Long id;
   private Long legalEntityId;
 
+  private List<Long> ids;
   private Integer month;
   private Integer year;
 
@@ -27,6 +30,14 @@ public class PaySlipRegenerateRequest implements Request
     {
       throw new ValidationException("Legal entity or slip id is required.");
     }
+  }
+
+  public List<Long> getIds() {
+    return ids;
+  }
+
+  public void setIds(List<Long> ids) {
+    this.ids = ids;
   }
 
   public Long getId()

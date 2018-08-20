@@ -334,4 +334,34 @@ public class PaySlipService extends BaseService
       reGeneratePaySlip(paySlipRequest);
     }
   }
+  public void reGenerate(PaySlipRegenerateRequest request) throws DocumentException, ParseException, IOException{
+
+    request.validate();
+    if (request.getLegalEntityId() == null)
+    {
+      throw new ValidationException("Legal entity is required.");
+    }
+    LegalEntity one = legalEntityRepository.findOne(request.getLegalEntityId());
+    if (one == null)
+    {
+      throw new ValidationException(String.format("Cannot locate LegalEntity[id=%s]", mask(request.getLegalEntityId())));
+    }
+    if (request.getIds()==null || request.getIds().isEmpty())
+    {
+      throw new ValidationException(String.format("select payslip to regenerate"));
+    }
+    List<EmployeePaySlip> payslips = employeePaySlipRepository.findByIdInAndEmployerIdAndMonthAndYear(request.getIds(),one.getId(), request.getMonth(), request.getYear());
+
+    logger.info(String.format("Regenerating payslip for [employee eid=%s, legal=%s,month=%s,year=%s,count=%s]",
+           request.getIds().toString(), one.getName(), request.getMonth(), request.getYear(), payslips.size()));
+
+    for (EmployeePaySlip payslip : payslips)
+    {
+      EmployeePaySlipRequest paySlipRequest = new EmployeePaySlipRequest();
+      paySlipRequest.setId(mask(payslip.getId()));
+      paySlipRequest.setOtherDeductions(payslip.getOtherDeductions());
+      paySlipRequest.setOtherAllowances(payslip.getOtherAllowances());
+      reGeneratePaySlip(paySlipRequest);
+    }
+  }
 }

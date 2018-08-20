@@ -113,6 +113,13 @@ public class EmployeeController
   }
   //------------------------------shubham-----------------------------------------------------------------
   // shubham
+  
+  @Secured(PAYSLIP_WRITE)
+  @PostMapping("/payslip/regenerateselected/")
+  public void regeneratePaySlipSelected(@RequestBody PaySlipRegenerateRequest request) throws IOException, DocumentException, ParseException
+  {
+    paySlipService.reGenerate(request);
+  }
   @Secured(PAYSLIP_LOCK)
   @PutMapping("/payslip/lock")
   public boolean lockPaySalary(@RequestBody EmployeePaySlipRequest request) throws IOException, DocumentException, ParseException
