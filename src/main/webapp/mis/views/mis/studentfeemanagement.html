@@ -69,6 +69,9 @@
         <i class="material-icons">chrome_reader_mode</i>
       </div>
       <div class="card-content">
+        <div class="category form-category right">
+          *Required Fields
+        </div>
         <h4 class="card-title">{{insertStudentFee.mode}} Student Fee</h4>
         <form name="StudentFeeForm">
           <div class="row">
@@ -104,12 +107,6 @@
                 </select>
               </div>
             </div>
-            <!-- <div class="col-md-4">
-              <div class="form-group">
-                <label class="control-label" ng-readonly="true">Old fee</label>
-                <input class="form-control" type="text" readonly ng-model="insertStudentFee.oldFee">
-              </div>
-            </div> -->
           </div>
 
           <div class="row">
@@ -282,21 +279,15 @@
                 <label class="control-label">Final Total Fees</label>
                 <input class="form-control" type="text" ng-model="insertStudentFee.finalFee" readonly>
               </div>
-              <a ng-click="toggleBreakdown()">See Complete Breakdown</a>
+            </div>
+            <div class="col-md-12" style="margin-bottom: 10px">
+              <a ng-click="toggleBreakdown()" style="float: right;">View Details</a>
               <div ng-show="showBreakdown">
-                <table class="table table-condensed table-responsive">
-                  <tr>
-                    <th></th>
-                  </tr>
-                </table>
               </div>
             </div>
           </div>
 
           <div class="tab-pane active" id="controls" ng-hide="insertStudentFee.mode=='Show'">
-            <div class="category form-category">
-              *Required Fields
-            </div>
             <div class="form-footer text-right">
               <button class="btn btn-rose btn-fill" ng-click="saveStudentFee()" ng-disabled="StudentFeeForm.$invalid || disableSave">
                 <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableSave"></i>
