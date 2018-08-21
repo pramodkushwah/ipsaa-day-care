@@ -84,13 +84,15 @@ app.service('StudentFeeService', function ($http) {
     service.calculateGstFee = function (fee) {
       if (fee.formalSchool) {
         fee.gstFee = (fee.finalAnnualFee + (fee.finalBaseFee * 3)) * 0.18;
-      } else {
-        if (fee.program.code === 'ICLUB' || fee.program.code === 'CLUBREG') {
-          fee.gstFee = (fee.finalAnnualFee + fee.finalBaseFee * 3) * 0.18;
-        } else {
-          fee.gstFee = 0;
-        }
+      // } else {
+      //   if (fee.program.code === 'ICLUB' || fee.program.code === 'CLUBREG') {
+      //     fee.gstFee = (fee.finalAnnualFee + fee.finalBaseFee * 3) * 0.18;
+      //   } else {
+      //     fee.gstFee = 0;
+      //   }
       }
+      else
+        fee.gstFee = 0;
     }
 
     return service;

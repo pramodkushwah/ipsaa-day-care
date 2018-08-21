@@ -42,22 +42,23 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
     };
 
     $scope.calculateDiscount = function(base, final, targetDiscount) {
-      if ($scope.insertStudentFee[base] > 0 && $scope.insertStudentFee[final]) {
-        if ($scope.insertStudentFee[base] - $scope.insertStudentFee[final] > 0) {
-          $scope.insertStudentFee[targetDiscount] =
-          ((($scope.insertStudentFee[base] - $scope.insertStudentFee[final]) / $scope.insertStudentFee[base]) * 100).toFixed(2);
+      var fee = $scope.insertStudentFee;
+      if (fee[base] > 0 && fee[final]) {
+        if (fee[base] - fee[final] > 0) {
+          fee[targetDiscount] =
+          Number((((fee[base] - fee[final]) / fee[base]) * 100).toFixed(2));
         }
         else {
-          $scope.insertStudentFee[targetDiscount] = 0;
-          $scope.insertStudentFee[final] = $scope.insertStudentFee[base];
+          fee[targetDiscount] = 0;
+          fee[final] = fee[base];
         }
       } else {
-        $scope.insertStudentFee[final] = 0;
-        $scope.insertStudentFee[targetDiscount] = 100;
+        fee[final] = 0;
+        fee[targetDiscount] = 100;
       }
 
-      StudentFeeService.calculateGstFee($scope.insertStudentFee);
-      StudentFeeService.calculateFinalFee($scope.insertStudentFee);
+      StudentFeeService.calculateGstFee(fee);
+      StudentFeeService.calculateFinalFee(fee);
     }
 
     $scope.monthlyTransportFeesChanged = function(fee) {

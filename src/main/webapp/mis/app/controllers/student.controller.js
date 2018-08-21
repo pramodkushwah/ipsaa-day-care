@@ -128,6 +128,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             } else {
                 $(tab).removeClass("active");
             }
+          $('[data-toggle="tooltip"]').tooltip();
         }
     };
 
@@ -558,17 +559,27 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
                     $scope.workingStudent.fee = $scope.workingStudent.fee ? $scope.workingStudent.fee : {};
                     var studentFee = $scope.workingStudent.fee;
 
-                    studentFee.baseFee =programFee.fee;
-                    studentFee.sgst = programFee.sgst;
-                    studentFee.cgst =programFee.cgst;
-                    studentFee.igst =programFee.igst;
+                    studentFee.annualFee = programFee.annualFee;
+                    studentFee.admissionFee = programFee.admissionFee;
+                    studentFee.baseFee = programFee.fee;
+                    studentFee.deposit = programFee.deposit;
+                    studentFee.igst = programFee.igst;
                     studentFee.discount = 0;
                     studentFee.transportFee =0;
                     studentFee.adjust =0;
                     studentFee.comment = '';
                     studentFee.feeDuration = 'Quarterly';
+                    
+                    studentFee.discountAnnualCharges = 0
+                    studentFee.finalAnnualFee = programFee.annualFee
+                    studentFee.discountAdmissionCharges = 0
+                    studentFee.finalAdmissionCharges = programFee.admissionFee
+                    studentFee.discountBaseFee = 0
+                    studentFee.finalBaseFee = programFee.fee
+                    studentFee.discountSecurityDeposit = 0
+                    studentFee.finalSecurityDeposit = programFee.deposit
+                    StudentFeeService.calculateGstFee(studentFee);  
                     StudentFeeService.calculateFinalFee(studentFee);
-                    StudentFeeService.calculateGstFee(studentFee)
                 },
                 function (response) {
                     if (response.status == 404) {
@@ -581,6 +592,48 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             );
         }
     }
+
+  $scope.calculateDiscount = function (base, final, targetDiscount) {
+    var fee = $scope.workingStudent.fee;
+    if (fee[base] > 0 && fee[final]) {
+      if (fee[base] - fee[final] > 0) {
+        fee[targetDiscount] =
+          Number((((fee[base] - fee[final]) / fee[base]) * 100).toFixed(2));
+      }
+      else {
+        fee[targetDiscount] = 0;
+        fee[final] = fee[base];
+      }
+    } else {
+      fee[final] = 0;
+      fee[targetDiscount] = 100;
+    }
+
+    StudentFeeService.calculateGstFee(fee);
+    StudentFeeService.calculateFinalFee(fee);
+  }
+
+  $scope.monthlyTransportFeesChanged = function (fee) {
+    if (fee.transportFee > 0) {
+      fee.finalTransportFees = fee.transportFee * 3;
+    } else {
+      fee.transportFee = 0;
+      fee.finalTransportFees = 0;
+    }
+    StudentFeeService.calculateFinalFee(fee);
+  }
+
+  $scope.monthlyUniformChargesChanged = function (fee) {
+    if (fee.uniformCharges < 0)
+      fee.uniformCharges = 0;
+    StudentFeeService.calculateFinalFee(fee);
+  }
+
+  $scope.monthlyStationeryChargesChanged = function (fee) {
+    if (fee.satationary < 0)
+      fee.satationary = 0;
+    StudentFeeService.calculateFinalFee(fee);
+  }
 
     function ok(message) {
         swal({
