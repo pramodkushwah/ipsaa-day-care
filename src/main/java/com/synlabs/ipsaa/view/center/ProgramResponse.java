@@ -3,6 +3,7 @@ package com.synlabs.ipsaa.view.center;
 import com.synlabs.ipsaa.entity.programs.Program;
 import com.synlabs.ipsaa.view.common.Response;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
