@@ -391,14 +391,6 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
             $scope.showPanel = "slip";
             $scope.selected = angular.copy(studentfee);
             $scope.calculateFinalFee($scope.selected);
-            $http.get('/api/center/program/fee/slip/' + studentfee.id)
-                .then(
-                    function (resposne) {
-                        $scope.programFee = resposne.data;
-                    }, function (response) {
-                        error(response.data.error);
-                    });
-
         }
     };
 

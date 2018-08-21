@@ -154,9 +154,9 @@
             </div>
           </div>
           <div class="col-md-6">
-            <div class="form-group" ng-show="selected.deposit">
+            <div class="form-group" ng-show="selected.finalDepositFee">
               <label class="control-label">Deposit</label>
-              <input class="form-control" type="number" readonly ng-model="selected.deposit">
+              <input class="form-control" type="number" readonly ng-model="selected.finalDepositFee">
             </div>
           </div>
         </div>
@@ -261,7 +261,7 @@
                     <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="payment.disabled"></i>
                     {{payment.confirmed?'confirmed':'confirm'}}
                   </button>
-                  <button class="btn btn-sm" ng-hide="payment.confirmed" ng-click="showCommentField()">Reject</button>
+                  <button class="btn btn-sm" ng-hide="payment.confirmed" ng-click="showCommentField(payment)">Reject</button>
                 </td>
               </tr>
               </thead>

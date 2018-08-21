@@ -31,6 +31,7 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
       { type: 'Transport Fees', final: 'transportFee', paid: 'transportPaidAmountTotal' },
       { type: 'Uniform Charges', final: 'uniformCharges', paid: 'uniformPaidAmountTotal' },
       { type: 'Stationery Charges', final: 'stationary', paid: 'stationaryPaidAmountTotal' },
+      { type: 'Security Deposite Fee', final: 'finalDepositFee', paid: 'depositPaidAmountTotal'}
     ];
 
   $scope.toggleHide = function() {
@@ -143,23 +144,40 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
         }
     };
 
-    $scope.showCommentField = function() {
-      $scope.commentField = !$scope.commentField;
-    }
-
-    $scope.declineTransaction = function(receipt) {
-      if (receipt && receipt.id) {
-        receipt.disabled = true;
-        $http.put('/api/student/payfee', { id: receipt.id, confirmed: false, comments: $scope.declineComment }).then(
-          function (response) {
-            receipt.disabled = false;
-            $scope.getFeeSlips();
-            ok("success");
-          }, function (response) {
-            receipt.disabled = false;
-            error(response.data.error);
+    $scope.showCommentField = function(reciept) {
+      var this_receipt = reciept;
+      if (reciept && reciept.id) {
+        swal({
+          title: 'Confirm',
+          type: 'warning',
+          input: 'textarea',
+          text: 'Please submit a comment to decline transaction',
+          showCancelButton: true,
+          inputValidator: value => {
+            return new Promise((resolve, reject) => {
+              if (value !== '') {
+                resolve();
+              } else {
+                reject('Comment Required');
+              }
+            });
           }
-        );
+        }).then(function(text) {
+            if (text) {
+              $http
+                .put('/api/student/payfee', {
+                  id: this_receipt.id,
+                  confirmed: false,
+                  comments: text
+                })
+                .then(function(response) {
+                    $scope.getFeeSlips();
+                    ok('success');
+                  }, function(response) {
+                    error(response.data.error);
+                  });
+            }
+          }, function(cancel) {});
       }
     }
 

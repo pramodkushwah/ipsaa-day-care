@@ -129,7 +129,7 @@
           <div class="col-md-4">
             <div class="form-group">
               <label class="control-label" readonly>Fee</label>
-              <input class="form-control" type="text" readonly ng-model="selected.fee">
+              <input class="form-control" type="text" readonly ng-model="selected.totalFee - selected.balance">
             </div>
           </div>
       
@@ -137,7 +137,7 @@
             <div class="form-group">
               <label class="control-label">Balance</label>
               <input class="form-control" type="number" ng-change="calculateFinalFee(selected)"
-                     ng-model="selected.balance" ng-readonly="selected.status=='Paid'">
+              ng-model="selected.balance" readonly>
             </div>
           </div><!--Balance-->
           <div class="col-md-4">
