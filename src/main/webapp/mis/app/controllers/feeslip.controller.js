@@ -232,24 +232,6 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
         return true;
     }
 
-    $scope.annualFeeChecked = function (selected) {
-        if (selected.isAnnualFee) {
-            selected.annualFee = $scope.programFee.annualFee;
-        } else {
-            selected.annualFee = "";
-        }
-        $scope.calculateFinalFee(selected);
-    };
-
-    $scope.depositChecked = function (selected) {
-        if (selected.isDeposit) {
-            selected.deposit = $scope.programFee.deposit;
-        } else {
-            selected.deposit = "";
-        }
-        $scope.calculateFinalFee(selected);
-    };
-
     $scope.toggleAll = function (allchecked) {
         $scope.checkedSlipCount = 0;
         if ($scope.studentfeelist) {
@@ -390,36 +372,22 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
         } else {
             $scope.showPanel = "slip";
             $scope.selected = angular.copy(studentfee);
-            $scope.calculateFinalFee($scope.selected);
+            $scope.selected.actualBaseFee = $scope.selected.totalFee - $scope.selected.adjust;
+            // $scope.calculateFinalFee($scope.selected);
         }
     };
 
     $scope.calculateFinalFee = function (slip) {
-        var totalFee = slip.fee;
-        if (slip.isAnnualFee && !isNaN(slip.annualFee)) {
-            totalFee = totalFee + slip.annualFee;
-        }
-        var totalGstAmount = 0;
-        if (slip.cgst) {
-            totalGstAmount = totalGstAmount + ((totalFee * slip.cgst) / 100);
-        }
-        if (slip.sgst) {
-            totalGstAmount = totalGstAmount + ((totalFee * slip.sgst) / 100);
-        }
-        if (slip.igst) {
-            totalGstAmount = totalGstAmount + ((totalFee * slip.igst) / 100);
-        }
-        totalFee = totalFee + totalGstAmount;
-        if (slip.isDeposit && !isNaN(slip.deposit)) {
-            totalFee = totalFee + slip.deposit;
-        }
+
+        var totalFee;
+        $scope.studentfeelist.filter( (fee) => {
+          if(fee.id === slip.id) {
+            totalFee = fee.totalFee - fee.balance - fee.extraCharge - fee.latePaymentCharge - fee.adjust;
+          }
+        });
 
         if (slip.latePaymentCharge && !isNaN(slip.latePaymentCharge)) {
             totalFee = totalFee + slip.latePaymentCharge;
-        }
-
-        if (slip.balance && !isNaN(slip.balance)) {
-            totalFee = totalFee + slip.balance;
         }
 
         if (slip.extraCharge && !isNaN(slip.extraCharge)) {

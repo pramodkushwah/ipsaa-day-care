@@ -64,17 +64,22 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
       if(fee.transportFee > 0) {
         fee.finalTransportFees = fee.transportFee * 3;
       } else {
+        fee.transportFee = 0;
         fee.finalTransportFees = 0;
       }
       StudentFeeService.calculateFinalFee(fee);
     }
 
   $scope.monthlyUniformChargesChanged = function(fee) {
-      StudentFeeService.calculateFinalFee(fee);
+    if(fee.uniformCharges < 0)
+      fee.uniformCharges = 0;
+    StudentFeeService.calculateFinalFee(fee);
   }
 
   $scope.monthlyStationeryChargesChanged = function(fee) {
-      StudentFeeService.calculateFinalFee(fee);
+    if(fee.satationary < 0) 
+      fee.satationary = 0;
+    StudentFeeService.calculateFinalFee(fee);
   }
 
     $scope.toggleBreakdown = function() {
@@ -179,6 +184,7 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
                     StudentFeeService.calculateGstFee($scope.insertStudentFee);
                     StudentFeeService.calculateFinalFee($scope.insertStudentFee);
                     $scope.addstudentfee = true;
+                    $('[data-toggle="tooltip"]').tooltip();   
                 },
                 function (response) {
                     error(response.data.error)

@@ -18,7 +18,7 @@ app.service('StudentFeeService', function ($http) {
       fee.baseFee = fee.baseFee | 0;
       fee.discountBaseFee = fee.discountBaseFee | 0;
       fee.finalBaseFee = fee.discountBaseFee
-        ? fee.finalBaseFee / 3
+        ? (fee.finalBaseFee / 3).toFixed(2)
         : fee.baseFee | 0;
 
       fee.securityDeposit = fee.securityDeposit | 0;
