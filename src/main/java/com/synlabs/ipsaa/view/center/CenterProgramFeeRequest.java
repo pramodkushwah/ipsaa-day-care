@@ -19,6 +19,15 @@ public class CenterProgramFeeRequest implements Request
   private BigDecimal cgst;
   private BigDecimal sgst;
   private BigDecimal igst;
+  private Integer admissionFee;
+
+  public Integer getAdmissionFee() {
+    return admissionFee;
+  }
+
+  public void setAdmissionFee(Integer admissionFee) {
+    this.admissionFee = admissionFee;
+  }
 
   public BigDecimal getIgst()
   {
@@ -129,6 +138,7 @@ public class CenterProgramFeeRequest implements Request
     fee.setCgst(this.cgst);
     fee.setSgst(this.sgst);
     fee.setIgst(this.igst);
+    fee.setAddmissionFee(new BigDecimal(this.admissionFee));
     return fee;
   }
 

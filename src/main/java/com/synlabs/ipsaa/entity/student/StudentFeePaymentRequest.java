@@ -18,6 +18,8 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(precision = 16, scale = 2)
   private BigDecimal stationary;
   @Column(precision = 16, scale = 2)
+  private BigDecimal finalTransportFee;
+  @Column(precision = 16, scale = 2)
   private BigDecimal transportFee;
 
   @Column(precision = 16, scale = 2)
@@ -147,6 +149,14 @@ public class StudentFeePaymentRequest extends BaseEntity
 
   public BigDecimal getFinalFee() {
     return finalFee;
+  }
+
+  public BigDecimal getFinalTransportFee() {
+    return finalTransportFee;
+  }
+
+  public void setFinalTransportFee(BigDecimal finalTransportFee) {
+    this.finalTransportFee = finalTransportFee;
   }
 
   public void setFinalFee(BigDecimal finalFee) {

@@ -84,10 +84,11 @@ public class FeeUtilsV2 {
         else {
             finalRatio = THREE;
         }
-        fee.setFinalBaseFee(fee.getBaseFee().add(fee.getTransportFee()).multiply(finalRatio));
+
+        fee.setFinalTransportFee(fee.getTransportFee().multiply(finalRatio));
 
         BigDecimal totalFee = fee.getFinalBaseFee()
-                .add(fee.getTransportFee().multiply(finalRatio))
+                .add(fee.getFinalTransportFee())
                 .add(fee.getFinalDepositFee())
                 .add(fee.getFinalAdmissionFee())
                 .add(fee.getFinalAnnualCharges())

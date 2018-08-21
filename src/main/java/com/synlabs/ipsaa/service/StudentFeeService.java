@@ -322,6 +322,10 @@ public class StudentFeeService {
         if(fee==null){
             throw new NotFoundException(String.format("Student fee not found [%s]", request.getStudentId()));
         }
+        if (thisQuarterSlip.getPaymentStatus() == PaymentStatus.Paid)
+        {
+            throw new ValidationException("Already paid.");
+        }
         if(thisQuarterSlip!=null)
         {
             thisQuarterSlip.setStudent(fee.getStudent());
@@ -354,15 +358,23 @@ public class StudentFeeService {
 
             thisQuarterSlip.setGstAmount(fee.getGstAmount());
 
-            thisQuarterSlip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
-             thisQuarterSlip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount()==null?ZERO:fee.getAnnualFeeDiscount());
-
              thisQuarterSlip.setAnnualFee(fee.getAnnualCharges()==null?ZERO:fee.getAnnualCharges());
              thisQuarterSlip.setAdmissionFee(fee.getAdmissionFee()==null?ZERO:fee.getAdmissionFee());
 
-             thisQuarterSlip.setFinalAnnualCharges(fee.getFinalAnnualCharges()==null?ZERO:fee.getFinalAnnualCharges());
-             thisQuarterSlip.setFinalAdmissionFee(fee.getFinalAdmissionFee()==null?ZERO:fee.getFinalAdmissionFee());
-
+             if(thisQuarterSlip!=null && thisQuarterSlip.getFinalAdmissionFee().intValue()>0){
+                 thisQuarterSlip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
+                 thisQuarterSlip.setFinalAdmissionFee(fee.getFinalAdmissionFee()==null?ZERO:fee.getFinalAdmissionFee());
+             }else{
+                 thisQuarterSlip.setAddmissionFeeDiscount(ZERO);
+                 thisQuarterSlip.setFinalAdmissionFee(ZERO);
+             }
+             if(thisQuarterSlip.getQuarter()==2){
+                 thisQuarterSlip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount()==null?ZERO:fee.getAnnualFeeDiscount());
+                 thisQuarterSlip.setFinalAnnualCharges(fee.getFinalAnnualCharges()==null?ZERO:fee.getFinalAnnualCharges());
+             }else{
+                 thisQuarterSlip.setAnnualFeeDiscount(ZERO);
+                 thisQuarterSlip.setFinalAnnualCharges(ZERO);
+             }
              thisQuarterSlip.setTotalFee(FeeUtilsV2.calculateFinalFee(thisQuarterSlip,thisQuarterSlip.getFeeRatio()));
              thisQuarterSlip.setFinalFee(thisQuarterSlip.getTotalFee()); // without balance
              thisQuarterSlip.setTotalFee(thisQuarterSlip.getTotalFee()
@@ -481,6 +493,7 @@ public class StudentFeeService {
         if(request.getLatePaymentCharge()!=null)
             slip.setLatePaymentCharge(request.getLatePaymentCharge());
         slip.setTotalFee(FeeUtilsV2.calculateFinalFee(slip,slip.getFeeRatio()));
+        slip.setTotalFee(slip.getTotalFee().add(slip.getBalance()));
        return feePaymentRepository.saveAndFlush(slip);
     }
 
@@ -575,9 +588,9 @@ public class StudentFeeService {
             }
         }
 
-        slip.setTransportFee(slip.getTransportFee()==null?ZERO:slip.getTransportFee());
-        if(slip.getTransportFee().intValue()>(transportPaid) || transportPaid==0) {
-            BigDecimal amount = slip.getTransportFee().subtract(new BigDecimal(transportPaid));
+        slip.setTransportFee(slip.getFinalTransportFee()==null?ZERO:slip.getFinalTransportFee());
+        if(slip.getFinalTransportFee().intValue()>(transportPaid) || transportPaid==0) {
+            BigDecimal amount = slip.getFinalTransportFee().subtract(new BigDecimal(transportPaid));
             if (amount.subtract(paidAmount).intValue() < 0) {
                 record.setTransportPaidAmount(amount);
                 paidAmount = paidAmount.subtract(amount);
@@ -666,7 +679,7 @@ public class StudentFeeService {
             throw new ValidationException("Confirmed Receipt cannot update.");
         }
 
-        if (!request.getConfirmed())
+        if (request.getConfirmed())
             receipt.setConfirmed(request.getConfirmed());
         else {
             receipt.setActive(false);
