@@ -30,14 +30,14 @@
       <span class="material-input"></span>
     </div>
   </div>
-  <button class="btn btn-info" ng-click="getFeeSlips()" ng-disabled="generateSlipDisable">
+  <button class="btn btn-info mt-4" ng-click="getFeeSlips()" ng-disabled="generateSlipDisable">
     <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="generateSlipDisable"></i>GET/GENERATE
   </button>
 </div>
 
 
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-7">
     <div class="card">
       <div class="card-header card-header-icon" data-background-color="rose">
         <i class="material-icons">assignment</i>
@@ -113,7 +113,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-5">
 
     <div class="card" ng-show="showPanel == 'slip'">
       <div class="card-header card-header-icon" data-background-color="rose">
@@ -146,6 +146,48 @@
               <input class="form-control" type="number" ng-change="calculateFinalFee(selected)" ng-model="selected.extraCharge" ng-readonly="selected.status=='Paid'">
             </div>
           </div><!--Extra Charges-->
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Final Base Fee</label>
+              <input class="form-control" type="number" ng-model="selected.finalBaseFee" readonly>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Final Admission Fee</label>
+              <input class="form-control" type="number" ng-model="selected.finalAdmissionFee" readonly>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Final Annual Charges</label>
+              <input class="form-control" type="number" ng-model="selected.finalAnnualCharges" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Final Deposit Fee</label>
+              <input class="form-control" type="number" ng-model="selected.finalDepositFee" readonly>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Final Transport Fee</label>
+              <input class="form-control" type="number" ng-model="selected.finalTransportFee" readonly>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Fee Ratio</label>
+              <input class="form-control" type="number" ng-model="selected.feeRatio" readonly>
+            </div>
+          </div>
         </div>
 
         <div class="row">
