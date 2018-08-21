@@ -679,16 +679,18 @@ public class StudentFeeService {
             throw new ValidationException("Confirmed Receipt cannot update.");
         }
 
-        if (request.getConfirmed())
+
+        StudentFeePaymentRequest slip = feePaymentRepository.findOne(receipt.getRequest().getId());
+
+        if (request.getConfirmed()){
+            receipt.setActive(true);
             receipt.setConfirmed(request.getConfirmed());
+        }
         else {
             receipt.setActive(false);
             if(request.getComments()!=null)
             receipt.setComment(request.getComments());
             paymentRecordRepository.saveAndFlush(receipt);
-
-            StudentFeePaymentRequest slip = feePaymentRepository.findOne(receipt.getRequest().getId());
-
             if (slip.getTotalFee().intValue() <= receipt.getRequest().getPaidAmount().intValue()) {
                 slip.setPaymentStatus(PaymentStatus.Paid);
             } else if (receipt.getRequest().getPaidAmount().intValue() == 0) {
@@ -696,9 +698,9 @@ public class StudentFeeService {
             } else {
                 slip.setPaymentStatus(PaymentStatus.PartiallyPaid);
             }
+        }
         slip.setAutoComments(request.getComments());
         feePaymentRepository.saveAndFlush(slip);
-    }
         return receipt;
     }
 
