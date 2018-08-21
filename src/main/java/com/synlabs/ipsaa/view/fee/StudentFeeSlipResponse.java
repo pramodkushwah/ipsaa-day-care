@@ -42,6 +42,8 @@ public class StudentFeeSlipResponse implements Response
   private BigDecimal uniformCharges;
   private BigDecimal stationary;
   private BigDecimal transportFee;
+
+  private BigDecimal finalTransportFee;
   private BigDecimal finalAnnualCharges;
 
   private BigDecimal admissionFee;
@@ -67,6 +69,13 @@ public class StudentFeeSlipResponse implements Response
 
   private List<StudentFeePaymentResponse> payments;
 
+  public BigDecimal getFinalTransportFee() {
+    return finalTransportFee;
+  }
+
+  public void setFinalTransportFee(BigDecimal finalTransportFee) {
+    this.finalTransportFee = finalTransportFee;
+  }
 
   public BigDecimal getUniformPaidAmountTotal() {
     return uniformPaidAmountTotal;
@@ -171,7 +180,7 @@ public class StudentFeeSlipResponse implements Response
     this.depositFeeDiscount=slip.getDepositFeeDiscount();
     this.gstAmount=slip.getGstAmount();
     this.feeRatio=slip.getFeeRatio();
-
+    this.finalTransportFee=slip.getFinalTransportFee();
     this.adjust = this.adjust == null ? BigDecimal.ZERO : this.adjust;
     this.balance = this.balance == null ? BigDecimal.ZERO : this.balance;
     this.autoComments = slip.getAutoComments();

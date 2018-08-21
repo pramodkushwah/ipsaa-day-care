@@ -279,7 +279,9 @@ public class FeeService extends BaseService
     {
       throw new ValidationException("Missing program");
     }
-
+    if(request.getAdmissionFee()==null){
+     request.setAdmissionFee(0);
+    }
     if (request.getDeposit() == null)
     {
       request.setDeposit(0);
