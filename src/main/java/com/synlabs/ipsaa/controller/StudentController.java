@@ -1,7 +1,9 @@
 package com.synlabs.ipsaa.controller;
 
+import com.itextpdf.text.DocumentException;
 import com.synlabs.ipsaa.entity.student.Student;
 import com.synlabs.ipsaa.service.CenterService;
+import com.synlabs.ipsaa.service.DocumentService;
 import com.synlabs.ipsaa.service.StudentService;
 import com.synlabs.ipsaa.view.center.ApprovalCountResponse;
 import com.synlabs.ipsaa.view.center.CenterRequest;
@@ -11,6 +13,7 @@ import com.synlabs.ipsaa.view.student.StudentFilterRequest;
 import com.synlabs.ipsaa.view.student.StudentRequest;
 import com.synlabs.ipsaa.view.student.StudentResponse;
 import com.synlabs.ipsaa.view.student.StudentSummaryResponse;
+import freemarker.template.TemplateException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.List;
@@ -45,6 +49,9 @@ public class StudentController
 
   @Autowired
   private StudentService studentService;
+
+  @Autowired
+  private DocumentService documentService;
 
   @Autowired
   private CenterService centerService;
@@ -68,6 +75,17 @@ public class StudentController
   public StudentResponse get(@PathVariable(name = "studentId") Long studentId)
   {
     return studentService.getStudent(new StudentRequest(studentId));
+  }
+
+  @GetMapping("/pdf/{studentId}")
+  @Secured(STUDENT_READ)
+  public byte[] getStudentProfile(@PathVariable(name = "studentId") Long studentId, HttpServletResponse response) throws IOException, DocumentException, TemplateException, InterruptedException, ParseException, org.dom4j.DocumentException {
+    StudentResponse student = studentService.getStudent(new StudentRequest(studentId));
+    response.setContentType("application/octet-stream");
+// String fileName = "3dd55924-5b87-4cbb-a917-4426b42a4a35.pdf";
+    response.setHeader("Content-disposition", "attachment; filename=" + student.getFirstName()+ ".pdf");
+    response.setHeader("fileName", student.getFirstName()+ ".pdf");
+    return studentService.generateStudentPdf(student);
   }
 
   @PostMapping

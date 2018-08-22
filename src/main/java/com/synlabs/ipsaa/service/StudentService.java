@@ -28,9 +28,11 @@ import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.common.PageResponse;
 import com.synlabs.ipsaa.view.fee.*;
 import com.synlabs.ipsaa.view.student.*;
+import freemarker.template.TemplateException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.dom4j.DocumentException;
 import org.joda.time.LocalDate;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
@@ -282,6 +284,11 @@ public class StudentService extends BaseService
   private boolean isEmptyOrNa(String string)
   {
     return StringUtils.isEmpty(string) || string.equalsIgnoreCase("na");
+  }
+
+
+  public byte[] generateStudentPdf(StudentResponse student) throws IOException, DocumentException, TemplateException, InterruptedException, ParseException, com.itextpdf.text.DocumentException {
+    return documentService.generateStudentPdf(student);
   }
 
   @Transactional
