@@ -127,7 +127,7 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Final Annual Charges
-                  <a href="#" data-toggle="tooltip" title="Hooray!">
+                  <a href="#" data-toggle="tooltip" title="Annual Fee - Discount">
                     <i class="fa fa-info"></i>
                   </a>
                 </label>
@@ -154,7 +154,11 @@
             
             <div class="col-md-4">
               <div class="form-group">
-                <label class="control-label">Final Admission Charges</label>
+                <label class="control-label">Final Admission Charges
+                  &nbsp;<a href="#" data-toggle="tooltip" title="Admission Charges - Discount">
+                    <i class="fa fa-info"></i>
+                  </a>
+                </label>
                 <input class="form-control" type="text" ng-model="insertStudentFee.finalAdmissionCharges" required 
                 ng-readonly="insertStudentFee.mode=='Show' || insertStudentFee.admissionCharges <= 0" 
                 ng-change="calculateDiscount('admissionCharges', 'finalAdmissionCharges', 'discountAdmissionCharges')">
@@ -177,7 +181,11 @@
             
             <div class="col-md-4">
               <div class="form-group">
-                <label class="control-label">Final Monthly Fees Amount</label>
+                <label class="control-label">Final Monthly Fees Amount
+                  &nbsp;<a href="#" data-toggle="tooltip" title="Monthly Program Fees - Discount">
+                    <i class="fa fa-info"></i>
+                  </a>
+                </label>
                 <input class="form-control" type="text" ng-model="insertStudentFee.finalBaseFee" required 
                 ng-readonly="insertStudentFee.mode=='Show' || insertStudentFee.baseFee <= 0" 
                 ng-change="calculateDiscount('baseFee', 'finalBaseFee', 'discountBaseFee')">
@@ -200,7 +208,11 @@
             
             <div class="col-md-4">
               <div class="form-group">
-                <label class="control-label">Final Security Deposit Fees</label>
+                <label class="control-label">Final Security Deposit Fees
+                  &nbsp;<a href="#" data-toggle="tooltip" title="Security Deposit - Discount">
+                    <i class="fa fa-info"></i>
+                  </a>
+                </label>
                 <input class="form-control" type="text" ng-model="insertStudentFee.finalSecurityDeposit" required 
                 ng-readonly="insertStudentFee.mode=='Show' || insertStudentFee.securityDeposit <= 0" 
                 ng-change="calculateDiscount('securityDeposit', 'finalSecurityDeposit', 'discountSecurityDeposit')">
@@ -217,7 +229,11 @@
             
             <div class="col-md-6">
               <div class="form-group">
-                <label class="control-label">Final Transport Fees</label>
+                <label class="control-label">Final Transport Fees
+                  &nbsp;<a href="#" data-toggle="tooltip" title="Quartyerly(Monthly Transport * 3)">
+                    <i class="fa fa-info"></i>
+                  </a>
+                </label>
                 <input class="form-control" type="text" ng-model="insertStudentFee.finalTransportFees" readonly>
               </div>
             </div>
@@ -273,20 +289,31 @@
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
-                <label class="control-label">GST-Fee</label>
+                <label class="control-label">GST-Fee
+                  &nbsp;<a href="#" data-toggle="tooltip" title="18% If Applicable">
+                    <i class="fa fa-info"></i>
+                  </a>
+                </label>
                 <input class="form-control" type="text" ng-model="insertStudentFee.gstFee" readonly>
               </div>
             </div>
 
             <div class="col-md-6">
               <div class="form-group">
-                <label class="control-label">Final Total Fees</label>
+                <label class="control-label">Final Total Fees
+                   &nbsp;<a href="#" data-toggle="tooltip" 
+                   title="Final Annual Fee + 
+                   Final Addmission Fee + 
+                   Final Monthly Fee + 
+                   Final Security Deposit + 
+                   Final Transport Fee + 
+                   Uniform Charges + 
+                   Stationary Charges + 
+                   GST Fee">
+                    <i class="fa fa-info"></i>
+                  </a>
+                </label>
                 <input class="form-control" type="text" ng-model="insertStudentFee.finalFee" readonly>
-              </div>
-            </div>
-            <div class="col-md-12" style="margin-bottom: 10px">
-              <a ng-click="toggleBreakdown()" style="float: right;">View Details</a>
-              <div ng-show="showBreakdown">
               </div>
             </div>
           </div>

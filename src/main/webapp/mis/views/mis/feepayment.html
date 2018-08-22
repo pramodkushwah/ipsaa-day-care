@@ -197,7 +197,13 @@
         </div>
 
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">GST Amonut</label>
+              <input class="form-control" type="text" required ng-model="selected.gstAmount" readonly>
+            </div>
+          </div>
+          <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Reference</label>
               <input class="form-control" type="text" required ng-model="selected.txnid" ng-readonly="selected.status=='Paid'">

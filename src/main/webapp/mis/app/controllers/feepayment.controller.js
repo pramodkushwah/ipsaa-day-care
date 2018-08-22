@@ -25,13 +25,14 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
     ];
 
     $scope.feeTypes = [
-      { type: 'Base Fee', final: 'finalBaseFee', paid: 'programPaidAmountTotal' },
-      { type: 'Admission Charges', final: 'finalAdmissionFee', paid: 'addmissionPaidAmountTotal' },
-      { type: 'Annual Charges', final: 'finalAnnualCharges', paid: 'annualPaidAmountTotal' },
-      { type: 'Transport Fees', final: 'transportFee', paid: 'transportPaidAmountTotal' },
       { type: 'Uniform Charges', final: 'uniformCharges', paid: 'uniformPaidAmountTotal' },
       { type: 'Stationery Charges', final: 'stationary', paid: 'stationaryPaidAmountTotal' },
-      { type: 'Security Deposite Fee', final: 'finalDepositFee', paid: 'depositPaidAmountTotal'}
+      { type: 'Transport Fees', final: 'transportFee', paid: 'transportPaidAmountTotal' },
+      { type: 'Annual Charges', final: 'finalAnnualCharges', paid: 'annualPaidAmountTotal' },
+      { type: 'Admission Charges', final: 'finalAdmissionFee', paid: 'addmissionPaidAmountTotal' },
+      { type: 'Base Fee', final: 'finalBaseFee', paid: 'programPaidAmountTotal' },
+      { type: 'Security Deposite Fee', final: 'finalDepositFee', paid: 'depositPaidAmountTotal'}, 
+      
     ];
 
   $scope.toggleHide = function() {
