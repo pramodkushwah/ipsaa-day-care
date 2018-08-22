@@ -51,10 +51,12 @@ public class StudentFeeSlipResponse implements Response
   private BigDecimal finalBaseFee;
   private BigDecimal baseFee;
   private BigDecimal finalDepositFee;
+
   private BigDecimal baseFeeDiscount;
   private BigDecimal annualFeeDiscount;
   private BigDecimal addmissionFeeDiscount;
   private BigDecimal depositFeeDiscount;
+
   private BigDecimal gstAmount;
   private BigDecimal feeRatio;
 
@@ -189,7 +191,6 @@ public class StudentFeeSlipResponse implements Response
       payments = new ArrayList<>(slip.getPayments().size());
       slip.getPayments().forEach(payment -> {
         if(payment.getActive()){
-
           uniformPaidAmountTotal=  uniformPaidAmountTotal.add(payment.getUniformPaidAmount()==null?ZERO:payment.getUniformPaidAmount());
           stationaryPaidAmountTotal=stationaryPaidAmountTotal.add(payment.getStationaryPaidAmount()==null?ZERO:payment.getStationaryPaidAmount());
           annualPaidAmountTotal=annualPaidAmountTotal.add(payment.getAnnualPaidAmount()==null?ZERO:payment.getAnnualPaidAmount());
@@ -197,10 +198,9 @@ public class StudentFeeSlipResponse implements Response
           depositPaidAmountTotal=depositPaidAmountTotal.add(payment.getDepositPaidAmount()==null?ZERO:payment.getDepositPaidAmount());
           programPaidAmountTotal=programPaidAmountTotal.add(payment.getProgramPaidAmount()==null?ZERO:payment.getProgramPaidAmount());
           transportPaidAmountTotal=transportPaidAmountTotal.add(payment.getTransportPaidAmount()==null?ZERO:payment.getTransportPaidAmount());
-
-          payments.add(new StudentFeePaymentResponse(payment));
           this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
         }
+        payments.add(new StudentFeePaymentResponse(payment));
       });
     }
   }

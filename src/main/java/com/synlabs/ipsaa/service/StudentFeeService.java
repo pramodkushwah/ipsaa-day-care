@@ -369,7 +369,7 @@ public class StudentFeeService {
                  thisQuarterSlip.setAddmissionFeeDiscount(ZERO);
                  thisQuarterSlip.setFinalAdmissionFee(ZERO);
              }
-             if(thisQuarterSlip.getQuarter()==2){
+             if(thisQuarterSlip.getQuarter()==2 || (thisQuarterSlip.getFinalAnnualCharges()!=null &&thisQuarterSlip.getFinalAnnualCharges().intValue()>0)  ){
                  thisQuarterSlip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount()==null?ZERO:fee.getAnnualFeeDiscount());
                  thisQuarterSlip.setFinalAnnualCharges(fee.getFinalAnnualCharges()==null?ZERO:fee.getFinalAnnualCharges());
              }else{

@@ -14,6 +14,7 @@ public class StudentFeePaymentResponse implements Response
   private BigDecimal  paidAmount;
   private String      paymentDate;
   private Boolean     confirmed;
+  private Boolean     active;
 
   private BigDecimal uniformPaidAmount;
   private BigDecimal stationaryPaidAmount;
@@ -25,6 +26,7 @@ public class StudentFeePaymentResponse implements Response
 
   public StudentFeePaymentResponse(StudentFeePaymentRecord payment) {
     this.id = mask(payment.getId());
+    this.active=payment.getActive();
     this.paidAmount = payment.getPaidAmount();
     this.txnid = payment.getTxnid();
     this.paymentDate = payment.getPaymentDate() == null ? null : payment.getPaymentDate().toString();
@@ -38,6 +40,13 @@ public class StudentFeePaymentResponse implements Response
     this.depositPaidAmount=payment.getDepositPaidAmount();
     this.programPaidAmount=payment.getProgramPaidAmount();
     this.transportPaidAmount=payment.getTransportPaidAmount();
+  }
+
+  public Boolean getActive() {
+    return active;
+  }
+  public void setActive(Boolean active) {
+    this.active = active;
   }
 
   public void setId(Long id) {

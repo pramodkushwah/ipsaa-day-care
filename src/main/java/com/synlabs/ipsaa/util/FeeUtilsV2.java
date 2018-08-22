@@ -86,6 +86,9 @@ public class FeeUtilsV2 {
         }
 
         fee.setFinalTransportFee(fee.getTransportFee().multiply(finalRatio));
+        fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(), null, "Base Fee"));
+        // need to re calculate the discount bcz finalBaseFee saves discount amount + quarterly amount too
+        fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(finalRatio));
 
         BigDecimal totalFee = fee.getFinalBaseFee()
                 .add(fee.getFinalTransportFee())
@@ -144,13 +147,16 @@ public class FeeUtilsV2 {
         } else {
             finalAmount = ammount;
         }
-        BigDecimal diff = discountAmout.subtract(finalAmount);
+        if(discountAmout!=null){
+            BigDecimal diff = discountAmout.subtract(finalAmount);
 
-        //compare diff with tolerance
-        if (Math.abs(diff.doubleValue()) >= FEE_DISCOUNT_CALCULATION_TOLERANCE) {
-            throw new ValidationException(
-                    String.format(discountName + " calculation discount error![Request Fee=%s,Calculated Fee=%s]", discountAmout, finalAmount));
+            //compare diff with tolerance
+            if (Math.abs(diff.doubleValue()) >= FEE_DISCOUNT_CALCULATION_TOLERANCE) {
+                throw new ValidationException(
+                        String.format(discountName + " calculation discount error![Request Fee=%s,Calculated Fee=%s]", discountAmout, finalAmount));
+            }
         }
+
         return finalAmount;
     }
 
