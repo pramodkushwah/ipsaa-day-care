@@ -153,6 +153,7 @@
                     <span class="material-input"></span>
                   </div>
                 </div>
+
                 <div class="col-md-3">
                   <div class="form-group">
                     <div class="checkbox" style="padding-top: 45px;">
@@ -166,7 +167,26 @@
               </div>
 
               <div class="row">
-                <div class="col-md-12">
+                
+                <div class="col-md-4" style="padding-top: 45px;">
+                  <div class="form-group">
+                    <div class="checkbox">
+                      <label>
+                        <input disabled type="checkbox" name="corporate" ng-model="workingStudent.formalSchool"> Formal Student
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="control-label">School Name</label>
+                    <input class="form-control" name="approvalStatus" type="text" ng-model="workingStudent.schoolName" readonly>
+                    <span class="material-input"></span>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
                   <div class="form-group">
                     <label class="control-label">Comment</label>
                     <textarea class="form-control" ng-model="workingStudent.profile" row="5" readonly maxlength="1000"></textarea>
@@ -659,7 +679,7 @@
                           <i class="fa fa-info"></i>
                         </a>
                       </label>
-                      <input class="form-control" type="text" ng-model="studentFee.gstFee" readonly>
+                      <input class="form-control" type="text" ng-model="studentFee.gstAmount" readonly>
                     </div>
                   </div>
                 

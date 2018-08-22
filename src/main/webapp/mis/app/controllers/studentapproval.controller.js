@@ -40,15 +40,20 @@ app.controller('StudentApprovalController', function ($scope, $http, $stateParam
           }
       }
       $('[data-toggle="tooltip"]').tooltip();  
-      $scope.studentFee.finalBaseFee = $scope.studentFee.finalBaseFee / 3;
-      $scope.studentFee.finalTransportFee = $scope.studentFee.transportFee * 3;
+      if($scope.flag) {
+        $scope.studentFee.finalBaseFee = $scope.studentFee.finalBaseFee / 3;
+        $scope.studentFee.finalTransportFee = $scope.studentFee.transportFee * 3;
+      }
+      $scope.flag = false;
     };
+
     $scope.id = $stateParams.id;
     $scope.workingStudent = {};
     $scope.studentFee = {};
     $scope.disableApprove = false;
     $scope.disableReject = false;
     $scope.hasFee=false;
+    $scope.flag = true;
 
     $scope.approveStudent = function (student) {
         if (student) {
