@@ -372,7 +372,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
         } else {
             $scope.showPanel = "slip";
             $scope.selected = angular.copy(studentfee);
-            $scope.selected.actualBaseFee = $scope.selected.totalFee - $scope.selected.adjust;
+            $scope.selected.actualBaseFee = $scope.selected.totalFee - $scope.selected.adjust - $scope.selected.balance - $scope.selected.latePaymentCharge - $scope.selected.extraCharge;
             // $scope.calculateFinalFee($scope.selected);
         }
     };
@@ -382,7 +382,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
         var totalFee;
         $scope.studentfeelist.filter( (fee) => {
           if(fee.id === slip.id) {
-            totalFee = fee.totalFee - fee.balance - fee.extraCharge - fee.latePaymentCharge - fee.adjust;
+            totalFee = fee.totalFee - fee.extraCharge - fee.latePaymentCharge - fee.adjust;
           }
         });
 
