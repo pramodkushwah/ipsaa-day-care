@@ -136,7 +136,7 @@
           <div class="col-md-4">
             <div class="form-group">
               <label class="control-label" ng-readonly="true">Discount <sup>(%)</sup></label>
-              <input class="form-control" type="text" ng-model="selected.discountAnnualCharges" readonly>
+              <input class="form-control" type="text" ng-model="selected.annualFeeDiscount" readonly>
             </div>
           </div>
         
@@ -144,21 +144,21 @@
             <div class="form-group">
               <label class="control-label">Final Annual Charges
               </label>
-              <input class="form-control" type="text" ng-model="selected.finalAnnualFee" readonly>
+              <input class="form-control" type="text" ng-model="selected.finalAnnualCharges" readonly>
             </div>
           </div>
         
           <div class="col-md-4">
             <div class="form-group">
               <label class="control-label" ng-readonly="true">Admission Charges</label>
-              <input class="form-control" type="text" ng-model="selected.admissionCharges" readonly>
+              <input class="form-control" type="text" ng-model="selected.admissionFee" readonly>
             </div>
           </div>
         
           <div class="col-md-4">
             <div class="form-group">
               <label class="control-label" ng-readonly="true">Discount <sup>(%)</sup></label>
-              <input class="form-control" type="text" ng-model="selected.discountAdmissionCharges" readonly>
+              <input class="form-control" type="text" ng-model="selected.addmissionFeeDiscount" readonly>
             </div>
           </div>
         
@@ -166,7 +166,7 @@
             <div class="form-group">
               <label class="control-label">Final Admission Charges &nbsp;
               </label>
-              <input class="form-control" type="text" ng-model="selected.finalAdmissionCharges" readonly>
+              <input class="form-control" type="text" ng-model="selected.finalAdmissionFee" readonly>
             </div>
           </div>
         
@@ -180,7 +180,7 @@
           <div class="col-md-4">
             <div class="form-group">
               <label class="control-label" ng-readonly="true">Discount <sup>(%)</sup></label>
-              <input class="form-control" type="text" ng-model="selected.discountBaseFee" readonly>
+              <input class="form-control" type="text" ng-model="selected.baseFeeDiscount" readonly>
             </div>
             </div>
         
@@ -195,14 +195,14 @@
           <div class="col-md-4">
             <div class="form-group">
               <label class="control-label" ng-readonly="true">Security Deposit</label>
-              <input class="form-control" type="text" ng-model="selected.securityDeposit" readonly>
+              <input class="form-control" type="text" ng-model="selected.deposit" readonly>
             </div>
           </div>
         
           <div class="col-md-4">
             <div class="form-group">
               <label class="control-label" ng-readonly="true">Discount <sup>(%)</sup></label>
-              <input class="form-control" type="text" ng-model="selected.discountSecurityDeposit" readonly>
+              <input class="form-control" type="text" ng-model="selected.depositFeeDiscount" readonly>
             </div>
           </div>
         
@@ -210,7 +210,7 @@
             <div class="form-group">
               <label class="control-label">Final Security Deposit Fees &nbsp;
               </label>
-              <input class="form-control" type="text" ng-model="selected.finalSecurityDeposit" readonly>
+              <input class="form-control" type="text" ng-model="selected.finalDepositFee" readonly>
             </div>
           </div>
         
@@ -246,22 +246,10 @@
         </div>
         
         <div class="row">
-          <div class="col-md-4" ng-show="!!selected.cgst">
-            <div class="form-group">
-              <label class="control-label">C-GST: ({{selected.cgst}}%)</label>
-              <input class="form-control" name="cgst" type="text" readonly ng-model="selected.cGstAmount">
-            </div>
-          </div>
-          <div class="col-md-4" ng-show="!!selected.sgst">
-            <div class="form-group">
-              <label class="control-label">S-GST: ({{selected.sgst}}%)</label>
-              <input class="form-control" name="sgst" type="text" readonly ng-model="selected.sGstAmount">
-            </div>
-          </div>
           <div class="col-md-4" ng-show="!!selected.igst">
             <div class="form-group">
               <label class="control-label">I-GST: ({{selected.igst}}%)</label>
-              <input class="form-control" name="igst" type="text" readonly ng-model="selected.iGstAmount">
+              <input class="form-control" name="igst" type="text" readonly ng-model="selected.igst">
             </div>
           </div>
         </div>
@@ -271,10 +259,16 @@
             <div class="form-group">
               <label class="control-label">GST-Fee &nbsp;
               </label>
-              <input class="form-control" type="text" ng-model="selected.gstFee" readonly>
-            </div>
+              <input class="form-control" type="text" ng-model="selected.gstAmount" readonly>
             </div>
           </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Fee Ratio</label>
+              <input class="form-control" type="number" ng-model="selected.feeRatio" readonly>
+            </div>
+          </div>
+        </div>
 
         <div class="row">
           <div class="col-md-4">
@@ -305,7 +299,9 @@
           <div class="col-md-4">
             <div class="form-group">
               <label class="control-label">Late Payment</label>
-              <input class="form-control" type="number" ng-change="calculateFinalFee(selected)" ng-model="selected.latePaymentCharge" ng-readonly="selected.status=='Paid'">
+              <input class="form-control" type="number" ng-change="calculateFinalFee(selected)" ng-model="selected.latePaymentCharge
+              
+              " ng-readonly="selected.status=='Paid'">
             </div>
           </div><!--Late Payment-->
           <div class="col-md-4">
