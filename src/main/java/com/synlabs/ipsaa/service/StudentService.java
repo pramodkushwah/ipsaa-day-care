@@ -118,6 +118,9 @@ public class StudentService extends BaseService
   private RoleRepository roleRepository;
 
   @Autowired
+  private StudentFeeService studentFeeService;
+
+  @Autowired
   private SharingSheetRepository sharingSheetRepository;
 
   @Autowired
@@ -334,8 +337,9 @@ public class StudentService extends BaseService
       {
         request.getFee().setStudentId(mask(student.getId()));
         request.getFee().setCenterId(mask(center.getId()));
-        StudentFee studentFee = saveStudentFee(request.getFee());
-        feeRepository.saveAndFlush(studentFee);
+        StudentFee slip=studentFeeService.saveStudentFee(request.getFee());
+        studentFeeService.generateFirstFeeSlip(slip.getId());
+        //feeRepository.saveAndFlush(studentFee);
       }
 
       communicationService.sendStudentApprovalEmail(student);
@@ -379,8 +383,9 @@ public class StudentService extends BaseService
     {
       request.getFee().setCenterId(mask(center.getId()));
       request.getFee().setStudentId(mask(student.getId()));
-      StudentFee studentFee = saveStudentFee(request.getFee());
-      feeRepository.saveAndFlush(studentFee);
+      StudentFee slip=studentFeeService.saveStudentFee(request.getFee());
+      studentFeeService.generateFirstFeeSlip(slip.getId());
+      //feeRepository.saveAndFlush(studentFee);
     }
 
     return response;

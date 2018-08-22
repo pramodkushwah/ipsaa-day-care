@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static com.google.common.collect.MoreCollectors.onlyElement;
 import static com.synlabs.ipsaa.service.BaseService.mask;
+import static com.synlabs.ipsaa.service.BaseService.unmask;
 import static com.synlabs.ipsaa.util.BigDecimalUtils.THREE;
 import static java.math.BigDecimal.ZERO;
 
@@ -171,7 +172,7 @@ public class StudentFeeService {
         int requestQuarter = request.getQuarter();
         int requestYear = request.getYear();
 
-            allslips = feePaymentRepository. findByStudentActiveIsTrueAndStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(ApprovalStatus.Approved, FeeDuration.Quarterly, requestQuarter, requestYear,request.getCenterCode());
+            allslips = feePaymentRepository. findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(FeeDuration.Quarterly, requestQuarter, requestYear,request.getCenterCode());
         return allslips;
     }
 
@@ -322,9 +323,9 @@ public class StudentFeeService {
         if(fee==null){
             throw new NotFoundException(String.format("Student fee not found [%s]", request.getStudentId()));
         }
-        if (thisQuarterSlip.getPaymentStatus() == PaymentStatus.Paid)
+        if (thisQuarterSlip.getPaymentStatus() == PaymentStatus.Paid ||thisQuarterSlip.getPaymentStatus() == PaymentStatus.PartiallyPaid)
         {
-            throw new ValidationException("Already paid.");
+            throw new ValidationException("Already paid some or full amount.");
         }
         if(thisQuarterSlip!=null)
         {
@@ -337,8 +338,8 @@ public class StudentFeeService {
             //thisQuarterSlip.setTotalFee(ZERO);
             //thisQuarterSlip.setLastQuarterBalance(balance);
             thisQuarterSlip.setReGenerateSlip(true);
-            thisQuarterSlip.setExtraCharge(request.getExtraCharge()==null?ZERO:request.getExtraCharge());
-            thisQuarterSlip.setLatePaymentCharge(request.getLatePaymentCharge()==null?ZERO:request.getLatePaymentCharge());
+            thisQuarterSlip.setExtraCharge(thisQuarterSlip.getExtraCharge()==null?ZERO:thisQuarterSlip.getExtraCharge());
+            thisQuarterSlip.setLatePaymentCharge(thisQuarterSlip.getLatePaymentCharge()==null?ZERO:thisQuarterSlip.getLatePaymentCharge());
 
             thisQuarterSlip.setCgst(fee.getCgst());
             thisQuarterSlip.setSgst(fee.getSgst());
@@ -361,7 +362,7 @@ public class StudentFeeService {
              thisQuarterSlip.setAnnualFee(fee.getAnnualCharges()==null?ZERO:fee.getAnnualCharges());
              thisQuarterSlip.setAdmissionFee(fee.getAdmissionFee()==null?ZERO:fee.getAdmissionFee());
 
-             if(thisQuarterSlip!=null && thisQuarterSlip.getFinalAdmissionFee().intValue()>0){
+             if(thisQuarterSlip.getFinalAdmissionFee()!=null && thisQuarterSlip.getFinalAdmissionFee().intValue()>0){
                  thisQuarterSlip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
                  thisQuarterSlip.setFinalAdmissionFee(fee.getFinalAdmissionFee()==null?ZERO:fee.getFinalAdmissionFee());
              }else{
@@ -400,7 +401,6 @@ public class StudentFeeService {
         query.select(qStudentFee)
                 .from(qStudentFee)
                 .where(qStudentFee.feeDuration.eq(FeeDuration.Quarterly))
-                .where(qStudentFee.student.approvalStatus.eq(ApprovalStatus.Approved))
                 .where(qStudentFee.student.active.isTrue())
                 .where(qStudentFee.student.corporate.isFalse())
                 .where(qStudentFee.student.center.code.eq(request.getCenterCode()));
@@ -469,7 +469,16 @@ public class StudentFeeService {
                 break;
         }
     }
-
+    public void regenerateStudentSlipAll(List<Long> ids) {
+        Calendar cal = Calendar. getInstance();
+        int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));
+        int year=cal.get(Calendar.YEAR);
+        for(Long id:ids){
+            StudentFeeSlipRequestV2 request=new StudentFeeSlipRequestV2();
+            request.setId(id);
+            this.regenerateFeeSlip(request,quarter,year);
+        }
+    }
     public StudentFeePaymentRequest regenerateStudentSlip(StudentFeeSlipRequestV2 request) {
         Calendar cal = Calendar. getInstance();
         int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));
@@ -588,7 +597,7 @@ public class StudentFeeService {
             }
         }
 
-        slip.setTransportFee(slip.getFinalTransportFee()==null?ZERO:slip.getFinalTransportFee());
+        slip.setFinalTransportFee(slip.getFinalTransportFee()==null?ZERO:slip.getFinalTransportFee());
         if(slip.getFinalTransportFee().intValue()>(transportPaid) || transportPaid==0) {
             BigDecimal amount = slip.getFinalTransportFee().subtract(new BigDecimal(transportPaid));
             if (amount.subtract(paidAmount).intValue() < 0) {

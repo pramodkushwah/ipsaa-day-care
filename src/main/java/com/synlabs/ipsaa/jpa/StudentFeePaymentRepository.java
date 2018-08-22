@@ -35,6 +35,9 @@ public interface StudentFeePaymentRepository extends JpaRepository<StudentFeePay
   List<StudentFeePaymentRequest> findByStudentActiveIsTrueAndStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(ApprovalStatus ststus, FeeDuration period, int quarter, int year, String centerCode);
   List<StudentFeePaymentRequest> findByStudentActiveIsTrueAndStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(ApprovalStatus ststus, FeeDuration period, int quarter, int year);
 
+  List<StudentFeePaymentRequest> findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(FeeDuration period, int quarter, int year, String centerCode);
+
+
   List<StudentFeePaymentRequest> findByStudentAndFeeDurationAndQuarterNotAndYearNot(Student student, FeeDuration period,int quarter, int year);
   List<StudentFeePaymentRequest> findByStudentAndFeeDurationAndQuarterAndYear(Student student, FeeDuration period,int quarter, int year);
 

@@ -180,7 +180,13 @@ public class StudentFeeController
       //return new StudentFeeSlipResponse(studentService.regenerateStudentSlip(request));
         return new StudentFeeSlipResponse(studentFeeService.regenerateStudentSlip(request));
     }
-
+  @Secured(STUDENTFEE_SLIP_WRITE)
+  @PostMapping("/feeslip/regenerateAll")
+  public void reGenerateStudentSlipAll(@RequestBody List<Long> ids)
+  {
+    //return new StudentFeeSlipResponse(studentService.regenerateStudentSlip(request));
+    studentFeeService.regenerateStudentSlipAll(ids);
+  }
     @Secured(STUDENTFEE_SLIP_WRITE)
     @PostMapping("/feeslip")
     // Called when slip save button is pressed
