@@ -3,7 +3,8 @@
     * This is a computer generated document and no signature is required.
   </div>
   <div>
-    Cheque to be prepared in the name of <strong>${student.center.accountName}</strong>
+    Cheque to be prepared in the name of 
+    <strong><#if student.center.accountName??>${student.center.accountName}</#if></strong>
   </div>
   <div>
     Bank Details : <strong>
@@ -14,7 +15,7 @@
     IPSAA HOLDINGS PVT LTD(GST NUMBER) - 06AADCI2179Q1Z2
     <br/>
     IFSC Code : HDFC0000044,
-    A/c No : ${student.center.accountNumber}
+    A/c No : <#if student.center.accountNumber??>${student.center.accountNumber}</#if>
   </strong>
   </div>
   <hr/>

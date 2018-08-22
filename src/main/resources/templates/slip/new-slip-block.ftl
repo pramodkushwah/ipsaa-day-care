@@ -28,7 +28,7 @@
 
 <#if isDeposit==true>
   <tr>
-    <th>Security Diposit</th>
+    <th>Security Deposit</th>
     <td><span> : </span>${security}</td>
   </tr>
 </#if>
@@ -36,6 +36,11 @@
   <tr>
     <th>Program Fee</th>
     <td><span> : </span>${programFee?string["0"]}</td>
+  </tr>
+
+  <tr>
+    <th>Admission Fee</th>
+    <td><span> : </span><#if slip.finalAdmissionFee??>${slip.finalAdmissionFee}</#if></td>
   </tr>
 
   <tr>
@@ -72,7 +77,17 @@
 
   <tr>
     <th>Transport Fee</th>
-    <td><span> : </span>${transportFee}</td>
+    <td><span> : </span>${slip.transportFee}</td>
+  </tr>
+
+  <tr>
+    <th>Uniform</th>
+    <td><span> : </span>${slip.uniformCharges?string["0"]}</td>
+  </tr>
+
+  <tr>
+    <th>Stationary</th>
+    <td><span> : </span><#if slip.stationary??>${slip.stationary?string["0"]}</#if></td>
   </tr>
 
   <tr>

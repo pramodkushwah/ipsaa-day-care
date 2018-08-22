@@ -281,14 +281,36 @@
         <div class="tab-pane" id="photo">
           <input id="studentimg" type="file" style="display:none" accept="image/*" onchange="angular.element(this).scope().setFiles(this)"/>
           <div class="row">
-            <div class="col-lg-6">
+            <div class="col-md-6" ng-hide="webCamOpen">
               <div class="card">
                 <div class="photo">
                   <img ng-src="{{studentImageURI}}"/>
                 </div>
               </div>
             </div>
+            <div class="col-lg-12 col-md-6" ng-show="webCamOpen">
+              
+                <div class="app panel-body">
+              
+                  <a href="#" id="start-camera" class="visible">Touch here to start the app.</a>
+                  <video id="camera-stream"></video>
+                  <img id="snap">
+              
+                  <p id="error-message"></p>
+              
+                  <div class="controls">
+                    <a href="#" id="delete-photo" title="Delete Photo" class="disabled"><i class="material-icons">delete</i></a>
+                    <a href="#" id="take-photo" title="Take Photo"><i class="material-icons">camera_alt</i></a>
+                    <a href="#" id="download-photo" download="selfie.png" title="Save Photo" class="disabled"><i class="material-icons">file_download</i></a>
+                  </div>
+              
+                  <!-- Hidden canvas element. Used for taking snapshot of video. -->
+                  <canvas></canvas>
+              
+                </div>
+            </div>
           </div>
+          <button class="btn btn-rose btn-round" ng-click="openWebCam()" ng-hide="workingStudent.mode=='Show'">Capture Photo</button>
           <button class="btn btn-rose btn-round" ng-click="browseImage()" ng-hide="workingStudent.mode=='Show'">Select Photo</button>
           <button class="btn btn-rose btn-round" ng-click="uploadImage()" ng-hide="workingStudent.mode=='Show'">Update</button>
         </div>
@@ -762,27 +784,6 @@
             </div>
             
             <div class="row">
-              <div class="col-md-4" ng-show="!!workingStudent.fee.cgst">
-                <div class="form-group">
-                  <label class="control-label">C-GST: ({{workingStudent.fee.cgst}}%)</label>
-                  <input class="form-control" name="cgst" type="number" readonly ng-model="workingStudent.fee.cGstAmount">
-                </div>
-              </div>
-              <div class="col-md-4" ng-show="!!workingStudent.fee.sgst">
-                <div class="form-group">
-                  <label class="control-label">S-GST: ({{workingStudent.fee.sgst}}%)</label>
-                  <input class="form-control" name="sgst" type="number" readonly ng-model="workingStudent.fee.sGstAmount">
-                </div>
-              </div>
-              <div class="col-md-4" ng-show="!!workingStudent.fee.igst">
-                <div class="form-group">
-                  <label class="control-label">I-GST: ({{workingStudent.fee.igst}}%)</label>
-                  <input class="form-control" name="igst" type="number" readonly ng-model="workingStudent.fee.iGstAmount">
-                </div>
-              </div>
-            </div>
-            
-            <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
                   <label class="control-label">Comment*</label>
@@ -821,6 +822,10 @@
           </div>
           <div class="form-footer text-right">
             <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="hideSave"></i>
+            
+            <button class="btn btn-success" ng-click="generatePdf(workingStudent.id)" ng-disabled="pdfGenerate" ng-show="workingStudent.mode=='Show'||workingStudent.mode=='Edit'">Generate PDF
+              <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="pdfGenerate"></i>
+            </button>
             <button class="btn btn-rose btn-fill" ng-click="saveStudent(workingStudent)" ng-show="workingStudent.mode=='Edit'||workingStudent.mode=='New'"
             ng-disabled="disableSave">
               <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableSave"></i>

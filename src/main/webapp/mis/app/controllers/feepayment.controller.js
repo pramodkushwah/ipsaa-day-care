@@ -31,7 +31,7 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
       { type: 'Annual Charges', final: 'finalAnnualCharges', paid: 'annualPaidAmountTotal' },
       { type: 'Admission Charges', final: 'finalAdmissionFee', paid: 'addmissionPaidAmountTotal' },
       { type: 'Base Fee', final: 'finalBaseFee', paid: 'programPaidAmountTotal' },
-      { type: 'Security Deposite Fee', final: 'finalDepositFee', paid: 'depositPaidAmountTotal'}, 
+      { type: 'Security Deposite Fee', final: 'finalDepositFee', paid: 'depositPaidAmountTotal'}
       
     ];
 

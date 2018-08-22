@@ -4,6 +4,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     $scope.activeFilter = true;
     $scope.privileges = [];
     $scope.workingStudent = newStudent();
+    $scope.webCamOpen = false;
+    $scope.pdfGenerate = false;
 
     function debounce(func, wait, immediate) {
         var timeout;
@@ -595,6 +597,27 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
         }
     }
 
+  $scope.generatePdf = function(studentId) {
+    $scope.pdfGenerate = true;
+    $http.get('/api/student/pdf/' + studentId, {
+      responseType: 'arraybuffer'
+    }).then(
+      function (response) {
+        
+        var blob = new Blob([response.data], {
+          type: 'application/octet-stream'
+        });
+        saveAs(blob, response.headers("fileName"));
+        $scope.pdfGenerate = false;
+      },
+      function (response) {
+        $scope.pdfGenerate = false;
+        console.log(response);
+        // error(response.error);
+      }
+    );
+  }
+
   $scope.calculateDiscount = function (base, final, targetDiscount) {
     var fee = $scope.workingStudent.fee;
     if (fee[base] > 0 && fee[final]) {
@@ -644,6 +667,169 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     else 
       student.fee.gstFee = 0;
     StudentFeeService.calculateFinalFee(student.fee);
+  }
+
+  $scope.openWebCam = function() {
+    $scope.webCamOpen = true;
+    // References to all the element we will need.
+    var video = document.querySelector('#camera-stream'),
+      image = document.querySelector('#snap'),
+      start_camera = document.querySelector('#start-camera'),
+      controls = document.querySelector('.controls'),
+      take_photo_btn = document.querySelector('#take-photo'),
+      delete_photo_btn = document.querySelector('#delete-photo'),
+      download_photo_btn = document.querySelector('#download-photo'),
+      error_message = document.querySelector('#error-message');
+
+
+    // The getUserMedia interface is used for handling camera input.
+    // Some browsers need a prefix so here we're covering all the options
+    navigator.getMedia = (navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia);
+
+
+    if (!navigator.getMedia) {
+      displayErrorMessage("Your browser doesn't have support for the navigator.getUserMedia interface.");
+      hideUI(video, controls, start_camera, snap, error_message);
+    }
+    else {
+
+      // Request the camera.
+      navigator.getMedia(
+        {
+          video: true
+        },
+        // Success Callback
+        function (stream) {
+
+          // Create an object URL for the video stream and
+          // set it as src of our HTLM video element.
+          video.src = window.URL.createObjectURL(stream);
+
+          // Play the video element to start the stream.
+          video.play();
+          video.onplay = function () {
+            showVideo(video, controls, start_camera, snap, error_message);
+          };
+
+        },
+        // Error Callback
+        function (err) {
+          displayErrorMessage("There was an error with accessing the camera stream: " + err.name, err);
+          hideUI(video, controls, start_camera, snap, error_message);
+        }
+      );
+
+    }
+
+    // Mobile browsers cannot play video without user input,
+    // so here we're using a button to start it manually.
+    start_camera.addEventListener("click", function (e) {
+
+      e.preventDefault();
+
+      // Start video playback manually.
+      video.play();
+      showVideo(video, controls, start_camera, snap, error_message);
+
+    });
+
+
+    take_photo_btn.addEventListener("click", function (e) {
+
+      e.preventDefault();
+
+      var snap = takeSnapshot(video);
+
+      // Show image. 
+      image.setAttribute('src', snap);
+      image.classList.add("visible");
+
+      // Enable delete and save buttons
+      delete_photo_btn.classList.remove("disabled");
+      download_photo_btn.classList.remove("disabled");
+
+      // Set the href attribute of the download button to the snap url.
+      download_photo_btn.href = snap;
+
+      // Pause video playback of stream.
+      video.pause();
+
+    });
+
+
+    delete_photo_btn.addEventListener("click", function (e) {
+
+      e.preventDefault();
+
+      // Hide image.
+      image.setAttribute('src', "");
+      image.classList.remove("visible");
+
+      // Disable delete and save buttons
+      delete_photo_btn.classList.add("disabled");
+      download_photo_btn.classList.add("disabled");
+
+      // Resume playback of stream.
+      video.play();
+
+    });
+  }
+
+  function showVideo(video, controls, start_camera, snap, error_message) {
+    // Display the video stream and the controls.
+
+    hideUI(video, controls, start_camera, snap, error_message);
+    video.classList.add("visible");
+    controls.classList.add("visible");
+  }
+
+
+  function takeSnapshot(video) {
+    // Here we're using a trick that involves a hidden canvas element.  
+
+    var hidden_canvas = document.querySelector('canvas'),
+      context = hidden_canvas.getContext('2d');
+
+    var width = video.videoWidth,
+      height = video.videoHeight;
+
+    if (width && height) {
+
+      // Setup a canvas with the same dimensions as the video.
+      hidden_canvas.width = width;
+      hidden_canvas.height = height;
+
+      // Make a copy of the current frame in the video on the canvas.
+      context.drawImage(video, 0, 0, width, height);
+
+      // Turn the canvas image into a dataURL that can be used as a src for our photo.
+      return hidden_canvas.toDataURL('image/png');
+    }
+  }
+
+
+  function displayErrorMessage(error_msg, error) {
+    error = error || "";
+    if (error) {
+      console.error(error);
+    }
+
+    error_message.innerText = error_msg;
+    error_message.classList.add("visible");
+  }
+
+
+  function hideUI(video, controls, start_camera, snap, error_message) {
+    // Helper function for clearing the app UI.hideUI
+
+    controls.classList.remove("visible");
+    start_camera.classList.remove("visible");
+    video.classList.remove("visible");
+    snap.classList.remove("visible");
+    error_message.classList.remove("visible");
   }
 
     function ok(message) {
