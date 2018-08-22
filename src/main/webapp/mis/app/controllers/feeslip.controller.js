@@ -374,6 +374,8 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
             $scope.selected = angular.copy(studentfee);
             $scope.selected.actualBaseFee = $scope.selected.totalFee - $scope.selected.adjust;
             // $scope.calculateFinalFee($scope.selected);
+            $scope.selected.finalBaseFee = ($scope.selected.baseFee * ((100 - $scope.selected.baseFeeDiscount)/100)).toFixed(2);
+          $scope.selected.finalTransportFees = $scope.selected.transportFee * $scope.selected.feeRatio;
         }
     };
 
