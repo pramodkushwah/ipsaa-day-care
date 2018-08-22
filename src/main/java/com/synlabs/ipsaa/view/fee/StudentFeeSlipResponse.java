@@ -60,6 +60,7 @@ public class StudentFeeSlipResponse implements Response
   private BigDecimal gstAmount;
   private BigDecimal feeRatio;
 
+  private BigDecimal totalPaidAmount=ZERO;
   private BigDecimal uniformPaidAmountTotal=ZERO;
   private BigDecimal stationaryPaidAmountTotal=ZERO;
   private BigDecimal annualPaidAmountTotal=ZERO;
@@ -70,6 +71,14 @@ public class StudentFeeSlipResponse implements Response
 
 
   private List<StudentFeePaymentResponse> payments;
+
+  public BigDecimal getTotalPaidAmount() {
+    return totalPaidAmount;
+  }
+
+  public void setTotalPaidAmount(BigDecimal totalPaidAmount) {
+    this.totalPaidAmount = totalPaidAmount;
+  }
 
   public BigDecimal getFinalTransportFee() {
     return finalTransportFee;
@@ -199,6 +208,7 @@ public class StudentFeeSlipResponse implements Response
           programPaidAmountTotal=programPaidAmountTotal.add(payment.getProgramPaidAmount()==null?ZERO:payment.getProgramPaidAmount());
           transportPaidAmountTotal=transportPaidAmountTotal.add(payment.getTransportPaidAmount()==null?ZERO:payment.getTransportPaidAmount());
           this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
+          this.totalPaidAmount=this.totalPaidAmount.add(payment.getPaidAmount());
         }
         payments.add(new StudentFeePaymentResponse(payment));
       });

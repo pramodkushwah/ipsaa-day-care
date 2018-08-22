@@ -684,7 +684,7 @@ public class StudentFeeService {
             throw new ValidationException(String.format("Cannot locate Receipt[id = %s]", mask(request.getId())));
         }
 
-        if (receipt.getConfirmed() != null && receipt.getConfirmed()) {
+        if (receipt.getConfirmed() != null && receipt.getConfirmed() && !receipt.getActive()) {
             throw new ValidationException("Confirmed Receipt cannot update.");
         }
 
@@ -697,7 +697,7 @@ public class StudentFeeService {
         }
         else {
             receipt.setActive(false);
-            if(request.getComments()!=null){
+            if(request.getComments()==null){
                 throw new ValidationException("Comment is missing");
             }
             receipt.setComment(request.getComments());
