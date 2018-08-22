@@ -42,6 +42,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.math.BigDecimal.ZERO;
+
 @Service
 public class DocumentService extends BaseService
 {
@@ -425,17 +427,17 @@ public class DocumentService extends BaseService
       subTotal = subTotal.add(slip.getAnnualFee());
     }
     rootMap.put("subTotal", subTotal);
-    if (slip.getSgst() != null && !slip.getSgst().equals(BigDecimal.ZERO))
+    if (slip.getSgst() != null && !slip.getSgst().equals(ZERO))
     {
       rootMap.put("sgst", slip.getSgst());
       rootMap.put("sgstAmount", FeeUtils.calculateGST(slip, GST.SGST));
     }
-    if (slip.getCgst() != null && !slip.getCgst().equals(BigDecimal.ZERO))
+    if (slip.getCgst() != null && !slip.getCgst().equals(ZERO))
     {
       rootMap.put("cgst", slip.getCgst());
       rootMap.put("cgstAmount", FeeUtils.calculateGST(slip, GST.CGST));
     }
-    if (slip.getIgst() != null && !slip.getIgst().equals(BigDecimal.ZERO))
+    if (slip.getIgst() != null && !slip.getIgst().equals(ZERO))
     {
       rootMap.put("igst", slip.getIgst());
       rootMap.put("igstAmount", FeeUtils.calculateGST(slip, GST.IGST));
@@ -521,6 +523,16 @@ public class DocumentService extends BaseService
       {
         feeRequest.setLatePaymentCharge(new BigDecimal(0));
       }
+      if(feeRequest.getFinalAdmissionFee()==null){
+        feeRequest.setFinalAdmissionFee(ZERO);
+      }
+      if(feeRequest.getUniformCharges()==null){
+        feeRequest.setUniformCharges(ZERO);
+      }
+      if(feeRequest.getStationary()==null){
+        feeRequest.setStationary(ZERO);
+      }
+
       String serial = feeRequest.getReceiptSerial();
       Student student = feeRequest.getStudent();
       if (StringUtils.isEmpty(serial))
