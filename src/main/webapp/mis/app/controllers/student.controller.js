@@ -212,6 +212,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     };
 
     function newStudent() {
+        var x = new Date();
+        var month = x.getMonth() + 1;
         var student = {
             mode: 'New',
             active: true, id: null, corporate: false,
@@ -225,7 +227,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
                 id: null,
                 residentialAddress: {},
                 officeAddress: {}
-            }
+            },
+            admissionDate: x.getFullYear() + '-' + month + '-' + x.getDate()
         };
         return student;
     }
@@ -577,8 +580,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
                     studentFee.discountBaseFee = 0
                     studentFee.finalBaseFee = programFee.fee
                     studentFee.discountSecurityDeposit = 0
-                    studentFee.finalSecurityDeposit = programFee.deposit
-                    StudentFeeService.calculateGstFee(studentFee);  
+                    studentFee.finalSecurityDeposit = programFee.deposit 
                     StudentFeeService.calculateFinalFee(studentFee);
                 },
                 function (response) {
@@ -633,6 +635,15 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     if (fee.satationary < 0)
       fee.satationary = 0;
     StudentFeeService.calculateFinalFee(fee);
+  }
+
+  $scope.formalClicked = function(student) {
+    student.fee = student.fee ? student.fee : {};
+    if (student.formalSchool)
+      student.fee.gstFee = (student.fee.finalAnnualFee + student.fee.finalBaseFee * 3) * 0.18;
+    else 
+      student.fee.gstFee = 0;
+    StudentFeeService.calculateFinalFee(student.fee);
   }
 
     function ok(message) {
