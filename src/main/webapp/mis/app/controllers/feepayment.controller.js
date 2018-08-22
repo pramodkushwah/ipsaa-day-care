@@ -51,6 +51,9 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
         } else {
             $scope.showPanel = true;
             $scope.selected = angular.copy(studentfee);
+            setTimeout(() => {
+              $('[data-toggle="tooltip"]').tooltip();  
+            }, 1000);
         }
     };
 

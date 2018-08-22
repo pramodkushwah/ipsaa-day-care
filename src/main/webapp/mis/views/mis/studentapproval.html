@@ -487,45 +487,202 @@
                 </div>
 
                 <div class="row">
-                  <div class="col-md-3">
+                  <div class="col-md-4">
                     <div class="form-group">
-                      <label class="control-label" ng-readonly="true">Base fee</label>
+                      <label class="control-label" ng-readonly="true">Annual Charges</label>
+                      <input class="form-control" type="text" ng-model="studentFee.annualFee" readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label" ng-readonly="true">Discount <sup>(%)</sup></label>
+                      <input class="form-control" type="text" ng-model="studentFee.discountAnnualCharges" readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Final Annual Charges
+                        <a href="#" data-toggle="tooltip" title="Annual Fee - Discount">
+                          <i class="fa fa-info"></i>
+                        </a>
+                      </label>
+                      <input class="form-control" type="text" ng-model="studentFee.finalAnnualFee" required readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label" ng-readonly="true">Admission Charges</label>
+                      <input class="form-control" type="text" ng-model="studentFee.admissionCharges" readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label" ng-readonly="true">Discount <sup>(%)</sup></label>
+                      <input class="form-control" type="text" ng-model="studentFee.discountAdmissionCharges" readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Final Admission Charges &nbsp;
+                        <a href="#" data-toggle="tooltip" title="Admission Charges - Discount">
+                          <i class="fa fa-info"></i>
+                        </a>
+                      </label>
+                      <input class="form-control" type="text" ng-model="studentFee.finalAdmissionCharges" readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label" ng-readonly="true">Monthly Program Fees</label>
                       <input class="form-control" type="text" ng-model="studentFee.baseFee" readonly>
-                      <span class="material-input"></span>
                     </div>
                   </div>
-                  <div class="col-md-3">
+                
+                  <div class="col-md-4">
                     <div class="form-group">
-                      <label class="control-label">Discount</label>
-                      <input class="form-control" type="number" ng-model="studentFee.discount" readonly>
-                      <span class="material-input"></span>
+                      <label class="control-label" ng-readonly="true">Discount <sup>(%)</sup></label>
+                      <input class="form-control" type="text" ng-model="studentFee.discountBaseFee" readonly>
                     </div>
                   </div>
-                  <div class="col-md-3">
+                
+                  <div class="col-md-4">
                     <div class="form-group">
-                      <label class="control-label">Final fee</label>
+                      <label class="control-label">Final Monthly Fees Amount &nbsp;
+                        <a href="#" data-toggle="tooltip" title="Monthly Program Fees - Discount">
+                          <i class="fa fa-info"></i>
+                        </a>
+                      </label>
+                      <input class="form-control" type="text" ng-model="studentFee.finalBaseFee" readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label" ng-readonly="true">Security Deposit</label>
+                      <input class="form-control" type="text" ng-model="studentFee.securityDeposit" readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label" ng-readonly="true">Discount <sup>(%)</sup></label>
+                      <input class="form-control" type="text" ng-model="studentFee.discountSecurityDeposit" readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="control-label">Final Security Deposit Fees &nbsp;
+                        <a href="#" data-toggle="tooltip" title="Security Deposit - Discount">
+                          <i class="fa fa-info"></i>
+                        </a>
+                      </label>
+                      <input class="form-control" type="text" ng-model="studentFee.finalSecurityDeposit" readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label" ng-readonly="true">Monthly Transport Fees</label>
+                      <input class="form-control" type="text" ng-model="studentFee.transportFee" readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">Final Transport Fees &nbsp;
+                        <a href="#" data-toggle="tooltip" title="Quartyerly(Monthly Transport * 3)">
+                          <i class="fa fa-info"></i>
+                        </a>
+                      </label>
+                      <input class="form-control" type="text" ng-model="studentFee.finalTransportFee" readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label" ng-readonly="true">Uniform Charges</label>
+                      <input class="form-control" type="text" ng-model="studentFee.uniformCharges" readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label" ng-readonly="true">Stationery Charges</label>
+                      <input class="form-control" type="text" ng-model="studentFee.stationary" readonly>
+                    </div>
+                  </div>
+                
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-4" ng-show="!!studentFee.cgst">
+                    <div class="form-group">
+                      <label class="control-label">C-GST: ({{studentFee.cgst}}%)</label>
+                      <input class="form-control" name="cgst" type="text" readonly ng-model="studentFee.cGstAmount">
+                    </div>
+                  </div>
+                  <div class="col-md-4" ng-show="!!studentFee.sgst">
+                    <div class="form-group">
+                      <label class="control-label">S-GST: ({{studentFee.sgst}}%)</label>
+                      <input class="form-control" name="sgst" type="text" readonly ng-model="studentFee.sGstAmount">
+                    </div>
+                  </div>
+                  <div class="col-md-4" ng-show="!!studentFee.igst">
+                    <div class="form-group">
+                      <label class="control-label">I-GST: ({{studentFee.igst}}%)</label>
+                      <input class="form-control" name="igst" type="text" readonly ng-model="studentFee.iGstAmount">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label class="control-label">Comment*</label>
+                      <input class="form-control" type="text" ng-model="studentFee.comment" readonly>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">GST-Fee &nbsp;
+                        <a href="#" data-toggle="tooltip" title="18% If Applicable">
+                          <i class="fa fa-info"></i>
+                        </a>
+                      </label>
+                      <input class="form-control" type="text" ng-model="studentFee.gstFee" readonly>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">Final Total Fees &nbsp;
+                        <a href="#" data-toggle="tooltip" title="Final Annual Fee + 
+Final Addmission Fee + 
+Final Monthly Fee + 
+Final Security Deposit + 
+Final Transport Fee + 
+Uniform Charges + 
+Stationary Charges + 
+GST Fee">
+                          <i class="fa fa-info"></i>
+                        </a>
+                      </label>
                       <input class="form-control" type="text" ng-model="studentFee.finalFee" readonly>
-                      <span class="material-input"></span>
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <div class="form-group">
-                      <label class="control-label">Fee Duration</label>
-                      <input class="form-control" type="text" ng-model="studentFee.finalFee" readonly>
-                      <span class="material-input"></span>
                     </div>
                   </div>
                 </div>
 
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <label class="control-label">Comment</label>
-                      <input class="form-control" type="text" ng-model="studentFee.comments" readonly>
-                      <span class="material-input"></span>
-                    </div>
-                  </div>
-                </div>
+
               </div>
               <div ng-show="!hasFee">
                 <p>Student Fee is not Created.</p>

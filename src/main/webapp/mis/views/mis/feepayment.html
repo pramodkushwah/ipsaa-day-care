@@ -260,14 +260,19 @@
                 <td>{{payment.paidAmount}}</td>
                 <td>{{payment.paymentDate}}</td>
                 <td>
+                  <span ng-hide="payment.active">Rejected &nbsp;
+                    <a href="#" data-toggle="tooltip" title="{{payment.comment}}">
+                      <i class="fa fa-info"></i>
+                    </a>
+                  </span>
                   <button class="btn btn-sm"
                           ng-class="payment.confirmed?'btn-success':'btn-rose'"
                           ng-click="payment.confirmed?null:confirm(payment)"
-                          ng-disabled="payment.disabled">
+                          ng-disabled="payment.disabled" ng-hide="!payment.active">
                     <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="payment.disabled"></i>
                     {{payment.confirmed?'confirmed':'confirm'}}
                   </button>
-                  <button class="btn btn-sm" ng-hide="payment.confirmed" ng-click="showCommentField(payment)">Reject</button>
+                  <button class="btn btn-sm" ng-hide="payment.confirmed || !payment.active" ng-click="showCommentField(payment)">Reject</button>
                 </td>
               </tr>
               </thead>
