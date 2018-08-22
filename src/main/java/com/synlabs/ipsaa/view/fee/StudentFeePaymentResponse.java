@@ -15,6 +15,7 @@ public class StudentFeePaymentResponse implements Response
   private String      paymentDate;
   private Boolean     confirmed;
   private Boolean     active;
+  private String      comment;
 
   private BigDecimal uniformPaidAmount;
   private BigDecimal stationaryPaidAmount;
@@ -40,6 +41,15 @@ public class StudentFeePaymentResponse implements Response
     this.depositPaidAmount=payment.getDepositPaidAmount();
     this.programPaidAmount=payment.getProgramPaidAmount();
     this.transportPaidAmount=payment.getTransportPaidAmount();
+    this.comment=payment.getComment();
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
   }
 
   public Boolean getActive() {

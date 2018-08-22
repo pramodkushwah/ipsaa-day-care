@@ -697,7 +697,9 @@ public class StudentFeeService {
         }
         else {
             receipt.setActive(false);
-            if(request.getComments()!=null)
+            if(request.getComments()!=null){
+                throw new ValidationException("Comment is missing");
+            }
             receipt.setComment(request.getComments());
             paymentRecordRepository.saveAndFlush(receipt);
             if (slip.getTotalFee().intValue() <= receipt.getRequest().getPaidAmount().intValue()) {
