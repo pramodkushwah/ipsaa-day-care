@@ -15,7 +15,7 @@
     IPSAA HOLDINGS PVT LTD(GST NUMBER) - 06AADCI2179Q1Z2
     <br/>
     IFSC Code : HDFC0000044,
-    A/c No : <#if student.center.accountNumber??>${student.center.accountNumber}</#if>
+     <#if student.center.accountNumber??>A/c No : ${student.center.accountNumber}</#if>
   </strong>
   </div>
   <hr/>

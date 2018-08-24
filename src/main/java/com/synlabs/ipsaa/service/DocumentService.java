@@ -546,7 +546,7 @@ public class DocumentService extends BaseService
       fillSlipTemplate(feeRequest, studentFee, rootMap);
       rootMap.put("from", student.getFather().getFullName());
 
-      List<FeePaymentRecordView> payments = feeRequest.getPayments().stream().map(FeePaymentRecordView::new).collect(Collectors.toList());
+      List<FeePaymentRecordView> payments = feeRequest.getPayments().stream().filter(payment->payment.getActive()).map(FeePaymentRecordView::new).collect(Collectors.toList());
       payments.sort(Comparator.comparing(FeePaymentRecordView::getPaymentDate));
       BigDecimal due = new BigDecimal(feeRequest.getTotalFee().toString());
       for (FeePaymentRecordView payment : payments)

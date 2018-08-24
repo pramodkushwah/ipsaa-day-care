@@ -543,16 +543,16 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     $scope.finalFeeChanged = function (fee) {
         fee.transportFee = 0;
         StudentFeeService.calculateDiscount(fee);
-        StudentFeeService.calculateGstFee(fee);
+        StudentFeeService.calculateGstFee(fee,$scope.workingStudent);
     };
 
     $scope.durationChange = function (fee) {
         StudentFeeService.calculateFinalFee(fee);
-        StudentFeeService.calculateGstFee(fee);
+        StudentFeeService.calculateGstFee(fee,$scope.workingStudent);
     };
 
     $scope.transportFeeChanged = function (fee) {
-        StudentFeeService.calculateFinalFee(fee);
+        StudentFeeService.calculateFinalFee(fee,$scope.workingStudent);
     };
 
     function loadProgramFee(centerId, programId) {
@@ -620,6 +620,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
   $scope.calculateDiscount = function (base, final, targetDiscount) {
     var fee = $scope.workingStudent.fee;
+    var fee = $scope.workingStudent.fee;
     if (fee[base] > 0 && fee[final]) {
       if (fee[base] - fee[final] > 0) {
         fee[targetDiscount] =
@@ -634,7 +635,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
       fee[targetDiscount] = 100;
     }
 
-    StudentFeeService.calculateGstFee(fee);
+    StudentFeeService.calculateGstFee(fee,$scope.workingStudent);
     StudentFeeService.calculateFinalFee(fee);
   }
 

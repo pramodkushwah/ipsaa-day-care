@@ -66,7 +66,7 @@ public class FeeUtilsV2 {
         } else {
             fee.setGstAmount(ZERO);
         }
-
+        totalFee=totalFee.setScale(2,BigDecimal.ROUND_CEILING);
         BigDecimal diff = totalFee.subtract(fee.getFinalFee());
 
         //compare diff with tolerance
@@ -98,7 +98,8 @@ public class FeeUtilsV2 {
                 .add(fee.getUniformCharges())
                 .add(fee.getStationary())
                 .add(fee.getExtraCharge())
-                .add(fee.getLatePaymentCharge());
+                .add(fee.getLatePaymentCharge())
+                .subtract(fee.getAdjust());
         BigDecimal gstAmmount;
 
         if (fee.getIgst() != null && fee.getIgst().intValue() != 0) {
@@ -135,29 +136,23 @@ public class FeeUtilsV2 {
 
     }
 
-    private static BigDecimal calculateDiscountAmmount(BigDecimal ammount, BigDecimal discount, BigDecimal discountAmout, String discountName) {
-        BigDecimal finalAmount = ZERO;
-        ammount = ammount == null ? ZERO : ammount;
+    private static BigDecimal calculateDiscountAmmount(BigDecimal baseAmount, BigDecimal discount, BigDecimal discountedAmount, String discountName) {
+        BigDecimal discountAmount=ZERO;
 
-        if (discount != null && !discount.equals(ZERO)) {
-            BigDecimal calculateDiscount = ammount.multiply(discount)
-                    .divide(HUNDRED, 2, BigDecimal.ROUND_CEILING);
+        baseAmount = baseAmount == null ? ZERO : baseAmount;
+        discountAmount=baseAmount.subtract(discountedAmount).multiply(HUNDRED);
+        BigDecimal discountPercent=discountAmount.divide(baseAmount,2,BigDecimal.ROUND_CEILING);
 
-            finalAmount = ammount.subtract(calculateDiscount);
-        } else {
-            finalAmount = ammount;
-        }
-        if(discountAmout!=null){
-            BigDecimal diff = discountAmout.subtract(finalAmount);
+        if(discountedAmount!=null){
+            BigDecimal diff = discountPercent.subtract(discount);
 
             //compare diff with tolerance
             if (Math.abs(diff.doubleValue()) >= FEE_DISCOUNT_CALCULATION_TOLERANCE) {
                 throw new ValidationException(
-                        String.format(discountName + " calculation discount error![Request Fee=%s,Calculated Fee=%s]", discountAmout, finalAmount));
+                        String.format(discountName + " calculation discount error![Request discount=%s,Calculated discount=%s]", discount, discountPercent));
             }
         }
-
-        return finalAmount;
+        return discountedAmount;
     }
 
     public static int quarterStartMonth(int quarter) {

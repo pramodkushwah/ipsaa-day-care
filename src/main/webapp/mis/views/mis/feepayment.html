@@ -110,57 +110,45 @@
               <th>Fee / Charges</th>
               <th>Final Amount</th>
               <th>Paid Amount</th>
+              <th>Remaining</th>
+
             </tr>
             <tr ng-repeat="feeType in feeTypes">
               <td><strong>{{feeType.type}}</strong></td>
               <td>{{selected[feeType['final']]}}</td>
               <td>{{selected[feeType['paid']]}}</td>
+              <td>{{selected[feeType['final']]-selected[feeType['paid']]}}</td>
             </tr>
+            <tr >
+              <td><strong>Late Payment</strong></td>
+              <td>{{selected.latePaymentCharge}}</td>
+              <td colspan="1" rowspan="6">xyz</td>
+              <td  rowspan="6">xyz</td>
+            </tr>
+
+            <tr>
+              <td><strong>Extra</strong></td>
+              <td>{{selected.extraCharge}}</td>
+              <!-- <td colspan="2"></td>    -->
+             </tr>
+             <tr>
+                <td><strong>GST</strong></td>
+                <td>{{selected.gstAmount}}</td>
+                <!-- <td colspan="2"></td>    -->
+               </tr>
+               <tr>
+                  <td><strong>Balance</strong></td>
+                  <td>{{selected.balance}}</td>
+                  <!-- <td colspan="2"></td>    -->
+                 </tr>
+                 <tr>
+                    <td><strong>Adjust</strong></td>
+                    <td>{{selected.adjust}}</td>
+                    <!-- <td colspan="2"></td>    -->
+                   </tr>
           </table>
 
         </div>
-
-        <div class="row">
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Fee</label>
-              <input class="form-control" type="text" readonly ng-model="selected.fee">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Extra</label>
-              <input class="form-control" type="text" readonly ng-model="selected.extraCharge">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Late Payment</label>
-              <input class="form-control" type="text" readonly ng-model="selected.latePaymentCharge">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Balance</label>
-              <input class="form-control" type="text" readonly ng-model="selected.balance">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6" ng-show="selected.annualFee">
-            <div class="form-group">
-              <label class="control-label">Annual Fee</label>
-              <input class="form-control" type="number" readonly ng-model="selected.annualFee">
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group" ng-show="selected.finalDepositFee">
-              <label class="control-label">Deposit</label>
-              <input class="form-control" type="number" readonly ng-model="selected.finalDepositFee">
-            </div>
-          </div>
-        </div>
-
         <div class="row">
           <div class="col-md-3">
             <div class="form-group">

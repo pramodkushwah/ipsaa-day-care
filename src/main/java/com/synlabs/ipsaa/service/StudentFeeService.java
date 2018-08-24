@@ -358,24 +358,29 @@ public class StudentFeeService {
             thisQuarterSlip.setTransportFee(fee.getTransportFee()==null?ZERO:fee.getTransportFee());
 
             thisQuarterSlip.setGstAmount(fee.getGstAmount());
-
-             thisQuarterSlip.setAnnualFee(fee.getAnnualCharges()==null?ZERO:fee.getAnnualCharges());
-             thisQuarterSlip.setAdmissionFee(fee.getAdmissionFee()==null?ZERO:fee.getAdmissionFee());
+            thisQuarterSlip.setAdjust(thisQuarterSlip.getAdjust()==null?ZERO:thisQuarterSlip.getAdjust());
 
              if(thisQuarterSlip.getFinalAdmissionFee()!=null && thisQuarterSlip.getFinalAdmissionFee().intValue()>0){
+                 thisQuarterSlip.setAdmissionFee(fee.getAdmissionFee()==null?ZERO:fee.getAdmissionFee());
                  thisQuarterSlip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
                  thisQuarterSlip.setFinalAdmissionFee(fee.getFinalAdmissionFee()==null?ZERO:fee.getFinalAdmissionFee());
              }else{
+
+                 thisQuarterSlip.setAdmissionFee(ZERO);
                  thisQuarterSlip.setAddmissionFeeDiscount(ZERO);
                  thisQuarterSlip.setFinalAdmissionFee(ZERO);
              }
+
              if(thisQuarterSlip.getQuarter()==2 || (thisQuarterSlip.getFinalAnnualCharges()!=null &&thisQuarterSlip.getFinalAnnualCharges().intValue()>0)  ){
                  thisQuarterSlip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount()==null?ZERO:fee.getAnnualFeeDiscount());
+                 thisQuarterSlip.setAnnualFee(fee.getAnnualCharges()==null?ZERO:fee.getAnnualCharges());
                  thisQuarterSlip.setFinalAnnualCharges(fee.getFinalAnnualCharges()==null?ZERO:fee.getFinalAnnualCharges());
              }else{
+                 thisQuarterSlip.setAnnualFee(ZERO);
                  thisQuarterSlip.setAnnualFeeDiscount(ZERO);
                  thisQuarterSlip.setFinalAnnualCharges(ZERO);
              }
+
              thisQuarterSlip.setTotalFee(FeeUtilsV2.calculateFinalFee(thisQuarterSlip,thisQuarterSlip.getFeeRatio()));
              thisQuarterSlip.setFinalFee(thisQuarterSlip.getTotalFee()); // without balance
              thisQuarterSlip.setTotalFee(thisQuarterSlip.getTotalFee()
@@ -501,6 +506,10 @@ public class StudentFeeService {
             slip.setExtraCharge(request.getExtraCharge());
         if(request.getLatePaymentCharge()!=null)
             slip.setLatePaymentCharge(request.getLatePaymentCharge());
+        if(request.getAdjust()!=null){
+            slip.setAdjust(request.getAdjust());
+        }
+
         slip.setTotalFee(FeeUtilsV2.calculateFinalFee(slip,slip.getFeeRatio()));
         slip.setTotalFee(slip.getTotalFee().add(slip.getBalance()));
        return feePaymentRepository.saveAndFlush(slip);
@@ -534,20 +543,28 @@ public class StudentFeeService {
         double depositePaid=0;
 
         for(StudentFeePaymentRecord payments:slip.getPayments()){
+
             if(payments.getPaidAmount()!=null && payments.getActive())
              alreadypaid+=payments.getPaidAmount().intValue();
+
             if(payments.getUniformPaidAmount()!=null && payments.getActive())
              uniformPaid+=payments.getUniformPaidAmount().intValue();
+
             if(payments.getStationaryPaidAmount()!=null && payments.getActive())
             stationaryPaid+=payments.getStationaryPaidAmount().intValue();
+
             if(payments.getTransportPaidAmount()!=null && payments.getActive())
             transportPaid+=payments.getTransportPaidAmount().intValue();
+
             if(payments.getAddmissionPaidAmount()!=null && payments.getActive())
             admissionPaid=+payments.getAddmissionPaidAmount().intValue();
+
             if(payments.getAnnualPaidAmount()!=null && payments.getActive())
             annualPaid+=payments.getAnnualPaidAmount().intValue();
+
             if(payments.getProgramPaidAmount()!=null && payments.getActive())
             programFeePaid+=payments.getProgramPaidAmount().intValue();
+
             if(payments.getDepositPaidAmount()!=null && payments.getActive())
             depositePaid+=payments.getDepositPaidAmount().intValue();
         }
@@ -560,7 +577,7 @@ public class StudentFeeService {
         {
             slip.setPaymentStatus(PaymentStatus.Paid);
             if(alreadypaid + request.getPaidAmount().intValue()>slip.getTotalFee().intValue()){
-                slip.setBalance(slip.getBalance().add(request.getPaidAmount().add(new BigDecimal(alreadypaid)).subtract(slip.getTotalFee())));
+                //slip.setBalance(slip.getBalance().add(request.getPaidAmount().add(new BigDecimal(alreadypaid)).subtract(slip.getTotalFee())));
             }
         }
         else
@@ -714,5 +731,4 @@ public class StudentFeeService {
         feePaymentRepository.saveAndFlush(slip);
         return receipt;
     }
-
 }

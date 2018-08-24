@@ -10,6 +10,7 @@ public class StudentFeeSlipRequestV2 implements Request
   private Long   studentId;
   private BigDecimal extraCharge;
   private BigDecimal latePaymentCharge;
+  private BigDecimal adjust;
   private String centerCode;
   private String period;
   private int    month;
@@ -17,6 +18,14 @@ public class StudentFeeSlipRequestV2 implements Request
   private int    year;
   private String reportType;
   private Boolean confirm;
+
+  public BigDecimal getAdjust() {
+    return adjust;
+  }
+
+  public void setAdjust(BigDecimal adjust) {
+    this.adjust = adjust;
+  }
 
   public Long getId() {
     return unmask(id);

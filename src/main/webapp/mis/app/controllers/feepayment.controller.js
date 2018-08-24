@@ -27,7 +27,7 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
     $scope.feeTypes = [
       { type: 'Uniform Charges', final: 'uniformCharges', paid: 'uniformPaidAmountTotal' },
       { type: 'Stationery Charges', final: 'stationary', paid: 'stationaryPaidAmountTotal' },
-      { type: 'Transport Fees', final: 'transportFee', paid: 'transportPaidAmountTotal' },
+      { type: 'Transport Fees', final: 'finalTransportFee', paid: 'transportPaidAmountTotal' },
       { type: 'Annual Charges', final: 'finalAnnualCharges', paid: 'annualPaidAmountTotal' },
       { type: 'Admission Charges', final: 'finalAdmissionFee', paid: 'addmissionPaidAmountTotal' },
       { type: 'Base Fee', final: 'finalBaseFee', paid: 'programPaidAmountTotal' },
