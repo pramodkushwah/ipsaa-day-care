@@ -7,6 +7,7 @@ import com.synlabs.ipsaa.entity.common.LegalEntity;
 import com.synlabs.ipsaa.entity.common.SerialNumberSequence;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
+import com.synlabs.ipsaa.entity.staff.EmployeeProfile;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.enums.LeaveStatus;
 import com.synlabs.ipsaa.enums.LeaveType;
@@ -17,8 +18,14 @@ import com.synlabs.ipsaa.util.SalaryUtilsV2;
 import com.synlabs.ipsaa.view.fee.lockSalaryRequest;
 import com.synlabs.ipsaa.view.staff.EmployeePaySlipRequest;
 import com.synlabs.ipsaa.view.staff.PaySlipRegenerateRequest;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
+import org.joda.time.*;
+
+import java.text.SimpleDateFormat;
+import java.time.Month;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +36,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 import static com.synlabs.ipsaa.util.BigDecimalUtils.*;
 
@@ -66,6 +72,9 @@ public class PaySlipService extends BaseService
   @Autowired
   private EmployeeSalaryRepository employeeSalaryRepository;
 
+  @Autowired
+  private EmployeeProfileRepository employeeProfileRepository;
+
   private static final Logger logger = LoggerFactory.getLogger(PaySlipService.class);
 
   public List<EmployeePaySlip> listPayslips(Integer month, Integer year, Long employerId) throws ParseException
@@ -79,6 +88,15 @@ public class PaySlipService extends BaseService
       throw new ValidationException("Month is required.");
     }
 
+    //Avneet
+    int i=1;
+    Calendar calendar=Calendar.getInstance();
+    calendar.set(Calendar.MONTH,month-1);
+    calendar.set(Calendar.YEAR,year);
+    Date generationDate=calendar.getTime();
+
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+    String date = format.format(generationDate);
     LegalEntity legalEntity = legalEntityRepository.findOne(unmask(employerId));
     if (legalEntity == null)
     {
@@ -86,23 +104,32 @@ public class PaySlipService extends BaseService
     }
 
     List<Employee> employees = employeeRepository.findByActiveIsTrueAndEmployerId(legalEntity.getId());
+
     for (Employee emp : employees)
     {
+      String doj=format.format(emp.getProfile().getDoj());
+      String dol="";
+      if(emp.getProfile().getDol()!=null ){
+             dol=format.format(emp.getProfile().getDol());
+      }
 
-      EmployeePaySlip employeePaySlip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(emp, month, year);
-      if (employeePaySlip == null)
-      {
-        EmployeeSalary employeeSalary = employeeSalaryRepository.findByEmployee(emp);
-        if (employeeSalary != null)
-        {
-          if (employeeSalary.getCtc() == null)
-          {
-            continue;
+      if((date.compareTo(doj)>=0 && (dol.compareTo(date)>=0))){           //only this check is added
+        EmployeePaySlip employeePaySlip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(emp, month, year);
+        if (employeePaySlip == null) {
+          EmployeeSalary employeeSalary = employeeSalaryRepository.findByEmployee(emp);
+          if (employeeSalary != null) {
+            if (employeeSalary.getCtc() == null) {
+              continue;
+            }
+            generateNewPayslip(emp, employeeSalary, year, month);
           }
-          generateNewPayslip(emp, employeeSalary, year, month);
+
         }
+
+
       }
     }
+
     return employeePaySlipRepository.findByEmployerIdAndMonthAndYear(legalEntity.getId(), month, year);
   }
 
@@ -147,45 +174,51 @@ public class PaySlipService extends BaseService
   @Transactional
   public EmployeePaySlip reGeneratePaySlip(EmployeePaySlipRequest request) throws IOException, DocumentException, ParseException
   {
+
     EmployeePaySlip paySlip = employeePaySlipRepository.findOne(request.getId());
+
     if (paySlip == null)
     {
       throw new ValidationException(String.format("Cannot Locate PaySlip[id = %s]", mask(request.getId())));
     }
 
     Employee employee = paySlip.getEmployee();
-    EmployeeSalary salary = employeeSalaryRepository.findByEmployee(employee);
 
-    if (salary !=null  && paySlip.isLock())
-    {
-      throw new ValidationException(String.format("Cannot change locked salary", mask(request.getId())));
-    }
+      EmployeeSalary salary = employeeSalaryRepository.findByEmployee(employee);
 
-    Integer year = paySlip.getYear();
-    Integer month = paySlip.getMonth();
-    paySlip.setComment(request.getComment());
+      if (salary !=null  && paySlip.isLock())
+      {
+        throw new ValidationException(String.format("Cannot change locked salary", mask(request.getId())));
+      }
+
+      Integer year = paySlip.getYear();
+      Integer month = paySlip.getMonth();
+      paySlip.setComment(request.getComment());
     // shubham
-     if(request.getPresents()!=null){
-      paySlip.setPresents(request.getPresents());
-     }
-    else if(paySlip.getPresents()==null && request.getPresents()==null){
+       if(request.getPresents()!=null){
+        paySlip.setPresents(request.getPresents());
+       }
+      else if(paySlip.getPresents()==null && request.getPresents()==null){
       Calendar cal = Calendar.getInstance();
       cal.set(Calendar.MONTH, month-1);// o to 11
       cal.set(Calendar.YEAR, year);
       int totalDays=cal.getActualMaximum(Calendar.DAY_OF_MONTH);
       paySlip.setPresents(new BigDecimal(totalDays));
-    }
-    paySlip.setOtherAllowances(request.getOtherAllowances() == null ? ZERO : request.getOtherAllowances());
-    paySlip.setOtherDeductions(request.getOtherDeductions() == null ? ZERO : request.getOtherDeductions());
+      }
+      paySlip.setOtherAllowances(request.getOtherAllowances() == null ? ZERO : request.getOtherAllowances());
+      paySlip.setOtherDeductions(request.getOtherDeductions() == null ? ZERO : request.getOtherDeductions());
 
-    paySlip = calculatePayslip(employee, salary, year, month, paySlip);
+       paySlip = calculatePayslip(employee, salary, year, month, paySlip);
 
-    employeePaySlipRepository.saveAndFlush(paySlip);
-    logger.info(String.format("Regenerated Payslip[eid=%s,month=%s,year=%s]",
+      employeePaySlipRepository.saveAndFlush(paySlip);
+      logger.info(String.format("Regenerated Payslip[eid=%s,month=%s,year=%s]",
                               employee.getEid(),
                               month,
                               year));
+
+
     return paySlip;
+
   }
 
   private EmployeePaySlip calculatePayslip(Employee employee, EmployeeSalary salary, int year, int month, EmployeePaySlip payslip) throws ParseException
@@ -334,4 +367,9 @@ public class PaySlipService extends BaseService
       reGeneratePaySlip(paySlipRequest);
     }
   }
+
+
+
 }
+
+
