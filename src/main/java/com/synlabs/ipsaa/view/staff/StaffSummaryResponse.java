@@ -26,6 +26,8 @@ public class StaffSummaryResponse implements Response
 
   private EmployeeType type;
 
+  //Avneet
+  private Boolean active;
   public StaffSummaryResponse()
   {
   }
@@ -57,6 +59,7 @@ public class StaffSummaryResponse implements Response
     this.centerName = employee.getCostCenter() == null ? null : employee.getCostCenter().getName();
     this.centerCode = employee.getCostCenter() == null ? null : employee.getCostCenter().getCode();
     this.employer = employee.getEmployer() == null ? "" : employee.getEmployer().getName();
+    this.active=employee.isActive();
   }
 
 
@@ -169,4 +172,8 @@ public class StaffSummaryResponse implements Response
   {
     this.employer = employer;
   }
+
+  public Boolean getActive() { return active; }
+
+  public void setActive(Boolean active) { this.active = active;}
 }

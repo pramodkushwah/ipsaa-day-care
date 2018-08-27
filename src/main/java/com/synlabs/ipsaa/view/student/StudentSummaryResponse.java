@@ -57,7 +57,7 @@ public class StudentSummaryResponse implements Response
     this.schoolName=student.getSchoolName();
     this.active = student.isActive();
     this.leavingDate=student.isActive()? null:student.getProfile().getLeavingDate();
-    
+
   }
 
   public Boolean getCorporate()
@@ -107,4 +107,8 @@ public class StudentSummaryResponse implements Response
   public String getSchoolName() { return schoolName; }
 
   public Date getLeavingDate() { return leavingDate; }
+
+  public Boolean getActive() { return active; }
+
+
 }
