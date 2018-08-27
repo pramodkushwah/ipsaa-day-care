@@ -181,6 +181,7 @@ public class StudentFeeRequestV2 implements Request
     studentFee.setFinalBaseFee(finalBaseFee==null?ZERO:finalBaseFee);
 
     studentFee.setBaseFeeDiscount(discountBaseFee == null ? ZERO : discountBaseFee);
+    studentFee.setDiscount(ZERO);
     studentFee.setAddmissionFeeDiscount(discountAdmissionCharges==null?ZERO:discountAdmissionCharges);
     studentFee.setDepositFeeDiscount(discountSecurityDeposit==null?ZERO:discountSecurityDeposit);
     studentFee.setAnnualFeeDiscount(discountAnnualCharges==null?ZERO:discountAnnualCharges);

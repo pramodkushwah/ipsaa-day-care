@@ -120,6 +120,17 @@ public class StudentFeeService {
         return studentFeeRepository.saveAndFlush(studentFee);
     }
     @Transactional
+    public StudentFee saveStudentFee(StudentFee fee) {
+
+        CenterProgramFee centerProgramFee=centerProgramFeeRepository.findByProgramIdAndCenterId(fee.getStudent().getProgram().getId(),fee.getStudent().getCenter().getId());
+        if(centerProgramFee==null){
+            throw new NotFoundException("Center program fee not found");
+        }
+        FeeUtilsV2.validateStudentFee(fee,centerProgramFee);
+        //return studentFee;
+        return studentFeeRepository.saveAndFlush(fee);
+    }
+    @Transactional
     public StudentFee saveStudentFee(StudentFeeRequestV2 request) {
         if (request.getFinalBaseFee() == null)
         {
@@ -224,7 +235,7 @@ public class StudentFeeService {
             lastQuarterSlips=slips.stream().collect(Collectors.toList());
             lastQuarterSlips.removeIf(req->req.getQuarter()==quarter && req.getYear()==year);
         }
-        if(thisQuarterSlips==null && isAllConfirm)
+        if(thisQuarterSlips==null && isAllConfirm) // checking old payments status too if yes then generate
         {
             slip = new StudentFeePaymentRequest();
             slip.setStudent(fee.getStudent());
@@ -240,6 +251,7 @@ public class StudentFeeService {
             slip.setCgst(fee.getCgst());
             slip.setSgst(fee.getSgst());
             slip.setIgst(fee.getIgst());
+            slip.setAdjust(slip.getAdjust()==null?ZERO:slip.getAdjust());
             slip.setDeposit(fee.getDepositFee()==null?ZERO:fee.getDepositFee());
             slip.setFinalDepositFee(fee.getFinalDepositFee()==null?ZERO:fee.getFinalDepositFee());
 
@@ -257,6 +269,7 @@ public class StudentFeeService {
 
             slip.setDepositFeeDiscount(fee.getDepositFeeDiscount()==null?ZERO:fee.getDepositFeeDiscount());
             slip.setBaseFeeDiscount(fee.getBaseFeeDiscount()==null?ZERO:fee.getBaseFeeDiscount());
+
             slip.setUniformCharges(fee.getUniformCharges()==null?ZERO:fee.getUniformCharges());
             slip.setStationary(fee.getStationary()==null?ZERO:fee.getStationary());
             slip.setTransportFee(fee.getTransportFee()==null?ZERO:fee.getTransportFee());
@@ -545,35 +558,35 @@ public class StudentFeeService {
         for(StudentFeePaymentRecord payments:slip.getPayments()){
 
             if(payments.getPaidAmount()!=null && payments.getActive())
-             alreadypaid+=payments.getPaidAmount().intValue();
+             alreadypaid+=payments.getPaidAmount().doubleValue();;
 
             if(payments.getUniformPaidAmount()!=null && payments.getActive())
-             uniformPaid+=payments.getUniformPaidAmount().intValue();
+             uniformPaid+=payments.getUniformPaidAmount().doubleValue();
 
             if(payments.getStationaryPaidAmount()!=null && payments.getActive())
-            stationaryPaid+=payments.getStationaryPaidAmount().intValue();
+            stationaryPaid+=payments.getStationaryPaidAmount().doubleValue();;
 
             if(payments.getTransportPaidAmount()!=null && payments.getActive())
-            transportPaid+=payments.getTransportPaidAmount().intValue();
+            transportPaid+=payments.getTransportPaidAmount().doubleValue();;
 
             if(payments.getAddmissionPaidAmount()!=null && payments.getActive())
-            admissionPaid=+payments.getAddmissionPaidAmount().intValue();
+            admissionPaid=+payments.getAddmissionPaidAmount().doubleValue();;
 
             if(payments.getAnnualPaidAmount()!=null && payments.getActive())
-            annualPaid+=payments.getAnnualPaidAmount().intValue();
+            annualPaid+=payments.getAnnualPaidAmount().doubleValue();;
 
             if(payments.getProgramPaidAmount()!=null && payments.getActive())
-            programFeePaid+=payments.getProgramPaidAmount().intValue();
+            programFeePaid+=payments.getProgramPaidAmount().doubleValue();;
 
             if(payments.getDepositPaidAmount()!=null && payments.getActive())
-            depositePaid+=payments.getDepositPaidAmount().intValue();
+            depositePaid+=payments.getDepositPaidAmount().doubleValue();;
         }
         slip.setComments(request.getComments());
         slip.setReGenerateSlip(true);
         slip.setReceiptSerial(null);
         slip.setReceiptFileName(null);
 
-        if (slip.getTotalFee().intValue() <= (alreadypaid + request.getPaidAmount().intValue()))
+        if (slip.getTotalFee().doubleValue() <= (alreadypaid + request.getPaidAmount().doubleValue()))
         {
             slip.setPaymentStatus(PaymentStatus.Paid);
             if(alreadypaid + request.getPaidAmount().intValue()>slip.getTotalFee().intValue()){
@@ -592,9 +605,9 @@ public class StudentFeeService {
 
         slip.setUniformCharges(slip.getUniformCharges()==null?ZERO:slip.getUniformCharges());
 
-        if(slip.getUniformCharges().intValue()>(uniformPaid) || uniformPaid==0){
+        if(slip.getUniformCharges().doubleValue()>(uniformPaid) || uniformPaid==0){
             BigDecimal amount=slip.getUniformCharges().subtract(new BigDecimal(uniformPaid));
-                if(amount.subtract(paidAmount).intValue()<0){
+                if(amount.subtract(paidAmount).doubleValue()<0){
                     record.setUniformPaidAmount(amount);
                     paidAmount=paidAmount.subtract(amount);
                 }else{
@@ -603,9 +616,9 @@ public class StudentFeeService {
                 }
         }
         slip.setStationary(slip.getStationary()==null?ZERO:slip.getStationary());
-        if(slip.getStationary().intValue()>(stationaryPaid) || stationaryPaid==0 ){
+        if(slip.getStationary().doubleValue()>(stationaryPaid) || stationaryPaid==0 ){
             BigDecimal amount=slip.getStationary().subtract(new BigDecimal(stationaryPaid));
-            if(amount.subtract(paidAmount).intValue()<0){
+            if(amount.subtract(paidAmount).doubleValue()<0){
                 record.setStationaryPaidAmount(amount);
                 paidAmount=paidAmount.subtract(amount);
             }else{
@@ -615,9 +628,9 @@ public class StudentFeeService {
         }
 
         slip.setFinalTransportFee(slip.getFinalTransportFee()==null?ZERO:slip.getFinalTransportFee());
-        if(slip.getFinalTransportFee().intValue()>(transportPaid) || transportPaid==0) {
+        if(slip.getFinalTransportFee().doubleValue()>(transportPaid) || transportPaid==0) {
             BigDecimal amount = slip.getFinalTransportFee().subtract(new BigDecimal(transportPaid));
-            if (amount.subtract(paidAmount).intValue() < 0) {
+            if (amount.subtract(paidAmount).doubleValue() < 0) {
                 record.setTransportPaidAmount(amount);
                 paidAmount = paidAmount.subtract(amount);
             } else {
@@ -627,9 +640,9 @@ public class StudentFeeService {
         }
 
         slip.setFinalAnnualCharges(slip.getFinalAnnualCharges()==null?ZERO:slip.getFinalAnnualCharges());
-        if(slip.getFinalAnnualCharges().intValue()>(annualPaid)|| annualPaid==0)  {
+        if(slip.getFinalAnnualCharges().doubleValue()>(annualPaid)|| annualPaid==0)  {
             BigDecimal amount = slip.getFinalAnnualCharges().subtract(new BigDecimal(annualPaid));
-            if (amount.subtract(paidAmount).intValue() < 0) {
+            if (amount.subtract(paidAmount).doubleValue() < 0) {
                 record.setAnnualPaidAmount(amount);
                 paidAmount = paidAmount.subtract(amount);
             } else {
@@ -639,9 +652,9 @@ public class StudentFeeService {
         }
 
         slip.setFinalAdmissionFee(slip.getFinalAdmissionFee()==null?ZERO:slip.getFinalAdmissionFee());
-        if(slip.getFinalAdmissionFee().intValue()>(admissionPaid) || admissionPaid==0){
+        if(slip.getFinalAdmissionFee().doubleValue()>(admissionPaid) || admissionPaid==0){
             BigDecimal amount=slip.getFinalAdmissionFee().subtract(new BigDecimal(admissionPaid));
-            if (amount.subtract(paidAmount).intValue() < 0) {
+            if (amount.subtract(paidAmount).doubleValue() < 0) {
                 record.setAddmissionPaidAmount(amount);
                 paidAmount=paidAmount.subtract(amount);
             }else{
@@ -651,9 +664,9 @@ public class StudentFeeService {
         }
 
         slip.setFinalBaseFee(slip.getFinalBaseFee()==null?ZERO:slip.getFinalBaseFee());
-        if(slip.getFinalBaseFee().intValue()>(programFeePaid) || programFeePaid==0){  // final base fee
+        if(slip.getFinalBaseFee().doubleValue()>(programFeePaid) || programFeePaid==0){  // final base fee
             BigDecimal amount=slip.getFinalBaseFee().subtract(new BigDecimal(programFeePaid));
-            if (amount.subtract(paidAmount).intValue() < 0) {
+            if (amount.subtract(paidAmount).doubleValue() < 0) {
                 record.setProgramPaidAmount(amount);
                 paidAmount=paidAmount.subtract(amount);
             }else{
@@ -663,9 +676,9 @@ public class StudentFeeService {
         }
 
         slip.setFinalDepositFee(slip.getFinalDepositFee()==null?ZERO:slip.getFinalDepositFee());
-        if(slip.getFinalDepositFee().intValue()>(depositePaid) || depositePaid==0){
+        if(slip.getFinalDepositFee().doubleValue()>(depositePaid) || depositePaid==0){
             BigDecimal amount=slip.getFinalDepositFee().subtract(new BigDecimal(depositePaid));
-            if (amount.subtract(paidAmount).intValue() < 0) {
+            if (amount.subtract(paidAmount).doubleValue() < 0) {
                 record.setDepositPaidAmount(amount);
                 paidAmount=paidAmount.subtract(amount);
             }else{

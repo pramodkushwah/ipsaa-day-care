@@ -60,6 +60,9 @@ public class StudentFeeSlipResponse implements Response
   private BigDecimal gstAmount;
   private BigDecimal feeRatio;
 
+  private BigDecimal totalOtherPaidAmount=ZERO;
+  private BigDecimal totalOtherRemainningAmount=ZERO;
+
   private BigDecimal totalPaidAmount=ZERO;
   private BigDecimal uniformPaidAmountTotal=ZERO;
   private BigDecimal stationaryPaidAmountTotal=ZERO;
@@ -71,6 +74,14 @@ public class StudentFeeSlipResponse implements Response
 
 
   private List<StudentFeePaymentResponse> payments;
+
+  public BigDecimal getTotalOtherPaidAmount() {
+    return totalOtherPaidAmount;
+  }
+
+  public BigDecimal getTotalOtherRemainningAmount() {
+    return totalOtherRemainningAmount;
+  }
 
   public BigDecimal getTotalPaidAmount() {
     return totalPaidAmount;
@@ -176,22 +187,22 @@ public class StudentFeeSlipResponse implements Response
     this.balance = slip.getBalance();
     this.adjust = slip.getAdjust();
     this.generateActive = slip.isGenerateActive();
-    this.uniformCharges=slip.getUniformCharges();
-    this.stationary=slip.getStationary();
-    this.transportFee=slip.getTransportFee();
-    this.finalAnnualCharges=slip.getFinalAnnualCharges();
-    this.admissionFee=slip.getAdmissionFee();
-    this.finalAdmissionFee=slip.getFinalAdmissionFee();
-    this.finalBaseFee=slip.getFinalBaseFee();
-    this.baseFee=slip.getBaseFee();
-    this.finalDepositFee=slip.getFinalDepositFee();
-    this.baseFeeDiscount=slip.getBaseFeeDiscount();
-    this.annualFeeDiscount=slip.getAnnualFeeDiscount();
-    this.addmissionFeeDiscount=slip.getAddmissionFeeDiscount();
-    this.depositFeeDiscount=slip.getDepositFeeDiscount();
-    this.gstAmount=slip.getGstAmount();
-    this.feeRatio=slip.getFeeRatio();
-    this.finalTransportFee=slip.getFinalTransportFee();
+    this.uniformCharges=slip.getUniformCharges()==null?ZERO:slip.getUniformCharges();
+    this.stationary=slip.getStationary()==null?ZERO:slip.getStationary();
+    this.transportFee=slip.getTransportFee()==null?ZERO:slip.getTransportFee();
+    this.finalAnnualCharges=slip.getFinalAnnualCharges()==null?ZERO:slip.getFinalAnnualCharges();
+    this.admissionFee=slip.getAdmissionFee()==null?ZERO:slip.getAdmissionFee();
+    this.finalAdmissionFee=slip.getFinalAdmissionFee()==null?ZERO:slip.getFinalAdmissionFee();
+    this.finalBaseFee=slip.getFinalBaseFee()==null?ZERO:slip.getFinalBaseFee();
+    this.baseFee=slip.getBaseFee()==null?ZERO:slip.getBaseFee();
+    this.finalDepositFee=slip.getFinalDepositFee()==null?ZERO:slip.getFinalDepositFee();
+    this.baseFeeDiscount=slip.getBaseFeeDiscount()==null?ZERO:slip.getBaseFeeDiscount();
+    this.annualFeeDiscount=slip.getAnnualFeeDiscount()==null?ZERO:slip.getAnnualFeeDiscount();
+    this.addmissionFeeDiscount=slip.getAddmissionFeeDiscount()==null?ZERO:slip.getAddmissionFeeDiscount();
+    this.depositFeeDiscount=slip.getDepositFeeDiscount()==null?ZERO:slip.getDepositFeeDiscount();
+    this.gstAmount=slip.getGstAmount()==null?ZERO:slip.getGstAmount();
+    this.feeRatio=slip.getFeeRatio()==null?ZERO:slip.getFeeRatio();
+    this.finalTransportFee=slip.getFinalTransportFee()==null?ZERO:slip.getFinalTransportFee();
     this.adjust = this.adjust == null ? BigDecimal.ZERO : this.adjust;
     this.balance = this.balance == null ? BigDecimal.ZERO : this.balance;
     this.autoComments = slip.getAutoComments();
@@ -213,6 +224,20 @@ public class StudentFeeSlipResponse implements Response
         payments.add(new StudentFeePaymentResponse(payment));
       });
     }
+    BigDecimal totalPaid=uniformCharges
+                    .add(stationary)
+                    .add(finalAnnualCharges)
+                    .add(finalAdmissionFee)
+                    .add(finalDepositFee)
+                    .add(finalBaseFee)
+                    .add(finalTransportFee);
+
+    if(totalPaidAmount.intValue()>totalPaid.intValue()){
+      totalOtherPaidAmount=totalPaidAmount.subtract(totalPaid);
+    }else{
+      totalOtherPaidAmount=ZERO;
+    }
+
   }
 
   public void setId(Long id) {

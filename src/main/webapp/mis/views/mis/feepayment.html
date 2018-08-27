@@ -122,8 +122,10 @@
             <tr >
               <td><strong>Late Payment</strong></td>
               <td>{{selected.latePaymentCharge}}</td>
-              <td colspan="1" rowspan="6">xyz</td>
-              <td  rowspan="6">xyz</td>
+
+              <td colspan="1" rowspan="6">{{selected.totalOtherPaidAmount}}</td>
+              <td  rowspan="6">{{(selected.latePaymentCharge+selected.extraCharge+selected.gstAmount+selected.balance+selected.adjust)-selected.totalOtherPaidAmount}}</td>
+            
             </tr>
 
             <tr>

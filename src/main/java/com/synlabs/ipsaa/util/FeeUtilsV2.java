@@ -86,7 +86,7 @@ public class FeeUtilsV2 {
         }
 
         fee.setFinalTransportFee(fee.getTransportFee().multiply(finalRatio));
-        fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(), null, "Base Fee"));
+        fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(), fee.getFinalBaseFee().divide(THREE), "Base Fee"));
         // need to re calculate the discount bcz finalBaseFee saves discount amount + quarterly amount too
         fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(finalRatio));
 
@@ -126,7 +126,7 @@ public class FeeUtilsV2 {
             fee.setIgst(new BigDecimal(18));
             fee.setFinalFee(calculateFinalFee(fee, true));
         } else if (centerProgramFee.getProgram().getId() == IPSAA_CLUB_PROGRAM_ID || centerProgramFee.getProgram().getId() == IPSAA_CLUB_REGULAR_PROGRAM_ID) {
-            throw new ValidationException(String.format("can not save or update ipsaa club studnet from here"));
+            //throw new ValidationException(String.format("can not save or update ipsaa club studnet from here"));
             //fee.setIgst(new BigDecimal(18));
             //fee.setFinalFee(calculateFinalFee(fee, true));
         } else {
@@ -138,12 +138,14 @@ public class FeeUtilsV2 {
 
     private static BigDecimal calculateDiscountAmmount(BigDecimal baseAmount, BigDecimal discount, BigDecimal discountedAmount, String discountName) {
         BigDecimal discountAmount=ZERO;
-
+        BigDecimal discountPercent=ZERO;
         baseAmount = baseAmount == null ? ZERO : baseAmount;
+        discountedAmount=discountedAmount==null?ZERO:discountedAmount;
         discountAmount=baseAmount.subtract(discountedAmount).multiply(HUNDRED);
-        BigDecimal discountPercent=discountAmount.divide(baseAmount,2,BigDecimal.ROUND_CEILING);
+        if(baseAmount.intValue()>0)
+            discountPercent=discountAmount.divide(baseAmount,2,BigDecimal.ROUND_CEILING);
 
-        if(discountedAmount!=null){
+        if(discount!=null){
             BigDecimal diff = discountPercent.subtract(discount);
 
             //compare diff with tolerance
@@ -208,5 +210,9 @@ public class FeeUtilsV2 {
             feeMonthRatio = feeMonthRatio + 1.00;
         }
         return new BigDecimal(feeMonthRatio);
+    }
+
+    public static BigDecimal calculateDiscountAmount(BigDecimal baseFee, BigDecimal baseFeeDiscount) {
+        return baseFee.subtract(baseFee.multiply(baseFeeDiscount).divide(HUNDRED, 2, BigDecimal.ROUND_CEILING));
     }
 }

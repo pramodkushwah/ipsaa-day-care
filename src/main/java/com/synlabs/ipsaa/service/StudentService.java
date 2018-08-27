@@ -59,7 +59,9 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.synlabs.ipsaa.util.FeeUtils.THREE;
 import static com.synlabs.ipsaa.util.StringUtil.in;
+import static java.math.BigDecimal.ZERO;
 
 @Service
 public class StudentService extends BaseService
@@ -221,8 +223,10 @@ public class StudentService extends BaseService
     JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
     query.select(fee).from(fee)
          .where(fee.student.active.isTrue())
+            .where(fee.feeDuration.eq(FeeDuration.Quarterly))
          .where(fee.student.corporate.isFalse());
 
+    List<StudentFee> fees;
     if (request.getStudentId() != null)
     {
       return query.where(fee.student.id.eq(request.getStudentId())).fetch();
@@ -230,10 +234,37 @@ public class StudentService extends BaseService
 
     if (request.getCenterId() != null)
     {
-      return query.where(fee.student.center.id.eq(request.getCenterId())).fetch();
+      fees =query.where(fee.student.center.id.eq(request.getCenterId())).fetch();
+
+//      // code for adjust new fee changes
+//      for (StudentFee  studentFee:fees ){
+//        if(studentFee.getDiscount()!=null && studentFee.getDiscount().intValue()>0)
+//        studentFee.setBaseFeeDiscount(studentFee.getDiscount());
+//        studentFee.setFinalBaseFee(FeeUtilsV2.calculateDiscountAmount(studentFee.getBaseFee(),studentFee.getBaseFeeDiscount()));
+//        studentFee.setUniformCharges(ZERO);
+//        studentFee.setStationary(ZERO);
+//
+//        if(studentFee.getId()==1180){ // 258
+//          System.out.println("");
+//        }
+//        BigDecimal adjust=studentFee.getAdjust().multiply(THREE);
+//          studentFee.setFinalFee(studentFee.getFinalFee().subtract(adjust));
+//
+//          studentFeeService.saveStudentFee(studentFee);
+//        studentFeeRepository.save(studentFee);
+//      }
+      return fees;
+    }
+    fees=query.where(fee.student.center.in(getUserCenters())).fetch();
+
+    // copy discount
+    for (StudentFee  studentFee:fees ){
+      studentFee.setBaseFee(studentFee.getDiscount());
+      studentFeeService.saveStudentFee(studentFee);
+      studentFeeRepository.save(studentFee);
     }
 
-    return query.where(fee.student.center.in(getUserCenters())).fetch();
+    return fees;
   }
 
   public List<StudentFeePaymentRequest> listFeeLedger(StudentFeeLedgerRequest request)
@@ -1004,8 +1035,8 @@ public class StudentService extends BaseService
             slip.setPaymentStatus(PaymentStatus.Raised);
             slip.setTotalFee(baseFee);
             slip.setReGenerateSlip(true);
-            slip.setExtraCharge(BigDecimal.ZERO);
-            slip.setLatePaymentCharge(BigDecimal.ZERO);
+            slip.setExtraCharge(ZERO);
+            slip.setLatePaymentCharge(ZERO);
             slip.setCgst(fee.getCgst());
             slip.setSgst(fee.getSgst());
             slip.setIgst(fee.getIgst());
@@ -1044,9 +1075,9 @@ public class StudentService extends BaseService
             slip.setQuarter(requestQuarter);
             slip.setTotalFee(baseFee);
             slip.setReGenerateSlip(true);
-            slip.setExtraCharge(BigDecimal.ZERO);
-            slip.setLatePaymentCharge(BigDecimal.ZERO);
-            slip.setAnnualFee(BigDecimal.ZERO);
+            slip.setExtraCharge(ZERO);
+            slip.setLatePaymentCharge(ZERO);
+            slip.setAnnualFee(ZERO);
             slip.setCgst(fee.getCgst());
             slip.setSgst(fee.getSgst());
             slip.setIgst(fee.getIgst());
@@ -1139,8 +1170,8 @@ public class StudentService extends BaseService
 
     int quarterStartMonth = FeeUtils.quarterStartMonth(slip.getQuarter());
 
-    BigDecimal newBaseFee = BigDecimal.ZERO;
-    BigDecimal factor = BigDecimal.ZERO;
+    BigDecimal newBaseFee = ZERO;
+    BigDecimal factor = ZERO;
     switch (feeDuration)
     {
       case Quarterly:
@@ -1338,7 +1369,7 @@ public class StudentService extends BaseService
 
     if (!CollectionUtils.isEmpty(payments))
     {
-      BigDecimal paidAmount = BigDecimal.ZERO;
+      BigDecimal paidAmount = ZERO;
       for (StudentFeePaymentRecord payment : payments)
       {
         paidAmount = paidAmount.add(payment.getPaidAmount());
