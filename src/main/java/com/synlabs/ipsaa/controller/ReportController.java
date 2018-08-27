@@ -7,6 +7,7 @@ import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.STAFF_ATTENDANCE_REPOR
 import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.STD_ATTENDANCE_REPORT;
 
 import java.io.*;
+import java.rmi.dgc.Lease;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -18,15 +19,19 @@ import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 
 import com.amazonaws.util.JodaTime;
+import com.sun.deploy.util.StringUtils;
 import com.synlabs.ipsaa.entity.center.Center;
+import com.synlabs.ipsaa.entity.common.Address;
 import com.synlabs.ipsaa.entity.inquiry.Inquiry;
 import com.synlabs.ipsaa.entity.inquiry.InquiryEventLog;
 import com.synlabs.ipsaa.entity.programs.Program;
 import com.synlabs.ipsaa.entity.programs.ProgramGroup;
+import com.synlabs.ipsaa.enums.AddressType;
 import com.synlabs.ipsaa.enums.CallDisposition;
 import com.synlabs.ipsaa.enums.InquiryType;
 import com.synlabs.ipsaa.enums.LeadSource;
 import com.synlabs.ipsaa.view.inquiry.InquiryRequest;
+import jdk.nashorn.internal.codegen.CompilerConstants;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -37,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.convert.JodaTimeConverters;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
@@ -273,14 +279,16 @@ public class ReportController {
         }
     }
 
-    //////Avneet - Read from Excel file and write into database
-    public static final String SAMPLE_XLSX_FILE_PATH = "C:\\Users\\avnib\\Downloads\\Master Web Leads.xlsx";
+    //TO BE REMOVED////Avneet - Read from Excel file and write into database
+   /* public static final String SAMPLE_XLSX_FILE_PATH = "C:\\Users\\avnib\\Downloads\\Master Web Leads.xlsx";
 
     @GetMapping("do")
+    @Transactional
     public void updateInquiry() throws IOException, InvalidFormatException, ParseException {
         File file = new File(SAMPLE_XLSX_FILE_PATH);
         FileInputStream inputStream = new FileInputStream(file);
-        Workbook workbook = WorkbookFactory.create(inputStream);
+        Workbook workbook = WorkbookFactory.create(inputStream);int c=0;
+        String centercode;
         //Workbook workbook = WorkbookFactory.create(new File(SAMPLE_XLSX_FILE_PATH));
 
         try {
@@ -289,9 +297,11 @@ public class ReportController {
             Sheet sheet = workbook.getSheetAt(0);
             DataFormatter formatter = new DataFormatter();
             InquiryRequest inquiryRequest = new InquiryRequest();
-            Inquiry inquiry = new Inquiry();
-            InquiryEventLog inquiryEventLog = new InquiryEventLog();
-            List<InquiryEventLog> logs = new ArrayList<>();
+
+            //String city;
+            String zip;
+            String state;
+
             Row row;
             //int i=0;
             int n = sheet.getPhysicalNumberOfRows();
@@ -302,17 +312,24 @@ public class ReportController {
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-            List<LeadSource> list = new ArrayList<>();
+            List<String> list = new ArrayList<>();
             for (LeadSource value : LeadSource.values()) {
-                list.add(value);
+                list.add(value.toString());
             }
 
-            for (int i = 1; i <= 194; i++) {
+            List<CallDisposition> callDispositionList=new ArrayList<>();
+            callDispositionList.add(CallDisposition.Followup);
+            callDispositionList.add(CallDisposition.Enrolled);
+
+            for (int i = 1 ; i <= 194; i++) {
                 row = sheet.getRow(i);
 
                 if (row != null) {
 
-                    String leadsource = formatter.formatCellValue(row.getCell(1));
+                    //formatter.formatCellValue(row.getCell(0));
+                    //System.out.println(inquiryNumber);
+
+                    String leadsource = formatter.formatCellValue(row.getCell(1)).toUpperCase();
                     String inquiryType = formatter.formatCellValue(row.getCell(2));
                     String center = formatter.formatCellValue(row.getCell(3));
 
@@ -327,49 +344,68 @@ public class ReportController {
                     String deposition = formatter.formatCellValue(row.getCell(13));
                     String inquiryDateExcel = formatter.formatCellValue(row.getCell(6));
                     String callbackDateExcel = formatter.formatCellValue(row.getCell(14));
+                  //  SimpleDateFormat format=new SimpleDateFormat("dd/MM/yyyy");
+                   // String date=format.format(callbackDateExcel);
                     String callBackTime = formatter.formatCellValue(row.getCell(15));
                     //Date callBackTime=row.getCell(15).getDateCellValue();
                     String callBackNumber = formatter.formatCellValue(row.getCell(16));
                     String comments = formatter.formatCellValue(row.getCell(17));
+                    String location=formatter.formatCellValue(row.getCell(18));
+
 
                     Date inquiryDate = calculateDate(inquiryDateExcel, i);
                     Date callBackDate = calculateDate(callbackDateExcel, i);
                     String str[]=callBackTime.split(":");
 
                     Calendar cal= Calendar.getInstance();
-                    if(callBackDate!=null && str!=null){
+                    if(!org.apache.commons.lang3.StringUtils.isEmpty(callbackDateExcel) ){
                         cal.setTime(callBackDate);
+                    }
+                    if( !org.apache.commons.lang3.StringUtils.isEmpty(callBackTime)){
                         cal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(str[0]));
                         cal.set(Calendar.MINUTE,Integer.parseInt(str[1]));
                        // System.out.println(cal.getTime());
                     }
 
-                    /*if (inquiryDate != null && !inquiryDate.isEmpty() && i<15) {
-						Date date = format1.parse(inquiryDate);
-						String d=format2.format(date);
-						Date inquiryDate1 = format2.parse(d);
-						//inquiryDate1=row.getCell(6).getDateCellValue();
-						System.out.println(String.format("InquiryDate[%s]", inquiryDate + "    " + i+ "   "+inquiryDate1));
-					}
 
 
-					//String callBackDate = formatter.formatCellValue(row.getCell(14));
-					if (callbackDate != null && !callbackDate.isEmpty()) {
-					//	Date date = format1.parse(callbackDate);
-						Date callbackDate1 =  format2.parse(callbackDate);;//for values above 15
-						System.out.print(String.format("     [CallBackDate[%s]]",callbackDate1));
-					}
+                    switch(location){
+                        case "Delhi":   state="Delhi"; break;
+                        case "Mumbai":   state="Maharashtra"; break;
+                        case "Pune":   state="Maharashtra"; break;
+                        case "Chennai":   state="Delhi"; break;
+                        case "Gurgaon":   state="Harayana"; break;
+                        case "Bengaluru": state="Karnataka"; break;
+                        case "Dombvili": state="Maharashtra";break;
+                        case "Thane": state="Maharashtra";break;
+                        case "Noida": state="Uttar Pradesh"; break;
+                        default: state=location; break;
+
+                    }
+
+                    switch(state){
+                        case "Delhi": zip="1100xx"; break;
+                        case "Maharashtra": zip="400xxx"; break;
+                        case "Karnataka": zip="5xxxxx"; break;
+                        case "Uttar Pradesh": zip="201301"; break;
+                        case "Harayana": zip="122xxx"; break;
+                        default: zip="xxxxxx"; break;
+                    }
 
 
 
-					}
-*/
+                    if (!deposition.isEmpty() && callDispositionList.contains(CallDisposition.valueOf(deposition))) {
+                        Inquiry inquiry = new Inquiry();
+                        InquiryEventLog inquiryEventLog = new InquiryEventLog();
+                        List<InquiryEventLog> logs = new ArrayList<>();
+                        Address address = new Address();
 
 
-                    if (center != null) {
                         Center iscenter = centerRepository.getOneByName(center);
                         if (iscenter != null) {
                             inquiry.setCenter(iscenter);
+                            centercode = iscenter.getCode();//r
+                        }
 
                             Program isProgram = programRepository.findByCode(program);
                             if (isProgram != null) {
@@ -384,65 +420,66 @@ public class ReportController {
                                 }
                             }
 
+                            inquiry.setInquiryNumber(inquiryType + " " + c);
                             inquiry.setFirstName(childFirstName);
                             inquiry.setLastName(childLastName);
+                            inquiry.setFatherFirstName(motherFirstName);
+                            inquiry.setFatherLastName(motherlastName);
+                            inquiry.setFatherMobile(motherMobile);
                             inquiry.setMotherFirstName(motherFirstName);
                             inquiry.setMotherLastName(motherlastName);
                             inquiry.setMotherMobile(motherMobile);
                             inquiry.setMotherEmail(motherEmail);
                             inquiry.setInquiryType(InquiryType.valueOf(inquiryType));
+                            //inquiry.setLeadSource(LeadSource.valueOf(leadsource));
                             inquiry.setInquiryDate(inquiryDate);
-                            //inquiry.setStatus(CallDisposition.valueOf(deposition));
+                            inquiry.setStatus(CallDisposition.valueOf(deposition));
 
-                            if (list.contains(leadsource)) {
-                                int j = list.indexOf(leadsource);
-                                //String enumLeadSource = list.get(j).toString();
-                                inquiry.setLeadSource(list.get(j));
-                            }
+                            address.setAddress(location);
+                            address.setCity(location);
+                            address.setState(state);
+                            address.setZipcode(zip);
+                            address.setPhone(callBackNumber);
+                            address.setAddressType(AddressType.Home);
 
-                           // System.out.println(cal.getTime());
-                            //inquiryEventLog.setCallDisposition(CallDisposition.valueOf(deposition));
+                            inquiry.setLeadSource(LeadSource.valueOf(leadsource.toUpperCase()));
+                            //System.out.println(cal.getTime());
+                            inquiryEventLog.setCallDisposition(CallDisposition.valueOf(deposition));
+                            inquiryEventLog.setCallBack(cal.getTime());
                             inquiryEventLog.setCallBackNumber(callBackNumber);
                             inquiryEventLog.setComment(comments);
-                            inquiryEventLog.setCallBack(cal.getTime());
-                           // System.out.println(inquiry);
-						/*try {
-							date=simpleDateFormat.parse(inquiryDate);
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
-						inquiry.setInquiryDate(date);
+                            c++;
+                            //System.out.println(inquiry.getInquiryNumber()+" "+inquiry.getResidentialAddress()+"  "+inquiry.getChildName()+"  "+inquiry.getFatherFirstName()+"  "+ inquiry.getInquiryDate()+"  "+inquiry.getStatus()+ "     "+ inquiryEventLog.getCallBack()+"     "+ i+ " "+c);
+                            logs.add(inquiryEventLog);
+                            inquiry.setResidentialAddress(address);
+                            inquiry.setLogs(logs);
+                            inquiryEventLog.setInquiry(inquiry);
+                            System.out.println(inquiry.getLeadSource()+" "+inquiry.getInquiryNumber() + " " + inquiry.getResidentialAddress() + "  " + inquiry.getChildName() + "  " + inquiry.getFatherFirstName() + "  " + inquiry.getInquiryDate() + "  " + inquiry.getStatus() + "     " + inquiryEventLog.getCallBack() + "     " + i + " " + c);
 
-						try {
-							date=simpleDateFormat.parse(callBackDate+" "+callBackTime);
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}	*/
-                            //inquiryEventLog.setCallBack(date);
+                           inquiryRepository.saveAndFlush(inquiry);
+                           inquiryEventLogRepository.saveAndFlush(inquiryEventLog);
 
-
-
-						System.out.println(inquiry.getChildName()+"  "+ inquiry.getInquiryDate()+ "  "+ inquiryEventLog.getCallBack()+ i);
-						logs.add(inquiryEventLog);
-						inquiry.setLogs(logs);
-						//inquiryRepository.saveAndFlush(inquiry);
-						inquiryEventLog.setInquiry(inquiry);
-						//inquiryEventLogRepository.saveAndFlush(inquiryEventLog);
                         }
-
                     }
                     workbook.close();
-                }
-            }
 
-                }catch(Exception e){
+                }
+
+
+            System.out.println(c);
+
+
+        }catch(Exception e){
                     e.printStackTrace();
                 }finally{
 
                     workbook.close();
 
                 }
-            }
+    }
+
+
+
             public Date calculateDate (String date,int i){
 
                 Date correctedDate = null;
@@ -465,6 +502,210 @@ public class ReportController {
                 }
                 return correctedDate;
             }
+*/
+   ///////TO BE REMOVED
+    /*public static final String SAMPLE_XLSX_FILE_PATH1 = "C:\\Users\\avnib\\Downloads\\MWL4.xlsx";
 
+    @GetMapping("do/")
+    @Transactional
+    public void updateInquiry1() throws IOException, InvalidFormatException, ParseException {
+        File file = new File(SAMPLE_XLSX_FILE_PATH1);
+        FileInputStream inputStream = new FileInputStream(file);
+        Workbook workbook = WorkbookFactory.create(inputStream);
+        int c=0;
+       // String centercode;
+        //Workbook workbook = WorkbookFactory.create(new File(SAMPLE_XLSX_FILE_PATH));
+
+        try {
+
+
+            Sheet sheet = workbook.getSheetAt(1);
+            DataFormatter formatter = new DataFormatter();
+            InquiryRequest inquiryRequest = new InquiryRequest();
+            Row row;
+            String zip;
+            String state;
+
+            String pattern = "dd-MM-yyyy HH:mm:ss";
+            SimpleDateFormat format1 = new SimpleDateFormat("MM/dd/yyyy");
+
+            List<CallDisposition> callDispositionList=new ArrayList<>();
+            callDispositionList.add(CallDisposition.Followup);
+            callDispositionList.add(CallDisposition.Enrolled);
+
+            for (int i = 1; i <= 208; i++) {
+                row = sheet.getRow(i);
+
+                if (row != null) {
+
+
+
+                    String leadsource = formatter.formatCellValue(row.getCell(1)).toUpperCase();
+                    String inquiryType = formatter.formatCellValue(row.getCell(2));
+                    String center = formatter.formatCellValue(row.getCell(3));
+
+                    String program = formatter.formatCellValue(row.getCell(4));
+                    String group = formatter.formatCellValue(row.getCell(5));
+                    String childFirstName = formatter.formatCellValue(row.getCell(7));
+                    String childLastName = formatter.formatCellValue(row.getCell(8));
+                    String motherFirstName = formatter.formatCellValue(row.getCell(9));
+                    String motherlastName = formatter.formatCellValue(row.getCell(10));
+                    String motherEmail = formatter.formatCellValue(row.getCell(11));
+                    String motherMobile = formatter.formatCellValue(row.getCell(12));String deposition;
+                    String diposition = (formatter.formatCellValue(row.getCell(13)));
+                   if(diposition.equals("Walk In")){
+                       deposition="Followup";
+                   }else{
+                       deposition=(formatter.formatCellValue(row.getCell(13)));
+                   }
+
+
+
+
+                    Date callBackDate= org.apache.commons.lang3.StringUtils.isEmpty(formatter.formatCellValue(row.getCell(14)))? null: row.getCell(14).getDateCellValue();
+                    Date inquiryDate= org.apache.commons.lang3.StringUtils.isEmpty(formatter.formatCellValue(row.getCell(6)))? null: row.getCell(6).getDateCellValue();;
+
+
+                    String callBackTime = formatter.formatCellValue(row.getCell(15));
+                    String callBackNumber = formatter.formatCellValue(row.getCell(16));
+                    String comments = formatter.formatCellValue(row.getCell(17));
+                    String location=formatter.formatCellValue(row.getCell(18));
+
+                    String str[]=callBackTime.split(":");
+
+                    Calendar cal= Calendar.getInstance();
+                    if(callBackDate!=null){
+
+                        cal.setTime(callBackDate);
+                    }
+
+                    if(!org.apache.commons.lang3.StringUtils.isEmpty(callBackTime)){
+                        cal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(str[0]));
+                        cal.set(Calendar.MINUTE,Integer.parseInt(str[1]));
+                        // System.out.println(cal.getTime());
+                    }
+
+
+
+                    switch(location){
+                        case "Delhi":   state="Delhi"; break;
+                        case "Mumbai":   state="Maharashtra"; break;
+                        case "Pune":   state="Maharashtra"; break;
+                        case "Chennai":   state="Delhi"; break;
+                        case "Gurgaon":   state="Harayana"; break;
+                        case "Bengaluru": state="Karnataka"; break;
+                        case "Dombvili": state="Maharashtra";break;
+                        case "Thane": state="Maharashtra";break;
+                        case "Noida": state="Uttar Pradesh"; break;
+                        default: state=location; break;
+
+                    }
+
+                    switch(state){
+                        case "Delhi": zip="1100xx"; break;
+                        case "Maharashtra": zip="400xxx"; break;
+                        case "Karnataka": zip="5xxxxx"; break;
+                        case "Uttar Pradesh": zip="201301"; break;
+                        case "Harayana": zip="122xxx"; break;
+                        default: zip="xxxxxx"; break;
+                    }
+
+
+
+                    if (!deposition.isEmpty() && callDispositionList.contains(CallDisposition.valueOf(deposition))) {
+                        Inquiry inquiry = new Inquiry();
+                        InquiryEventLog inquiryEventLog = new InquiryEventLog();
+                        List<InquiryEventLog> logs = new ArrayList<>();
+                        Address address = new Address();
+
+
+                        Center iscenter = centerRepository.getOneByName(center);
+                            if (iscenter != null) {
+                                inquiry.setCenter(iscenter);
+
+                            }
+
+                            Program isProgram = programRepository.findByCode(program);
+                            if (isProgram != null) {
+                                inquiry.setProgram(isProgram);
+                            }
+
+                            if (group != null && isProgram != null) {
+                                List<ProgramGroup> groups = isProgram.getGroups();
+                                ProgramGroup isGroup = programGroupRepository.findByName(group);
+                                if (groups.contains(isGroup)) {
+                                    inquiry.setGroup(isGroup);
+                                }
+                            }
+
+                            UUID uuid=UUID.randomUUID();
+                            inquiry.setInquiryNumber(inquiryType+" "+uuid.toString().substring(0,4));
+                            inquiry.setFirstName(childFirstName);
+                            inquiry.setLastName(childLastName);
+                            inquiry.setFatherFirstName(motherFirstName);
+                            inquiry.setFatherLastName(motherlastName);
+                            inquiry.setFatherMobile(motherMobile);
+                            inquiry.setMotherFirstName(motherFirstName);
+                            inquiry.setMotherLastName(motherlastName);
+                            inquiry.setMotherMobile(motherMobile);
+                            inquiry.setMotherEmail(motherEmail);
+                            inquiry.setInquiryType(InquiryType.valueOf(inquiryType));
+
+                            if(inquiryDate!=null){
+                                inquiry.setInquiryDate(inquiryDate);
+                            }
+                            inquiry.setStatus(CallDisposition.valueOf(deposition));
+
+                            address.setAddress(location);
+                            address.setCity(location);
+                            address.setState(state);
+                            address.setZipcode(zip);
+                            address.setPhone(callBackNumber);
+                            address.setAddressType(AddressType.Home);
+
+
+                            inquiry.setLeadSource(LeadSource.valueOf(leadsource.toUpperCase()));
+                            inquiryEventLog.setCallDisposition(CallDisposition.valueOf(deposition));
+                            inquiryEventLog.setCallBack(cal.getTime());
+                            inquiryEventLog.setCallBackNumber(callBackNumber);
+                            inquiryEventLog.setComment(comments);
+                            c++;
+
+                            logs.add(inquiryEventLog);
+                            inquiry.setResidentialAddress(address);
+                            inquiry.setLogs(logs);
+                            inquiryEventLog.setInquiry(inquiry);
+                            System.out.println(inquiry.getLeadSource()+" "+inquiry.getInquiryNumber() + " " + inquiry.getResidentialAddress() + "  " + inquiry.getChildName() + "  " + inquiry.getFatherFirstName() + "  " + inquiry.getInquiryDate() + "  " + inquiry.getStatus() + "     " + inquiryEventLog.getCallBack() + "     " + i + " " + c);
+
+                            inquiryRepository.saveAndFlush(inquiry);
+                            inquiryEventLogRepository.saveAndFlush(inquiryEventLog);
+                            System.out.println("Value inserted "+c);
+
+                        }
+                    }
+                    workbook.close();
+
+            }System.out.println(c);
+
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+
+            workbook.close();
 
         }
+    }*/
+
+
+
+    /////////////For futhur use//?excel file will bedirectly uploaded on portal?
+    /*public static final String SAMPLE_XLSX_FILE_PATH2 = "C:\\Users\\avnib\\Downloads\\MWL4.xlsx";
+
+    @GetMapping("upload")
+    public void uploadInquiry() throws IOException, InvalidFormatException, ParseException {
+       inquiryService.uploadFromExcel();
+    }*/
+}
+
+
