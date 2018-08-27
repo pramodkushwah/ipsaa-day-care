@@ -8,31 +8,8 @@
       <span class="material-input"></span>
     </div>
   </div>
+  
   <div class="col-md-2">
-    <div class="form-group">
-      <label class="control-label">Period:</label>
-      <select class="form-control" ng-model="selectedPeriod" ng-change="setSlips([])">
-        <option value="Monthly">Monthly</option>
-        <option value="Quarterly">Quarterly</option>
-        <option value="Yearly">Yearly</option>
-      </select>
-      <span class="material-input"></span>
-    </div>
-  </div>
-
-  <div class="col-md-2" ng-show="selectedPeriod == 'Monthly'">
-    <div class="form-group">
-      <label class="control-label">Month: </label>
-      <select class="form-control"
-              ng-model="selectedMonth"
-              ng-options="month.month as monthNames[month.month-1] for month in dropdownData | filter: {duration: selectedPeriod}"
-              ng-change="setSlips([])">
-        <!-- only show current and next month -->
-      </select>
-      <span class="material-input"></span>
-    </div>
-  </div>
-  <div class="col-md-2" ng-show="selectedPeriod == 'Quarterly'">
     <div class="form-group">
       <label class="control-label">Quarter:</label>
       <select class="form-control"
@@ -53,14 +30,14 @@
       <span class="material-input"></span>
     </div>
   </div>
-  <button class="btn btn-info" ng-click="getFeeSlips()" ng-disabled="generateSlipDisable">
+  <button class="btn btn-info mt-4" ng-click="getFeeSlips()" ng-disabled="generateSlipDisable">
     <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="generateSlipDisable"></i>GET/GENERATE
   </button>
 </div>
 
 
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-7">
     <div class="card">
       <div class="card-header card-header-icon" data-background-color="rose">
         <i class="material-icons">assignment</i>
@@ -136,7 +113,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-5">
 
     <div class="card" ng-show="showPanel == 'slip'">
       <div class="card-header card-header-icon" data-background-color="rose">
@@ -149,91 +126,191 @@
         <span class="label label-info">{{selected.group}}</span>
 
         <div class="row">
-          <div class="col-md-3">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label" ng-readonly="true">Annual Charges</label>
+              <input class="form-control" type="text" ng-model="selected.annualFee" readonly>
+            </div>
+          </div>
+        
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label" ng-readonly="true">Discount <sup>(%)</sup></label>
+              <input class="form-control" type="text" ng-model="selected.annualFeeDiscount" readonly>
+            </div>
+          </div>
+        
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Final Annual Charges
+              </label>
+              <input class="form-control" type="text" ng-model="selected.finalAnnualCharges" readonly>
+            </div>
+          </div>
+        
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label" ng-readonly="true">Admission Charges</label>
+              <input class="form-control" type="text" ng-model="selected.admissionFee" readonly>
+            </div>
+          </div>
+        
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label" ng-readonly="true">Discount <sup>(%)</sup></label>
+              <input class="form-control" type="text" ng-model="selected.addmissionFeeDiscount" readonly>
+            </div>
+          </div>
+        
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Final Admission Charges &nbsp;
+              </label>
+              <input class="form-control" type="text" ng-model="selected.finalAdmissionFee" readonly>
+            </div>
+          </div>
+        
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label" ng-readonly="true">Monthly Program Fees</label>
+              <input class="form-control" type="text" ng-model="selected.baseFee" readonly>
+            </div>
+          </div>
+      
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label" ng-readonly="true">Discount <sup>(%)</sup></label>
+              <input class="form-control" type="text" ng-model="selected.baseFeeDiscount" readonly>
+            </div>
+            </div>
+        
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Final Monthly Fees Amount &nbsp;
+              </label>
+              <input class="form-control" type="text" ng-model="selected.finalBaseFee" readonly>
+            </div>
+        </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label" ng-readonly="true">Security Deposit</label>
+              <input class="form-control" type="text" ng-model="selected.deposit" readonly>
+            </div>
+          </div>
+        
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label" ng-readonly="true">Discount <sup>(%)</sup></label>
+              <input class="form-control" type="text" ng-model="selected.depositFeeDiscount" readonly>
+            </div>
+          </div>
+        
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Final Security Deposit Fees &nbsp;
+              </label>
+              <input class="form-control" type="text" ng-model="selected.finalDepositFee" readonly>
+            </div>
+          </div>
+        
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label" ng-readonly="true">Monthly Transport Fees</label>
+              <input class="form-control" type="text" ng-model="selected.transportFee" readonly>
+            </div>
+          </div>
+        
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Final Transport Fees &nbsp;
+              </label>
+              <input class="form-control" type="text" ng-model="selected.finalTransportFees" readonly>
+            </div>
+          </div>
+        
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label" ng-readonly="true">Uniform Charges</label>
+              <input class="form-control" type="text" ng-model="selected.uniformCharges" readonly>
+            </div>
+          </div>
+        
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label" ng-readonly="true">Stationery Charges</label>
+              <input class="form-control" type="text" ng-model="selected.stationary" readonly>
+            </div>
+          </div>
+        
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">GST-Fee &nbsp;
+              </label>
+              <input class="form-control" type="text" ng-model="selected.gstAmount" readonly>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Fee Ratio</label>
+              <input class="form-control" type="number" ng-model="selected.feeRatio" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
             <div class="form-group">
               <label class="control-label" readonly>Fee</label>
-              <input class="form-control" type="text" readonly ng-model="selected.fee">
+              <input class="form-control" type="text" readonly ng-model="selected.actualBaseFee">
             </div>
-          </div><!--Fee-->
-          <div class="col-md-1">
-            <div class="checkbox" style="padding-top: 45px;">
-              <label>
-                <input type="checkbox" name="annualFee" ng-click="annualFeeChecked(selected)" ng-model="selected.isAnnualFee">
-              </label>
-            </div>
-          </div><!--annual charges checkbox-->
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Annual Fee</label>
-              <input class="form-control" type="number" ng-change="calculateFinalFee(selected)"
-                     ng-disabled="!selected.isAnnualFee" ng-model="selected.annualFee" ng-readonly="selected.status=='Paid'">
-            </div>
-          </div><!--annual charges textbox-->
-          <div class="col-md-1">
-            <div class="checkbox" style="padding-top: 45px;">
-              <label>
-                <input type="checkbox" name="deposit" ng-click="depositChecked(selected)" ng-model="selected.isDeposit">
-              </label>
-            </div>
-          </div><!--deposit checkbox-->
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Deposit</label>
-              <input class="form-control" type="number" ng-change="calculateFinalFee(selected)"
-                     ng-disabled="!selected.isDeposit" ng-model="selected.deposit" ng-readonly="selected.status=='Paid'">
-            </div>
-          </div><!--deposit checkbox-->
-          <div class="col-md-3">
+          </div>
+      
+          <div class="col-md-4">
             <div class="form-group">
               <label class="control-label">Balance</label>
-              <input class="form-control" type="number" ng-change="calculateFinalFee(selected)"
-                     ng-model="selected.balance" ng-readonly="selected.status=='Paid'">
+              <input class="form-control" type="number"
+              ng-model="selected.balance" readonly>
             </div>
           </div><!--Balance-->
-          <div class="col-md-3">
+          <div class="col-md-4">
             <div class="form-group">
               <label class="control-label">Extra</label>
-              <input class="form-control" type="number" ng-change="calculateFinalFee(selected)" ng-model="selected.extraCharge" ng-readonly="selected.status=='Paid'">
-            </div>
+              <input class="form-control" type="number" ng-model="selected.extraCharge" ng-change="calculateFinalFee(selected)" ng-readonly="selected.status=='Paid'">
+          </div>
           </div><!--Extra Charges-->
-          <div class="col-md-3">
+        </div>
+
+        
+
+        <div class="row">
+          <div class="col-md-4">
             <div class="form-group">
               <label class="control-label">Late Payment</label>
-              <input class="form-control" type="number" ng-change="calculateFinalFee(selected)" ng-model="selected.latePaymentCharge" ng-readonly="selected.status=='Paid'">
+              <input class="form-control" type="number" ng-change="calculateFinalFee(selected)" ng-model="selected.latePaymentCharge
+              
+              " ng-readonly="selected.status=='Paid'">
             </div>
           </div><!--Late Payment-->
-          <div class="col-md-3">
+          <div class="col-md-4">
             <div class="form-group">
               <label class="control-label">Adjust</label>
               <input class="form-control" type="number" ng-change="calculateFinalFee(selected)" ng-model="selected.adjust" ng-readonly="selected.status=='Paid'">
             </div>
           </div><!--Adjust Payment-->
-        </div>
-        <div class="row">
-          <div class="col-md-3">
+
+          <div class="col-md-4">
             <div class="form-group">
-              <label class="control-label">Final fee</label>
+              <label class="control-label">Final fee
+              </label>
               <input class="form-control" type="text" readonly ng-model="selected.totalFee">
             </div>
           </div><!--Final Fee-->
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Payment mode</label>
-              <select class="form-control" ng-model="selected.paymentMode" disabled>
-                <option value="Cash">Cash</option>
-                <option value="Cheque">Cheque</option>
-                <option value="NEFT">NEFT</option>
-                <option value="PayU" disabled>PayU</option>
-              </select>
-            </div>
-          </div><!--Payment Mode Dropdown-->
-          <div class="col-md-6">
-            <div class="form-group">
-              <label class="control-label">Reference</label>
-              <input class="form-control" type="text" required ng-model="selected.txnid" readonly>
-            </div>
-          </div><!--Reference-->
         </div>
+        
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">

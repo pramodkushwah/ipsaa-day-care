@@ -9,6 +9,7 @@ import com.synlabs.ipsaa.enums.FamilyType;
 import com.synlabs.ipsaa.enums.Gender;
 import com.synlabs.ipsaa.view.common.Request;
 import com.synlabs.ipsaa.view.fee.StudentFeeRequest;
+import com.synlabs.ipsaa.view.fee.StudentFeeRequestV2;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class StudentRequest implements Request
   private boolean formalSchool;
   private String schoolName;
 
-  private StudentFeeRequest fee;
+  private StudentFeeRequestV2 fee;
 
   @JsonFormat(pattern = "HH:mm", timezone = "IST")
   private Date expectedIn;
@@ -51,12 +52,12 @@ public class StudentRequest implements Request
   private Date expectedOut;
 
 
-  public StudentFeeRequest getFee()
+  public StudentFeeRequestV2 getFee()
   {
     return fee;
   }
 
-  public void setFee(StudentFeeRequest fee)
+  public void setFee(StudentFeeRequestV2 fee)
   {
     this.fee = fee;
   }

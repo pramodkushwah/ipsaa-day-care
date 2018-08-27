@@ -4,6 +4,7 @@ import com.itextpdf.text.DocumentException;
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
 import com.synlabs.ipsaa.service.DocumentService;
+import com.synlabs.ipsaa.service.StudentFeeService;
 import com.synlabs.ipsaa.service.StudentService;
 import com.synlabs.ipsaa.view.fee.*;
 import com.synlabs.ipsaa.view.student.StudentRequest;
@@ -29,14 +30,12 @@ public class StudentFeeController
   private StudentService studentService;
 
   @Autowired
+  private StudentFeeService studentFeeService;
+
+  @Autowired
   private DocumentService documentService;
 
-  @GetMapping("fee")
-  @Secured(STUDENTFEE_READ)
-  public List<StudentFeeResponse> list(@RequestParam(required = false) Long centerId)
-  {
-    return studentService.listFee(new StudentFeeRequest(centerId)).stream().map(StudentFeeResponse::new).collect(Collectors.toList());
-  }
+
 
   @PostMapping("/paymentLink/")
   @Secured(STUDENTFEE_READ)
@@ -65,35 +64,12 @@ public class StudentFeeController
     }
     return new StudentFeeResponse();
   }
-
   @Secured(STUDENTFEE_READ)
   @GetMapping("/{studentId}/fee/ledger")
   public List<StudentFeeLedgerResponse> listStudentLedger(@PathVariable(name = "studentId") Long studentId)
   {
     return studentService.listFeeLedger(new StudentFeeLedgerRequest(studentId)).stream().map(StudentFeeLedgerResponse::new).collect(Collectors.toList());
   }
-
-  @Secured(STUDENTFEE_WRITE)
-  @PostMapping("/fee/")
-  public StudentFeeResponse saveStudentFee(@RequestBody StudentFeeRequest request)
-  {
-    return new StudentFeeResponse(studentService.saveStudentFee(request));
-  }
-
-  @Secured(STUDENTFEE_WRITE)
-  @PutMapping("/fee/")
-  public StudentFeeResponse updateStudentFee(@RequestBody StudentFeeRequest request)
-  {
-    return new StudentFeeResponse(studentService.updateStudentFee(request));
-  }
-
-  @Secured(STUDENTFEE_SLIP_WRITE)
-  @PostMapping("/feeslip/generate")
-  public List<StudentFeeSlipResponse> generateStudentSlips(@RequestBody StudentFeeSlipRequest request)
-  {
-    return studentService.generateFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
-  }
-  
   @Secured(STUDENTFEE_SLIP_WRITE)
   @PostMapping("/feeslip/generate-all")
   public List<StudentFeeSlipResponse> generateStudentsSlip(@RequestBody List<Long> ids){
@@ -124,29 +100,6 @@ public class StudentFeeController
     }
   }
 
-  @Secured(STUDENTFEE_SLIP_WRITE)
-  @PostMapping("/feeslip/regenerate")
-  // Called when slip regenerate button is pressed
-  public StudentFeeSlipResponse reGenerateStudentSlip(@RequestBody StudentFeeSlipRequest request)
-  {
-    return new StudentFeeSlipResponse(studentService.regenerateStudentSlip(request));
-  }
-
-  @Secured(STUDENTFEE_SLIP_READ)
-  @PostMapping("/feeslip/list")
-  public List<StudentFeeSlipResponse> listStudentSlips(@RequestBody StudentFeeSlipRequest request)
-  {
-    return studentService.listFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
-  }
-
-  @Secured(STUDENTFEE_SLIP_WRITE)
-  @PostMapping("/feeslip")
-  // Called when slip save button is pressed
-  public StudentFeeSlipResponse updateSlip(@RequestBody SaveFeeSlipRequest request)
-  {
-    return new StudentFeeSlipResponse(studentService.updateSlip(request));
-  }
-
   @Secured(STUDENTFEE_RECEIPT_READ)
   @PutMapping("/payfee/{id}")
   public StudentFeePaymentResponse getReceipt(@PathVariable("id") Long id)
@@ -155,25 +108,6 @@ public class StudentFeeController
     request.setId(id);
     return new StudentFeePaymentResponse(studentService.getReceipt(request));
   }
-
-  @Secured(STUDENTFEE_RECEIPT_WRITE)
-  @PostMapping("/payfee")
-  //record payment button
-  public StudentFeeSlipResponse payFee(@RequestBody SaveFeeSlipRequest request)
-  {
-    return new StudentFeeSlipResponse(studentService.payFee(request));
-  }
-
- @Secured(STUDENTFEE_RECEIPT_WRITE)
- // @Secured(STUDENTFEE_RECEIPT_CONFIRM)
-
-  @PutMapping("/payfee")
-  //Confirm payment
-  public StudentFeePaymentResponse updatePayFee(@RequestBody SaveFeeSlipRequest request)
-  {
-    return new StudentFeePaymentResponse(studentService.updatePayFee(request));
-  }
-
   @Secured(STUDENTFEE_RECEIPT_WRITE)
   @GetMapping("/download/receipt/{slipId}")
   public void downloadReceipt(@PathVariable("slipId") Long slipId, HttpServletResponse response) throws IOException
@@ -193,4 +127,88 @@ public class StudentFeeController
     out.flush();
     is.close();
   }
+  //----------------------------------shubham-----------------------------------------
+
+  @GetMapping("fee")
+  @Secured(STUDENTFEE_READ)
+  public List<StudentFeeResponse> list(@RequestParam(required = false) Long centerId)
+  {
+    return studentService.listFee(new StudentFeeRequest(centerId)).stream().map(StudentFeeResponse::new).collect(Collectors.toList());
+  }
+
+    @Secured(STUDENTFEE_SLIP_READ)
+    @PostMapping("/feeslip/list")
+    public List<StudentFeeSlipResponse> listStudentSlips(@RequestBody StudentFeeSlipRequest request)
+    {
+        return studentFeeService.listFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
+    }
+
+    @Secured(STUDENTFEE_WRITE)
+  @PostMapping("/fee/")
+  public StudentFeeResponse saveStudentFee(@RequestBody StudentFeeRequestV2 request)
+  {
+    //return new StudentFeeResponse(studentService.saveStudentFee(request));
+    return new StudentFeeResponse(studentFeeService.saveStudentFee(request));
+  }
+
+  @Secured(STUDENTFEE_WRITE)
+  @PutMapping("/fee/")
+  public StudentFeeResponse updateStudentFee(@RequestBody StudentFeeRequestV2 request)
+  {
+    return new StudentFeeResponse(studentFeeService.updateStudentFee(request));
+  }
+
+  @Secured(STUDENTFEE_SLIP_WRITE)
+  @PostMapping("/feeslip/generateFee")
+  public StudentFeeSlipResponse generateSingleStudentsSlip(@RequestParam Long slipId){
+    StudentFeeRequestV2 request=new StudentFeeRequestV2();
+    request.setId(slipId);
+    return new StudentFeeSlipResponse(studentFeeService.generateFirstFeeSlip(request.getId()));
+  }
+
+  @Secured(STUDENTFEE_SLIP_WRITE)
+  @PostMapping("/feeslip/generate")
+  public List<StudentFeeSlipResponse> generateStudentSlips(@RequestBody StudentFeeSlipRequest request)
+  {
+    //return studentService.generateFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
+    return studentFeeService.generateFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
+  }
+    @Secured(STUDENTFEE_SLIP_WRITE)
+    @PostMapping("/feeslip/regenerate")
+    public StudentFeeSlipResponse reGenerateStudentSlip(@RequestBody StudentFeeSlipRequestV2 request)
+    {
+      //return new StudentFeeSlipResponse(studentService.regenerateStudentSlip(request));
+        return new StudentFeeSlipResponse(studentFeeService.regenerateStudentSlip(request));
+    }
+  @Secured(STUDENTFEE_SLIP_WRITE)
+  @PostMapping("/feeslip/regenerateAll")
+  public void reGenerateStudentSlipAll(@RequestBody List<Long> ids)
+  {
+    //return new StudentFeeSlipResponse(studentService.regenerateStudentSlip(request));
+    studentFeeService.regenerateStudentSlipAll(ids);
+  }
+    @Secured(STUDENTFEE_SLIP_WRITE)
+    @PostMapping("/feeslip")
+    // Called when slip save button is pressed
+    public StudentFeeSlipResponse updateSlip(@RequestBody StudentFeeSlipRequestV2 request)
+    {
+        return new StudentFeeSlipResponse(studentFeeService.updateSlip(request));
+    }
+
+    @Secured(STUDENTFEE_RECEIPT_WRITE)
+    @PostMapping("/payfee")
+    //record payment button
+    public StudentFeeSlipResponse payFee(@RequestBody SaveFeeSlipRequest request)
+    {
+        return new StudentFeeSlipResponse(studentFeeService.payFee(request));
+    }
+
+    @Secured(STUDENTFEE_RECEIPT_WRITE)
+    // @Secured(STUDENTFEE_RECEIPT_CONFIRM)
+    @PutMapping("/payfee")
+    //Confirm payment
+    public StudentFeePaymentResponse updatePayFee(@RequestBody SaveFeeSlipRequest request)
+    {
+        return new StudentFeePaymentResponse(studentFeeService.updatePayFee(request));
+    }
 }

@@ -12,17 +12,170 @@ import java.math.BigDecimal;
 @Entity
 public class StudentFee extends BaseEntity
 {
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  private Student student;
+  // ---------------------------------------------------shubham------------------------------------------------------
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal uniformCharges;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal stationary;
+
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal annualCharges;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal finalAnnualCharges;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal admissionFee;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal finalAdmissionFee;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal finalBaseFee;
 
   @Column(precision = 16, scale = 2)
   private BigDecimal baseFee;
 
-  @Column(precision = 9, scale = 6)
-  private BigDecimal discount;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal depositFee;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal finalDepositFee;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal baseFeeDiscount;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal annualFeeDiscount;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal addmissionFeeDiscount;
+  @Column(precision = 16, scale = 2)
+  private BigDecimal depositFeeDiscount;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal gstAmount;
+
+
+  public BigDecimal getGstAmount() {
+    return gstAmount;
+  }
+
+  public void setGstAmount(BigDecimal gstAmount) {
+    this.gstAmount = gstAmount;
+  }
+
+  public BigDecimal getAnnualCharges() {
+    return annualCharges;
+  }
+
+  public void setAnnualCharges(BigDecimal annualCharges) {
+    this.annualCharges = annualCharges;
+  }
+
+  public BigDecimal getFinalBaseFee() {
+    return finalBaseFee;
+  }
+
+  public void setFinalBaseFee(BigDecimal finalBaseFee) {
+    this.finalBaseFee = finalBaseFee;
+  }
+
+  public BigDecimal getDepositFee() {
+    return depositFee;
+  }
+
+  public void setDepositFee(BigDecimal depositFee) {
+    this.depositFee = depositFee;
+  }
+
+  public BigDecimal getBaseFeeDiscount() {
+    return baseFeeDiscount;
+  }
+
+  public void setBaseFeeDiscount(BigDecimal baseFeeDiscount) {
+    this.baseFeeDiscount = baseFeeDiscount;
+  }
+
+  public BigDecimal getAnnualFeeDiscount() {
+    return annualFeeDiscount;
+  }
+
+  public void setAnnualFeeDiscount(BigDecimal annualFeeDiscount) {
+    this.annualFeeDiscount = annualFeeDiscount;
+  }
+
+  public BigDecimal getAddmissionFeeDiscount() {
+    return addmissionFeeDiscount;
+  }
+
+  public void setAddmissionFeeDiscount(BigDecimal addmissionFeeDiscount) {
+    this.addmissionFeeDiscount = addmissionFeeDiscount;
+  }
+
+  public BigDecimal getDepositFeeDiscount() {
+    return depositFeeDiscount;
+  }
+
+  public void setDepositFeeDiscount(BigDecimal depositFeeDiscount) {
+    this.depositFeeDiscount = depositFeeDiscount;
+  }
+
+  public BigDecimal getAdmissionFee() {
+    return admissionFee;
+  }
+
+  public void setAdmissionFee(BigDecimal admissionFee) {
+    this.admissionFee = admissionFee;
+  }
+
+  public BigDecimal getUniformCharges() {
+    return uniformCharges;
+  }
+
+  public void setUniformCharges(BigDecimal uniformCharges) {
+    this.uniformCharges = uniformCharges;
+  }
+
+  public BigDecimal getStationary() {
+    return stationary;
+  }
+
+  public void setStationary(BigDecimal stationary) {
+    this.stationary = stationary;
+  }
+
+  public BigDecimal getFinalAnnualCharges() {
+    return finalAnnualCharges;
+  }
+
+  public void setFinalAnnualCharges(BigDecimal finalAnnualCharges) {
+    this.finalAnnualCharges = finalAnnualCharges;
+  }
+
+  public BigDecimal getFinalAdmissionFee() {
+    return finalAdmissionFee;
+  }
+
+  public void setFinalAdmissionFee(BigDecimal finalAdmissionFee) {
+    this.finalAdmissionFee = finalAdmissionFee;
+  }
+
+  public BigDecimal getFinalDepositFee() {
+    return finalDepositFee;
+  }
+
+  public void setFinalDepositFee(BigDecimal finalDepositFee) {
+    this.finalDepositFee = finalDepositFee;
+  }
+
+  // ---------------------------------------------------shubham------------------------------------------------------
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  private Student student;
 
   @Column(precision = 16, scale = 2)
   private BigDecimal finalFee;
+
+  @Column(precision = 16, scale = 2)
+  private BigDecimal discount;
+
 
   @Column(precision = 16, scale = 2)
   private BigDecimal transportFee;
@@ -44,6 +197,14 @@ public class StudentFee extends BaseEntity
 
   @Enumerated(EnumType.STRING)
   private FeeDuration feeDuration;
+
+  public BigDecimal getDiscount() {
+    return discount;
+  }
+
+  public void setDiscount(BigDecimal discount) {
+    this.discount = discount;
+  }
 
   public BigDecimal getIgst()
   {
@@ -103,16 +264,6 @@ public class StudentFee extends BaseEntity
   public void setBaseFee(BigDecimal baseFee)
   {
     this.baseFee = baseFee;
-  }
-
-  public BigDecimal getDiscount()
-  {
-    return discount;
-  }
-
-  public void setDiscount(BigDecimal discount)
-  {
-    this.discount = discount;
   }
 
   public BigDecimal getFinalFee()

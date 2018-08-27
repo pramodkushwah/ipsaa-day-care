@@ -7,6 +7,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
     $scope.sendPaymentLinkDisable = false;
     $scope.slectedElementList = []
     $scope.generateSlip = false;
+    $scope.selectedPeriod = 'Quarterly';
     $scope.monthNames = [
         'January',
         'February',
@@ -219,45 +220,17 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
             return false;
         }
 
-        if (!$scope.selectedPeriod) {
-            error("Select Period");
-            return false;
-        }
-
-        if ($scope.selectedPeriod === 'Monthly' && !$scope.selectedMonth) {
-            error("Select Month");
-            return false;
-        }
-
-        if ($scope.selectedPeriod === 'Quarterly' && !$scope.selectedQuarter) {
+        if (!$scope.selectedQuarter) {
             error("Select Quarter");
             return false;
         }
 
-        if ($scope.selectedPeriod === 'Yearly' && !$scope.selectedYear) {
+        if (!$scope.selectedYear) {
             error("Select Year");
             return false;
         }
         return true;
     }
-
-    $scope.annualFeeChecked = function (selected) {
-        if (selected.isAnnualFee) {
-            selected.annualFee = $scope.programFee.annualFee;
-        } else {
-            selected.annualFee = "";
-        }
-        $scope.calculateFinalFee(selected);
-    };
-
-    $scope.depositChecked = function (selected) {
-        if (selected.isDeposit) {
-            selected.deposit = $scope.programFee.deposit;
-        } else {
-            selected.deposit = "";
-        }
-        $scope.calculateFinalFee(selected);
-    };
 
     $scope.toggleAll = function (allchecked) {
         $scope.checkedSlipCount = 0;
@@ -399,44 +372,24 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
         } else {
             $scope.showPanel = "slip";
             $scope.selected = angular.copy(studentfee);
-            $scope.calculateFinalFee($scope.selected);
-            $http.get('/api/center/program/fee/slip/' + studentfee.id)
-                .then(
-                    function (resposne) {
-                        $scope.programFee = resposne.data;
-                    }, function (response) {
-                        error(response.data.error);
-                    });
-
+            $scope.selected.actualBaseFee = $scope.selected.totalFee - $scope.selected.adjust - $scope.selected.balance - $scope.selected.latePaymentCharge - $scope.selected.extraCharge;
+            // $scope.calculateFinalFee($scope.selected);
+            $scope.selected.finalBaseFee = ($scope.selected.baseFee * ((100 - $scope.selected.baseFeeDiscount)/100)).toFixed(2);
+          $scope.selected.finalTransportFees = $scope.selected.transportFee * $scope.selected.feeRatio;
         }
     };
 
     $scope.calculateFinalFee = function (slip) {
-        var totalFee = slip.fee;
-        if (slip.isAnnualFee && !isNaN(slip.annualFee)) {
-            totalFee = totalFee + slip.annualFee;
-        }
-        var totalGstAmount = 0;
-        if (slip.cgst) {
-            totalGstAmount = totalGstAmount + ((totalFee * slip.cgst) / 100);
-        }
-        if (slip.sgst) {
-            totalGstAmount = totalGstAmount + ((totalFee * slip.sgst) / 100);
-        }
-        if (slip.igst) {
-            totalGstAmount = totalGstAmount + ((totalFee * slip.igst) / 100);
-        }
-        totalFee = totalFee + totalGstAmount;
-        if (slip.isDeposit && !isNaN(slip.deposit)) {
-            totalFee = totalFee + slip.deposit;
-        }
+
+        var totalFee;
+        $scope.studentfeelist.filter( (fee) => {
+          if(fee.id === slip.id) {
+            totalFee = fee.totalFee - fee.extraCharge - fee.latePaymentCharge - fee.adjust;
+          }
+        });
 
         if (slip.latePaymentCharge && !isNaN(slip.latePaymentCharge)) {
             totalFee = totalFee + slip.latePaymentCharge;
-        }
-
-        if (slip.balance && !isNaN(slip.balance)) {
-            totalFee = totalFee + slip.balance;
         }
 
         if (slip.extraCharge && !isNaN(slip.extraCharge)) {

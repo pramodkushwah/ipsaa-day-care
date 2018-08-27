@@ -2,6 +2,8 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
     $scope.studentIds = []; //Student id having fee already generated
     $scope.disableSave = false;
     $scope.STUDENTFEE_WRITE = Auth.hasPrivilege('STUDENTFEE_WRITE');
+    $scope.showBreakdown = false;
+    $scope.discountTypes = [];
 
     function debounce(func, wait, immediate) {
         var timeout;
@@ -39,20 +41,54 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
         $scope.insertStudentFee = {mode: "Add"};
     };
 
-    $scope.finalFeeChanged = function (fee) {
+    $scope.calculateDiscount = function(base, final, targetDiscount) {
+      var fee = $scope.insertStudentFee;
+      if (fee[base] > 0 && fee[final]) {
+        if (fee[base] - fee[final] > 0) {
+          fee[targetDiscount] =
+          Number((((fee[base] - fee[final]) / fee[base]) * 100).toFixed(2));
+        }
+        else {
+          fee[targetDiscount] = 0;
+          fee[final] = fee[base];
+        }
+      } else {
+        fee[final] = 0;
+        fee[targetDiscount] = 100;
+      }
+
+      StudentFeeService.calculateGstFee(fee);
+      StudentFeeService.calculateFinalFee(fee);
+    }
+
+    $scope.monthlyTransportFeesChanged = function(fee) {
+      if(fee.transportFee > 0) {
+        fee.finalTransportFees = fee.transportFee * 3;
+      } else {
         fee.transportFee = 0;
-        StudentFeeService.calculateDiscount(fee);
-        StudentFeeService.calculateGstFee(fee);
-    };
+        fee.finalTransportFees = 0;
+      }
+      StudentFeeService.calculateFinalFee(fee);
+    }
 
-    $scope.durationChange = function (fee) {
-        StudentFeeService.calculateFinalFee(fee);
-        StudentFeeService.calculateGstFee(fee);
-    };
+  $scope.monthlyUniformChargesChanged = function(fee) {
+    if(fee.uniformCharges < 0)
+      fee.uniformCharges = 0;
+    StudentFeeService.calculateFinalFee(fee);
+  }
 
-    $scope.transportFeeChanged = function (fee) {
-        StudentFeeService.calculateFinalFee(fee);
-    };
+  $scope.monthlyStationeryChargesChanged = function(fee) {
+    if(fee.satationary < 0) 
+      fee.satationary = 0;
+    StudentFeeService.calculateFinalFee(fee);
+  }
+
+    $scope.toggleBreakdown = function() {
+      if(!$scope.showBreakdown)
+        $scope.showBreakdown = true;
+      else 
+        $scope.showBreakdown = false;
+    }
 
     function loadProgramFee(req, success, failure) {
         $http.post('/api/center/fee/', req).then(function (response) {
@@ -77,7 +113,7 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
                 $scope.insertStudentFee.transportFee = 0;
                 $scope.insertStudentFee.adjust = 0;
                 $scope.insertStudentFee.comment = "";
-                $scope.insertStudentFee.feeDuration = "Monthly";
+                $scope.insertStudentFee.feeDuration = "Quarterly";
                 StudentFeeService.calculateFinalFee($scope.insertStudentFee);
                 StudentFeeService.calculateGstFee($scope.insertStudentFee)
             }, function (data) {
@@ -144,13 +180,12 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
                 function (response) {
                     $scope.insertStudentFee = response.data;
                     $scope.insertStudentFee.mode = !mode ? 'Show' : mode;
-                    // $scope.insertStudentFee.oldFee = $scope.insertStudentFee.baseFee;
                     $scope.insertStudentFee.adjust = $scope.insertStudentFee.adjust ? $scope.insertStudentFee.adjust : 0;
-                    StudentFeeService.calculateFinalFee($scope.insertStudentFee);
+                    StudentFeeService.initializeFee($scope.insertStudentFee);
                     StudentFeeService.calculateGstFee($scope.insertStudentFee);
-
-
+                    StudentFeeService.calculateFinalFee($scope.insertStudentFee);
                     $scope.addstudentfee = true;
+                    $('[data-toggle="tooltip"]').tooltip();   
                 },
                 function (response) {
                     error(response.data.error)
@@ -193,7 +228,8 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
 
     function ok(message) {
         swal({
-            title: message,
+            title: 'Success',
+            text: message,
             type: 'success',
             buttonsStyling: false,
             confirmButtonClass: "btn btn-warning"
@@ -202,7 +238,8 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
 
     function error(message) {
         swal({
-            title: message,
+            title: 'Error',
+            text: message,
             type: 'error',
             buttonsStyling: false,
             confirmButtonClass: "btn btn-warning"

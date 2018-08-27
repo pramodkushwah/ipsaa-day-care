@@ -28,3 +28,9 @@
 .right {
     float: right;
 }
+.pointer {
+  cursor: pointer;
+}
+.mt-4 {
+  margin-top: 4rem;
+}

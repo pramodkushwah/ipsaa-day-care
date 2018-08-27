@@ -4,6 +4,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     $scope.activeFilter = true;
     $scope.privileges = [];
     $scope.workingStudent = newStudent();
+    $scope.webCamOpen = false;
+    $scope.pdfGenerate = false;
 
     function debounce(func, wait, immediate) {
         var timeout;
@@ -128,6 +130,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             } else {
                 $(tab).removeClass("active");
             }
+          $('[data-toggle="tooltip"]').tooltip();
         }
     };
 
@@ -211,6 +214,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     };
 
     function newStudent() {
+        var x = new Date();
+        var month = x.getMonth() + 1;
         var student = {
             mode: 'New',
             active: true, id: null, corporate: false,
@@ -224,7 +229,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
                 id: null,
                 residentialAddress: {},
                 officeAddress: {}
-            }
+            },
+            admissionDate: x.getFullYear() + '-' + month + '-' + x.getDate()
         };
         return student;
     }
@@ -537,16 +543,16 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     $scope.finalFeeChanged = function (fee) {
         fee.transportFee = 0;
         StudentFeeService.calculateDiscount(fee);
-        StudentFeeService.calculateGstFee(fee);
+        StudentFeeService.calculateGstFee(fee,$scope.workingStudent);
     };
 
     $scope.durationChange = function (fee) {
         StudentFeeService.calculateFinalFee(fee);
-        StudentFeeService.calculateGstFee(fee);
+        StudentFeeService.calculateGstFee(fee,$scope.workingStudent);
     };
 
     $scope.transportFeeChanged = function (fee) {
-        StudentFeeService.calculateFinalFee(fee);
+        StudentFeeService.calculateFinalFee(fee,$scope.workingStudent);
     };
 
     function loadProgramFee(centerId, programId) {
@@ -558,17 +564,26 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
                     $scope.workingStudent.fee = $scope.workingStudent.fee ? $scope.workingStudent.fee : {};
                     var studentFee = $scope.workingStudent.fee;
 
-                    studentFee.baseFee =programFee.fee;
-                    studentFee.sgst = programFee.sgst;
-                    studentFee.cgst =programFee.cgst;
-                    studentFee.igst =programFee.igst;
+                    studentFee.annualFee = programFee.annualFee;
+                    studentFee.admissionFee = programFee.admissionFee;
+                    studentFee.baseFee = programFee.fee;
+                    studentFee.deposit = programFee.deposit;
+                    studentFee.igst = programFee.igst;
                     studentFee.discount = 0;
                     studentFee.transportFee =0;
                     studentFee.adjust =0;
                     studentFee.comment = '';
                     studentFee.feeDuration = 'Quarterly';
+                    
+                    studentFee.discountAnnualCharges = 0
+                    studentFee.finalAnnualFee = programFee.annualFee
+                    studentFee.discountAdmissionCharges = 0
+                    studentFee.finalAdmissionCharges = programFee.admissionFee
+                    studentFee.discountBaseFee = 0
+                    studentFee.finalBaseFee = programFee.fee
+                    studentFee.discountSecurityDeposit = 0
+                    studentFee.finalSecurityDeposit = programFee.deposit 
                     StudentFeeService.calculateFinalFee(studentFee);
-                    StudentFeeService.calculateGstFee(studentFee)
                 },
                 function (response) {
                     if (response.status == 404) {
@@ -581,6 +596,242 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             );
         }
     }
+
+  $scope.generatePdf = function(studentId) {
+    $scope.pdfGenerate = true;
+    $http.get('/api/student/pdf/' + studentId, {
+      responseType: 'arraybuffer'
+    }).then(
+      function (response) {
+        
+        var blob = new Blob([response.data], {
+          type: 'application/octet-stream'
+        });
+        saveAs(blob, response.headers("fileName"));
+        $scope.pdfGenerate = false;
+      },
+      function (response) {
+        $scope.pdfGenerate = false;
+        console.log(response);
+        // error(response.error);
+      }
+    );
+  }
+
+  $scope.calculateDiscount = function (base, final, targetDiscount) {
+    var fee = $scope.workingStudent.fee;
+    var fee = $scope.workingStudent.fee;
+    if (fee[base] > 0 && fee[final]) {
+      if (fee[base] - fee[final] > 0) {
+        fee[targetDiscount] =
+          Number((((fee[base] - fee[final]) / fee[base]) * 100).toFixed(2));
+      }
+      else {
+        fee[targetDiscount] = 0;
+        fee[final] = fee[base];
+      }
+    } else {
+      fee[final] = 0;
+      fee[targetDiscount] = 100;
+    }
+
+    StudentFeeService.calculateGstFee(fee,$scope.workingStudent);
+    StudentFeeService.calculateFinalFee(fee);
+  }
+
+  $scope.monthlyTransportFeesChanged = function (fee) {
+    if (fee.transportFee > 0) {
+      fee.finalTransportFees = fee.transportFee * 3;
+    } else {
+      fee.transportFee = 0;
+      fee.finalTransportFees = 0;
+    }
+    StudentFeeService.calculateFinalFee(fee);
+  }
+
+  $scope.monthlyUniformChargesChanged = function (fee) {
+    if (fee.uniformCharges < 0)
+      fee.uniformCharges = 0;
+    StudentFeeService.calculateFinalFee(fee);
+  }
+
+  $scope.monthlyStationeryChargesChanged = function (fee) {
+    if (fee.satationary < 0)
+      fee.satationary = 0;
+    StudentFeeService.calculateFinalFee(fee);
+  }
+
+  $scope.formalClicked = function(student) {
+    student.fee = student.fee ? student.fee : {};
+    if (student.formalSchool)
+      student.fee.gstFee = (student.fee.finalAnnualFee + student.fee.finalBaseFee * 3) * 0.18;
+    else 
+      student.fee.gstFee = 0;
+    StudentFeeService.calculateFinalFee(student.fee);
+  }
+
+  $scope.openWebCam = function() {
+    $scope.webCamOpen = true;
+    // References to all the element we will need.
+    var video = document.querySelector('#camera-stream'),
+      image = document.querySelector('#snap'),
+      start_camera = document.querySelector('#start-camera'),
+      controls = document.querySelector('.controls'),
+      take_photo_btn = document.querySelector('#take-photo'),
+      delete_photo_btn = document.querySelector('#delete-photo'),
+      download_photo_btn = document.querySelector('#download-photo'),
+      error_message = document.querySelector('#error-message');
+
+
+    // The getUserMedia interface is used for handling camera input.
+    // Some browsers need a prefix so here we're covering all the options
+    navigator.getMedia = (navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia);
+
+
+    if (!navigator.getMedia) {
+      displayErrorMessage("Your browser doesn't have support for the navigator.getUserMedia interface.");
+      hideUI(video, controls, start_camera, snap, error_message);
+    }
+    else {
+
+      // Request the camera.
+      navigator.getMedia(
+        {
+          video: true
+        },
+        // Success Callback
+        function (stream) {
+
+          // Create an object URL for the video stream and
+          // set it as src of our HTLM video element.
+          video.src = window.URL.createObjectURL(stream);
+
+          // Play the video element to start the stream.
+          video.play();
+          video.onplay = function () {
+            showVideo(video, controls, start_camera, snap, error_message);
+          };
+
+        },
+        // Error Callback
+        function (err) {
+          displayErrorMessage("There was an error with accessing the camera stream: " + err.name, err);
+          hideUI(video, controls, start_camera, snap, error_message);
+        }
+      );
+
+    }
+
+    // Mobile browsers cannot play video without user input,
+    // so here we're using a button to start it manually.
+    start_camera.addEventListener("click", function (e) {
+
+      e.preventDefault();
+
+      // Start video playback manually.
+      video.play();
+      showVideo(video, controls, start_camera, snap, error_message);
+
+    });
+
+
+    take_photo_btn.addEventListener("click", function (e) {
+
+      e.preventDefault();
+
+      var snap = takeSnapshot(video);
+
+      // Show image. 
+      image.setAttribute('src', snap);
+      image.classList.add("visible");
+
+      // Enable delete and save buttons
+      delete_photo_btn.classList.remove("disabled");
+      download_photo_btn.classList.remove("disabled");
+
+      // Set the href attribute of the download button to the snap url.
+      download_photo_btn.href = snap;
+
+      // Pause video playback of stream.
+      video.pause();
+
+    });
+
+
+    delete_photo_btn.addEventListener("click", function (e) {
+
+      e.preventDefault();
+
+      // Hide image.
+      image.setAttribute('src', "");
+      image.classList.remove("visible");
+
+      // Disable delete and save buttons
+      delete_photo_btn.classList.add("disabled");
+      download_photo_btn.classList.add("disabled");
+
+      // Resume playback of stream.
+      video.play();
+
+    });
+  }
+
+  function showVideo(video, controls, start_camera, snap, error_message) {
+    // Display the video stream and the controls.
+
+    hideUI(video, controls, start_camera, snap, error_message);
+    video.classList.add("visible");
+    controls.classList.add("visible");
+  }
+
+
+  function takeSnapshot(video) {
+    // Here we're using a trick that involves a hidden canvas element.  
+
+    var hidden_canvas = document.querySelector('canvas'),
+      context = hidden_canvas.getContext('2d');
+
+    var width = video.videoWidth,
+      height = video.videoHeight;
+
+    if (width && height) {
+
+      // Setup a canvas with the same dimensions as the video.
+      hidden_canvas.width = width;
+      hidden_canvas.height = height;
+
+      // Make a copy of the current frame in the video on the canvas.
+      context.drawImage(video, 0, 0, width, height);
+
+      // Turn the canvas image into a dataURL that can be used as a src for our photo.
+      return hidden_canvas.toDataURL('image/png');
+    }
+  }
+
+
+  function displayErrorMessage(error_msg, error) {
+    error = error || "";
+    if (error) {
+      console.error(error);
+    }
+
+    error_message.innerText = error_msg;
+    error_message.classList.add("visible");
+  }
+
+
+  function hideUI(video, controls, start_camera, snap, error_message) {
+    // Helper function for clearing the app UI.hideUI
+
+    controls.classList.remove("visible");
+    start_camera.classList.remove("visible");
+    video.classList.remove("visible");
+    snap.classList.remove("visible");
+    error_message.classList.remove("visible");
+  }
 
     function ok(message) {
         swal({
