@@ -19,10 +19,17 @@ public class DashStudentResponse implements Response
   private Date expectedOut;
   private Date expectedIn;
 
-private boolean corporate;
+  private boolean corporate;
+
+  //Avneet
+
+  private Long id;
+  private String admissionNumber;
 
   public DashStudentResponse(Student student)
   {
+    id=mask(student.getId());
+    admissionNumber=student.getAdmissionNumber();
     name = student.getName();
     program = student.getProgramName();
     group = student.getGroupName();
@@ -78,7 +85,7 @@ private boolean corporate;
   public Date getExpectedOut() {
 	return expectedOut;
 	}
-	
+
 	public void setExpectedOut(Date expectedOut) {
 		this.expectedOut = expectedOut;
 	}
@@ -90,4 +97,8 @@ private boolean corporate;
 	public void setExpectedIn(Date expectedIn) {
 		this.expectedIn = expectedIn;
 	}
+
+  public Long getId() { return id; }
+
+  public String getAdmissionNumber() { return admissionNumber; }
 }
