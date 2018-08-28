@@ -23,6 +23,10 @@ app.controller('StudentMessageController', function ($scope, $http, Upload) {
     $scope.searchStudentName='';
     $scope.allcheckeddisabled = false;
 
+       ////////////
+       $scope.ccInput = '';
+       $scope.ccInputList = [];
+
 
     $scope.filterFunction = function(student) {
 
@@ -109,6 +113,32 @@ app.controller('StudentMessageController', function ($scope, $http, Upload) {
         $scope.emailbox = !$scope.emailbox;
     };
 
+    $scope.onCcAdd = function (value) {
+        if ($scope.validateEmail($scope.ccInput)) {
+
+            $scope.ccInputList.push($scope.ccInput);
+            $scope.ccInput = '';
+        }else{
+            error('Please Enter a valid Email');
+
+        }
+    }
+    $scope.onCcListDelete = function (value) {
+        $scope.ccInputList = [];
+
+    }
+    $scope.showEnteredEmails = function (value) {
+        return $scope.ccInputList.join(', ');
+
+    }
+
+
+
+    $scope.validateEmail = function (email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
     $scope.sendEmail = function () {
         var postobject = {
             ids: [],
@@ -117,7 +147,7 @@ app.controller('StudentMessageController', function ($scope, $http, Upload) {
             subject: $scope.emailsubject,
             emailcontent: '',
             images: [],
-            cc:$scope.cc
+            cc: $scope.ccInputList,
         };
 
         // 1. removing url image from img
