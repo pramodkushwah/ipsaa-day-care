@@ -338,6 +338,9 @@ public class CommunicationService
       if (!CollectionUtils.isEmpty(list))
       {
         MessageEmail freshEmail = new MessageEmail(email);
+       if(request.getCc()!=null  && !request.getCc().isEmpty())
+         freshEmail.getCc().addAll(request.getCc());
+
         freshEmail.setTo(new ArrayList<>(email.getTo()));
         freshEmail.getBcc().addAll(list);
         emailSender.sendMessage(freshEmail);
