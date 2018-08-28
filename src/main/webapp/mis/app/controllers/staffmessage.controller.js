@@ -3,7 +3,7 @@ app.controller('StaffMessageController', function ($scope, $http, Upload) {
     var MAX_FILE_SIZE_MB = 10; //File size in mb
     var MAX_FILE_BYTES = 1024 * 1024 * MAX_FILE_SIZE_MB;
     $scope.MAX_FILES = 5;
-    $scope.progress = {hide: true, percent: '0%'};
+    $scope.progress = { hide: true, percent: '0%' };
     $scope.attachments = [];
     $scope.sendDisable = false;
     $scope.count = 0;
@@ -15,8 +15,8 @@ app.controller('StaffMessageController', function ($scope, $http, Upload) {
     $scope.selectedcount = 0;
 
     ////////////
-    $scope.ccInput='';
-    $scope.ccInputList=[];
+    $scope.ccInput = '';
+    $scope.ccInputList = [];
 
 
     $scope.filterFunction = function (staff) {
@@ -52,8 +52,29 @@ app.controller('StaffMessageController', function ($scope, $http, Upload) {
     };
 
     $scope.onCcAdd = function (value) {
-        $scope.ccInputList.push($scope.ccInput);
-        $scope.ccInput='';
+        if ($scope.validateEmail($scope.ccInput)) {
+
+            $scope.ccInputList.push($scope.ccInput);
+            $scope.ccInput = '';
+        }else{
+            error('Please Enter a valid Email');
+
+        }
+    }
+    $scope.onCcListDelete = function (value) {
+        $scope.ccInputList = [];
+
+    }
+    $scope.showEnteredEmails = function (value) {
+        return $scope.ccInputList.join(', ');
+
+    }
+
+
+
+    $scope.validateEmail = function (email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
     }
 
     $scope.sendEmail = function () {
@@ -61,7 +82,7 @@ app.controller('StaffMessageController', function ($scope, $http, Upload) {
             ids: [],
             cids: [],
             files: [],
-            cc:$scope.ccInputList,
+            cc: $scope.ccInputList,
             subject: $scope.emailsubject,
             emailcontent: '',
             images: []
@@ -144,8 +165,8 @@ app.controller('StaffMessageController', function ($scope, $http, Upload) {
                 $scope.selectedcount++;
             }
             var center = findCenter($scope.centers, staff.centerCode);
-            if(center){
-                if(staff.checked){
+            if (center) {
+                if (staff.checked) {
                     center.selectedStaff++;
                 }
             }
@@ -274,18 +295,18 @@ app.controller('StaffMessageController', function ($scope, $http, Upload) {
         angular
             .module('chipsCustomSeparatorDemo', ['ngMaterial'])
             .controller('CustomSeparatorCtrl', DemoCtrl);
-      
-        function DemoCtrl ($mdConstant) {
-          // Use common key codes found in $mdConstant.KEY_CODE...
-          this.keys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA];
-          this.tags = [];
-      
-          // Any key code can be used to create a custom separator
-          var semicolon = 186;
-          this.customKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA, semicolon];
-          this.contacts = ['test@example.com'];
+
+        function DemoCtrl($mdConstant) {
+            // Use common key codes found in $mdConstant.KEY_CODE...
+            this.keys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA];
+            this.tags = [];
+
+            // Any key code can be used to create a custom separator
+            var semicolon = 186;
+            this.customKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA, semicolon];
+            this.contacts = ['test@example.com'];
         }
-      })();
+    })();
 
 
 
