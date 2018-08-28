@@ -248,6 +248,8 @@ public class CommunicationService
         MessageEmail freshEmail = new MessageEmail(email);
         freshEmail.setTo(new ArrayList<>(email.getTo()));
         freshEmail.getBcc().addAll(list);
+        if(request.getCc()!=null &&  !request.getCc().isEmpty())
+          freshEmail.getCc().addAll(request.getCc());
         emailSender.sendMessage(freshEmail);
       }
       if (flag)
