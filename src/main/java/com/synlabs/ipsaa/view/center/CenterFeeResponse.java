@@ -32,9 +32,9 @@ public class CenterFeeResponse implements Response
     this.fee = fee.getFee();
     this.annualFee = fee.getAnnualFee();
     this.deposit = fee.getDeposit();
-    this.cgst = fee.getCgst();
-    this.sgst = fee.getSgst();
-    this.igst = fee.getIgst();
+    //this.cgst = fee.getCgst();
+    //this.sgst = fee.getSgst();
+    //this.igst = fee.getIgst();
   }
   public int getAdmissionFee() {
     return admissionFee;

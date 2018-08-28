@@ -76,19 +76,38 @@ public class FeeUtilsV2 {
         }
         return totalFee;
     }
-
-    public static BigDecimal calculateFinalFee(StudentFeePaymentRequest fee, BigDecimal ratio) {
+    public static BigDecimal calculateSaveFinalFee(StudentFeePaymentRequest fee, BigDecimal ratio) {
         BigDecimal finalRatio;
         if (ratio != null)
             finalRatio = ratio;
         else {
             finalRatio = THREE;
         }
-
         fee.setFinalTransportFee(fee.getTransportFee().multiply(finalRatio));
-        fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(), fee.getFinalBaseFee().divide(THREE), "Base Fee"));
+
+        fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(),fee.getFinalBaseFee().divide(ratio), "Base Fee"));
         // need to re calculate the discount bcz finalBaseFee saves discount amount + quarterly amount too
         fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(finalRatio));
+
+        return calculateFinalFee(fee);
+    }
+    public static BigDecimal calculateReGenrateFinalFee(StudentFeePaymentRequest fee, BigDecimal ratio) {
+        BigDecimal finalRatio;
+        if (ratio != null)
+            finalRatio = ratio;
+        else {
+            finalRatio = THREE;
+        }
+        fee.setFinalTransportFee(fee.getTransportFee().multiply(finalRatio));
+
+        fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(),fee.getFinalBaseFee().divide(THREE), "Base Fee"));
+        // need to re calculate the discount bcz finalBaseFee saves discount amount + quarterly amount too
+        fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(finalRatio));
+
+        return calculateFinalFee(fee);
+    }
+
+    public static BigDecimal calculateFinalFee(StudentFeePaymentRequest fee) {
 
         BigDecimal totalFee = fee.getFinalBaseFee()
                 .add(fee.getFinalTransportFee())
