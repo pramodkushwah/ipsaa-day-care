@@ -116,7 +116,8 @@ app.controller('StudentMessageController', function ($scope, $http, Upload) {
             files: [],
             subject: $scope.emailsubject,
             emailcontent: '',
-            images: []
+            images: [],
+            cc:$scope.cc
         };
 
         // 1. removing url image from img
