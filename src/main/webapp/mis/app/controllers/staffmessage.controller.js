@@ -14,6 +14,11 @@ app.controller('StaffMessageController', function ($scope, $http, Upload) {
     $scope.searchStaffName = '';
     $scope.selectedcount = 0;
 
+    ////////////
+    $scope.ccInput='';
+    $scope.ccInputList=[];
+
+
     $scope.filterFunction = function (staff) {
 
         var matched = true;
@@ -46,11 +51,17 @@ app.controller('StaffMessageController', function ($scope, $http, Upload) {
         })
     };
 
+    $scope.onCcAdd = function (value) {
+        $scope.ccInputList.push($scope.ccInput);
+        $scope.ccInput='';
+    }
+
     $scope.sendEmail = function () {
         var postobject = {
             ids: [],
             cids: [],
             files: [],
+            cc:$scope.ccInputList,
             subject: $scope.emailsubject,
             emailcontent: '',
             images: []
@@ -251,4 +262,35 @@ app.controller('StaffMessageController', function ($scope, $http, Upload) {
         val = val + $scope.count;
         return val;
     }
+
+
+
+
+
+
+
+    (function () {
+        'use strict';
+        angular
+            .module('chipsCustomSeparatorDemo', ['ngMaterial'])
+            .controller('CustomSeparatorCtrl', DemoCtrl);
+      
+        function DemoCtrl ($mdConstant) {
+          // Use common key codes found in $mdConstant.KEY_CODE...
+          this.keys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA];
+          this.tags = [];
+      
+          // Any key code can be used to create a custom separator
+          var semicolon = 186;
+          this.customKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA, semicolon];
+          this.contacts = ['test@example.com'];
+        }
+      })();
+
+
+
+
+
+
+
 });

@@ -81,9 +81,19 @@
       <div class="card-content">
         <h4 class="card-title">Email</h4>
         <div class="form-group">
+          <label class="control-label">CC</label>
+         
+         
+         
+         
+          <input #ccInput class="form-control"  ng-model="ccInput">
+          <button type="button" ng-click="onCcAdd(ccInput)">Add</button>
+        </div>
+        <div class="form-group">
           <label class="control-label">Subject*</label>
           <input class="form-control" ng-model="emailsubject">
         </div>
+
         <div class="form-group">
           <label class="control-label">Message*</label>
           <div id="message" class="form-control" ng-model="emailcontent" style="min-height: 200px;overflow: scroll;" contenteditable="true"></div>
