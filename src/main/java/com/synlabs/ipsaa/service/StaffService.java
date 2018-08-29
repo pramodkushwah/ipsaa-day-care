@@ -181,15 +181,6 @@ public class StaffService extends BaseService
     StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository,staffRequest.getEmployerCode());
     return excel.createExcel(); // returning file
   }
-
-  // shubham
-  public File getEmployee(StaffFilterRequest staffRequest){
-    List<Employee> list;
-    list= employeeRepository.findByActiveTrueAndCostCenterIn(getUserCenters());
-    StaffReport excel = new StaffReport(list,exportDirectory);
-    return excel.createExcel(); // returning file
-  }
-
   @Transactional
   public Employee save(StaffRequest request) throws ParseException
   {

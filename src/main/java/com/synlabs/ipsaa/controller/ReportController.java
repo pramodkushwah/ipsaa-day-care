@@ -235,7 +235,6 @@ public class ReportController {
 			throws IOException {
 		// modifiy by shubham
 		File file = staffService.getEmployeeSalary(staffRequest);
-
 		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
 				staffRequest.getEmployerCode(), staffRequest.getMonth(), staffRequest.getYear()));
 		response.setHeader("fileName", String.format("%s_Month_%s_Year_%s.xlsx", staffRequest.getEmployerCode(),
@@ -250,6 +249,8 @@ public class ReportController {
 			throw new IOException("Could not delete temporary file after processing: " + file);
 		}
 	}
+
+
 
 	// TO BE REMOVED////Avneet - Read from Excel file and write into database
 	/*
