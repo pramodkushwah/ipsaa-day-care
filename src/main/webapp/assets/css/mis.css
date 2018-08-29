@@ -25,3 +25,6 @@
 .sidebar .sidebar-wrapper, .off-canvas-sidebar .sidebar-wrapper {
     height: calc(100vh - 90px);
 }
+.right {
+    float: right;
+}

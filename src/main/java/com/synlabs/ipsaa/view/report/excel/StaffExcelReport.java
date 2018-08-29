@@ -205,7 +205,7 @@ public class StaffExcelReport {
 			if (slip.getOtherDeductions() != null)
 				cell.setCellValue((slip.getOtherDeductions().intValue()));
 
-			cell = row.createCell(32, Cell.CELL_TYPE_STRING); // other d
+			cell = row.createCell(32, Cell.CELL_TYPE_STRING);
 			if (slip.getOtherDeductions() != null)
 				cell.setCellValue((slip.getExtraMonthlyAllowance().intValue()));
 
