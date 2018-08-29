@@ -172,6 +172,7 @@
             </div>
   
           </div>
+<<<<<<< HEAD
   
           <div class="tab-pane active" id="controls">
             <div class="form-footer text-right">
@@ -184,6 +185,21 @@
               <button class="btn btn-rose btn-fill" ng-click="lockControls(paySlip)" ng-disabled="paySlip.islock"> Lock </button>
               <button class="btn" ng-click="paySlip = {}">Cancel</button>
             </div>
+=======
+
+        </div>
+
+        <div class="tab-pane active" id="controls">
+          <div class="form-footer text-right">
+            <button class="btn btn-rose btn-fill" ng-click="update(paySlip)" ng-disabled="paySlip.disableUpdateBtn || paySlip.islock">
+              <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="paySlip.disableUpdateBtn"></i>save
+            </button>
+            <button class="btn btn-rose btn-fill" ng-click="regeneratePaySlip(paySlip)" ng-disabled="paySlip.disableRegenerateBtn || paySlip.islock">
+              <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="paySlip.disableRegenerateBtn"></i>regenerate
+            </button>
+            <button class="btn btn-rose btn-fill" ng-click="lockControls(paySlip)" ng-disabled="paySlip.islock"> Lock </button>
+            <button class="btn" ng-click="paySlip = {}">Cancel</button>
+>>>>>>> ea03804d55a92fd5a9d14b67a679fb1e53b79cb6
           </div>
   
         </div>

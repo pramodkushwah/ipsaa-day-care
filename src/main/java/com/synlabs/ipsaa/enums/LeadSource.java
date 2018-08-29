@@ -12,7 +12,12 @@ public enum LeadSource
   WEBSITE("Website"),
   NEWSPAPER("Newspaper"),
   SIGNBOARDS("Signboards"),
-  OTHERS("Others");
+  OTHERS("Others"),
+  // shubham
+
+  FACEBOOK("Facebook"),
+  ADWORD("Adword"),
+  ORGANIC("Organic");
 
   private String disp;
 
