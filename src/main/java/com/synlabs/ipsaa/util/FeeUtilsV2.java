@@ -70,10 +70,13 @@ public class FeeUtilsV2 {
         BigDecimal diff = totalFee.subtract(fee.getFinalFee());
 
         //compare diff with tolerance
-        if (Math.abs(diff.doubleValue()) >= FEE_CALCULATION_TOLERANCE) {
-            throw new ValidationException(
-                    String.format("Final Fee calculation discount error![Request Final Fee=%s,Calculated Final Fee=%s]", fee.getFinalFee(), totalFee));
+        if(fee.getFinalFee().intValue()!=0){
+            if (Math.abs(diff.doubleValue()) >= FEE_CALCULATION_TOLERANCE) {
+                throw new ValidationException(
+                        String.format("Final Fee calculation error![Request Final Fee=%s,Calculated Final Fee=%s]", fee.getFinalFee(), totalFee));
+            }
         }
+
         return totalFee;
     }
     public static BigDecimal calculateSaveFinalFee(StudentFeePaymentRequest fee, BigDecimal ratio) {

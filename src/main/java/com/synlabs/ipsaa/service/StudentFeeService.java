@@ -2,6 +2,7 @@ package com.synlabs.ipsaa.service;
 
 
 import com.querydsl.jpa.impl.JPAQuery;
+import com.synlabs.ipsaa.Schedular.StudentFeeResetScheduler;
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.student.*;
 import com.synlabs.ipsaa.enums.ApprovalStatus;
@@ -497,6 +498,56 @@ public class StudentFeeService {
             this.regenerateFeeSlip(request,quarter,year);
         }
     }
+
+    public List<StudentFee> listAllFee() {
+        QStudentFee fee = QStudentFee.studentFee;
+        JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
+        query.select(fee)
+                .from(fee)
+                .where(fee.student.active.isTrue())
+                .where(fee.feeDuration.eq(FeeDuration.Quarterly))
+                .where(fee.student.corporate.isFalse());
+            return query.fetch();
+    }
+    @Transactional
+    public void resetStudentFee(){
+        List<StudentFee> fees=listAllFee();
+        for(StudentFee fee:fees){
+            CenterProgramFee centerProgramFee=centerProgramFeeRepository.findByProgramIdAndCenterId(fee.getStudent().getProgram().getId(),fee.getStudent().getCenter().getId());
+           // try{
+                if(centerProgramFee==null){
+                    throw new NotFoundException("Center program fee not found");
+                }
+
+                fee.setBaseFee(new BigDecimal(centerProgramFee.getFee()));
+                fee.setAdmissionFee(centerProgramFee.getAddmissionFee()==null?ZERO:centerProgramFee.getAddmissionFee());
+                fee.setDepositFee(new BigDecimal(centerProgramFee.getDeposit()));
+                fee.setAnnualCharges(new BigDecimal(centerProgramFee.getAnnualFee()));
+                fee.setUniformCharges(fee.getUniformCharges()==null?ZERO:fee.getUniformCharges());
+                fee.setStationary(fee.getStationary()==null?ZERO:fee.getStationary());
+
+                fee.setFinalFee(ZERO);
+
+                fee.setBaseFeeDiscount(ZERO);
+                fee.setAnnualFeeDiscount(ZERO);
+                fee.setAddmissionFeeDiscount(ZERO);
+                fee.setDepositFeeDiscount(ZERO);
+
+                fee.setFinalBaseFee(fee.getBaseFee());
+                fee.setFinalDepositFee(fee.getDepositFee());
+                fee.setFinalAdmissionFee(fee.getAdmissionFee());
+                fee.setFinalAnnualCharges(fee.getAnnualCharges());
+
+                if(fee.getStudent().isFormalSchool())
+                    fee.setFinalFee(FeeUtilsV2.calculateFinalFee(fee,true));
+                else
+                    fee.setFinalFee(FeeUtilsV2.calculateFinalFee(fee,false));
+                    studentFeeRepository.save(fee);
+           // }catch(Exception e){
+             //   logger.error(String.format("Student Fee scheduler program center not found error .%s",fee));
+           // }
+        }
+    }
     public StudentFeePaymentRequest regenerateStudentSlip(StudentFeeSlipRequestV2 request) {
         Calendar cal = Calendar. getInstance();
         int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));
@@ -741,6 +792,7 @@ public class StudentFeeService {
             }
         }
         slip.setAutoComments(request.getComments());
+        logger.info(String.format("Student Fee payment rejected .%s",slip));
         feePaymentRepository.saveAndFlush(slip);
         return receipt;
     }
