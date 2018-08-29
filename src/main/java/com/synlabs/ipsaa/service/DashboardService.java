@@ -889,4 +889,19 @@ public class DashboardService extends BaseService
     }
     return response;
   }
+
+  public List<DashStudentResponse> allStudentList(DashboardRequest request)
+  {
+    List<Center> centers = getCenters(request);
+
+    JPAQuery<Student> query = new JPAQuery<>(entityManager);
+    QStudent student = QStudent.student;
+
+    query.select(student)
+            .from(student)
+            .where(student.active.isTrue())
+            .where(student.center.in(centers));
+
+    return  query.fetch().stream().map(DashStudentResponse::new).collect(Collectors.toList());
+  }
 }
