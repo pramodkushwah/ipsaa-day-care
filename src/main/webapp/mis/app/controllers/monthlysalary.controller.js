@@ -1,11 +1,12 @@
 app.controller('MonthlySalaryController', function ($scope, $http) {
     $scope.disableGenerateButton = false;
     $scope.disableUpdateBtn = false;
-
+    $scope.regenerateRecords = {};
     $scope.years = [];
 
     $http.get('/api/le/').then(function (response) {
         $scope.employers = response.data;
+        $scope.employers.push({code: 'ALL', name: 'ALL', id: 'ALL'});
     });
 
     $scope.generate = function (month, year) {
@@ -32,6 +33,28 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
             $scope.disableGenerateButton = false;
         });
     };
+
+    $scope.regenerateAllPaySlip = function(){
+        const requestObject = {}
+        const regeneratedRecordIds = []
+        Object.keys($scope.regenerateRecords).forEach((key)=>{
+            if($scope.regenerateRecords[key]) {
+                regeneratedRecordIds.push(key);
+            }
+        })
+        requestObject.month = $scope.selectedMonth.value;
+        requestObject.year = $scope.selectedYear.value;
+        requestObject.ids = regeneratedRecordIds;
+        console.log(requestObject);
+
+        $http.post('/api/employee/payslip/regenerateall/', requestObject).then(function(response){
+            ok("All selected Payslip regenerated successfully.");
+            $scope.regenerateRecords = {};
+        }, function(error){
+            error(response.data.error);
+        })
+        
+    }
 
     $scope.showSlip = function (salary) {
         $scope.paySlip = angular.copy(salary);
@@ -118,6 +141,7 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
 
     $scope.lockControls = function(paySlip) {
 
+        // if salary lock set from backend then disable lock button
         if(paySlip.islock) {          
             error("Salary already locked");    
             return false;
@@ -138,7 +162,7 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
                 });
             },
             function (response) {
-                error("Salary already locked");
+                error(response.data.error);
             }
         );
     }
