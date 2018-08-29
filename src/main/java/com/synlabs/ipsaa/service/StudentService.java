@@ -300,14 +300,6 @@ public class StudentService extends BaseService {
 			return fees;
 		}
 		fees = query.where(fee.student.center.in(getUserCenters())).fetch();
-
-		// copy discount
-		for (StudentFee studentFee : fees) {
-			studentFee.setBaseFee(studentFee.getDiscount());
-			studentFeeService.saveStudentFee(studentFee);
-			studentFeeRepository.save(studentFee);
-		}
-
 		return fees;
 	}
 
