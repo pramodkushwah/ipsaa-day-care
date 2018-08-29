@@ -17,6 +17,7 @@ import com.synlabs.ipsaa.ex.UploadException;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.store.FileStore;
+import com.synlabs.ipsaa.util.StringUtil;
 import com.synlabs.ipsaa.view.batchimport.ImportEmployee;
 import com.synlabs.ipsaa.view.batchimport.ImportSalary;
 import com.synlabs.ipsaa.view.center.CenterRequest;
@@ -175,11 +176,16 @@ public class StaffService extends BaseService
   }
 // shubham
   public File getEmployeeSalary(StaffFilterRequest staffRequest){
-    List<EmployeeSalary> list;
 
-    list= employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
-    StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository,staffRequest.getEmployerCode());
-    return excel.createExcel(); // returning file
+    List<EmployeeSalary> list=new ArrayList<>();
+
+    if (!StringUtils.isEmpty(staffRequest.getEmployerCode()) || staffRequest.getEmployerCode().equals("ALL")) {
+      list = employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
+    }
+      StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository, staffRequest.getEmployerCode());
+      return excel.createExcel(); // returning file
+
+
   }
 
   // shubham

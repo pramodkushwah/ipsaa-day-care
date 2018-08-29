@@ -302,7 +302,7 @@ public class InquiryService extends BaseService
       row.createCell(6, Cell.CELL_TYPE_STRING).setCellValue(inquiry.getMotherName());
       row.createCell(7, Cell.CELL_TYPE_STRING).setCellValue(inquiry.getMotherMobile());
       row.createCell(8, Cell.CELL_TYPE_STRING).setCellValue(inquiry.getChildName());
-      row.createCell(9, Cell.CELL_TYPE_STRING).setCellValue(inquiry.getGroup().getName());
+      row.createCell(9, Cell.CELL_TYPE_STRING).setCellValue(inquiry.getGroup()==null? " " :inquiry.getGroup().getName());
       row.createCell(10, Cell.CELL_TYPE_STRING).setCellValue(inquiry.getInquiryType().toString());
       row.createCell(11, Cell.CELL_TYPE_STRING).setCellValue(inquiry.getLeadSource().toString());
       row.createCell(12, Cell.CELL_TYPE_STRING).setCellValue(inquiry.getFirstLog() == null ? ""

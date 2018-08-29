@@ -10,12 +10,21 @@ import java.util.List;
 public class EmailRequest implements Request
 {
 
+  private List<String> cc=new ArrayList<>();
   private Long[] ids;
   private String subject;
   private String emailcontent;
   private List<MultipartFile> attachments = new ArrayList<>();
   private List<String> cids=new ArrayList<>();
   private List<MultipartFile> images=new ArrayList<>();
+
+  public List<String> getCc() {
+    return cc;
+  }
+
+  public void setCc(List<String> cc) {
+    this.cc = cc;
+  }
 
   public List<String> getCids()
   {
