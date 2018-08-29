@@ -189,5 +189,24 @@ public int getStaffPresent() {
 public void setStaffPresent(int staffPresent) {
 	this.staffPresent = staffPresent;
 }
-}
 
+// -----------------------------------------------shubham --------------------------------------------------
+  private int newJoinings;
+  private int newLeavings;
+
+  public int getNewLeavings() {
+    return newLeavings;
+  }
+
+  public void setNewLeavings(int newLeavings) {
+    this.newLeavings = newLeavings;
+  }
+
+  public int getNewJoinings() {
+    return newJoinings;
+  }
+
+  public void setNewJoinings(int newJoinings) {
+    this.newJoinings = newJoinings;
+  }
+}

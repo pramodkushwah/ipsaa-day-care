@@ -2,7 +2,7 @@
   <div class="col-md-2">
     <div class="form-group">
       <label class="control-label">Center:</label>
-      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="selectedPeriod='Quarterly'">
+      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers">
         <option value="">Select Center</option>
       </select>
       <span class="material-input"></span>
@@ -73,6 +73,7 @@
           <table class="table table-condensed table-striped table-hover">
             <thead class="text-primary">
             <tr>
+              <th>Sr. No.</th>
               <th>Student</th>
               <th>Program/Group</th>
               <th>Period</th>
@@ -85,6 +86,7 @@
             </thead>
             <tbody>
             <tr ng-repeat="studentfee in studentfeelist | filter :search" ng-click="showDetails(studentfee)">
+              <td>{{ $index + 1 }}</td>
               <td>{{studentfee.fullName}}</td>
               <td>
                 <span class="label label-info">{{studentfee.center}}</span>
@@ -180,7 +182,6 @@
             <div class="form-group">
               <label class="control-label">Payment mode</label>
               <select class="form-control"
-                      ng-click="selected.confirmed = selected.paymentMode == 'Cash'"
                       ng-model="selected.paymentMode"
                       ng-disabled="selected.status=='Paid'">
                 <option value="Cash">Cash</option>

@@ -365,7 +365,7 @@ public class EmployeeSalary extends BaseEntity
   public void update()
   {
 
-    BigDecimal totalEarning = ZERO.add(ctc);
+    BigDecimal totalEarning = ZERO.add(bonus).add(grossSalary);
 
     if (esid)
     {
@@ -374,9 +374,7 @@ public class EmployeeSalary extends BaseEntity
     if (pfd)
     {
       totalDeduction = totalDeduction.add(pfe == null ? ZERO : pfe);
-      totalDeduction = totalDeduction.add(pfr == null ? ZERO : pfr);
     }
-    
     if (profd)
     {
       totalDeduction = totalDeduction.add(professionalTax == null ? ZERO : professionalTax);
@@ -384,10 +382,19 @@ public class EmployeeSalary extends BaseEntity
     totalDeduction = totalDeduction.setScale(0, ROUND_HALF_UP);
 
     netSalary = ZERO
-        .add(totalEarning == null ? ZERO : totalEarning) 
+        .add(totalEarning == null ? ZERO : totalEarning)
         .subtract(totalDeduction == null ? ZERO : totalDeduction)
         .setScale(0, ROUND_HALF_UP);
 
   }
-  
+  //------------------------------------------shuhbham------------------------------------------------------
+  @Column(precision = 16, scale = 2,columnDefinition = "int default 0")
+  private BigDecimal extraMonthlyAllowance;
+
+  public BigDecimal getExtraMonthlyAllowance() {
+    return this.extraMonthlyAllowance;
+  }
+  public void setExtraMonthlyAllowance(BigDecimal extraMonthlyAllowance) {
+    this.extraMonthlyAllowance = extraMonthlyAllowance;
+  }
 }

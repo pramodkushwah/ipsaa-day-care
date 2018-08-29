@@ -58,7 +58,12 @@ public class EmployeeProfile extends BaseEntity
   @Column(length = 20)
   //Bank Account Number
   private String ban;
-
+  // shubham
+  private String  ifscCode;
+  private String bankName;
+  private String branchName;
+  private String holderName;
+  //
   public String getBan()
   {
     return ban;
@@ -242,7 +247,41 @@ public class EmployeeProfile extends BaseEntity
   {
     return this.permanentAddress == null ? new Address() : this.permanentAddress;
   }
+// shubham
+
+  public String getIfscCode() {
+    return ifscCode;
+  }
+  public void setIfscCode(String ifscCode) {
+    this.ifscCode = ifscCode;
+  }
+
+  public String getBankName() {
+    return bankName;
+  }
+
+  public void setBankName(String bankName) {
+    this.bankName = bankName;
+  }
+
+  public String getBranchName() {
+    return branchName;
+  }
+
+  public void setBranchName(String branchName) {
+    this.branchName = branchName;
+  }
+
+  public String getHolderName() {
+    return holderName;
+  }
+
+  public void setHolderName(String holderName) {
+    this.holderName = holderName;
+  }
+  // shubh
 }
+
 
 //TODO question
 //what all information do we need to capture for a employee

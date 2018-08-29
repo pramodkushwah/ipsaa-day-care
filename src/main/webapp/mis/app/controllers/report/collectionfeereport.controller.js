@@ -1,7 +1,6 @@
 app.controller('CollectionFeeReportController', function ($http, $scope) {
-
-    $scope.disableDownload = false;
-
+    
+    $scope.loader = '';
     //populate months, years, quarter dropdown
     $scope.quarters = [
         {value: 1, name: "FYQ4"},
@@ -19,62 +18,75 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
 
     //set current month, quarter and year
 
+    /*  
+    type : string =  'excel' | 'table' 
+        'excel'-- to download report as excel file
+        'table'-- to generate table in the view
 
+    txn_status : string = true | false
+    */
+    $scope.generateReport = function (type, txn_status) {
 
-
-
-    $scope.downloadReport = function () {
-        if (!$scope.selectedCenter) {
+        $scope.txnStatus = $scope.txnStatus ?
+                            !txn_status ? 
+                            $scope.txnStatus
+                            : txn_status 
+                            : "all";
+         
+        if ( !$scope.selectedCenter ) {
             error("Select Center");
             return;
         }
 
-        if (!$scope.selectedPeriod) {
-            error("Select Period");
-            return;
-        }
-
-        if ($scope.selectedPeriod === 'Monthly' && !$scope.selectedMonth) {
-            error("Select Month");
-            return;
-        }
-
-        if ($scope.selectedPeriod === 'Quarterly' && !$scope.selectedQuarter) {
+        if ( !$scope.selectedQuarter ) {
             error("Select Quarter");
             return;
         }
 
-        if ($scope.selectedPeriod === 'Yearly' && !$scope.selectedYear) {
+        if ( !$scope.selectedYear ) {
             error("Select Year");
             return;
         }
 
-        if (!$scope.reportType) {
-            error("Select Report Type");
-            return;
-        }
-
-
         var postobject = {
             centerCode: $scope.selectedCenter.code,
-            period: $scope.selectedPeriod,
-            reportType: $scope.reportType
+            period: 'Quarterly',
+            reportType: 'Paid'
         };
 
-        if($scope.selectedPeriod == 'Monthly') postobject.month = $scope.selectedMonth ? $scope.selectedMonth : 0;
-        else if($scope.selectedPeriod == 'Quarterly') postobject.quarter = $scope.selectedQuarter.value ? $scope.selectedQuarter.value: 0;
+        postobject.quarter = $scope.selectedQuarter.value ? $scope.selectedQuarter.value: 0;
 
         postobject.year  = $scope.selectedYear;
-        $scope.disableDownload = true;
-        $http.post('/api/report/collectionfee',postobject, {responseType: 'arraybuffer'}).then(
+        $scope.loader = type == "excel" ? "disableDownload" : "disableGet";
+
+        var reqUrl = '/api/report/collectionfee';
+        reqUrl = type == "excel" ? reqUrl + '/excel' : reqUrl;
+        var resType = type == "table" ? 'json' : 'arraybuffer';
+        
+        // need to send in post request body for confirmed and unconfirmed transactions
+        if ( $scope.txnStatus != "all" ) {
+            if( $scope.txnStatus == "confirmed")
+                postobject.confirm = true;
+            else
+                postobject.confirm = false;
+        } 
+
+        $http.post(reqUrl, postobject, { responseType: resType }).then(
+
             function (response) {
-                $scope.disableDownload = false;
-                var blob = new Blob([response.data], {
-                    type: 'application/octet-stream'
-                });
-                saveAs(blob, response.headers("fileName"));
+                $scope.loader = '';
+                if(type == 'table') {
+                    $scope.feeReports = response.data;
+                }
+                else {
+                    var blob = new Blob([response.data], {
+                        type: 'application/octet-stream'
+                    });
+                    saveAs(blob, response.headers("fileName"));
+                }
+                
             },function (response) {
-                $scope.disableDownload = false;
+                $scope.loader = '';
                 error(response.data.error);
             }
         );
@@ -82,10 +94,32 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
 
     };
 
+    $scope.confirmTransaction = function(txn) {
+
+        var res = {
+            id: txn.id,
+            confirmed : true
+        };
+
+        $http.put('/api/student/payfee', res).then(
+            function(response) {
+                ok("Transaction Confirmed");
+                txn.confirmed = true;
+            },
+            function(response) {
+                error("Error while confirming transaction");
+            }
+
+        );
+        
+    }
+
+
     function loadCenters() {
         $http.get('/api/center/').then(
             function (response) {
                 $scope.centers = response.data;
+                $scope.centers.unshift({code: 'All', name: 'All'});
                 if (Array.isArray($scope.centers) && $scope.centers.length == 1) {
                     $scope.selectedCenter = $scope.centers[0];
                 }
@@ -97,6 +131,24 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
 
     function refresh() {
         loadCenters();
+    }
+
+    function error(message) {
+        swal({
+            title: message,
+            type: 'error',
+            buttonsStyling: false,
+            confirmButtonClass: "btn btn-danger"
+        });
+    }
+
+    function ok(message) {
+        swal({
+            title: message,
+            type: 'success',
+            buttonsStyling: false,
+            confirmButtonClass: "btn btn-success"
+        });
     }
 
     refresh();

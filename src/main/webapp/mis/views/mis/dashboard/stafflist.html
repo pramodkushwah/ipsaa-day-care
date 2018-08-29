@@ -3,31 +3,46 @@
     <i class="material-icons">person_pin</i>
   </div>
   <div class="card-content">
+    <i class="fa fa-spinner fa-fw fa-pulse fa-2x text-primary right" ng-show="staffLoading"></i>
     <h4 class="card-title">Staff</h4>
     <div class="table-responsive">
       <table class="table table-condensed table-striped table-hover">
         <thead class="text-primary">
         <tr>
           <th>S.No</th>
+          <th>EID</th>
           <th>Name</th>
           <th>Designation</th>
           <th>Mobile</th>
+          <th>Center</th>
+          <th>Employer</th>
           <!-- <th>Email</th>
           <th ng-if="SALARY_READ">Basic Salary</th> -->
-          <th>Checkin</th>
-          <th>Expected Checkout</th>
+          <th ng-hide="staffPage.filter=='newjoinings' || staffPage.filter== 'newleavings' || staffPage.filter=='all'">Checkin</th>
+          <th ng-hide="staffPage.filter=='newleavings' || staffPage.filter== 'newjoinings' || staffPage.filter=='all'">Expected Checout</th>
+          <th ng-show="staffPage.filter=='newjoinings'">Date of Joining</th>
+          <th ng-show="staffPage.filter=='newleavings'">Date of Leaving</th>
+          <th ng-show="staffPage.filter=='all'">CTC</th>
+          <th ng-show="staffPage.filter=='newleavings' || staffPage.filter== 'newjoinings'">Active</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="staff in staffPage">
           <td>{{ (PAGESIZE * (staffPageNumber - 1)) + $index + 1}}</td>
+          <td>{{staff.eid}}</td>
           <td>{{staff.name}}</td>
           <td>{{staff.designation}}</td>
           <td>{{staff.mobile}}</td>
+          <td>{{staff.center}}</td>
+          <td>{{staff.employer}}</td>
           <!-- <td>{{staff.email}}</td>
           <td ng-if="SALARY_READ">{{staff.basicSalary}}</td> -->
-          <td>{{staff.checkin}}</td>
-          <td>{{staff.expectedOut}}</td>
+          <td ng-hide="staffPage.filter=='newjoinings' || staffPage.filter== 'newleavings' || staffPage.filter== 'all'">{{staff.checkin}}</td>
+          <td ng-hide="staffPage.filter=='newleavings' || staffPage.filter== 'newjoinings' || staffPage.filter== 'all'">{{staff.expectedOut}}</td>
+          <td ng-show="staffPage.filter=='newjoinings'">{{staff.doj}}</td>
+          <td ng-show="staffPage.filter=='newleavings'">{{staff.dol}}</td>
+          <td ng-show="staffPage.filter=='all'">{{staff.ctc}}</td>
+          <td ng-show="staffPage.filter=='newleavings' || staffPage.filter== 'newjoinings'">{{staff.active}}</td>
         </tr>
 
         <tr>

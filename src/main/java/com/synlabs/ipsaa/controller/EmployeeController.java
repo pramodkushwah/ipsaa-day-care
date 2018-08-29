@@ -1,6 +1,7 @@
 package com.synlabs.ipsaa.controller;
 
 import com.itextpdf.text.DocumentException;
+import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.service.BaseService;
 import com.synlabs.ipsaa.service.EmployeeService;
 import com.synlabs.ipsaa.service.PaySlipService;
@@ -49,7 +50,7 @@ public class EmployeeController
   @GetMapping("salary")
   public List<EmployeeSalaryResponse> list()
   {
-	  return employeeService.list().stream().map(EmployeeSalaryResponse::new).collect(Collectors.toList());
+    return employeeService.list().stream().map(EmployeeSalaryResponse::new).collect(Collectors.toList());
   }
 
   @Secured(SALARY_READ)
@@ -109,5 +110,20 @@ public class EmployeeController
   public void regeneratePaySlipAll(@RequestBody PaySlipRegenerateRequest request) throws IOException, DocumentException, ParseException
   {
     paySlipService.reGeneratePaySlipAll(request);
+  }
+  //------------------------------shubham-----------------------------------------------------------------
+  // shubham
+  
+  @Secured(PAYSLIP_WRITE)
+  @PostMapping("/payslip/regenerateselected/")
+  public void regeneratePaySlipSelected(@RequestBody PaySlipRegenerateRequest request) throws IOException, DocumentException, ParseException
+  {
+    paySlipService.reGenerate(request);
+  }
+  @Secured(PAYSLIP_LOCK)
+  @PutMapping("/payslip/lock")
+  public boolean lockPaySalary(@RequestBody EmployeePaySlipRequest request) throws IOException, DocumentException, ParseException
+  {
+    return paySlipService.lockSalary(request);
   }
 }

@@ -1,12 +1,15 @@
 package com.synlabs.ipsaa.controller;
 
 import com.synlabs.ipsaa.entity.staff.Employee;
+import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.service.BaseService;
 import com.synlabs.ipsaa.service.CenterService;
 import com.synlabs.ipsaa.service.DocumentService;
 import com.synlabs.ipsaa.service.StaffService;
+import com.synlabs.ipsaa.util.ExcelExporter;
 import com.synlabs.ipsaa.view.center.ApprovalCountResponse;
 import com.synlabs.ipsaa.view.center.CenterRequest;
+import com.synlabs.ipsaa.view.report.excel.StaffExcelReport;
 import com.synlabs.ipsaa.view.staff.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,6 +46,8 @@ public class StaffController
   @Autowired
   private DocumentService documentService;
 
+  private ExcelExporter excelExporter=new ExcelExporter();
+
   //only user centers employees
   @Secured(STAFF_READ)
   @GetMapping
@@ -55,8 +61,18 @@ public class StaffController
   @GetMapping("/all/")
   public List<StaffSummaryResponse> listAll()
   {
-    return staffService.listAll().stream().map(StaffSummaryResponse::new).collect(Collectors.toList());
+    List<StaffSummaryResponse> list=staffService.listAll().stream().map(StaffSummaryResponse::new).collect(Collectors.toList());
+    return list;
   }
+//  @Secured(STAFF_READ)
+//  @GetMapping("/all/export")
+//  public String listAllExport()
+//  {
+//    StaffExcelReport excel=new StaffExcelReport(staffService.getEmployeeSalary());
+//    excel.createExcel();
+//    //excelExporter.createExcel(staffService.listAll().stream().map(StaffResponse::new).collect(Collectors.toList()));
+//    return "done";
+//  }
 
   @Secured(STAFF_READ)
   @GetMapping("/reporting/")
@@ -80,7 +96,6 @@ public class StaffController
     request.setId(id);
     staffService.delete(request);
   }
-
   @Secured(STAFF_READ)
   @GetMapping("{id}")
   public StaffResponse findEmployee(@PathVariable(name = "id") Long id)

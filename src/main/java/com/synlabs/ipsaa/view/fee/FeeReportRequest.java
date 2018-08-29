@@ -8,6 +8,14 @@ public class FeeReportRequest implements Request
   private String centerCode;
   private Integer month;
   private Integer year;
+  private Integer quarter;
+
+  public Integer getQuarter() {
+    return quarter;
+  }
+  public void setQuarter(Integer quarter) {
+    this.quarter = quarter;
+  }
 
   public String getCenterCode()
   {

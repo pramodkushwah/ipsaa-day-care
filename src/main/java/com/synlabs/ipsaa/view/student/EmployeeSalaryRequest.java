@@ -1,11 +1,14 @@
 package com.synlabs.ipsaa.view.student;
 
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
+import com.synlabs.ipsaa.util.SalaryUtils;
+import com.synlabs.ipsaa.util.SalaryUtilsV2;
 import com.synlabs.ipsaa.view.common.Request;
 
 import java.math.BigDecimal;
 
 import static com.synlabs.ipsaa.util.SalaryUtils.calculateGross;
+import static com.synlabs.ipsaa.util.SalaryUtils.calculateGrossV2;
 import static java.math.BigDecimal.ZERO;
 
 /**
@@ -72,27 +75,10 @@ public class EmployeeSalaryRequest implements Request
     salary.setPfd(pfd);
     salary.setProfd(profd);
     salary.setEsi(esi == null ? ZERO : esi);
-    if (!esid)
-    {
-      salary.setEsi(ZERO);
-    }
 
-    salary.setPfe(pfe == null ? ZERO : pfe);
-    salary.setPfr(pfr == null ? ZERO : pfr);
-    if (!pfd)
-    {
-      salary.setPfe(ZERO);
-      salary.setPfr(ZERO);
-    }
-
-    salary.setProfessionalTax(professionalTax == null ? ZERO : professionalTax);
-    if (!profd)
-    {
-      salary.setProfessionalTax(ZERO);
-    }
-
-    salary.setGrossSalary(calculateGross(salary));
-    salary.update();
+    //modify by shubham calculateGrossV2 by calculateGross
+    salary.setExtraMonthlyAllowance(extraMonthlyAllowance==null ?ZERO:extraMonthlyAllowance);
+    salary=SalaryUtilsV2.calculateCTC(salary);
     return salary;
   }
 
@@ -365,5 +351,17 @@ public class EmployeeSalaryRequest implements Request
   {
     this.netSalary = netSalary;
   }
-  
+
+
+  //----------------------------------shubham -------------------------------------------------------------
+  // shubham
+  private BigDecimal extraMonthlyAllowance;
+
+  public BigDecimal getExtraMonthlyAllowance() {
+    return extraMonthlyAllowance;
+  }
+
+  public void setExtraMonthlyAllowance(BigDecimal extraMonthlyAllowance) {
+    this.extraMonthlyAllowance = extraMonthlyAllowance;
+  }
 }

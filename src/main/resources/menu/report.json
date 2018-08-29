@@ -30,6 +30,12 @@
       "state": "app.collectionfeereport",
       "p": "COLLECTION_FEE_REPORT",
       "seq": 500
+    },
+    {
+      "label": "Staff Salary Monthly Report",
+      "state": "app.staffsalarymonthlyreport",
+      "p": "STAFF_ATTENDANCE_REPORT",
+      "seq": 600
     }
   ]
 }

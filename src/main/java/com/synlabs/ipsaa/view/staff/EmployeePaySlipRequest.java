@@ -9,7 +9,8 @@ public class EmployeePaySlipRequest implements Request
 {
   private Long   id;
   private String comment;
-
+// shubham
+  private BigDecimal presents;
   //earnings
   private BigDecimal bonus;
   private BigDecimal conveyance;
@@ -29,6 +30,8 @@ public class EmployeePaySlipRequest implements Request
   private BigDecimal retention;
   private BigDecimal tds;
   private BigDecimal advance;
+  // shubham
+  private boolean lock;
 
   public EmployeePaySlip toEntity(EmployeePaySlip slip)
   {
@@ -44,7 +47,7 @@ public class EmployeePaySlipRequest implements Request
     slip.setUniform(uniform);
     slip.setWashing(washing);
     slip.setOtherAllowances(otherAllowances);
-
+    slip.setPresents(presents);
     slip.setOtherDeductions(otherDeductions);
     slip.setRetention(retention);
     slip.setTds(tds);
@@ -52,6 +55,21 @@ public class EmployeePaySlipRequest implements Request
 
     slip.setComment(comment);
     return slip;
+  }
+
+  public boolean isLock() {
+    return lock;
+  }
+  public void setLock(boolean lock) {
+    this.lock = lock;
+  }
+
+  public BigDecimal getPresents() {
+    return presents;
+  }
+
+  public void setPresents(BigDecimal presents) {
+    this.presents = presents;
   }
 
   public Long getId()

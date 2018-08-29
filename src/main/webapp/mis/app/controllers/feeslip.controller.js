@@ -1,5 +1,5 @@
 app.controller('StudentFeeSlipController', function ($scope, $http) {
-    $scope.selectedYear = new Date().getFullYear;
+
     $scope.generateSlipDisable = false;
     $scope.generateSlipPdfDisable = false;
     $scope.slipEmail = {};

@@ -5,7 +5,6 @@ import com.github.jhonnymertz.wkhtmltopdf.wrapper.params.Param;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.ExceptionConverter;
-import com.itextpdf.text.pdf.BadPdfFormatException;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
 import com.synlabs.ipsaa.entity.common.SerialNumberSequence;
@@ -26,14 +25,7 @@ import com.synlabs.ipsaa.view.fee.SaveFeeSlipRequest;
 import com.synlabs.ipsaa.view.fee.StudentFeeSlipRequest;
 import com.synlabs.ipsaa.view.staff.EmployeePaySlipResponse;
 import com.synlabs.ipsaa.view.student.StudentResponse;
-
-import freemarker.core.ParseException;
-import freemarker.template.Configuration;
-import freemarker.template.MalformedTemplateNameException;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateNotFoundException;
-
+import freemarker.template.*;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +37,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -270,41 +263,41 @@ public class DocumentService extends BaseService
   }
 
   
-  @SuppressWarnings({ "unchecked", "resource" })
-public byte[] generateStudentPdf(StudentResponse student) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException, InterruptedException, DocumentException{
-	  Template template = configuration.getTemplate("student-confirmation/confirmation.ftl");
-	    try
-	    {
-	      Map<String, Object> rootMap = new HashMap<>();
-	      rootMap.put("slip",student);
+   @SuppressWarnings({ "unchecked", "resource" })
+ public byte[] generateStudentPdf(StudentResponse student) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException, InterruptedException, DocumentException{
+ 	  Template template = configuration.getTemplate("student-confirmation/confirmation.ftl");
+ 	    try
+ 	    {
+ 	      Map<String, Object> rootMap = new HashMap<>();
+ 	      rootMap.put("slip",student);
 	      
 	      
-	      rootMap.put("father",student.getParents().get(0));
-	      rootMap.put("mother",student.getParents().get(1));
+ 	      rootMap.put("father",student.getParents().get(0));
+ 	      rootMap.put("mother",student.getParents().get(1));
 	      
-	      Writer out = new StringWriter();
-	      template.process(rootMap, out);
-	      String html = out.toString();
-//	      String fileName = student.getFirstName()+".pdf";
+ 	      Writer out = new StringWriter();
+ 	      template.process(rootMap, out);
+ 	      String html = out.toString();
+ //	      String fileName = student.getFirstName()+".pdf";
 
-	      Map<String, String> params = new HashMap<>();
+ 	      Map<String, String> params = new HashMap<>();
 	      
-	      Pdf slip = addParamsToPdf(null);
-	      addParamsToPdf(slip, params);
-	      addPdfMarginParam(slip, 2);
+ 	      Pdf slip = addParamsToPdf(null);
+ 	      addParamsToPdf(slip, params);
+ 	      addPdfMarginParam(slip, 2);
 
-	      slip.addPageFromString(html);
-	      byte[] bytes = slip.getPDF();
-//	      fileStore.store("STUDENT", fileName, bytes);
-	      return bytes;
-	    }
-	    catch (TemplateException | InterruptedException e)
-	    {
-	      e.printStackTrace();
-	      logger.warn(String.format("Error generating paySlip pdf"));
-	      return null;
-	    }
-  }
+ 	      slip.addPageFromString(html);
+ 	      byte[] bytes = slip.getPDF();
+ //	      fileStore.store("STUDENT", fileName, bytes);
+ 	      return bytes;
+ 	    }
+ 	    catch (TemplateException | InterruptedException e)
+ 	    {
+ 	      e.printStackTrace();
+ 	      logger.warn(String.format("Error generating paySlip pdf"));
+ 	      return null;
+ 	    }
+   }
   
   private Map<String, Object> fillPaySlipTemplate(EmployeePaySlip paySlip, Map<String, Object> rootMap)
   {

@@ -8,6 +8,7 @@ import com.synlabs.ipsaa.entity.staff.EmployeeProfile;
 import com.synlabs.ipsaa.view.common.Response;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by Rakesh on 06-04-2018.
@@ -33,11 +34,8 @@ public class EmployeePaySlipResponse implements Response
   private String centerCode;
   private String autoComment;
   private String comment;
-  
-  private BigDecimal ctc;
 
-
-private BigDecimal totalEarning;
+  private BigDecimal totalEarning;
   private BigDecimal netSalary;
   private BigDecimal totalDeduction;
 
@@ -81,16 +79,21 @@ private BigDecimal totalEarning;
   private String pran;
   private String ban;
   private String aadharNumber;
+  private boolean islock;
+
 
   public EmployeePaySlipResponse(EmployeePaySlip slip)
   {
     Employee employee = slip.getEmployee();
     if (employee != null)
     {
+
       this.eid = employee.getEid();
       this.empName = employee.getName();
       this.empDesignation = employee.getDesignation() == null ? "" : employee.getDesignation();
       this.aadharNumber = employee.getAadharNumber() == null ? "" : employee.getAadharNumber();
+      // shubham
+      this.doj=employee.getProfile().getDoj();
       EmployeeProfile profile = employee.getProfile();
       if (profile != null)
       {
@@ -102,7 +105,7 @@ private BigDecimal totalEarning;
         this.ban = profile.getBan() == null ? "" : profile.getBan();
       }
     }
-
+    this.islock=slip.isLock();
     this.employerCode = "";
     this.employerName = "";
     this.employerAddress = "";
@@ -131,7 +134,7 @@ private BigDecimal totalEarning;
 
     this.totalDays = slip.getTotalDays();
     this.presents = slip.getPresents();
-    this.ctc = slip.getCtc();
+
     this.basic = slip.getBasic();
     this.bonus = slip.getBonus();
     this.conveyance = slip.getConveyance();
@@ -160,6 +163,17 @@ private BigDecimal totalEarning;
     this.otherAllowances = slip.getOtherAllowances();
     this.autoComment = slip.getAutoComment();
     this.comment = slip.getComment();
+    // shubam
+    this.ctc=slip.getCtc();
+    this.extraMonthlyAllowance=slip.getExtraMonthlyAllowance();
+  }
+
+  public boolean isIslock() {
+    return islock;
+  }
+
+  public void setIslock(boolean islock) {
+    this.islock = islock;
   }
 
   public BigDecimal getPfe()
@@ -421,11 +435,29 @@ private BigDecimal totalEarning;
   {
     return employerName;
   }
+//-----------------------------subham--------------------------------
+  public BigDecimal ctc;
+  public BigDecimal extraMonthlyAllowance;
+  public Date doj;
+  public BigDecimal getExtraMonthlyAllowance() {
+    return extraMonthlyAllowance;
+  }
+
+  public void setExtraMonthlyAllowance(BigDecimal extraMonthlyAllowance) {
+    this.extraMonthlyAllowance = extraMonthlyAllowance;
+  }
+  public Date getDoj() {
+    return doj;
+  }
+
+  public void setDoj(Date doj) {
+    this.doj = doj;
+  }
+
   public BigDecimal getCtc() {
-	return ctc;
-	}
-	
-	public void setCtc(BigDecimal ctc) {
-		this.ctc = ctc;
-	}
+    return ctc;
+  }
+  public void setCtc(BigDecimal ctc) {
+    this.ctc = ctc;
+  }
 }

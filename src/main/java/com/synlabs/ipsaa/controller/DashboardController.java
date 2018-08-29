@@ -6,6 +6,8 @@ import com.synlabs.ipsaa.view.common.StatsResponse;
 import com.synlabs.ipsaa.view.common.UserResponse;
 import com.synlabs.ipsaa.view.inquiry.FollowUpReportResponse;
 import com.synlabs.ipsaa.view.staff.DashStaffResponse;
+import com.synlabs.ipsaa.view.staff.StaffNewJoinings;
+import com.synlabs.ipsaa.view.staff.StaffNewLeavings;
 import com.synlabs.ipsaa.view.student.DashStudentFeeResponse;
 import com.synlabs.ipsaa.view.student.DashStudentResponse;
 import com.synlabs.ipsaa.view.student.ParentSummaryResponse;
@@ -25,11 +27,13 @@ public class DashboardController
   @Autowired
   private DashboardService dashboardService;
 
+  // modify by shubham
   @PostMapping("stats")
   @Secured(DASHBOARD_STATS)
   public StatsResponse getStats(@RequestBody DashboardRequest request)
   {
-    return dashboardService.getStats(request);
+    //return dashboardService.getStats(request);
+    return dashboardService.getStatsV2(request);
   }
 
   @PostMapping("stats/fee")
@@ -58,7 +62,7 @@ public class DashboardController
   @Secured(DASHBOARD_STATS)
   public List<DashStaffResponse> getStaffList(@RequestBody DashboardRequest request)
   {
-    return dashboardService.listStaff(request);
+    return dashboardService.listStaffV2(request);
   }
 
   @PostMapping("/dash/studentfee")
@@ -89,4 +93,18 @@ public class DashboardController
     return dashboardService.followupReport(request);
   }
 
+  // ----------------------------------------shubham ----------------------------------------------------------
+  @PostMapping("/dash/newjoinings")
+  @Secured(DASHBOARD_STATS)
+  public List<StaffNewJoinings> getNewJoinings(@RequestBody DashboardRequest request)
+  {
+    List<StaffNewJoinings> list= dashboardService.getNewJoinigList(request);
+    return list;
+  }
+  @PostMapping("/dash/newleavings")
+  @Secured(DASHBOARD_STATS)
+  public List<StaffNewLeavings> getNewLEavings(@RequestBody DashboardRequest request)
+  {
+    return dashboardService.getNewLeavingsList(request);
+  }
 }

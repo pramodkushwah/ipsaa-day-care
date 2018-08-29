@@ -1,10 +1,7 @@
 package com.synlabs.ipsaa.controller;
 
-import com.itextpdf.text.DocumentException;
 import com.synlabs.ipsaa.entity.student.Student;
-import com.synlabs.ipsaa.service.BaseService;
 import com.synlabs.ipsaa.service.CenterService;
-import com.synlabs.ipsaa.service.DocumentService;
 import com.synlabs.ipsaa.service.StudentService;
 import com.synlabs.ipsaa.view.center.ApprovalCountResponse;
 import com.synlabs.ipsaa.view.center.CenterRequest;
@@ -14,9 +11,6 @@ import com.synlabs.ipsaa.view.student.StudentFilterRequest;
 import com.synlabs.ipsaa.view.student.StudentRequest;
 import com.synlabs.ipsaa.view.student.StudentResponse;
 import com.synlabs.ipsaa.view.student.StudentSummaryResponse;
-
-import freemarker.template.TemplateException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -52,9 +42,6 @@ import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.*;
 @RequestMapping("/api/student/")
 public class StudentController
 {
-	
-  @Autowired
-  private DocumentService documentService;
 
   @Autowired
   private StudentService studentService;
@@ -82,60 +69,19 @@ public class StudentController
   {
     return studentService.getStudent(new StudentRequest(studentId));
   }
-  
-  @GetMapping("/pdf/{studentId}")
-  @Secured(STUDENT_READ)
-  public byte[] getStudentProfile(@PathVariable(name = "studentId") Long studentId, HttpServletResponse response) throws IOException, DocumentException, TemplateException, InterruptedException
-  {
-	  StudentResponse student = studentService.getStudent(new StudentRequest(studentId));
-	  response.setContentType("application/octet-stream");
-//    String fileName = "3dd55924-5b87-4cbb-a917-4426b42a4a35.pdf";
-	  response.setHeader("Content-disposition", "attachment; filename=" + student.getFirstName()+ ".pdf");
-	  response.setHeader("fileName", student.getFirstName()+ ".pdf");
-    return studentService.generateStudentPdf(student);
-  }
 
   @PostMapping
   @Secured(STUDENT_WRITE)
-  public StudentResponse addStudent(@RequestBody StudentRequest studentRequest, HttpServletResponse response) throws IOException, DocumentException, TemplateException, InterruptedException
+  public StudentResponse addStudent(@RequestBody StudentRequest studentRequest)
   {
-	StudentResponse student = studentService.saveStudent(studentRequest);
-//	return studentService.generateStudentPdf(student);
-//	InputStream is = studentService.generateStudentPdf(student);
-//
-//    response.setContentType("application/octet-stream");
-//    String fileName = "3dd55924-5b87-4cbb-a917-4426b42a4a35.pdf";
-//    response.setHeader("Content-disposition", "attachment; filename=" + fileName);
-//    response.setHeader("fileName", fileName);
-//
-//    OutputStream out = response.getOutputStream();
-//    IOUtils.copy(is, out);
-//    out.flush();
-//    is.close();
-//    
-    return student;
+    return studentService.saveStudent(studentRequest);
   }
 
   @PutMapping
   @Secured(STUDENT_WRITE)
-  public StudentResponse editStudent(@RequestBody StudentRequest studentRequest, HttpServletResponse response)  throws IOException, DocumentException, TemplateException, InterruptedException, ParseException
+  public StudentResponse editStudent(@RequestBody StudentRequest studentRequest) throws ParseException
   {
-	  StudentResponse student = new StudentResponse(studentService.updateStudent(studentRequest));
-//	  return studentService.generateStudentPdf(student);
-//	  InputStream is = studentService.generateStudentPdf(student);
-//
-//	    response.setContentType("application/octet-stream");
-//	    String fileName = student.getFirstName()+".pdf";
-//	    response.setHeader("Content-disposition", "attachment; filename=" + fileName);
-//	    response.setHeader("fileName", fileName);
-//
-//	    OutputStream out = response.getOutputStream();
-//	    IOUtils.copy(is, out);
-//	    out.flush();
-//	    is.close();
-	    
-	    return student;
-//    return new StudentResponse(studentService.updateStudent(studentRequest));
+    return new StudentResponse(studentService.updateStudent(studentRequest));
   }
 
   @DeleteMapping(path = "{id}")
@@ -243,4 +189,6 @@ public class StudentController
     request.setId(studentId);
     studentService.reject(request);
   }
+
+
 }

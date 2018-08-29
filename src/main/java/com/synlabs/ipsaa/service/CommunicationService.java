@@ -248,6 +248,8 @@ public class CommunicationService
         MessageEmail freshEmail = new MessageEmail(email);
         freshEmail.setTo(new ArrayList<>(email.getTo()));
         freshEmail.getBcc().addAll(list);
+        if(request.getCc()!=null &&  !request.getCc().isEmpty())
+          freshEmail.getCc().addAll(request.getCc());
         emailSender.sendMessage(freshEmail);
       }
       if (flag)
@@ -338,6 +340,9 @@ public class CommunicationService
       if (!CollectionUtils.isEmpty(list))
       {
         MessageEmail freshEmail = new MessageEmail(email);
+       if(request.getCc()!=null  && !request.getCc().isEmpty())
+         freshEmail.getCc().addAll(request.getCc());
+
         freshEmail.setTo(new ArrayList<>(email.getTo()));
         freshEmail.getBcc().addAll(list);
         emailSender.sendMessage(freshEmail);
@@ -470,7 +475,6 @@ public class CommunicationService
                                                 paymentBaseUrl + "/" +
                                                     BaseService.mask(slip.getId()) + "/" +
                                                     BaseService.mask(parent.getId()));
-        body = body.concat("<div style=\"position:fixed;bottom:0;\"><img src=\"https://s3.ap-south-1.amazonaws.com/ipsaaprod/static-image/email-footer.jpg\" /></div>");
         email.setBody(body);
         email.setHtml(true);
         emails.add(email);

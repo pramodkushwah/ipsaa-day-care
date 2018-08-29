@@ -11,12 +11,13 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
     $scope.selectedCenter = null;
     $scope.searchParent = '';
     $scope.showfollowups = '';
+    $scope.loader = false;
 
     $scope.PAGESIZE = 10;
     $scope.BARSIZE = 5; //put odd values
     $scope.staffPage = [];
     $scope.staffPageBar = [];
-
+    $scope.dataLoading = false;
     $scope.SALARY_READ = Auth.hasPrivilege('SALARY_READ');
 
     $scope.$on('$includeContentLoaded', function (event, url) {
@@ -45,7 +46,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
                 $scope.months.push({moy: mnth + 1, name: allmonths[mnth]});
             }
             $scope.selectedMonth = moment().month() + 1;
-            $scope.selectedQuarter = ((Math.ceil((moment().month()) / 3)) + 1);
+            $scope.selectedQuarter = ((Math.floor((moment().month()) / 3)) + 1);
             $scope.quarterlyYear = moment().year();
             $scope.monthlyYear = moment().year();
 
@@ -147,6 +148,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
         for (var i = ((pageNumber - 1) * pageSize); i < staffCount && elementCount < pageSize; i++, elementCount++) {
             staffPage.push(angular.copy(staffs[i]));
         }
+        staffPage.filter = $scope.stafflist.filter;
         count = Math.ceil($scope.BARSIZE / 2);
         i = pageNumber <= count ? 1 : pageNumber - (count - 1);
         for (; i <= pageNumber; i++) {
@@ -168,7 +170,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
     $scope.studentsPageBar = [];
     $scope.updateStudentPage = function (pageNumber) {
         var pageSize = $scope.PAGESIZE;
-        var students = $scope.students;
+        var students = $scope.filteredStudents;
         var studentsPage = [];
         var studentPageBar = [];
         var studentCount = students.length;
@@ -195,6 +197,7 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
         $scope.studentsPageNumber = pageNumber;
         $scope.studentsPageCount = pageCount;
         $scope.studentPageBar = studentPageBar;
+        $scope.dataLoading = false;
     };
 
     $scope.refresh = function () {
@@ -304,7 +307,8 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
         });
     }
 
-    $scope.showPanel = function (panel) {
+    $scope.showPanel = function (panel, filter) {
+        // additional parameter filter added for request with a filter, currently used for stafflist only
         $scope.showtab = panel;
         var req = {};
         if ($scope.selectedZone !== null) {
@@ -318,20 +322,24 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
         }
 
         switch (panel) {
-            case 'studentlist':
-                $http.post("/api/dash/student", req).then(function (response) {
-                    // $scope.students = response.data;
-                    $scope.students = $filter('filter')(response.data, {present:true});
-                    $scope.updateStudentPage(1);
-                });
-                $scope.refresh();
-                break;
             case 'stafflist':
-                $http.post("/api/dash/staff", req).then(function (response) {
-                    // $scope.stafflist = response.data;
-                    $scope.stafflist = $filter('filter')(response.data, {present:true});
-                    console.log($scope.stafflist);
+                $scope.staffLoading = true;
+                var url;
+                if(filter == 'present' || filter == "all") {
+                    url = "/api/dash/staff";
+                }
+                else
+                    url = "/api/dash/" + filter;
+
+                $http.post(url, req).then(function (response) {
+                    $scope.stafflist = filter == "present" 
+                                    ? $filter('filter')(response.data, {present:true})
+                                    : response.data;
+                    
+                    // saving filter field for later referance
+                    $scope.stafflist.filter = filter;
                     $scope.updateStaffPage(1);
+                    $scope.staffLoading = false;
                 });
                 $scope.refresh();
                 break;
@@ -357,6 +365,79 @@ app.controller('HomeController', function ($scope, $http, $filter, Auth, $state)
                 break;
         }
     };
+
+    $scope.filterStudents = function (filter) {
+        $scope.studentsPage = [];
+        $scope.loader = true;
+
+        $('html, body').animate(function() {
+            scrollTop: $('#students_table').offset().top
+        }, 300);
+
+        $scope.listFor = filter;
+        $scope.dataLoading = true; // to show data loading in table
+          // if new request create a request object for post data of request and status as new request
+        $scope.req = {status : 'new request'};
+        
+        // check for any changes in post data of request from frontend 
+        if ($scope.selectedZone !== null) {
+            $scope.req.zone = $scope.selectedZone.name;
+        }
+        if ($scope.selectedCity !== null) {
+            $scope.req.city = $scope.selectedCity.name;
+        }
+        if ($scope.selectedCenter !== null) {
+            $scope.req.center = $scope.selectedCenter.code;
+        }
+
+        
+            // load students data from backend 
+        var studentsData;
+        $scope.students = {
+            status: 'no data',
+            Present: [],
+            Corporate: [],
+            Non_Corporate: []
+        };
+        
+        $http.post("/api/dash/student", $scope.req).then(function (response) {
+            studentsData = response.data;
+            studentsData.forEach(function (studentData) {
+                studentData.extraHours = 0;
+                if ((studentData.checkin != null && studentData.checkout != null)
+                    && (studentData.expectedIn != null && studentData.expectedOut != null))
+                {
+                    var expectedIn = Number(studentData.expectedIn.substr(0, 2));
+                    var checkIn = Number(studentData.checkin.substr(0, 2));
+                    var expectedOut = Number(studentData.expectedOut.substr(0, 2));
+                    var checkOut = Number(studentData.checkout.substr(0, 2));
+
+                    if (checkIn<expectedIn) {
+                        studentData.extraHours += Math.trunc(expectedIn - checkIn);  
+                    }
+                    
+                    if (checkOut>expectedOut) {
+                        studentData.extraHours += Math.trunc(checkOut - expectedOut);
+                    } 
+                }
+
+                if( studentData.present && studentData.checkout == null)
+                    $scope.students.Present.push(studentData);
+                
+                if( studentData.corporate )
+                    $scope.students.Corporate.push(studentData);
+                else
+                    $scope.students.Non_Corporate.push(studentData);
+            });
+            $scope.filteredStudents = $scope.students[filter];
+            
+            $scope.updateStudentPage(1);
+            $scope.students.status = "data fetched";
+            $scope.loader = false;
+        });
+        $scope.refresh();
+        $scope.showtab = 'studentlist';
+    }
 
     $scope.showFollowups = function (centerCode) {
         var req = createFollowUpRequest();

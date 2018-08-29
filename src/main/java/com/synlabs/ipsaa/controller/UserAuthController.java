@@ -40,6 +40,7 @@ public class UserAuthController
   @Secured(SELF_READ)
   public UserSummaryResponse getLoggedInUser()
   {
+
     return new UserSummaryResponse(userService.getUser());
   }
 

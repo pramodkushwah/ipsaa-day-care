@@ -1,11 +1,16 @@
 package com.synlabs.ipsaa.controller;
 
 import com.synlabs.ipsaa.entity.center.Center;
+import com.synlabs.ipsaa.entity.common.User;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.service.CenterService;
+import com.synlabs.ipsaa.service.EmployeeService;
+import com.synlabs.ipsaa.service.StudentService;
+import com.synlabs.ipsaa.service.UserService;
 import com.synlabs.ipsaa.view.center.CenterListRequest;
 import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.center.CenterResponse;
+import com.synlabs.ipsaa.view.center.CenterResponseV2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
@@ -23,6 +28,7 @@ public class CenterController
 {
   @Autowired
   private CenterService centerService;
+
 
   @GetMapping
   @Secured(CENTER_READ)
@@ -43,7 +49,6 @@ public class CenterController
   @PostMapping
   public CenterResponse createCenter(@RequestBody @Validated CenterRequest request, BindingResult result)
   {
-
     if (result.hasErrors())
     {
       throw new ValidationException(result.toString());
@@ -70,5 +75,4 @@ public class CenterController
   {
     centerService.deleteCenter(new CenterRequest(centerId));
   }
-
 }

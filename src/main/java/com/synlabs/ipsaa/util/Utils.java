@@ -20,8 +20,8 @@ public class Utils
     if (f.isAfter(t))
     {
       LocalDate d = f;
-      t = f;
-      f = d;
+      f = t;
+      t = d;
     }
     int days = Days.daysBetween(f, t).getDays() + 1;
     for (int i = 0; i < days; i++)

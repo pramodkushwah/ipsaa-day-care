@@ -1,0 +1,29 @@
+<div class="row">
+
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="control-label">Employer:*</label>
+            <select class="form-control" ng-options="employer as employer.name for employer in employers" ng-model="selectedEmployer"></select>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="control-label">Month:*</label>
+            <select class="form-control" ng-options="month as month.name for month in months" ng-model="selectedMonth"></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="control-label">Year:*</label>
+            <select class="form-control" ng-options="year as year for year in years" ng-model="selectedYear"></select>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <button class="btn btn-sm btn-rose" style="margin-top: 40px;" ng-disabled="disableGenerateButton" ng-click="generateReport()">
+            <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableGenerateButton"></i>Download
+        </button>
+    </div>
+
+</div>

@@ -144,7 +144,7 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
                 function (response) {
                     $scope.insertStudentFee = response.data;
                     $scope.insertStudentFee.mode = !mode ? 'Show' : mode;
-                    $scope.insertStudentFee.oldFee = $scope.insertStudentFee.baseFee;
+                    // $scope.insertStudentFee.oldFee = $scope.insertStudentFee.baseFee;
                     $scope.insertStudentFee.adjust = $scope.insertStudentFee.adjust ? $scope.insertStudentFee.adjust : 0;
                     StudentFeeService.calculateFinalFee($scope.insertStudentFee);
                     StudentFeeService.calculateGstFee($scope.insertStudentFee);

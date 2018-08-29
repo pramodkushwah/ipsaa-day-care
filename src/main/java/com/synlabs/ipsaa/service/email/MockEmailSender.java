@@ -250,7 +250,7 @@ public class MockEmailSender implements IEmailSender
   private Boolean sendEmail(MessageEmail email)
   {
     logger.info("=======================================================");
-    logger.info("TO: {} BCC {} CC", email.getTo(), email.getBcc(), email.getCc());
+    logger.info("TO: {} BCC {} CC {}", email.getTo(), email.getBcc(), email.getCc());
     logger.info("=======================================================");
     logger.info("TITLE: {}", email.getSubject());
     logger.info("=======================================================");

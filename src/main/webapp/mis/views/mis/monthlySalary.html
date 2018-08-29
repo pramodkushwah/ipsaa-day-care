@@ -60,10 +60,10 @@
             <thead class="text-primary">
             <tr>
               <th>Employee</th>
-              <th>Employer</th>
               <th>CTC</th>
+              <th>Present Days</th>
               <th>Other Allowances</th>
-              <th>Total Deductions</th>
+              <th>Other Deductions</th>
               <th>Net Salary</th>
               <th>Pay Slips</th>
             </tr>
@@ -71,10 +71,16 @@
             <tbody>
             <tr ng-repeat="salary in salaries | filter: search">
               <td>{{salary.empName}}</td>
-              <td>{{salary.employerName}}</td>
               <td>{{salary.ctc}}</td>
+              <td>{{salary.presents}}</td>
               <td>{{salary.otherAllowances}}</td>
-              <td>{{salary.totalDeduction}}</td>
+              <!-- {{salary.bonus + salary.conveyance + salary.entertainment + salary.hra + salary.medical + salary.arrears + salary.shoes +salary.special
+              + salary.tiffin + salary.uniform + salary.washing + salary.otherAllowances}} -->
+
+              <td>{{salary.otherDeductions}}</td>
+              <!-- {{salary.esi + salary.pf + salary.otherDeductions + salary.retention + salary.tds + salary.advance + salary.unpaidLeaveDeduction
+              + salary.absentDeduction}} -->
+              
               <td>{{salary.netSalary}}</td>
               <td>
                 <div class="buttons">
@@ -123,16 +129,30 @@
             </div>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-4">
             <div class="form-group">
               <label class="control-label">Other Allowances</label>
               <input class="form-control" name="otherAllowances" type="number" ng-model="paySlip.otherAllowances">
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-4">
             <div class="form-group">
               <label class="control-label">Other Deductions</label>
               <input class="form-control" name="otherDeductions" type="number" ng-model="paySlip.otherDeductions">
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Present Days</label>
+              <input class="form-control" name="presentDays" type="number" ng-model="paySlip.presents">
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">TDS</label>
+              <input class="form-control" name="tds" type="number" ng-model="paySlip.tds">
             </div>
           </div>
 
@@ -155,12 +175,13 @@
 
         <div class="tab-pane active" id="controls">
           <div class="form-footer text-right">
-            <button class="btn btn-rose btn-fill" ng-click="update(paySlip)" ng-disabled="paySlip.disableUpdateBtn">
+            <button class="btn btn-rose btn-fill" ng-click="update(paySlip)" ng-disabled="paySlip.disableUpdateBtn || paySlip.islock">
               <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="paySlip.disableUpdateBtn"></i>save
             </button>
-            <button class="btn btn-rose btn-fill" ng-click="regeneratePaySlip(paySlip)" ng-disabled="paySlip.disableRegenerateBtn">
+            <button class="btn btn-rose btn-fill" ng-click="regeneratePaySlip(paySlip)" ng-disabled="paySlip.disableRegenerateBtn || paySlip.islock">
               <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="paySlip.disableRegenerateBtn"></i>regenerate
             </button>
+            <button class="btn btn-rose btn-fill" ng-click="lockControls(paySlip)" ng-disabled="paySlip.islock"> Lock </button>
             <button class="btn" ng-click="paySlip = {}">Cancel</button>
           </div>
         </div>

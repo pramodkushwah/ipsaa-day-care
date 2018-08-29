@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CenterProgramFeeRepository extends JpaRepository<CenterProgramFee,Long>
 {
   CenterProgramFee findByProgramIdAndCenterId(Long programId,Long centerId);
+  CenterProgramFee findByCenterId(Long centerId);
 }
