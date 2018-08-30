@@ -14,43 +14,44 @@ public class StudentFee extends BaseEntity
 {
   // ---------------------------------------------------shubham------------------------------------------------------
 
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal uniformCharges;
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal stationary;
 
 
   @Column(precision = 16, scale = 2)
   private BigDecimal annualCharges;
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal finalAnnualCharges;
 
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal admissionFee;
-  @Column(precision = 16, scale = 2)
+
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal finalAdmissionFee;
 
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal finalBaseFee;
 
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal baseFee;
 
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal depositFee;
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal finalDepositFee;
 
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal baseFeeDiscount;
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal annualFeeDiscount;
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal addmissionFeeDiscount;
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal depositFeeDiscount;
 
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal gstAmount;
 
 

@@ -7,6 +7,7 @@ import com.synlabs.ipsaa.entity.student.StudentParent;
 import com.synlabs.ipsaa.entity.student.StudentProfile;
 import com.synlabs.ipsaa.enums.FamilyType;
 import com.synlabs.ipsaa.enums.Gender;
+import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.view.common.Request;
 import com.synlabs.ipsaa.view.fee.StudentFeeRequest;
 import com.synlabs.ipsaa.view.fee.StudentFeeRequestV2;
@@ -320,7 +321,10 @@ public class StudentRequest implements Request
     student.setFormalSchool(isFormalSchool());
 
     if(student.isFormalSchool()){
+      if(getSchoolName()!=null)
         student.setSchoolName(getSchoolName());
+      else
+        throw new ValidationException("Please Add School name");
     }
 
     studentProfile.setDob(parseDate(getDob()));
