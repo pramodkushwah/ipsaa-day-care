@@ -894,14 +894,13 @@ public class StudentService extends BaseService {
 			int requestQuarter = request.getQuarter();
 			int requestYear = request.getYear();
 			return feePaymentRepository
-					.findByStudentActiveIsTrueAndStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
-							ApprovalStatus.Approved, period, requestQuarter, requestYear, request.getCenterCode());
+					.findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode( period, requestQuarter, requestYear, request.getCenterCode());
 		} else {
 			int requestQuarter = request.getQuarter();
 			int requestYear = request.getYear();
 			return feePaymentRepository
-					.findByStudentActiveIsTrueAndStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
-							ApprovalStatus.Approved, period, requestQuarter, requestYear);
+					.findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
+							 period, requestQuarter, requestYear);
 		}
 	}
 

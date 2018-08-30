@@ -187,15 +187,6 @@ public class StaffService extends BaseService
 
 
   }
-
-  // shubham
-  public File getEmployee(StaffFilterRequest staffRequest){
-    List<Employee> list;
-    list= employeeRepository.findByActiveTrueAndCostCenterIn(getUserCenters());
-    StaffReport excel = new StaffReport(list,exportDirectory);
-    return excel.createExcel(); // returning file
-  }
-
   @Transactional
   public Employee save(StaffRequest request) throws ParseException
   {
