@@ -176,11 +176,11 @@
               <select class="form-control"
                       ng-model="selected.paymentMode"
                       ng-disabled="selected.status=='Paid'">
-                <option value="Cash">Cash</option>
-                <option value="Cheque">Cheque</option>
+                <option value="Cash">CASH</option>
+                <option value="Cheque">CHEQUE</option>
                 <option value="NEFT">NEFT</option>
-                <option value="Hdfc" disabled>Hdfc</option>
-                <option value="Card" disabled>Card</option>
+                <option value="Hdfc" disabled>HDFC</option>
+                <option value="Card" disabled>CARD</option>
               </select>
             </div>
           </div>
@@ -190,7 +190,7 @@
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Payment Date (YYYY-MM-DD)</label>
-              <input class="form-control" type="text" required ng-model="selected.paymentDate" ng-readonly="selected.status=='Paid'">
+              <input class="form-control" type="text" required ng-model="selected.paymentDate" ng-readonly="selected.status=='Paid'" value="{{currentDate}}">
             </div>
           </div>
           <div class="col-md-6">

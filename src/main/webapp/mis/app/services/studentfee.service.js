@@ -60,8 +60,13 @@ app.service('StudentFeeService', function ($http) {
       final += Number(fee.stationary);
     }
 
+
     if (fee.gstFee > 0) {
       final += Number(fee.gstFee);
+    }
+
+    if (fee.baseFeeGst > 0) {
+      final += Number(fee.baseFeeGst);
     }
 
     fee.finalFee = final;
@@ -83,10 +88,13 @@ app.service('StudentFeeService', function ($http) {
   //needs finalFee, cgst and sgst
   service.calculateGstFee = function (fee, student) {
     if(typeof student!='undefined' && student.formalSchool){
-      fee.gstFee = Number(((Number(fee.finalAnnualFee) + (Number(fee.finalBaseFee) * 3)) * 0.18).toFixed(2));
+      fee.gstFee = Number(((Number(fee.finalAnnualFee)) * 0.18).toFixed(2));//annual-fee-gst
+      fee.baseFeeGst = Number((((Number(fee.finalBaseFee) * 3)) * 0.18).toFixed(2));
     }
     else if (fee.formalSchool) {
-      fee.gstFee = Number(((Number(fee.finalAnnualFee) + (Number(fee.finalBaseFee) * 3)) * 0.18).toFixed(2));
+      fee.gstFee = Number(((Number(fee.finalAnnualFee)) * 0.18).toFixed(2));//annual-fee-gst
+      fee.baseFeeGst = Number((((Number(fee.finalBaseFee) * 3)) * 0.18).toFixed(2));
+
       // } else {
       //   if (fee.program.code === 'ICLUB' || fee.program.code === 'CLUBREG') {
       //     fee.gstFee = (fee.finalAnnualFee + fee.finalBaseFee * 3) * 0.18;
@@ -95,7 +103,7 @@ app.service('StudentFeeService', function ($http) {
       //   }
     }
     else
-      fee.gstFee = 0;
+      fee.gstFee = 0;//annual-fee-gst
   }
 
   return service;

@@ -110,7 +110,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     $scope.uploadImage = function () {
         fileUpload.uploadFileToUrl($scope.imgfile, "/api/student/" + $scope.workingStudent.id + "/profile-pic", false, function (status, data) {
             if (status == 200) {
-                ok("Proile image uploaded successfully!");
+                ok("Profile image uploaded successfully!");
             } else {
                 $scope.message = "Error processing file !!!";
                 error("Failed to Upload image!");
@@ -283,6 +283,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     }, 200, true);
 
     function validateStudent(student) {
+        console.log(student);
+        
         if (student.mode == 'New' && !student.fee && !student.corporate) {
             $scope.selectTab(4);
             error("Student fee is not created.");
@@ -337,15 +339,19 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             return false;
         }
         if (!student.expectedIn) {
-            error("Excepter In cannot be empty.");
+            error("Expected In cannot be empty.");
             return false;
         }
         if (!student.expectedOut) {
-            error("Excepter Out cannot be empty.");
+            error("Expected Out cannot be empty.");
             return false;
         }
         if (!student.profile) {
             error("Comment cannot be empty");
+            return false;
+        }
+        if (!student.fee.comment && (student.fee.discountAnnualCharges || student.fee.discountAdmissionCharges || student.fee.discountBaseFee || student.fee.discountSecurityDeposit)) {
+            error("Comment is compulsory if you give any discount");
             return false;
         }
         if (!student.profile.length > 1000) {
@@ -663,10 +669,14 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
   $scope.formalClicked = function(student) {
     student.fee = student.fee ? student.fee : {};
-    if (student.formalSchool)
-      student.fee.gstFee = (student.fee.finalAnnualFee + student.fee.finalBaseFee * 3) * 0.18;
-    else 
-      student.fee.gstFee = 0;
+    if (student.formalSchool){
+    //   student.fee.gstFee = (student.fee.finalAnnualFee + student.fee.finalBaseFee * 3) * 0.18;
+    student.fee.baseFeeGst = Number((((Number(student.fee.finalBaseFee) * 3)) * 0.18).toFixed(2));
+    student.fee.gstFee = Number(((Number(student.fee.finalAnnualFee)) * 0.18).toFixed(2));//annual-fee-gst
+    } else {
+        student.fee.gstFee = 0;
+        student.fee.baseFeeGst = 0;
+    }
     StudentFeeService.calculateFinalFee(student.fee);
   }
 
@@ -690,7 +700,6 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
       navigator.mozGetUserMedia ||
       navigator.msGetUserMedia);
 
-
     if (!navigator.getMedia) {
       displayErrorMessage("Your browser doesn't have support for the navigator.getUserMedia interface.");
       hideUI(video, controls, start_camera, snap, error_message);
@@ -704,9 +713,9 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
         },
         // Success Callback
         function (stream) {
-
           // Create an object URL for the video stream and
           // set it as src of our HTLM video element.
+          $scope.camraStream = stream;
           video.src = window.URL.createObjectURL(stream);
 
           // Play the video element to start the stream.
@@ -728,12 +737,12 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     // Mobile browsers cannot play video without user input,
     // so here we're using a button to start it manually.
     start_camera.addEventListener("click", function (e) {
-
       e.preventDefault();
 
       // Start video playback manually.
-      video.play();
-      showVideo(video, controls, start_camera, snap, error_message);
+      $scope.openWebCam();
+    //   video.play();
+    //   showVideo(video, controls, start_camera, snap, error_message);
 
     });
 
@@ -757,8 +766,28 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
       // Pause video playback of stream.
       video.pause();
-
+      
+      //Usage example:
+      var file = dataURLtoFile(snap, 'snapshot.png');
+      var element = {files: []};
+      element.files[0] = file;
+      $scope.setFiles(element);
+      stopCamra();
     });
+
+    function stopCamra(){
+        var track = $scope.camraStream.getTracks()[0];
+        track.stop();
+    }
+
+    function dataURLtoFile(dataurl, filename) {
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, {type:mime});
+    }
 
 
     delete_photo_btn.addEventListener("click", function (e) {

@@ -24,6 +24,8 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
         {value: 4, name: "FYQ3"}
     ];
 
+    
+
     $scope.feeTypes = [
       { type: 'Uniform Charges', final: 'uniformCharges', paid: 'uniformPaidAmountTotal' },
       { type: 'Stationery Charges', final: 'stationary', paid: 'stationaryPaidAmountTotal' },
@@ -45,12 +47,14 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
     });
 
     $scope.showDetails = function (studentfee) {
+        console.log(studentfee);
         if (!studentfee) {
             $scope.showPanel = false;
             $scope.selected = {};
         } else {
             $scope.showPanel = true;
             $scope.selected = angular.copy(studentfee);
+            $scope.selected.paymentDate = moment(new Date()).format("YYYY-MM-DD");
             setTimeout(() => {
               $('[data-toggle="tooltip"]').tooltip();  
             }, 1000);

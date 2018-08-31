@@ -2,7 +2,7 @@
   <div class="col-md-2">
     <div class="form-group">
       <label class="control-label">Center:</label>
-      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="setSlips([])">
+      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" >
         <option value="">Select Center</option>
       </select>
       <span class="material-input"></span>
@@ -12,20 +12,23 @@
   <div class="col-md-2">
     <div class="form-group">
       <label class="control-label">Quarter:</label>
-      <select class="form-control"
-              ng-model="selectedQuarter"
-              ng-options="quarter.quarter as quarterNames[quarter.quarter-1] for quarter in dropdownData | filter: {duration: selectedPeriod}"
-              ng-change="setSlips([])"></select>
+      <!-- <select class="form-control"
+      ng-model="selectedQuarter"
+      ng-options="quarter.quarter as quarterNames[quarter.quarter-1] for quarter in dropdownData | filter: {duration: selectedPeriod}"
+      ng-change="setSlips([])"></select> -->
+      <select class="form-control" ng-model="selectedQuarter" ng-options="quarter.value as quarter.name for quarter in quarters" disabled></select>
       <span class="material-input"></span>
     </div>
   </div>
   <div class="col-md-2">
     <div class="form-group">
       <label class="control-label">Year:</label>
-      <select class="form-control"
-              ng-model="selectedYear"
-              ng-options="y as y for y in getYears(selectedPeriod,selectedMonth,selectedQuarter)"
-              ng-change="setSlips([])">
+      <!-- <select class="form-control"
+        ng-model="selectedYear"
+        ng-options="y as y for y in getYears(selectedPeriod,selectedMonth,selectedQuarter)"
+        ng-change="setSlips([])">
+      </select> -->
+      <select class="form-control" ng-model="selectedYear" ng-options="year as year for year in years" disabled>
       </select>
       <span class="material-input"></span>
     </div>
@@ -54,19 +57,24 @@
         </div>
         <div ng-show="studentfeelist.length>0">*Downloading slips may take several minutes.</div>
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-3">
             <button class="btn btn-info" ng-click="downloadSlips()" ng-show="studentfeelist.length>0" ng-disabled="generateSlipPdfDisable">
               <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="generateSlipPdfDisable"></i>Download slips
             </button>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <button class="btn btn-info" ng-click="showPanel = 'email'" ng-show="studentfeelist.length>0" ng-disabled="sendPaymentLinkDisable">
               <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="sendPaymentLinkDisable"></i>Send Email
             </button>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <button class="btn btn-info" ng-click="generateFeeSlip()" ng-show="studentfeelist.length>0" ng-disabled="generateSlip">
               <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="generateSlip"></i>Lock
+            </button>
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-info" ng-click="reGenerateFeeSlips()" ng-show="studentfeelist.length>0">
+              <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="reGenerateSlipLoader"></i>Regenerate
             </button>
           </div>
         </div>
@@ -186,7 +194,7 @@
         
           <div class="col-md-4">
             <div class="form-group">
-              <label class="control-label">Final Monthly Fees Amount &nbsp;
+              <label class="control-label">Final Monthly Fees &nbsp;
               </label>
               <input class="form-control" type="text" ng-model="selected.finalBaseFee" readonly>
             </div>
@@ -208,7 +216,7 @@
         
           <div class="col-md-4">
             <div class="form-group">
-              <label class="control-label">Final Security Deposit Fees &nbsp;
+              <label class="control-label">Final Security Deposit &nbsp;
               </label>
               <input class="form-control" type="text" ng-model="selected.finalDepositFee" readonly>
             </div>

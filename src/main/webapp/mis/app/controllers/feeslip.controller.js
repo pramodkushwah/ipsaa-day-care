@@ -1,13 +1,24 @@
 app.controller('StudentFeeSlipController', function ($scope, $http) {
-
+    
+    $scope.quarters = [
+        {value: 1, name: "FYQ4"},
+        {value: 2, name: "FYQ1"},
+        {value: 3, name: "FYQ2"},
+        {value: 4, name: "FYQ3"}
+    ];
+    
+    $scope.years = [moment().year() - 1,moment().year()];
     $scope.generateSlipDisable = false;
     $scope.generateSlipPdfDisable = false;
     $scope.slipEmail = {};
     $scope.checkedSlipCount = 0;
     $scope.sendPaymentLinkDisable = false;
+    $scope.reGenerateSlipLoader = false;
     $scope.slectedElementList = []
     $scope.generateSlip = false;
     $scope.selectedPeriod = 'Quarterly';
+    $scope.selectedQuarter = Math.floor(new Date().getMonth() / 3) + 1;
+    $scope.selectedYear = new Date().getFullYear();
     $scope.monthNames = [
         'January',
         'February',
@@ -29,6 +40,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
         'FYQ2',
         'FYQ3'
     ];
+
 
     $scope.day = moment().date();
     $scope.month = moment().month() + 1;
@@ -345,6 +357,25 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
             }
         );
     };
+
+    $scope.reGenerateFeeSlips = function(){
+        console.log("asdfsd");
+        
+        $scope.slectedElementList = [];
+        for (var i = 0; i < $scope.studentfeelist.length; i++) {
+            var slip = $scope.studentfeelist[i];
+            if (slip.selected) {
+                $scope.slectedElementList.push(slip.id);
+            }
+        }
+        $scope.reGenerateSlipLoader = true;
+    
+        $http.post('/api/student/feeslip/regenerateAll',$scope.slectedElementList, {responseType: 'arraybuffer'}).then(function(response){
+            ok("Slips regenerated Successfully");
+        },function(error){
+
+        });
+    }
 
     $scope.saveStudentSlip = function () {
         if (!$scope.selected.isDeposit) {
