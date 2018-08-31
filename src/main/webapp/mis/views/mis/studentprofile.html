@@ -674,13 +674,10 @@
             
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label">Final Annual Charges 
-                    <a class="pointer" data-toggle="tooltip" title="Annual Charges with Discount">
-                      <i class="fa fa-info"></i>
-                    </a>
+                  <label class="control-label">Final Annual Charges
                   </label>
                   <input class="form-control" type="number" ng-model="workingStudent.fee.finalAnnualFee" required ng-readonly="workingStudent.fee.mode=='Show' || workingStudent.fee.annualFee <= 0"
-                    ng-change="calculateDiscount('annualFee', 'finalAnnualFee', 'discountAnnualCharges')">
+                  ng-change="calculateDiscount('annualFee', 'finalAnnualFee', 'discountAnnualCharges')">
                 </div>
               </div>
             
@@ -725,7 +722,8 @@
                 <div class="form-group">
                   <label class="control-label">Final Monthly Fees Amount</label>
                   <input class="form-control" type="number" ng-model="workingStudent.fee.finalBaseFee" required ng-readonly="workingStudent.fee.mode=='Show' || workingStudent.fee.baseFee <= 0"
-                    ng-change="calculateDiscount('baseFee', 'finalBaseFee', 'discountBaseFee')">
+                  ng-disabled="!workingStudent.fee.baseFee"
+                  ng-change="calculateDiscount('baseFee', 'finalBaseFee', 'discountBaseFee')">
                 </div>
               </div>
             
@@ -747,7 +745,8 @@
                 <div class="form-group">
                   <label class="control-label">Final Security Deposit Fees</label>
                   <input class="form-control" type="number" ng-model="workingStudent.fee.finalSecurityDeposit" required ng-readonly="workingStudent.fee.mode=='Show' || workingStudent.fee.securityDeposit <= 0"
-                    ng-change="calculateDiscount('deposit', 'finalSecurityDeposit', 'discountSecurityDeposit')">
+                  ng-disabled="!workingStudent.fee.deposit"
+                  ng-change="calculateDiscount('deposit', 'finalSecurityDeposit', 'discountSecurityDeposit')">
                 </div>
               </div>
             
@@ -759,12 +758,12 @@
                 </div>
               </div>
             
-              <div class="col-md-6">
+              <!-- <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">Final Transport Fees</label>
                   <input class="form-control" type="number" ng-model="workingStudent.fee.finalTransportFees" readonly>
                 </div>
-              </div>
+              </div> -->
             
               <div class="col-md-6">
                 <div class="form-group">
