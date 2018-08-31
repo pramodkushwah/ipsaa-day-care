@@ -53,8 +53,9 @@ public class StaffLeaveController
                              @RequestParam(value = "leaveType", required = false) LeaveType leaveType,
                              @RequestParam(value = "date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date date)
   {
-    leaveService.singleDayLeave(eid, halfLeave, leaveType, date);
+    leaveService.singleDayLeave(eid,  halfLeave, leaveType, date);
   }
+
 
   @Secured(STAFF_LEAVE_WRITE)
   @PostMapping("multi-day-leave")

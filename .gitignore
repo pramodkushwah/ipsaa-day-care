@@ -17,3 +17,4 @@ package-lock.json
 /target
 /src/main/webapp/kidslife/
 /data
+/node_modules/*
