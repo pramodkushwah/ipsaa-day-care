@@ -293,8 +293,11 @@
                 <div class="app panel-body">
               
                   <a href="#" id="start-camera" class="visible">Touch here to start the app.</a>
-                  <video id="camera-stream"></video>
-                  <img id="snap">
+                  <video id="camera-stream" style="width:100%"></video>
+                  <img id="snap" style="display: none">
+
+                  <!-- Hidden canvas element. Used for taking snapshot of video. -->
+                  <canvas id="canvas" style="display: none"></canvas>
               
                   <p id="error-message"></p>
               
@@ -303,9 +306,6 @@
                     <a href="#" id="take-photo" title="Take Photo"><i class="material-icons">camera_alt</i></a>
                     <a href="#" id="download-photo" download="selfie.png" title="Save Photo" class="disabled"><i class="material-icons">file_download</i></a>
                   </div>
-              
-                  <!-- Hidden canvas element. Used for taking snapshot of video. -->
-                  <canvas></canvas>
               
                 </div>
             </div>
@@ -702,7 +702,8 @@
                 <div class="form-group">
                   <label class="control-label">Final Admission Charges</label>
                   <input class="form-control" type="number" ng-model="workingStudent.fee.finalAdmissionCharges" required ng-readonly="workingStudent.fee.mode=='Show' || workingStudent.fee.admissionCharges <= 0"
-                    ng-change="calculateDiscount('admissionFee', 'finalAdmissionCharges', 'discountAdmissionCharges')">
+                  ng-disabled="!workingStudent.fee.admissionFee"
+                  ng-change="calculateDiscount('admissionFee', 'finalAdmissionCharges', 'discountAdmissionCharges')">
                 </div>
               </div>
             
@@ -795,8 +796,19 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="control-label">GST-Fee</label>
+                  <label class="control-label">Annual-GST-Fee</label>
                   <input class="form-control" type="number" ng-model="workingStudent.fee.gstFee" readonly>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="control-label">Base-Fee-GST
+                    &nbsp;<a href="#" data-toggle="tooltip" title="18% If Applicable">
+                      <i class="fa fa-info"></i>
+                    </a>
+                  </label>
+                  <input class="form-control" type="text" ng-model="workingStudent.fee.baseFeeGst" readonly>
                 </div>
               </div>
             

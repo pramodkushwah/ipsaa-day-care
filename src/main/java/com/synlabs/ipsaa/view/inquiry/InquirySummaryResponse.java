@@ -20,9 +20,23 @@ public class InquirySummaryResponse implements Response
     this.id = mask(inquiry.getId());
     this.inquiryNumber = inquiry.getInquiryNumber();
     this.childName = inquiry.getChildName();
-    this.centerCode = inquiry.getCenter().getCode();
-    this.programCode = inquiry.getProgram().getCode();
-    this.groupName = inquiry.getGroup().getName();
+    if(inquiry.getCenter()!=null){
+      this.centerCode = inquiry.getCenter().getCode();
+    }
+    else{
+      this.centerCode="Not available";
+    }
+    if(inquiry.getProgram()!=null){
+      this.programCode = inquiry.getProgram().getCode();
+      if(inquiry.getGroup()!=null){
+        this.groupName = inquiry.getGroup().getName();
+      }else {
+        this.groupName= "Not Available";
+      }
+    }
+    else{
+      this.programCode="Not Available";
+    }
     this.feeOffer = inquiry.getFeeOffer();
 
     StringBuffer sb = new StringBuffer();

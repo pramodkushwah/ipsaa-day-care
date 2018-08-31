@@ -30,6 +30,7 @@ public class StudentMessageController
       , @RequestParam(value = "files", required = false) List<MultipartFile> attachments
       , @RequestParam(value = "images", required = false) List<MultipartFile> images
       , @RequestParam(value = "cids", required = false) List<String> cids
+      ,@RequestParam(value = "cc", required = false) List<String> cc
       ) throws IOException
   {
     EmailRequest request = new EmailRequest();
@@ -37,6 +38,7 @@ public class StudentMessageController
     request.setEmailcontent(emailcontent);
     request.setAttachments(attachments);
     request.setIds(ids);
+    request.setCc(cc);
     request.setCids(cids);
     request.setImages(images);
     communicationService.sendStudentEmail(request);
