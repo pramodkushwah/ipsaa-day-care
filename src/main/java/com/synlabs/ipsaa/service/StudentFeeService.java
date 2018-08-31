@@ -553,6 +553,7 @@ public class StudentFeeService {
             try{
                 this.regenerateFeeSlip(request,quarter,year);
             }catch (Exception ignored){
+                ignored.printStackTrace();
             }
         }
     }
