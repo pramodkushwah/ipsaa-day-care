@@ -188,6 +188,28 @@ public class StudentFeeService {
         return allslips;
     }
 
+    public List<StudentFeePaymentRequest> unpaidList(Long feeId,int quarter,int year,boolean wantException){
+        StudentFee fee=studentFeeRepository.findOne(feeId);
+        if(fee==null){
+            throw new NotFoundException(String.format("Student fee not found [%s]", feeId));
+        }
+        Calendar cal = Calendar. getInstance();
+        cal.setTime(fee.getStudent().getProfile().getAdmissionDate());
+        List<StudentFeePaymentRequest> unPaidList=new ArrayList<>();
+        List<StudentFeePaymentRequest> slips = feePaymentRepository.findByStudentAndFeeDuration(fee.getStudent(),FeeDuration.Quarterly);
+
+        if(slips!=null && !slips.isEmpty()){
+                for(StudentFeePaymentRequest s:slips){
+                for(StudentFeePaymentRecord p:s.getPayments()){
+                    if(p.getConfirmed()==null || !p.getConfirmed()){
+                        unPaidList.add(s);
+                        }
+                }
+            }
+        }
+        return unPaidList;
+    }
+
     @Transactional
     public StudentFeePaymentRequest generateFeeSlip(Long feeId,int quarter,int year,boolean wantException) {
         StudentFee fee=studentFeeRepository.findOne(feeId);
