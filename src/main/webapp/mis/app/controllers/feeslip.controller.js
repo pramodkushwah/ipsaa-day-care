@@ -218,7 +218,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
                     studentFee.isDeposit = studentFee.deposit != null;
 
                 });
-                $scope.showDetails(null)
+                $scope.showDetails(null);
             }, function (response) {
                 $scope.generateSlipDisable = false;
                 error(response.data.error);
@@ -397,6 +397,8 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
     };
 
     $scope.showDetails = function (studentfee) {
+        console.log(studentfee);
+        
         if (!studentfee) {
             $scope.showPanel = "";
             $scope.selected = {};
@@ -406,7 +408,14 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
             $scope.selected.actualBaseFee = $scope.selected.totalFee - $scope.selected.adjust - $scope.selected.balance - $scope.selected.latePaymentCharge - $scope.selected.extraCharge;
             // $scope.calculateFinalFee($scope.selected);
             $scope.selected.finalBaseFee = ($scope.selected.baseFee * ((100 - $scope.selected.baseFeeDiscount)/100)).toFixed(2);
-          $scope.selected.finalTransportFees = $scope.selected.transportFee * $scope.selected.feeRatio;
+            $scope.selected.finalTransportFees = $scope.selected.transportFee * $scope.selected.feeRatio;
+            if($scope.selected.gstAmount){
+                $scope.selected.gstFee = Number(((Number($scope.selected.finalAnnualCharges)) * 0.18).toFixed(2));//annual-fee-gst
+                $scope.selected.baseFeeGst = Number((((Number($scope.selected.finalBaseFee) * 3)) * 0.18).toFixed(2));
+            } else {
+                $scope.selected.gstFee = 0;
+                $scope.selected.baseFeeGst = 0;
+            }
         }
     };
 

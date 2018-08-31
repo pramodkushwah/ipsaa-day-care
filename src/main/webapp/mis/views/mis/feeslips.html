@@ -229,13 +229,13 @@
             </div>
           </div>
         
-          <div class="col-md-6">
+          <!-- <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Final Transport Fees &nbsp;
               </label>
               <input class="form-control" type="text" ng-model="selected.finalTransportFees" readonly>
             </div>
-          </div>
+          </div> -->
         
           <div class="col-md-6">
             <div class="form-group">
@@ -256,9 +256,23 @@
         <div class="row">
           <div class="col-md-6">
             <div class="form-group">
-              <label class="control-label">GST-Fee &nbsp;
+              <label class="control-label">Annual-Fee-GST
+                &nbsp;<a href="#" data-toggle="tooltip" title="18% If Applicable">
+                  <i class="fa fa-info"></i>
+                </a>
               </label>
-              <input class="form-control" type="text" ng-model="selected.gstAmount" readonly>
+              <input class="form-control" type="text" ng-model="selected.gstFee" readonly>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Base-Fee-GST
+                &nbsp;<a href="#" data-toggle="tooltip" title="18% If Applicable">
+                  <i class="fa fa-info"></i>
+                </a>
+              </label>
+              <input class="form-control" type="text" ng-model="selected.baseFeeGst" readonly>
             </div>
           </div>
           <div class="col-md-6">
