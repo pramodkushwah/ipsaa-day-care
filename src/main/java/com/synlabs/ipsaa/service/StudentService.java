@@ -1,5 +1,6 @@
 package com.synlabs.ipsaa.service;
 
+import static com.synlabs.ipsaa.util.BigDecimalUtils.THREE;
 import static com.synlabs.ipsaa.util.StringUtil.in;
 import static java.math.BigDecimal.ZERO;
 
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 
+import com.synlabs.ipsaa.util.FeeUtilsV2;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -279,28 +281,39 @@ public class StudentService extends BaseService {
 
 		if (request.getCenterId() != null) {
 			fees = query.where(fee.student.center.id.eq(request.getCenterId())).fetch();
-
-			// // code for adjust new fee changes
-			// for (StudentFee studentFee:fees ){
-			// if(studentFee.getDiscount()!=null && studentFee.getDiscount().intValue()>0)
-			// studentFee.setBaseFeeDiscount(studentFee.getDiscount());
-			// studentFee.setFinalBaseFee(FeeUtilsV2.calculateDiscountAmount(studentFee.getBaseFee(),studentFee.getBaseFeeDiscount()));
-			// studentFee.setUniformCharges(ZERO);
-			// studentFee.setStationary(ZERO);
-			//
-			// if(studentFee.getId()==1180){ // 258
-			// System.out.println("");
-			// }
-			// BigDecimal adjust=studentFee.getAdjust().multiply(THREE);
-			// studentFee.setFinalFee(studentFee.getFinalFee().subtract(adjust));
-			//
-			// studentFeeService.saveStudentFee(studentFee);
-			// studentFeeRepository.save(studentFee);
-			// }
+			// to ajust chnages
+			//ajustChnages();
 			return fees;
 		}
 		fees = query.where(fee.student.center.in(getUserCenters())).fetch();
 		return fees;
+	}
+
+	@Transactional
+	private void ajustChnages() {
+		//  code for adjust new fee changes
+		QStudentFee fee = QStudentFee.studentFee;
+		JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
+		query.select(fee).from(fee)
+				.where(fee.student.active.isTrue())
+				.where(fee.feeDuration.eq(FeeDuration.Quarterly))
+				.where(fee.student.corporate.isFalse());
+
+		for (StudentFee studentFee:query.fetch() ){
+			BigDecimal adjust=ZERO;
+			if(studentFee.getAdjust()!=null)
+				adjust=studentFee.getAdjust().multiply(THREE);
+
+			if(studentFee.getDiscount()!=null && studentFee.getDiscount().intValue()>0)
+				studentFee.setBaseFeeDiscount(studentFee.getDiscount());
+			studentFee.setFinalBaseFee(FeeUtilsV2.calculateDiscountAmount(studentFee.getBaseFee(),studentFee.getBaseFeeDiscount()));
+			studentFee.setUniformCharges(ZERO);
+			studentFee.setStationary(ZERO);
+			studentFee.setFinalFee(studentFee.getFinalFee().subtract(adjust));
+			studentFeeService.saveStudentFee(studentFee);
+			System.out.println(studentFee.getStudent().getName());
+			studentFeeRepository.save(studentFee);
+		}
 	}
 
 	public List<StudentFeePaymentRequest> listFeeLedger(StudentFeeLedgerRequest request) {
