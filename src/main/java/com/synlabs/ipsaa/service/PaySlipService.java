@@ -177,7 +177,6 @@ public class PaySlipService extends BaseService
     }
     paySlip.setOtherAllowances(request.getOtherAllowances() == null ? ZERO : request.getOtherAllowances());
     paySlip.setOtherDeductions(request.getOtherDeductions() == null ? ZERO : request.getOtherDeductions());
-
     paySlip = calculatePayslip(employee, salary, year, month, paySlip);
 
     employeePaySlipRepository.saveAndFlush(paySlip);
@@ -309,24 +308,18 @@ public class PaySlipService extends BaseService
     return String.format("%s/%03d", center.getCode(), next);
   }
 
-  public void reGeneratePaySlipAll(PaySlipRegenerateRequest request) throws DocumentException, ParseException, IOException
-  {
+  public void reGeneratePaySlipAll(PaySlipRegenerateRequest request) throws DocumentException, ParseException, IOException {
     request.validate();
-    if (request.getLegalEntityId() == null)
-    {
-      throw new ValidationException("Legal entity is required.");
-    }
-    LegalEntity one = legalEntityRepository.findOne(request.getLegalEntityId());
-    if (one == null)
-    {
-      throw new ValidationException(String.format("Cannot locate LegalEntity[id=%s]", mask(request.getLegalEntityId())));
-    }
-    List<EmployeePaySlip> payslips = employeePaySlipRepository.findByEmployerIdAndMonthAndYear(one.getId(), request.getMonth(), request.getYear());
 
-    logger.info(String.format("Regenerating all payslip for [legal=%s,month=%s,year=%s,count=%s]",
-                              one.getName(), request.getMonth(), request.getYear(), payslips.size()));
-    for (EmployeePaySlip payslip : payslips)
-    {
+    if (request.getIds() == null && request.getIds().isEmpty()) {
+      throw new ValidationException("PaySlip id not can not be empaty");
+    }
+    List<EmployeePaySlip> payslips = employeePaySlipRepository.findByEmployeeIdInAndMonthAndYear(request.getIds(), request.getMonth(), request.getYear());
+
+    logger.info(String.format("Regenerating all payslip for [month=%s,year=%s,count=%s]"
+            , request.getMonth(), request.getYear(), payslips.size()));
+
+    for (EmployeePaySlip payslip : payslips) {
       EmployeePaySlipRequest paySlipRequest = new EmployeePaySlipRequest();
       paySlipRequest.setId(mask(payslip.getId()));
       paySlipRequest.setOtherDeductions(payslip.getOtherDeductions());

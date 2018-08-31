@@ -105,18 +105,20 @@ public class EmployeeController
     return new EmployeePaySlipResponse(paySlipService.reGeneratePaySlip(request));
   }
 
+
+  //------------------------------shubham-----------------------------------------------------------------
+  // shubham
   @Secured(PAYSLIP_WRITE)
   @PostMapping("/payslip/regenerateall/")
   public void regeneratePaySlipAll(@RequestBody PaySlipRegenerateRequest request) throws IOException, DocumentException, ParseException
   {
     paySlipService.reGeneratePaySlipAll(request);
   }
-  //------------------------------shubham-----------------------------------------------------------------
-  // shubham
   @Secured(PAYSLIP_LOCK)
   @PutMapping("/payslip/lock")
   public boolean lockPaySalary(@RequestBody EmployeePaySlipRequest request) throws IOException, DocumentException, ParseException
   {
     return paySlipService.lockSalary(request);
+
   }
 }
