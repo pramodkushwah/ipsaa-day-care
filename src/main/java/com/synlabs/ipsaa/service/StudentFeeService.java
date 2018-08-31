@@ -205,21 +205,27 @@ public class StudentFeeService {
         BigDecimal totalAmount=ZERO;
         BigDecimal balance=ZERO;
         List<StudentFeePaymentRequest> slips = feePaymentRepository.findByStudentAndFeeDuration(fee.getStudent(),FeeDuration.Quarterly);
-        boolean isAllConfirm=true;
+        boolean isAllConfirm=false;
 
+        int unConfirmCount=0;
         if(slips!=null && !slips.isEmpty()){
         for(StudentFeePaymentRequest s:slips){
             for(StudentFeePaymentRecord p:s.getPayments()){
-                if(p.getActive())
+                if(p.getActive()){
                     paidAmount=paidAmount.add(p.getPaidAmount());
+                }
                 if(p.getConfirmed()==null || !p.getConfirmed()){
                     unPaidList.add(s);
-                    if(isAllConfirm)
-                        isAllConfirm=false;
+                    unConfirmCount++;
                 }
             }
             totalAmount=totalAmount.add(s.getTotalFee());
         }
+        }
+        if(unConfirmCount>0)
+            isAllConfirm=false;
+        else if(unConfirmCount==0 || slips==null || slips.isEmpty()){ // to check there is no old  slip found
+            isAllConfirm=true;
         }
         balance=totalAmount.subtract(paidAmount);
 
@@ -253,8 +259,6 @@ public class StudentFeeService {
             slip.setSgst(fee.getSgst());
             slip.setIgst(fee.getIgst());
             slip.setAdjust(slip.getAdjust()==null?ZERO:slip.getAdjust());
-            slip.setDeposit(fee.getDepositFee()==null?ZERO:fee.getDepositFee());
-            slip.setFinalDepositFee(fee.getFinalDepositFee()==null?ZERO:fee.getFinalDepositFee());
 
             slip.setBaseFee(fee.getBaseFee());
             slip.setFinalBaseFee(fee.getFinalBaseFee());
@@ -262,13 +266,15 @@ public class StudentFeeService {
             slip.setAnnualFee(ZERO);
             slip.setFinalAnnualCharges(ZERO);
 
+            slip.setDeposit(ZERO);
+            slip.setFinalDepositFee(ZERO);
+
             slip.setAdmissionFee(ZERO);
             slip.setFinalAdmissionFee(ZERO);
 
             slip.setAddmissionFeeDiscount(ZERO);
             slip.setAnnualFeeDiscount(ZERO);
 
-            slip.setDepositFeeDiscount(fee.getDepositFeeDiscount()==null?ZERO:fee.getDepositFeeDiscount());
             slip.setBaseFeeDiscount(fee.getBaseFeeDiscount()==null?ZERO:fee.getBaseFeeDiscount());
 
             slip.setUniformCharges(fee.getUniformCharges()==null?ZERO:fee.getUniformCharges());
@@ -286,6 +292,11 @@ public class StudentFeeService {
                     slip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
                     slip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount()==null?ZERO:fee.getAnnualFeeDiscount());
 
+
+                    slip.setDepositFeeDiscount(fee.getDepositFeeDiscount()==null?ZERO:fee.getDepositFeeDiscount());
+                    slip.setDeposit(fee.getDepositFee()==null?ZERO:fee.getDepositFee());
+                    slip.setFinalDepositFee(fee.getFinalDepositFee()==null?ZERO:fee.getFinalDepositFee());
+
                     slip.setAnnualFee(fee.getAnnualCharges()==null?ZERO:fee.getAnnualCharges());
                     slip.setAdmissionFee(fee.getAdmissionFee()==null?ZERO:fee.getAdmissionFee());
 
@@ -293,6 +304,9 @@ public class StudentFeeService {
                     slip.setFinalAdmissionFee(fee.getFinalAdmissionFee()==null?ZERO:fee.getFinalAdmissionFee());
 
                 }else if(quarter == 2){
+
+                    slip.setDeposit(ZERO);
+                    slip.setFinalDepositFee(ZERO);
 
                     slip.setAdmissionFee(ZERO);
                     slip.setFinalAdmissionFee(ZERO);
@@ -302,6 +316,8 @@ public class StudentFeeService {
                     slip.setAnnualFee(fee.getFinalAnnualCharges()==null?ZERO:fee.getFinalAnnualCharges());
 
                 }else{
+                    slip.setDeposit(ZERO);
+                    slip.setFinalDepositFee(ZERO);
                     slip.setAdmissionFee(ZERO);
                     slip.setFinalAdmissionFee(ZERO);
                     slip.setAnnualFee(ZERO);
@@ -309,7 +325,7 @@ public class StudentFeeService {
                 }
 
                 slip.setBalance(balance);
-                slip.setTotalFee(FeeUtilsV2.calculateReGenrateFinalFee(slip,baseFeeRatio));
+                slip.setTotalFee(FeeUtilsV2.calculateSaveFinalFee(slip,baseFeeRatio));
                 slip.setFinalFee(slip.getTotalFee());
                 slip.setTotalFee(slip.getTotalFee().add(balance));
 
@@ -341,6 +357,7 @@ public class StudentFeeService {
         {
             throw new ValidationException("Already paid some or full amount.");
         }
+
         if(thisQuarterSlip!=null)
         {
             thisQuarterSlip.setStudent(fee.getStudent());
@@ -358,13 +375,11 @@ public class StudentFeeService {
             thisQuarterSlip.setCgst(fee.getCgst());
             thisQuarterSlip.setSgst(fee.getSgst());
             thisQuarterSlip.setIgst(fee.getIgst());
-            thisQuarterSlip.setDeposit(fee.getDepositFee()==null?ZERO:fee.getDepositFee());
-            thisQuarterSlip.setFinalDepositFee(fee.getFinalDepositFee()==null?ZERO:fee.getFinalDepositFee());
+
 
             thisQuarterSlip.setBaseFee(fee.getBaseFee());
             thisQuarterSlip.setFinalBaseFee(fee.getFinalBaseFee()==null?ZERO:fee.getFinalBaseFee());
 
-            thisQuarterSlip.setDepositFeeDiscount(fee.getDepositFeeDiscount()==null?ZERO:fee.getDepositFeeDiscount());
             thisQuarterSlip.setBaseFeeDiscount(fee.getBaseFeeDiscount()==null?ZERO:fee.getBaseFeeDiscount());
 
             thisQuarterSlip.setUniformCharges(fee.getUniformCharges()==null?ZERO:fee.getUniformCharges());
@@ -378,7 +393,17 @@ public class StudentFeeService {
                  thisQuarterSlip.setAdmissionFee(fee.getAdmissionFee()==null?ZERO:fee.getAdmissionFee());
                  thisQuarterSlip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
                  thisQuarterSlip.setFinalAdmissionFee(fee.getFinalAdmissionFee()==null?ZERO:fee.getFinalAdmissionFee());
+
+                 // one time only
+                 thisQuarterSlip.setDepositFeeDiscount(fee.getDepositFeeDiscount()==null?ZERO:fee.getDepositFeeDiscount());
+                 thisQuarterSlip.setDeposit(fee.getDepositFee()==null?ZERO:fee.getDepositFee());
+                 thisQuarterSlip.setFinalDepositFee(fee.getFinalDepositFee()==null?ZERO:fee.getFinalDepositFee());
+
              }else{
+
+                 thisQuarterSlip.setFinalDepositFee(ZERO);
+                 thisQuarterSlip.setDeposit(ZERO);
+                 thisQuarterSlip.setDepositFeeDiscount(ZERO);
 
                  thisQuarterSlip.setAdmissionFee(ZERO);
                  thisQuarterSlip.setAddmissionFeeDiscount(ZERO);
@@ -417,19 +442,27 @@ public class StudentFeeService {
         validateQuarter(request);
         QStudentFee qStudentFee = QStudentFee.studentFee;
         JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
+
         query.select(qStudentFee)
                 .from(qStudentFee)
                 .where(qStudentFee.feeDuration.eq(FeeDuration.Quarterly))
                 .where(qStudentFee.student.active.isTrue())
                 .where(qStudentFee.student.corporate.isFalse())
                 .where(qStudentFee.student.center.code.eq(request.getCenterCode()));
+
         List<StudentFee> feelist = query.fetch();
         List<StudentFeePaymentRequest> allslips = new LinkedList<>();
 
         int requestQuarter = request.getQuarter();
         int requestYear = request.getYear();
+
         for(StudentFee studentFee:feelist){
-          allslips.add(this.generateFeeSlip(studentFee.getId(),requestQuarter,requestYear,false));
+            if(studentFee.getStudent().getProgram().getId()!=FeeUtilsV2.IPSAA_CLUB_REGULAR_PROGRAM_ID &&
+                    studentFee.getStudent().getProgram().getId()!=FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID){
+                StudentFeePaymentRequest req=this.generateFeeSlip(studentFee.getId(),requestQuarter,requestYear,false);
+                if(req!=null)
+                allslips.add(req);
+            }
         }
         return allslips;
     }
@@ -514,14 +547,14 @@ public class StudentFeeService {
         List<StudentFee> fees=listAllFee();
         for(StudentFee fee:fees){
             CenterProgramFee centerProgramFee=centerProgramFeeRepository.findByProgramIdAndCenterId(fee.getStudent().getProgram().getId(),fee.getStudent().getCenter().getId());
-           // try{
+            try{
                 if(centerProgramFee==null){
                     throw new NotFoundException("Center program fee not found");
                 }
 
                 fee.setBaseFee(new BigDecimal(centerProgramFee.getFee()));
-                fee.setAdmissionFee(centerProgramFee.getAddmissionFee()==null?ZERO:centerProgramFee.getAddmissionFee());
-                fee.setDepositFee(new BigDecimal(centerProgramFee.getDeposit()));
+                //fee.setAdmissionFee(centerProgramFee.getAddmissionFee()==null?ZERO:centerProgramFee.getAddmissionFee());
+                //fee.setDepositFee(new BigDecimal(centerProgramFee.getDeposit()));
                 fee.setAnnualCharges(new BigDecimal(centerProgramFee.getAnnualFee()));
                 fee.setUniformCharges(fee.getUniformCharges()==null?ZERO:fee.getUniformCharges());
                 fee.setStationary(fee.getStationary()==null?ZERO:fee.getStationary());
@@ -530,12 +563,12 @@ public class StudentFeeService {
 
                 fee.setBaseFeeDiscount(ZERO);
                 fee.setAnnualFeeDiscount(ZERO);
-                fee.setAddmissionFeeDiscount(ZERO);
-                fee.setDepositFeeDiscount(ZERO);
+                //fee.setAddmissionFeeDiscount(ZERO);
+                //fee.setDepositFeeDiscount(ZERO);
 
                 fee.setFinalBaseFee(fee.getBaseFee());
-                fee.setFinalDepositFee(fee.getDepositFee());
-                fee.setFinalAdmissionFee(fee.getAdmissionFee());
+                //fee.setFinalDepositFee(fee.getDepositFee());
+                //fee.setFinalAdmissionFee(fee.getAdmissionFee());
                 fee.setFinalAnnualCharges(fee.getAnnualCharges());
 
                 if(fee.getStudent().isFormalSchool())
@@ -543,9 +576,9 @@ public class StudentFeeService {
                 else
                     fee.setFinalFee(FeeUtilsV2.calculateFinalFee(fee,false));
                     studentFeeRepository.save(fee);
-           // }catch(Exception e){
-             //   logger.error(String.format("Student Fee scheduler program center not found error .%s",fee));
-           // }
+            }catch(Exception e){
+                logger.error(String.format("Student Fee scheduler program center not found error .%s",fee));
+            }
         }
     }
     public StudentFeePaymentRequest regenerateStudentSlip(StudentFeeSlipRequestV2 request) {

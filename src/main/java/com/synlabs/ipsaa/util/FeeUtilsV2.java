@@ -66,6 +66,7 @@ public class FeeUtilsV2 {
         } else {
             fee.setGstAmount(ZERO);
         }
+        fee.setFinalFee(fee.getFinalFee().setScale(2,BigDecimal.ROUND_CEILING));
         totalFee=totalFee.setScale(2,BigDecimal.ROUND_CEILING);
         BigDecimal diff = totalFee.subtract(fee.getFinalFee());
 
@@ -88,19 +89,17 @@ public class FeeUtilsV2 {
         }
         fee.setFinalTransportFee(fee.getTransportFee().multiply(finalRatio));
 
-        fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(),fee.getFinalBaseFee().divide(ratio), "Base Fee"));
-        // need to re calculate the discount bcz finalBaseFee saves discount amount + quarterly amount too
+        fee.setFinalBaseFee(calculateDiscountAmount(fee.getBaseFee(),fee.getBaseFeeDiscount()));
+
         fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(finalRatio));
 
         return calculateFinalFee(fee);
     }
     public static BigDecimal calculateReGenrateFinalFee(StudentFeePaymentRequest fee, BigDecimal ratio) {
-        BigDecimal finalRatio;
-        if (ratio != null)
+        BigDecimal finalRatio=THREE;
+        if (ratio != null && ratio.doubleValue()>0)
             finalRatio = ratio;
-        else {
-            finalRatio = THREE;
-        }
+
         fee.setFinalTransportFee(fee.getTransportFee().multiply(finalRatio));
 
         fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(),fee.getFinalBaseFee().divide(THREE), "Base Fee"));
@@ -167,7 +166,7 @@ public class FeeUtilsV2 {
         if(baseAmount.intValue()>0)
             discountPercent=discountAmount.divide(baseAmount,2,BigDecimal.ROUND_CEILING);
 
-        if(discount!=null){
+        if(discount!=null && discount.intValue()>0){
             BigDecimal diff = discountPercent.subtract(discount);
 
             //compare diff with tolerance
