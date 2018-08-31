@@ -550,7 +550,10 @@ public class StudentFeeService {
         for(Long id:ids){
             StudentFeeSlipRequestV2 request=new StudentFeeSlipRequestV2();
             request.setId(id);
-            this.regenerateFeeSlip(request,quarter,year);
+            try{
+                this.regenerateFeeSlip(request,quarter,year);
+            }catch (Exception ignored){
+            }
         }
     }
 
