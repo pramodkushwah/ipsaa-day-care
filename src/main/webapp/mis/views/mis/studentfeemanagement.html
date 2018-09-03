@@ -294,7 +294,7 @@
 
           <div class="tab-pane active" id="controls" ng-hide="insertStudentFee.mode=='Show'">
             <div class="form-footer text-right">
-              <button class="btn btn-rose btn-fill" ng-click="saveStudentFee()" ng-disabled="StudentFeeForm.$invalid || disableSave">
+              <button class="btn btn-rose btn-fill" ng-click="saveStudentFee(insertStudentFee)" ng-disabled="StudentFeeForm.$invalid || disableSave">
                 <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableSave"></i>
                 Save
               </button>
