@@ -176,8 +176,12 @@ public class StaffService extends BaseService
   }
   // shubham
   public File getEmployee(StaffFilterRequest staffRequest){
-    List<Employee> list;
+    List<Employee> list=null;
+    if(staffRequest.getEmployerCode()=="All" || staffRequest.getEmployerCode()=="ALL")
     list= employeeRepository.findByActiveTrueAndCostCenterIn(getUserCenters());
+    else{
+       list=employeeRepository.findByActiveTrueAndCostCenterInAndEmployerCode(getUserCenters(),staffRequest.getEmployerCode());
+    }
     StaffReport excel = new StaffReport(list,exportDirectory);
     return excel.createExcel(); // returning file
   }
