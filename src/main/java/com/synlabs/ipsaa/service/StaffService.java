@@ -17,10 +17,12 @@ import com.synlabs.ipsaa.ex.UploadException;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.store.FileStore;
+import com.synlabs.ipsaa.util.StringUtil;
 import com.synlabs.ipsaa.view.batchimport.ImportEmployee;
 import com.synlabs.ipsaa.view.batchimport.ImportSalary;
 import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.report.excel.StaffExcelReport;
+import com.synlabs.ipsaa.view.report.excel.StaffReport;
 import com.synlabs.ipsaa.view.staff.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -172,13 +174,26 @@ public class StaffService extends BaseService
   {
     return employeeRepository.findOne(request.getId());
   }
-// shubham
-  public File getEmployeeSalary(StaffFilterRequest staffRequest){
-    List<EmployeeSalary> list;
-
-    list= employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
-    StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository,staffRequest.getEmployerCode());
+  // shubham
+  public File getEmployee(StaffFilterRequest staffRequest){
+    List<Employee> list;
+    list= employeeRepository.findByActiveTrueAndCostCenterIn(getUserCenters());
+    StaffReport excel = new StaffReport(list,exportDirectory);
     return excel.createExcel(); // returning file
+  }
+
+  // shubham
+  public File getEmployeeSalary(StaffFilterRequest staffRequest){
+
+    List<EmployeeSalary> list=new ArrayList<>();
+
+    if (!StringUtils.isEmpty(staffRequest.getEmployerCode()) || staffRequest.getEmployerCode().equals("ALL")) {
+      list = employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
+    }
+      StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository, staffRequest.getEmployerCode());
+      return excel.createExcel(); // returning file
+
+
   }
 
   @Transactional

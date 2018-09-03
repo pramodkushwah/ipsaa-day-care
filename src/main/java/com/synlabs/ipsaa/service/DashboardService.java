@@ -753,7 +753,7 @@ public class DashboardService extends BaseService
     }
     else
     {
-      List<Employee> employees=salaries.stream().map(salary1 -> getEmployee()).collect(Collectors.toList());
+      List<Employee> employees=salaries.stream().map(salary1 -> salary1.getEmployee()).collect(Collectors.toList());  //salary1 to salary1.getEmployee
       response=employees.stream().map(DashStaffResponse::new).collect(Collectors.toList());
     }
     return response;
