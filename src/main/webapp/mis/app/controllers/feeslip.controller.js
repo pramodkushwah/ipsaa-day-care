@@ -371,6 +371,8 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
         $scope.reGenerateSlipLoader = true;
     
         $http.post('/api/student/feeslip/regenerateAll',$scope.slectedElementList, {responseType: 'arraybuffer'}).then(function(response){
+            $scope.getFeeSlips();
+            $scope.reGenerateSlipLoader = false;
             ok("Slips regenerated Successfully");
         },function(error){
 
@@ -411,7 +413,11 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
             $scope.selected.finalTransportFees = $scope.selected.transportFee * $scope.selected.feeRatio;
             if($scope.selected.gstAmount){
                 $scope.selected.gstFee = Number(((Number($scope.selected.finalAnnualCharges)) * 0.18).toFixed(2));//annual-fee-gst
-                $scope.selected.baseFeeGst = Number((((Number($scope.selected.finalBaseFee) * 3)) * 0.18).toFixed(2));
+                if($scope.selected.feeRatio){
+                    $scope.selected.baseFeeGst = Number((((Number($scope.selected.finalBaseFee) * $scope.selected.feeRatio)) * 0.18).toFixed(2));
+                } else {
+                    $scope.selected.baseFeeGst = Number((((Number($scope.selected.finalBaseFee) * 3)) * 0.18).toFixed(2));
+                }
             } else {
                 $scope.selected.gstFee = 0;
                 $scope.selected.baseFeeGst = 0;

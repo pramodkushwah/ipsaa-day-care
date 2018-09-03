@@ -2,12 +2,14 @@ package com.synlabs.ipsaa.view.student;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.synlabs.ipsaa.entity.student.Student;
+import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentParent;
 import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.view.center.CenterSummaryResponse;
 import com.synlabs.ipsaa.view.center.ProgramGroupResponse;
 import com.synlabs.ipsaa.view.center.ProgramResponse;
 import com.synlabs.ipsaa.view.common.Response;
+import com.synlabs.ipsaa.view.fee.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,7 +58,47 @@ public class StudentResponse implements Response
   /////Avneet
   private boolean formalSchool;
   private String schoolName;
+private StudentFeeResponse fee;
 
+public  StudentResponse(StudentFee fee){
+  Student student =fee.getStudent();
+
+  this.fee=new StudentFeeResponse(fee);
+
+  this.id = mask(student.getId());
+  this.active = student.isActive();
+  this.admissionNumber = student.getAdmissionNumber();
+  this.center = new CenterSummaryResponse(student.getCenter());
+  this.program = new ProgramResponse(student.getProgram());
+  this.group = new ProgramGroupResponse(student.getGroup());
+  this.fullName = student.getProfile().getFullName();
+  this.firstName = student.getProfile().getFirstName();
+  this.lastName = student.getProfile().getLastName();
+  this.admissionDate = student.getProfile().getAdmissionDate().toString();
+  this.imagePath = student.getProfile().getImagePath();
+  this.nickName = student.getProfile().getNickName();
+  this.dob = student.getProfile().getDob().toString();
+  this.gender = student.getProfile().getGender().name();
+  this.nationality = student.getProfile().getNationality();
+  this.bloodGroup = student.getProfile().getBloodGroup();
+  this.profile = student.getProfile().getProfile();
+  this.familyType = student.getProfile().getFamilyType().name();
+  this.expectedIn = student.getExpectedIn();
+  this.expectedOut = student.getExpectedOut();
+  this.approvalStatus = student.getApprovalStatus();
+  this.corporate = student.isCorporate();
+  this.formalSchool=student.isFormalSchool();
+  this.schoolName=student.getSchoolName();
+  if (student.getParents() != null && !student.getParents().isEmpty())
+  {
+    this.parents = new ArrayList<>(student.getParents().size());
+    for (StudentParent parent : student.getParents())
+    {
+      this.parents.add(new ParentResponse(parent));
+    }
+  }
+
+}
   public StudentResponse(Student student)
   {
     this.id = mask(student.getId());
@@ -91,6 +133,10 @@ public class StudentResponse implements Response
         this.parents.add(new ParentResponse(parent));
       }
     }
+  }
+
+  public StudentFeeResponse getFee() {
+    return fee;
   }
 
   public boolean isCorporate()
