@@ -260,8 +260,9 @@ public class StudentService extends BaseService {
 	}
 
 	public StudentResponse getStudent(StudentRequest request) {
-		Student student = repository.getOne(request.getId());
-		StudentResponse response = new StudentResponse(student);
+		StudentFee fee=studentFeeRepository.findByStudentId(request.getId());
+		Student student=fee.getStudent();
+		StudentResponse response = new StudentResponse(fee);
 		if (!StringUtils.isEmpty(student.getProfile().getImagePath())) {
 			response.setStudentImageData(getStudentImageData(student));
 		}
@@ -565,6 +566,12 @@ public class StudentService extends BaseService {
 		if (student == null) {
 			throw new NotFoundException(String.format("Cannot locate student with id %s", request.getId()));
 		}
+		BigDecimal balance=studentFeeService.getStudentBalance(student);
+		if(balance)
+
+
+
+
 		student.setActive(false);
 		studentRepository.saveAndFlush(student);
 
