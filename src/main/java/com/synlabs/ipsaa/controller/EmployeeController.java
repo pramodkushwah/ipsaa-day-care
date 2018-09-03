@@ -119,6 +119,5 @@ public class EmployeeController
   public boolean lockPaySalary(@RequestBody EmployeePaySlipRequest request) throws IOException, DocumentException, ParseException
   {
     return paySlipService.lockSalary(request);
-
   }
 }

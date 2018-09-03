@@ -1,5 +1,6 @@
 app.controller('staffSalaryMonthlyReportController', function ($http, $scope, Upload) {
     $scope.disableGenerateButton = false;
+    $scope.employers = [];
     var allmonths = moment.months();
     $scope.years = [moment().year() - 1, moment().year(), moment().year() + 1];
     $scope.months = [];
@@ -10,6 +11,7 @@ app.controller('staffSalaryMonthlyReportController', function ($http, $scope, Up
 
     $http.get('/api/le/').then(function (response) {
         $scope.employers = response.data;
+        $scope.employers.push({id="ALL", code:'ALL', name:'ALL'});
     });
 
     $scope.generateReport = function() {
