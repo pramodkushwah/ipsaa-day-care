@@ -10,8 +10,11 @@ app.controller('staffSalaryMonthlyReportController', function ($http, $scope, Up
     }
 
     $http.get('/api/le/').then(function (response) {
-        $scope.employers = response.data;
-        $scope.employers.push({id="ALL", code:'ALL', name:'ALL'});
+      
+      $scope.employers.push({id:"ALL", code:'ALL', name:'ALL'});
+      response.data.forEach(emp => {
+        $scope.employers.push(emp);
+      });
     });
 
     $scope.generateReport = function() {
