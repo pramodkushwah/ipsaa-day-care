@@ -567,11 +567,10 @@ public class StudentService extends BaseService {
 			throw new NotFoundException(String.format("Cannot locate student with id %s", request.getId()));
 		}
 		BigDecimal balance=studentFeeService.getStudentBalance(student);
-		if(balance)
-
-
-
-
+		if(balance!=null && balance.intValue()>0){
+			throw new ValidationException(
+					String.format("Some balance fee is remaining of student [%s]", student.getName()));
+		}
 		student.setActive(false);
 		studentRepository.saveAndFlush(student);
 
