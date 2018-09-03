@@ -15,20 +15,13 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 
+import com.synlabs.ipsaa.entity.common.*;
 import com.synlabs.ipsaa.util.FeeUtilsV2;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -52,10 +45,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.common.io.ByteStreams;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.synlabs.ipsaa.entity.center.Center;
-import com.synlabs.ipsaa.entity.common.Address;
-import com.synlabs.ipsaa.entity.common.AdmissionNumberSequence;
-import com.synlabs.ipsaa.entity.common.Role;
-import com.synlabs.ipsaa.entity.common.User;
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.programs.Program;
 import com.synlabs.ipsaa.entity.programs.ProgramGroup;
@@ -471,7 +460,11 @@ public class StudentService extends BaseService {
 		updateParents(dbStudent, request);
 
 		boolean feeChange = !(dbStudent.getProgram().equals(program) && dbStudent.getCenter().equals(center));
-		boolean isFormalChange=!(dbStudent.isFormalSchool() && request.isFormalSchool());
+		if(feeChange){
+		   Set<String> privileges= getUser().getPrivileges();
+		   List<Role> roles=getUser().getRoles();
+        }
+		boolean isFormalChange=(dbStudent.isFormalSchool() ^ request.isFormalSchool());
 
 		dbStudent = request.toEntity(dbStudent);
 		dbStudent.setGroup(programGroup);
