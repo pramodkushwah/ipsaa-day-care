@@ -3,12 +3,10 @@ package com.synlabs.ipsaa.service;
 import com.itextpdf.text.DocumentException;
 import com.synlabs.ipsaa.entity.attendance.EmployeeAttendance;
 import com.synlabs.ipsaa.entity.center.Center;
+import com.synlabs.ipsaa.entity.center.Holiday;
 import com.synlabs.ipsaa.entity.common.LegalEntity;
 import com.synlabs.ipsaa.entity.common.SerialNumberSequence;
-import com.synlabs.ipsaa.entity.staff.Employee;
-import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
-import com.synlabs.ipsaa.entity.staff.EmployeeProfile;
-import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
+import com.synlabs.ipsaa.entity.staff.*;
 import com.synlabs.ipsaa.enums.LeaveStatus;
 import com.synlabs.ipsaa.enums.LeaveType;
 import com.synlabs.ipsaa.ex.ValidationException;
@@ -20,6 +18,8 @@ import com.synlabs.ipsaa.view.staff.EmployeePaySlipRequest;
 import com.synlabs.ipsaa.view.staff.PaySlipRegenerateRequest;
 import org.joda.time.*;
 
+import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.Month;
 import java.time.Period;
@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +39,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.synlabs.ipsaa.util.BigDecimalUtils.*;
 
@@ -74,6 +76,12 @@ public class PaySlipService extends BaseService
 
   @Autowired
   private EmployeeProfileRepository employeeProfileRepository;
+
+  @Autowired
+  private EmployeeLeaveRepository employeeLeaveRepository;
+
+  @Autowired
+  private HolidayRepository holidayRepository;
 
   private static final Logger logger = LoggerFactory.getLogger(PaySlipService.class);
 
@@ -368,8 +376,61 @@ public class PaySlipService extends BaseService
     }
   }
 
+  ////////////////////////Avneet -Calculate days for which the employee is to be paid.- not replaced the inoming presents
+    public BigDecimal presentDays(int month,int year,Long id) throws ParseException {
+
+    Set<String> dateSet=new HashSet<String>();
+    int sundays=0;
+    float add=0;
+
+    Calendar from=Calendar.getInstance(); //current time instance
+    Calendar to=Calendar.getInstance();
+    Calendar calendar=Calendar.getInstance();
+
+    from.set(year,month-1,1);
+    int day=from.getActualMaximum(Calendar.DAY_OF_MONTH);
+    to.set(year,month-1,day);//get max date from existing date
 
 
+      Employee emp= employeeRepository.findOne(id); /////////replace all with incoming id.
+    //Employee emp= employeeRepository.findByEid("E327");
+
+    List<EmployeeAttendance> attendance=attendanceRepository.findByEmployeeAndAttendanceDateBetween(emp,from.getTime(),to.getTime());
+    attendance.forEach(employeeAttendance -> dateSet.add(employeeAttendance.getAttendanceDate().toString()));
+
+    for(int i=1; i<day;  i++){
+      calendar.set(year,month-1,i);
+
+      if( calendar.get(Calendar.DAY_OF_WEEK)== Calendar.SUNDAY){
+        Date sunday=calendar.getTime();
+        dateSet.add(new java.sql.Date(sunday.getTime()).toString());   //to ignore the time
+        sundays++;
+      }
+    }
+
+    List<EmployeeLeave> employeeLeaves=employeeLeaveRepository.findByEmployeeAndLeaveTypeAndDateBetween(emp,LeaveType.PAID,from.getTime(),to.getTime());
+    employeeLeaves.forEach(employeeLeave -> dateSet.add(employeeLeave.getDate().toString()));
+
+    List<Holiday> holidays=holidayRepository.findByCentersIdAndHolidayDateBetween(emp.getCostCenter().getId(),
+            from.getTime(),to.getTime());
+    holidays.forEach(holiday ->  dateSet.add(holiday.getHolidayDate().toString()) );
+
+
+    List<EmployeeLeave> halfLeave=employeeLeaveRepository.findByEmployeeAndDateBetweenAndHalfLeaveIsTrue(emp,from.getTime(),to.getTime());
+    for(EmployeeLeave l:halfLeave){
+      if(dateSet.contains(l.getDate().toString())== false){
+        add+=0.5;
+        dateSet.add(l.getDate().toString());
+      }
+    }
+
+    BigDecimal total=BigDecimal.valueOf(dateSet.size());
+    BigDecimal totalDays=total.add(BigDecimal.valueOf(add));
+
+    System.out.format("Salary is accounted for %s days%n",totalDays);
+
+    return totalDays;
+  }
 }
 
 

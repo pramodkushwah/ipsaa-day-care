@@ -15,4 +15,7 @@ public interface HolidayRepository extends Repository<Holiday, Long>, JpaReposit
 {
 
   List<Holiday> findDistinctByCentersInAndHolidayDate(List<Center> userCenters, Date date);
+
+  ////Avneet
+  List<Holiday> findByCentersIdAndHolidayDateBetween(Long centerId,Date from,Date to);
 }
