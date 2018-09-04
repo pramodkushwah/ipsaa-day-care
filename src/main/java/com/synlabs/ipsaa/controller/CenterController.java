@@ -75,5 +75,5 @@ public class CenterController {
 	public void deleteCenter(@PathVariable Long centerId) {
 		centerService.deleteCenter(new CenterRequest(centerId));
 	}
-
 }
+

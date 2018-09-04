@@ -23,4 +23,5 @@ public interface EmployeeSalaryRepository extends JpaRepository<EmployeeSalary, 
   //------------------------------------shubham----------------------------------------------------------------
   List<EmployeeSalary> findByEmployeeActiveTrueAndEmployeeCostCenterCode(String code);
   List<EmployeeSalary> findByEmployeeActiveTrue();
+  EmployeeSalary findByEmployeeNotIn(List<Employee> employee);
 }

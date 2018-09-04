@@ -105,6 +105,17 @@ public class StaffService extends BaseService
     List<Center> usercenters = getUserCenters();
     return employeeRepository.findByCostCenterIn(usercenters);
   }
+  public List<Employee> listV2()
+  {
+    List<Employee> list=new ArrayList<>();
+    List<Center> usercenters = getUserCenters();
+    List<Employee> staff= employeeRepository.findByCostCenterIn(usercenters);
+    for(Employee e:staff){
+      if(employeeSalaryRepository.findByEmployee(e)==null)
+        list.add(e);
+    }
+    return list;
+  }
 
   public StaffSummaryPageResponse list(StaffFilterRequest request)
   {
