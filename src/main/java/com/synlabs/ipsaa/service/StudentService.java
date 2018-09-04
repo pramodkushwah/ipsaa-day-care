@@ -471,9 +471,10 @@ public class StudentService extends BaseService {
 		dbStudent.setProgram(program);
 		dbStudent.setCenter(center);
 
-		if(feeChange){studentFeeService.saveStudentFee(request.getFee());
-		}else if(isFormalChange){ studentFeeService.updateStudentFee(request.getFee());}
-
+		if(feeChange || isFormalChange){
+			request.getFee().setStudentId(mask(dbStudent.getId()));
+			studentFeeService.updateStudentFee(request.getFee());
+		}
 //		if (feeChange) {
 //			CenterProgramFee centerFee = centerProgramFeeRepository.findByProgramIdAndCenterId(program.getId(),
 //					center.getId());
