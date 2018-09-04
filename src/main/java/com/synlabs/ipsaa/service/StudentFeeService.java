@@ -15,6 +15,7 @@ import com.synlabs.ipsaa.util.FeeUtils;
 import com.synlabs.ipsaa.util.FeeUtilsV2;
 import com.synlabs.ipsaa.util.QuarterYearUtil;
 import com.synlabs.ipsaa.view.fee.*;
+import com.synlabs.ipsaa.view.student.PaymentHistoryResponce;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -858,5 +859,24 @@ public class StudentFeeService {
         logger.info(String.format("Student Fee payment rejected .%s",slip));
         feePaymentRepository.saveAndFlush(slip);
         return receipt;
+    }
+
+    public BigDecimal getStudentBalance(Student student) {
+        Calendar cal = Calendar. getInstance();
+        int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));
+        int year=cal.get(Calendar.YEAR);
+        StudentFeePaymentRequest slip=feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(student,FeeDuration.Quarterly,quarter,year);
+        if(slip!=null)
+        return slip.getBalance()==null?ZERO:slip.getBalance();
+        return null;
+    }
+
+    public PaymentHistoryResponce getStudentPaymentHistory(Long studentId) {
+        Student student=studentRepository.findOne(studentId);
+        if(student==null){
+           throw new NotFoundException(String.format("Student no found [%s]",studentId));
+        }
+        List<StudentFeePaymentRequest> slips = feePaymentRepository.findByStudentAndFeeDuration(student,FeeDuration.Quarterly);
+        return new PaymentHistoryResponce(slips);
     }
 }
