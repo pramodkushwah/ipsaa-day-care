@@ -132,23 +132,23 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
         }
     };
 
-    $scope.saveStudentFee = debounce(function () {
+    $scope.saveStudentFee = debounce(function (fee) {
         $scope.disableSave = true;
-        if ($scope.insertStudentFee.mode == "Add") {
-            if (!$scope.insertStudentFee.program) {
+        if (fee.mode == "Add") {
+            if (!fee.program) {
                 error("Please select Program.");
                 $scope.disableSave = false;
                 return;
             }
-            if (!$scope.insertStudentFee.student) {
+            if (!fee.student) {
                 error("Please select Student.");
                 $scope.disableSave = false;
                 return;
             }
-            $scope.insertStudentFee.studentId = $scope.insertStudentFee.student.id;
-            delete $scope.insertStudentFee.student;
-            delete $scope.insertStudentFee.program;
-            $http.post('/api/student/fee/', $scope.insertStudentFee).then(function (response) {
+            fee.studentId = fee.student.id;
+            delete fee.student;
+            delete fee.program;
+            $http.post('/api/student/fee/', fee).then(function (response) {
                 $scope.addstudentfee = false;
                 $scope.loadCenterStudentsFee();
                 $scope.disableSave = false;
@@ -157,20 +157,28 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
                 $scope.disableSave = false;
                 error(response.data.error);
             });
-        } else if ($scope.insertStudentFee.mode == "Edit") {
-            delete $scope.insertStudentFee.student;
-            delete $scope.insertStudentFee.program;
-            delete $scope.insertStudentFee.center;
-            delete $scope.insertStudentFee.group;
-            $http.put('/api/student/fee/', $scope.insertStudentFee).then(function (response) {
+            delete fee.student;
+        } else if (fee.mode == "Edit") {
+            delete fee.program;
+            delete fee.center;
+            delete fee.group;
+
+            if (!fee.comment && (fee.discountAnnualCharges || fee.discountAdmissionCharges || fee.discountBaseFee || fee.discountSecurityDeposit)) {
+              error("Comment is compulsory if you give any discount");
+              $scope.disableSave = false;
+              return false;
+            }
+            $http.put('/api/student/fee/', fee).then(function (response) {
                 $scope.addstudentfee = false;
                 $scope.disableSave = false;
-                ok("Student Fee updated!");
+                  ok('Student Fee updated!');
                 $scope.loadCenterStudentsFee();
-            }, function (response) {
+                },
+                function(response) {
                 $scope.disableSave = false;
                 error(response.data.error);
-            });
+                }
+              );
         }
     }, 200, true);
 
