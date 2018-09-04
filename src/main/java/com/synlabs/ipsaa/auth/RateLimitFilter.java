@@ -74,7 +74,6 @@ public class RateLimitFilter extends GenericFilterBean
     }
     chain.doFilter(request, response);
   }
-
 }
 
 
