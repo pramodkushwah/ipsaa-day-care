@@ -46,12 +46,12 @@
             </thead>
             <tbody>
             <tr ng-repeat="student in students   | filter:searchStudent |  orderBy:'fullName' | startFrom:currentPage*pageSize | limitTo:pageSize">
-              <td ng-click="showStudent(student)">{{student.fullName}}</td>
-              <td ng-click="showStudent(student)">{{student.program.name}}</td>
-              <td ng-click="showStudent(student)">{{student.group.name}}</td>
+              <td ng-click="showStudent(student, updateFields)">{{student.fullName}}</td>
+              <td ng-click="showStudent(student, updateFields)">{{student.program.name}}</td>
+              <td ng-click="showStudent(student, updateFields)">{{student.group.name}}</td>
               <td ng-show="activeFilter">
                 <div class="buttons">
-                  <button type="button" class="btn btn-primary btn-xs" ng-click="editStudent(student)">edit</button>
+                  <button type="button" class="btn btn-primary btn-xs" ng-click="editStudent(student, updateFields)">edit</button>
                   <button type="button" class="btn btn-danger btn-xs" ng-click="deleteStudentSwal(student)" ng-show="hasPrivilege('STUDENT_DELETE')">del</button>
                 </div>
               </td>

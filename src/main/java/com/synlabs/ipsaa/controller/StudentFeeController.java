@@ -7,6 +7,7 @@ import com.synlabs.ipsaa.service.DocumentService;
 import com.synlabs.ipsaa.service.StudentFeeService;
 import com.synlabs.ipsaa.service.StudentService;
 import com.synlabs.ipsaa.view.fee.*;
+import com.synlabs.ipsaa.view.student.PaymentHistoryResponce;
 import com.synlabs.ipsaa.view.student.StudentRequest;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,6 +165,15 @@ public class StudentFeeController
     StudentFeeRequestV2 request=new StudentFeeRequestV2();
     request.setId(slipId);
     return new StudentFeeSlipResponse(studentFeeService.generateFirstFeeSlip(request.getId()));
+  }
+
+  @GetMapping("payments/history/{id}")
+  @Secured(STUDENT_READ)
+  public PaymentHistoryResponce StudentPaymentHistory(@PathVariable Long id)
+  {
+    StudentRequest request = new StudentRequest();
+    request.setId(id);
+   return studentFeeService.getStudentPaymentHistory(request.getId());
   }
 
   @Secured(STUDENTFEE_SLIP_WRITE)

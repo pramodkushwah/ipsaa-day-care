@@ -136,9 +136,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
     $scope.bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'NA'];
 
-    $scope.showStudent = function (student) {
+    $scope.showStudent = function (student, callback) {
         $http.get('/api/student/' + student.id).then(function (response) {
-            $scope.workingStudent = "Show";
             $scope.workingStudent = response.data;
             $scope.workingStudent.mode = "Show";
             $scope.workingStudent.centerId = $scope.workingStudent.center.id + "";
@@ -151,7 +150,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             $scope.showstudent = true;
             $scope.editstudent = false;
             $scope.addstudent = false;
-
+            callback(); // function updateFields() to update fields in front-end coming from backend with different names 
             setupProfilePic($scope.workingStudent);
         });
     };
@@ -180,7 +179,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
     };
 
-    $scope.editStudent = function (student) {
+    $scope.editStudent = function (student, callback) {
         $http.get('/api/student/' + student.id).then(function (response) {
             $scope.workingStudent = response.data;
             $scope.workingStudent.mode = "Edit";
@@ -200,9 +199,18 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             $scope.showstudent = false;
             $scope.editstudent = true;
             $scope.addstudent = false;
-
+            callback();
             setupProfilePic($scope.workingStudent);
         });
+    };
+
+    $scope.updateFields = function() {
+      var fee = $scope.workingStudent.fee;
+      fee.admissionFee = fee.admissionCharges;
+      fee.deposit = fee.securityDeposit;
+      fee.finalBaseFee = (fee.finalBaseFee / 3);
+      StudentFeeService.calculateGstFee(fee, $scope.workingStudent);
+      delete fee;
     };
 
     $scope.addStudent = function () {
@@ -250,31 +258,33 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
         delete postStudent.mother;
 
         if (validateStudent(postStudent)) {
-            if (postStudent.admissionNumber) {
-                $http.put("/api/student/", postStudent).then(function (response) {
-                    $scope.addstudent = false;
-                    $scope.showstudent = false;
-                    $scope.editstudent = false;
-                    ok("Student updated!");
-                    $scope.disableSave = false;
-                    refresh();
-                }, function (response) {
-                    $scope.disableSave = false;
-                    error(response.data.error);
-                });
+          // to update existing student record on click of save button because admission no. already found
+          if (postStudent.admissionNumber) {
+              $http.put("/api/student/", postStudent).then(function (response) {
+                  $scope.addstudent = false;
+                  $scope.showstudent = false;
+                  $scope.editstudent = false;
+                  ok("Student updated!");
+                  $scope.disableSave = false;
+                  refresh();
+              }, function (response) {
+                  $scope.disableSave = false;
+                  error(response.data.error);
+              });
 
-            } else {
-                $http.post("/api/student/", postStudent).then(function () {
-                    $scope.addstudent = false;
-                    $scope.showstudent = false;
-                    $scope.editstudent = false;
-                    ok("Student saved!");
-                    $scope.disableSave = false;
-                    refresh();
-                }, function (response) {
-                    $scope.disableSave = false;
-                    error(response.data.error);
-                });
+          // to add new student because admission no. doesn't exist
+          } else {
+              $http.post("/api/student/", postStudent).then(function () {
+                  $scope.addstudent = false;
+                  $scope.showstudent = false;
+                  $scope.editstudent = false;
+                  ok("Student saved!");
+                  $scope.disableSave = false;
+                  refresh();
+              }, function (response) {
+                  $scope.disableSave = false;
+                  error(response.data.error);
+              });
             }
         } else {
             $scope.disableSave = false;
@@ -347,10 +357,10 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             return false;
         }
         if (!student.profile) {
-            error("Comment cannot be empty");
+            error("Comment of profile cannot be empty");
             return false;
         }
-        if (!student.fee.comment && (student.fee.discountAnnualCharges || student.fee.discountAdmissionCharges || student.fee.discountBaseFee || student.fee.discountSecurityDeposit)) {
+        if (student.fee && !student.fee.comment && (student.fee.discountAnnualCharges || student.fee.discountAdmissionCharges || student.fee.discountBaseFee || student.fee.discountSecurityDeposit)) {
             error("Comment is compulsory if you give any discount");
             return false;
         }
@@ -530,6 +540,10 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
         window.location.href = encodeURI('/api/student/download?token=Bearer ' + $localStorage.token + '&program=' + $scope.programFilter);
     };
 
+    $scope.centerChanged = function() {
+      $scope.workingStudent.programId = null;
+    }
+
     $scope.programChanged = function (centerId, programId) {
         loadProgramFee(centerId, programId);
     };
@@ -568,6 +582,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
                     $scope.workingStudent.feeMessage = null;
                     var programFee = response.data;
                     $scope.workingStudent.fee = $scope.workingStudent.fee ? $scope.workingStudent.fee : {};
+                    var student = $scope.workingStudent;
                     var studentFee = $scope.workingStudent.fee;
 
                     studentFee.annualFee = programFee.annualFee;
@@ -581,14 +596,15 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
                     studentFee.comment = '';
                     studentFee.feeDuration = 'Quarterly';
                     
-                    studentFee.discountAnnualCharges = 0
-                    studentFee.finalAnnualFee = programFee.annualFee
-                    studentFee.discountAdmissionCharges = 0
-                    studentFee.finalAdmissionCharges = programFee.admissionFee
-                    studentFee.discountBaseFee = 0
-                    studentFee.finalBaseFee = programFee.fee
-                    studentFee.discountSecurityDeposit = 0
-                    studentFee.finalSecurityDeposit = programFee.deposit 
+                    studentFee.discountAnnualCharges = 0;
+                    studentFee.finalAnnualFee = programFee.annualFee;
+                    studentFee.discountAdmissionCharges = 0;
+                    studentFee.finalAdmissionCharges = programFee.admissionFee;
+                    studentFee.discountBaseFee = 0;
+                    studentFee.finalBaseFee = programFee.fee;
+                    studentFee.discountSecurityDeposit = 0;
+                    studentFee.finalSecurityDeposit = programFee.deposit;
+                    StudentFeeService.calculateGstFee(studentFee, student);
                     StudentFeeService.calculateFinalFee(studentFee);
                 },
                 function (response) {
@@ -668,15 +684,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
   }
 
   $scope.formalClicked = function(student) {
-    student.fee = student.fee ? student.fee : {};
-    if (student.formalSchool){
-    //   student.fee.gstFee = (student.fee.finalAnnualFee + student.fee.finalBaseFee * 3) * 0.18;
-    student.fee.baseFeeGst = Number((((Number(student.fee.finalBaseFee) * 3)) * 0.18).toFixed(2));
-    student.fee.gstFee = Number(((Number(student.fee.finalAnnualFee)) * 0.18).toFixed(2));//annual-fee-gst
-    } else {
-        student.fee.gstFee = 0;
-        student.fee.baseFeeGst = 0;
-    }
+    student.fee.formalSchool = student.formalSchool;
+    StudentFeeService.calculateGstFee(student.fee, student);
     StudentFeeService.calculateFinalFee(student.fee);
   }
 
