@@ -14,4 +14,6 @@ public interface StudentFeeRepository extends JpaRepository<StudentFee, Long>
   StudentFee findByStudentId(Long id);
   List<StudentFee> findByStudentIn(List<Student> students);
   List<StudentFee> findByStudentCenterIdOrderByStudentProgramCode(Long centerId);
+
+
 }

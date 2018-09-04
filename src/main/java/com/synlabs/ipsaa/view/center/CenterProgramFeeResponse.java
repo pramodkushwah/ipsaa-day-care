@@ -16,6 +16,7 @@ public class CenterProgramFeeResponse implements Response
   private Integer fee;
   private Integer deposit;
   private Integer annualFee;
+  private Integer admissionFee;
 
   private BigDecimal cgst;
   private BigDecimal sgst;
@@ -28,6 +29,7 @@ public class CenterProgramFeeResponse implements Response
       return;
     }
     fee = centerProgramFee.getFee();
+    admissionFee=centerProgramFee.getAddmissionFee()==null?0:centerProgramFee.getAddmissionFee().intValue();
     deposit = centerProgramFee.getDeposit();
     annualFee = centerProgramFee.getAnnualFee();
     program = centerProgramFee.getProgram() != null ? new ProgramResponse(centerProgramFee.getProgram()) : null;
@@ -35,6 +37,14 @@ public class CenterProgramFeeResponse implements Response
     cgst = centerProgramFee.getCgst();
     sgst = centerProgramFee.getSgst();
     igst = centerProgramFee.getIgst();
+  }
+
+  public Integer getAdmissionFee() {
+    return admissionFee;
+  }
+
+  public void setAdmissionFee(Integer admissionFee) {
+    this.admissionFee = admissionFee;
   }
 
   public BigDecimal getIgst()

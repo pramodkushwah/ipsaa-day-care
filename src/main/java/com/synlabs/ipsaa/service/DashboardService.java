@@ -1,5 +1,26 @@
 package com.synlabs.ipsaa.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+
+import org.joda.time.LocalDate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
 import com.querydsl.jpa.impl.JPAQuery;
 import com.synlabs.ipsaa.entity.attendance.EmployeeAttendance;
 import com.synlabs.ipsaa.entity.attendance.QEmployeeAttendance;
@@ -16,8 +37,19 @@ import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.entity.staff.QEmployee;
 import com.synlabs.ipsaa.entity.staff.QEmployeeSalary;
-import com.synlabs.ipsaa.entity.student.*;
-import com.synlabs.ipsaa.enums.*;
+import com.synlabs.ipsaa.entity.student.QStudent;
+import com.synlabs.ipsaa.entity.student.QStudentFee;
+import com.synlabs.ipsaa.entity.student.QStudentFeePaymentRecord;
+import com.synlabs.ipsaa.entity.student.QStudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.QStudentParent;
+import com.synlabs.ipsaa.entity.student.Student;
+import com.synlabs.ipsaa.entity.student.StudentFee;
+import com.synlabs.ipsaa.entity.student.StudentParent;
+import com.synlabs.ipsaa.enums.ApprovalStatus;
+import com.synlabs.ipsaa.enums.AttendanceStatus;
+import com.synlabs.ipsaa.enums.CallDisposition;
+import com.synlabs.ipsaa.enums.FeeDuration;
+import com.synlabs.ipsaa.enums.PaymentStatus;
 import com.synlabs.ipsaa.jpa.InquiryEventLogRepository;
 import com.synlabs.ipsaa.jpa.InquiryRepository;
 import com.synlabs.ipsaa.view.common.DashboardRequest;
@@ -31,16 +63,6 @@ import com.synlabs.ipsaa.view.staff.StaffNewLeavings;
 import com.synlabs.ipsaa.view.student.DashStudentFeeResponse;
 import com.synlabs.ipsaa.view.student.DashStudentResponse;
 import com.synlabs.ipsaa.view.student.ParentSummaryResponse;
-import org.joda.time.LocalDate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
-import javax.persistence.EntityManager;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class DashboardService extends BaseService
@@ -614,6 +636,7 @@ public class DashboardService extends BaseService
         response.add(new DashStaffResponse(emp));
       }
     }
+
     return response;
   }
 
@@ -753,7 +776,8 @@ public class DashboardService extends BaseService
     }
     else
     {
-      List<Employee> employees=salaries.stream().map(salary1 -> salary1.getEmployee()).collect(Collectors.toList());  //salary1 to salary1.getEmployee
+      List<Employee> employees=salaries.stream().map(salary1 -> salary1.getEmployee()).collect(Collectors.toList());    //getEmployee->salary1.getEmployee
+
       response=employees.stream().map(DashStaffResponse::new).collect(Collectors.toList());
     }
     return response;
@@ -887,5 +911,20 @@ public class DashboardService extends BaseService
       }
     }
     return response;
+  }
+
+  public List<DashStudentResponse> allStudentList(DashboardRequest request)
+  {
+    List<Center> centers = getCenters(request);
+
+    JPAQuery<Student> query = new JPAQuery<>(entityManager);
+    QStudent student = QStudent.student;
+
+    query.select(student)
+            .from(student)
+            .where(student.active.isTrue())
+            .where(student.center.in(centers));
+
+    return  query.fetch().stream().map(DashStudentResponse::new).collect(Collectors.toList());
   }
 }

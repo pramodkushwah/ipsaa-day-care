@@ -11,11 +11,13 @@ import com.synlabs.ipsaa.entity.common.User;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.entity.staff.EmployeeLeave;
 import com.synlabs.ipsaa.entity.staff.QEmployee;
+import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.EmployeeRepository;
 import com.synlabs.ipsaa.jpa.UserRepository;
 import com.synlabs.ipsaa.util.LongObfuscator;
 import com.synlabs.ipsaa.view.common.Request;
+import com.synlabs.ipsaa.view.fee.StudentFeeRequest;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -333,4 +335,5 @@ abstract public class BaseService
   {
     return user.hasPrivilege("HR_ADMIN");
   }
+
 }

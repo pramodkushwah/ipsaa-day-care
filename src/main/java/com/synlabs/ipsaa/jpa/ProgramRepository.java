@@ -13,4 +13,5 @@ public interface ProgramRepository extends JpaRepository<Program, Long>
 
   //Avneet
   List<Program> findAll();
+  Program findByName(String name);
 }

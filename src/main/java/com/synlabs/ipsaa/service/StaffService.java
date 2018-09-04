@@ -22,6 +22,7 @@ import com.synlabs.ipsaa.view.batchimport.ImportEmployee;
 import com.synlabs.ipsaa.view.batchimport.ImportSalary;
 import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.report.excel.StaffExcelReport;
+import com.synlabs.ipsaa.view.report.excel.StaffReport;
 import com.synlabs.ipsaa.view.staff.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -183,10 +184,7 @@ public class StaffService extends BaseService
     }
       StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository, staffRequest.getEmployerCode());
       return excel.createExcel(); // returning file
-
-
   }
-
   @Transactional
   public Employee save(StaffRequest request) throws ParseException
   {

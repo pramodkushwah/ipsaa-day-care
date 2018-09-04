@@ -5,6 +5,9 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
 
     $scope.selectedYear = moment().year();
     $scope.showYear = true;
+    $scope.showFeeDetails = false;
+    $scope.selectedPeriod = 'Quarterly';
+    $scope.commentField = false;
     $scope.selected = {};
 
     $scope.years = [moment().year() - 1,moment().year()];
@@ -21,17 +24,40 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
         {value: 4, name: "FYQ3"}
     ];
 
+    
+
+    $scope.feeTypes = [
+      { type: 'Uniform Charges', final: 'uniformCharges', paid: 'uniformPaidAmountTotal' },
+      { type: 'Stationery Charges', final: 'stationary', paid: 'stationaryPaidAmountTotal' },
+      { type: 'Transport Fees', final: 'finalTransportFee', paid: 'transportPaidAmountTotal' },
+      { type: 'Annual Charges', final: 'finalAnnualCharges', paid: 'annualPaidAmountTotal' },
+      { type: 'Admission Charges', final: 'finalAdmissionFee', paid: 'addmissionPaidAmountTotal' },
+      { type: 'Base Fee', final: 'finalBaseFee', paid: 'programPaidAmountTotal' },
+      { type: 'Security Deposite Fee', final: 'finalDepositFee', paid: 'depositPaidAmountTotal'}
+      
+    ];
+
+  $scope.toggleHide = function() {
+    $scope.showFeeDetails = !$scope.showFeeDetails;
+  }
+
+
     $http.get('/api/center/').then(function (response) {
         $scope.centers = response.data;
     });
 
     $scope.showDetails = function (studentfee) {
+        console.log(studentfee);
         if (!studentfee) {
             $scope.showPanel = false;
             $scope.selected = {};
         } else {
             $scope.showPanel = true;
             $scope.selected = angular.copy(studentfee);
+            $scope.selected.paymentDate = moment(new Date()).format("YYYY-MM-DD");
+            setTimeout(() => {
+              $('[data-toggle="tooltip"]').tooltip();  
+            }, 1000);
         }
     };
 
@@ -42,22 +68,12 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
             return;
         }
 
-        if (!$scope.selectedPeriod) {
-            error("Select Period");
-            return;
-        }
-
-        if ($scope.selectedPeriod === 'Monthly' && !$scope.selectedMonth) {
-            error("Select Month");
-            return;
-        }
-
-        if ($scope.selectedPeriod === 'Quarterly' && !$scope.selectedQuarter) {
+        if (!$scope.selectedQuarter) {
             error("Select Quarter");
             return;
         }
 
-        if ($scope.selectedPeriod === 'Yearly' && !$scope.selectedYear) {
+        if (!$scope.selectedYear) {
             error("Select Year");
             return;
         }
@@ -67,8 +83,9 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
             period: $scope.selectedPeriod
         };
 
-        if($scope.selectedPeriod == 'Monthly') postobject.month = $scope.selectedMonth ? $scope.selectedMonth : 0;
-        else if($scope.selectedPeriod == 'Quarterly') postobject.quarter = $scope.selectedQuarter.value ? $scope.selectedQuarter.value: 0;
+        postobject.quarter = $scope.selectedQuarter.value 
+        ? $scope.selectedQuarter.value
+        : 0;
 
         postobject.year  = $scope.selectedYear;
 
@@ -134,6 +151,43 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
             );
         }
     };
+
+    $scope.showCommentField = function(reciept) {
+      var this_receipt = reciept;
+      if (reciept && reciept.id) {
+        swal({
+          title: 'Confirm',
+          type: 'warning',
+          input: 'textarea',
+          text: 'Please submit a comment to decline transaction',
+          showCancelButton: true,
+          inputValidator: value => {
+            return new Promise((resolve, reject) => {
+              if (value !== '') {
+                resolve();
+              } else {
+                reject('Comment Required');
+              }
+            });
+          }
+        }).then(function(text) {
+            if (text) {
+              $http
+                .put('/api/student/payfee', {
+                  id: this_receipt.id,
+                  confirmed: false,
+                  comments: text
+                })
+                .then(function(response) {
+                    $scope.getFeeSlips();
+                    ok('success');
+                  }, function(response) {
+                    error(response.data.error);
+                  });
+            }
+          }, function(cancel) {});
+      }
+    }
 
     function ok(message) {
         swal({

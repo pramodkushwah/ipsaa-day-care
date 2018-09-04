@@ -9,10 +9,10 @@ public class CenterFeeResponse implements Response
 {
   private CenterSummaryResponse center;
   private ProgramResponse       program;
-
   private int  fee;
   private int  deposit;
   private int  annualFee;
+  private int admissionFee;
   private Long id;
 
   private BigDecimal cgst;
@@ -26,14 +26,18 @@ public class CenterFeeResponse implements Response
   public CenterFeeResponse(CenterProgramFee fee)
   {
     this.id = mask(fee.getId());
+    this.admissionFee=fee.getAddmissionFee()==null?0:fee.getAddmissionFee().intValue();
     this.center = new CenterSummaryResponse(fee.getCenter());
     this.program = new ProgramResponse(fee.getProgram());
     this.fee = fee.getFee();
     this.annualFee = fee.getAnnualFee();
     this.deposit = fee.getDeposit();
-    this.cgst = fee.getCgst();
-    this.sgst = fee.getSgst();
-    this.igst = fee.getIgst();
+    //this.cgst = fee.getCgst();
+    //this.sgst = fee.getSgst();
+    //this.igst = fee.getIgst();
+  }
+  public int getAdmissionFee() {
+    return admissionFee;
   }
 
   public BigDecimal getIgst()
