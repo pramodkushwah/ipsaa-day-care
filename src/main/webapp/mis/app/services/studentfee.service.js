@@ -35,6 +35,7 @@ app.service('StudentFeeService', function ($http) {
   }
 
   service.calculateFinalFee = function (fee) {
+    fee.finalTransportFees = fee.transportFee ? fee.transportFee * 3 : 0;
     var final = 0;
     if (fee.finalAnnualFee > 0) {
       final += Number(fee.finalAnnualFee);
@@ -69,7 +70,7 @@ app.service('StudentFeeService', function ($http) {
       final += Number(fee.baseFeeGst);
     }
 
-    fee.finalFee = final;
+    fee.finalFee = Number(final.toFixed(2));
   }
 
   //needs baseFee and finalFee
@@ -87,6 +88,9 @@ app.service('StudentFeeService', function ($http) {
 
   //needs finalFee, cgst and sgst
   service.calculateGstFee = function (fee, student) {
+    fee.gstFee = 0;//annual-fee-gst
+    fee.baseFeeGst = 0;
+
     if(typeof student!='undefined' && student.formalSchool){
       fee.gstFee = Number(((Number(fee.finalAnnualFee)) * 0.18).toFixed(2));//annual-fee-gst
       fee.baseFeeGst = Number((((Number(fee.finalBaseFee) * 3)) * 0.18).toFixed(2));
@@ -96,8 +100,6 @@ app.service('StudentFeeService', function ($http) {
       fee.baseFeeGst = Number((((Number(fee.finalBaseFee) * 3)) * 0.18).toFixed(2));
 
     }
-    else
-      fee.gstFee = 0;//annual-fee-gst
   }
 
   return service;
