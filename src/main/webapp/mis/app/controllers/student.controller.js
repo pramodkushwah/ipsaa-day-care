@@ -136,7 +136,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
     $scope.bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'NA'];
 
-    $scope.showStudent = function (student, callback) {
+    $scope.showStudent = function (student, callback, corporateChanged) {
         $http.get('/api/student/' + student.id).then(function (response) {
             $scope.workingStudent = response.data;
             $scope.workingStudent.mode = "Show";
@@ -150,6 +150,11 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             $scope.showstudent = true;
             $scope.editstudent = false;
             $scope.addstudent = false;
+
+            // if corporate is checked or unchecked then update
+            if(typeof corporateChanged !== "undefined")
+              $scope.workingStudent.corporate = corporateChanged;
+            
             callback(); // function updateFields() to update fields in front-end coming from backend with different names 
             setupProfilePic($scope.workingStudent);
         });
@@ -179,7 +184,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
     };
 
-    $scope.editStudent = function (student, callback) {
+    $scope.editStudent = function (student, callback, corporateChanged) {
         $http.get('/api/student/' + student.id).then(function (response) {
             $scope.workingStudent = response.data;
             $scope.workingStudent.mode = "Edit";
@@ -199,12 +204,22 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             $scope.showstudent = false;
             $scope.editstudent = true;
             $scope.addstudent = false;
+
+            // if corporate is checked or unchecked then update
+            if(typeof corporateChanged !== "undefined")
+              $scope.workingStudent.corporate = corporateChanged;
+            
             callback();
             setupProfilePic($scope.workingStudent);
         });
     };
 
     $scope.updateFields = function() {
+      // if student is of corporate hide fee
+      if ($scope.workingStudent.corporate) {
+        delete $scope.workingStudent.fee;
+        return;
+      }
       var fee = $scope.workingStudent.fee;
       fee.admissionFee = fee.admissionCharges;
       fee.deposit = fee.securityDeposit;
@@ -549,15 +564,33 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     };
 
     $scope.corporateClicked = function (student) {
-        if (student) {
-            if (student.corporate) {
-                delete student.fee;
-            } else {
-                if (typeof student.centerId != 'undefined' && typeof student.programId != 'undefined') {
-                    loadProgramFee(student.centerId, student.programId);
-                }
+      if (student) {
+        if (student.corporate) {
+          showConfirmationSwal('your calculated fee will be removed!', function() {
+            delete student.fee;
+          },
+          // reset on cancel
+          function() {
+            $scope.workingStudent.corporate = !student.corporate;
+            $('#corporate')[0].checked = $scope.workingStudent.corporate;
+          });
+
+        } else {
+          // if student already exist then get it's fee
+          showConfirmationSwal('Your fee will be recalculated!', function() {
+            if (typeof student.centerId != 'undefined' && typeof student.programId != 'undefined') {
+              loadProgramFee(student.centerId, student.programId);
             }
+          },
+          // reset on cancel
+          function () {
+            $scope.workingStudent.corporate = !student.corporate;
+            $('#corporate')[0].checked = $scope.workingStudent.corporate;
+          });
+            
         }
+      }
+      $scope.workingStudent.corporate;
     };
 
     $scope.finalFeeChanged = function (fee) {
@@ -887,6 +920,25 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             buttonsStyling: false,
             confirmButtonClass: "btn btn-warning"
         });
+    }
+
+    function showConfirmationSwal(message, confirmCallback, cancelCallback) {
+      swal({
+        type: 'warning', 
+        title: 'Are you sure?',
+        text: message,
+        confirmButtonText: 'Confirm',
+        showCancelButton: true
+      }).then(
+        function() {
+          if(confirmCallback) 
+            confirmCallback();
+        },
+        function() {
+          if(cancelCallback)
+            cancelCallback();
+        }
+      );
     }
 
     refresh();
