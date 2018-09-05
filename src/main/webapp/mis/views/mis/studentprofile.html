@@ -674,7 +674,7 @@
                 <div class="form-group">
                   <label class="control-label">Final Annual Charges
                   </label>
-                  <input class="form-control" type="number" ng-model="workingStudent.fee.finalAnnualFee" required ng-readonly="workingStudent.fee.mode !== 'Add' || workingStudent.fee.annualFee <= 0"
+                  <input class="form-control" type="number" ng-model="workingStudent.fee.finalAnnualFee" required ng-readonly="workingStudent.mode !== 'New' || workingStudent.fee.annualFee <= 0"
                   ng-change="calculateDiscount('annualFee', 'finalAnnualFee', 'discountAnnualCharges')">
                 </div>
               </div>
@@ -696,7 +696,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Final Admission Charges</label>
-                  <input class="form-control" type="number" ng-model="workingStudent.fee.finalAdmissionCharges" required ng-readonly="workingStudent.fee.mode !=='Add' || workingStudent.fee.admissionFee <= 0"
+                  <input class="form-control" type="number" ng-model="workingStudent.fee.finalAdmissionCharges" required ng-readonly="workingStudent.mode !=='New' || workingStudent.fee.admissionFee <= 0"
                   ng-change="calculateDiscount('admissionFee', 'finalAdmissionCharges', 'discountAdmissionCharges')">
                 </div>
               </div>
@@ -718,7 +718,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Final Monthly Fees Amount</label>
-                  <input class="form-control" type="text" ng-model="workingStudent.fee.finalBaseFee" required ng-readonly="workingStudent.fee.mode !=='Add' || workingStudent.fee.baseFee <= 0"
+                  <input class="form-control" type="text" ng-model="workingStudent.fee.finalBaseFee" required ng-readonly="workingStudent.mode !=='New' || workingStudent.fee.baseFee <= 0"
                   ng-disabled="!workingStudent.fee.baseFee"
                   ng-change="calculateDiscount('baseFee', 'finalBaseFee', 'discountBaseFee')">
                 </div>
@@ -741,7 +741,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Final Security Deposit Fees</label>
-                  <input class="form-control" type="number" ng-model="workingStudent.fee.finalSecurityDeposit" required ng-readonly="workingStudent.fee.mode !=='Add' || workingStudent.fee.securityDeposit <= 0"
+                  <input class="form-control" type="number" ng-model="workingStudent.fee.finalSecurityDeposit" required ng-readonly="workingStudent.mode !=='New' || workingStudent.fee.securityDeposit <= 0"
                   ng-disabled="!workingStudent.fee.deposit"
                   ng-change="calculateDiscount('deposit', 'finalSecurityDeposit', 'discountSecurityDeposit')">
                 </div>
@@ -750,7 +750,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label" ng-readonly="true">Monthly Transport Fees</label>
-                  <input class="form-control" type="number" ng-model="workingStudent.fee.transportFee" ng-readonly="workingStudent.fee.mode!=='Add'"
+                  <input class="form-control" type="number" ng-model="workingStudent.fee.transportFee" ng-readonly="workingStudent.mode!=='New'"
                     ng-change="monthlyTransportFeesChanged(workingStudent.fee)">
                 </div>
               </div>
@@ -765,7 +765,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label" ng-readonly="true">Uniform Charges</label>
-                  <input class="form-control" type="number" ng-model="workingStudent.fee.uniformCharges" ng-readonly="workingStudent.fee.mode!=='Add'"
+                  <input class="form-control" type="number" ng-model="workingStudent.fee.uniformCharges" ng-readonly="workingStudent.mode!=='New'"
                     ng-change="monthlyUniformChargesChanged(workingStudent.fee)">
                 </div>
               </div>
@@ -773,7 +773,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label" ng-readonly="true">Stationery Charges</label>
-                  <input class="form-control" type="number" ng-model="workingStudent.fee.stationary" ng-readonly="workingStudent.fee.mode!=='Add'"
+                  <input class="form-control" type="number" ng-model="workingStudent.fee.stationary" ng-readonly="workingStudent.mode!=='New'"
                     ng-change="monthlyStationeryChargesChanged(workingStudent.fee)">
                 </div>
               </div>
@@ -784,7 +784,7 @@
               <div class="col-md-12">
                 <div class="form-group">
                   <label class="control-label">Comment*</label>
-                  <input class="form-control" type="text" ng-model="workingStudent.fee.comment" ng-readonly="workingStudent.fee.mode!=='Add'">
+                  <input class="form-control" type="text" ng-model="workingStudent.fee.comment" ng-readonly="workingStudent.mode!=='New'">
                 </div>
               </div>
             </div>
