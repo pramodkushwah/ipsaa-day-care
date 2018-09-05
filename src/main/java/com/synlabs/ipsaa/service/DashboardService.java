@@ -340,7 +340,7 @@ public class DashboardService extends BaseService
     int total = 0;
 
     // 3. add monthly fee for this month
-    if (feeDuration == null || feeDuration == FeeDuration.Monthly)
+    /*if (feeDuration == null || feeDuration == FeeDuration.Monthly)
     {
       JPAQuery<BigDecimal> monthlyquery = new JPAQuery<>(entityManager);
       monthlyquery.select(slip.totalFee.sum()).from(slip)
@@ -355,7 +355,7 @@ public class DashboardService extends BaseService
       BigDecimal monthly = monthlyquery.fetchFirst();
       total += monthly == null ? 0 : monthly.intValue();
       feeStatsResponse.setMonthly(monthly == null ? 0 : monthly.intValue());
-    }
+    }*/                 //don't call service from front end
 
     //if start of quarter
     // 2. add quarterly fee for quarter in quarter start
