@@ -191,13 +191,13 @@ public class StaffService extends BaseService
 
     List<EmployeeSalary> list=new ArrayList<>();
 
-    if (!StringUtils.isEmpty(staffRequest.getEmployerCode()) || staffRequest.getEmployerCode().equals("ALL")) {
+    if (StringUtils.isEmpty(staffRequest.getEmployerCode()) || staffRequest.getEmployerCode().equals("ALL")) {
       list = employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
+    }else{
+      list = employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeEmployerCode(staffRequest.getEmployerCode());
     }
       StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository, staffRequest.getEmployerCode());
       return excel.createExcel(); // returning file
-
-
   }
 
   @Transactional

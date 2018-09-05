@@ -96,11 +96,12 @@ public class EmployeeController
   @PutMapping("/payslip/")
   public EmployeePaySlipResponse update(@RequestBody EmployeePaySlipRequest request) throws IOException, DocumentException
   {
-//    try {
-//      paySlipService.uploadData();
-//    } catch (InvalidFormatException e) {
-//      e.printStackTrace();
-//    }
+     //to upload present days excel
+    try {
+      paySlipService.uploadData();
+    } catch (InvalidFormatException e) {
+      e.printStackTrace();
+    }
     return new EmployeePaySlipResponse(paySlipService.updatePaySlip(request));
 
   }

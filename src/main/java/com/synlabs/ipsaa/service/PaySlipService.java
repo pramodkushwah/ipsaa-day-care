@@ -395,7 +395,7 @@ public class PaySlipService extends BaseService {
 
 
 
-	public static final String SAMPLE_XLSX_FILE_PATH = "C:\\Users\\shubham\\Desktop\\ipsaa\\Final Attendance Sheet.xlsx";
+	public static final String SAMPLE_XLSX_FILE_PATH = "C:\\Users\\shubham\\Desktop\\ipsaa\\new attendance report2.xlsx";
 	@Transactional
 	public void uploadData()throws IOException, InvalidFormatException {
 		Workbook workbook = WorkbookFactory.create(new File(SAMPLE_XLSX_FILE_PATH));
@@ -412,12 +412,17 @@ public class PaySlipService extends BaseService {
 
 						EmployeePaySlipRequest req=new EmployeePaySlipRequest();
 
-						req.setPresents(new BigDecimal(row.getCell(6).getNumericCellValue()));
+						try{
+							req.setPresents(new BigDecimal(row.getCell(5).getNumericCellValue()));
+							req.setOtherAllowances(new BigDecimal(row.getCell(6).getNumericCellValue()));
+							req.setOtherDeductions(new BigDecimal(row.getCell(7).getNumericCellValue()));
+							req.setComment(row.getCell(8).getStringCellValue());
 
-						req.setOtherDeductions(slip.getOtherDeductions());
-						req.setOtherAllowances(slip.getOtherAllowances());
+							req.setId(mask(slip.getId()));
 
-						req.setId(mask(slip.getId()));
+						}catch (Exception e){
+							e.printStackTrace();
+						}
 
 						try {
 							System.out.println(updatePaySlip(req).getEmployee().getEid());

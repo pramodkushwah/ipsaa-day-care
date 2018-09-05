@@ -207,8 +207,9 @@ public class SalaryUtilsV2 {
 		} else {
 			newRatio = paySlip.getPresents().divide(paySlip.getTotalDays());
 		}
-
+		// fix dived by zero issu
 		paySlip.setCtc(paySlip.getCtc().divide(oldRatio, 6, RoundingMode.CEILING).multiply(newRatio));
+
 		paySlip.setBasic(calculateBasic(paySlip.getCtc()));
 		paySlip.setHra(calculateHra(paySlip.getBasic()));
 		paySlip.setConveyance(CONVEYANCE.multiply(newRatio));
