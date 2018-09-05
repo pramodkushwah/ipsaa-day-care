@@ -4,15 +4,22 @@ import static com.synlabs.ipsaa.util.BigDecimalUtils.HALF;
 import static com.synlabs.ipsaa.util.BigDecimalUtils.ONE;
 import static com.synlabs.ipsaa.util.BigDecimalUtils.ZERO;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.synlabs.ipsaa.enums.CallDisposition;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.*;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -79,16 +86,14 @@ public class PaySlipService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PaySlipService.class);
 
-	public List<EmployeePaySlip> listPayslips(Integer month, Integer year, Long employerId) throws ParseException {
+	public List<EmployeePaySlip> listPayslips(Integer month, Integer year, String employerId) throws ParseException {
 		if (year == null) {
 			throw new ValidationException("Year is required.");
 		}
 		if (month == null) {
 			throw new ValidationException("Month is required.");
 		}
-
 		// Avneet
-		int i = 1;
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.MONTH, month - 1);
 		calendar.set(Calendar.YEAR, year);
@@ -96,21 +101,25 @@ public class PaySlipService extends BaseService {
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
 		String date = format.format(generationDate);
-		LegalEntity legalEntity = legalEntityRepository.findOne(unmask(employerId));
-		if (legalEntity == null) {
-			throw new ValidationException(String.format("Cannot locate Employer[id = %s]", mask(employerId)));
+		List<Employee> employees;
+		LegalEntity legalEntity=null;
+		if(employerId.equals("ALL")){
+			employees = employeeRepository.findByActiveIsTrue();
+		}else{
+			legalEntity = legalEntityRepository.findOne(unmask(Long.parseLong(employerId)));
+			if (legalEntity == null) {
+				throw new ValidationException(String.format("Cannot locate Employer[id = %s]", mask(Long.parseLong(employerId))));
+			}
+			employees = employeeRepository.findByActiveIsTrueAndEmployerId(legalEntity.getId());
 		}
-
-		List<Employee> employees = employeeRepository.findByActiveIsTrueAndEmployerId(legalEntity.getId());
-
 		for (Employee emp : employees) {
 			String doj = format.format(emp.getProfile().getDoj());
-			String dol = "";
+			String dol = null;
 			if (emp.getProfile().getDol() != null) {
 				dol = format.format(emp.getProfile().getDol());
 			}
 
-			if ((date.compareTo(doj) >= 0 && (dol.compareTo(date) >= 0))) { // only this check is added
+			if ((date.compareTo(doj) >= 0 && (dol==null || dol.compareTo(date) >= 0 ))) { // only this check is added
 				EmployeePaySlip employeePaySlip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(emp, month,
 						year);
 				if (employeePaySlip == null) {
@@ -127,7 +136,15 @@ public class PaySlipService extends BaseService {
 			}
 		}
 
-		return employeePaySlipRepository.findByEmployerIdAndMonthAndYear(legalEntity.getId(), month, year);
+		if(employerId.equals("ALL"))
+			return employeePaySlipRepository.findByMonthAndYear(month, year);
+		else {
+			if (legalEntity != null)
+				return employeePaySlipRepository.findByEmployerIdAndMonthAndYear(legalEntity.getId(), month, year);
+			else {
+				return null;
+			}
+		}
 	}
 
 	private EmployeePaySlip generateNewPayslip(Employee employee, EmployeeSalary salary, int year, int month)
@@ -279,7 +296,8 @@ public class PaySlipService extends BaseService {
 			throw new ValidationException(String.format("Cannot Locate PaySlip[id = %s]", mask(request.getId())));
 		}
 
-		paySlip.setComment(request.getComment());
+		if(request.getComment()!=null)
+			paySlip.setComment(request.getComment());
 		if (request.getOtherAllowances() == null)
 			request.setOtherAllowances(ZERO);
 		if (request.getOtherDeductions() == null)
@@ -374,5 +392,46 @@ public class PaySlipService extends BaseService {
 //			reGeneratePaySlip(paySlipRequest);
 //		}
 //	}
+
+
+
+	public static final String SAMPLE_XLSX_FILE_PATH = "C:\\Users\\shubham\\Desktop\\ipsaa\\Final Attendance Sheet.xlsx";
+	@Transactional
+	public void uploadData()throws IOException, InvalidFormatException {
+		Workbook workbook = WorkbookFactory.create(new File(SAMPLE_XLSX_FILE_PATH));
+		Sheet sheet = workbook.getSheetAt(0);
+		for (int i=0;i<=sheet.getPhysicalNumberOfRows();i++) {
+			if(i==0) continue;
+
+			Row row=sheet.getRow(i);
+			if(row!=null){
+				if(row.getCell(1)!=null){
+					String eid=row.getCell(1).getStringCellValue();
+					EmployeePaySlip slip=employeePaySlipRepository.findByEmployeeEidAndMonthAndYear(eid,8,2018);
+					if(slip!=null && row.getCell(6)!=null){
+
+						EmployeePaySlipRequest req=new EmployeePaySlipRequest();
+
+						req.setPresents(new BigDecimal(row.getCell(6).getNumericCellValue()));
+
+						req.setOtherDeductions(slip.getOtherDeductions());
+						req.setOtherAllowances(slip.getOtherAllowances());
+
+						req.setId(mask(slip.getId()));
+
+						try {
+							System.out.println(updatePaySlip(req).getEmployee().getEid());
+						} catch (DocumentException e) {
+							e.printStackTrace();
+						}
+					}else{
+
+					}
+
+				}
+			}
+		}
+		workbook.close();
+	}
 
 }

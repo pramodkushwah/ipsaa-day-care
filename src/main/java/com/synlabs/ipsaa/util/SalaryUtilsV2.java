@@ -200,9 +200,9 @@ public class SalaryUtilsV2 {
 	public static EmployeePaySlip updateAndCalculateCTC(EmployeePaySlip paySlip, EmployeePaySlipRequest request) {
 
 		BigDecimal newRatio = ZERO;
-		BigDecimal oldRatio = paySlip.getPresents().divide(paySlip.getTotalDays());
+		BigDecimal oldRatio = paySlip.getPresents().divide(paySlip.getTotalDays(),6, RoundingMode.HALF_UP);
 		if (request.getPresents() != null) {
-			newRatio = request.getPresents().divide(paySlip.getTotalDays());
+			newRatio = request.getPresents().divide(paySlip.getTotalDays(),6, RoundingMode.HALF_UP);
 			paySlip.setPresents(request.getPresents());
 		} else {
 			newRatio = paySlip.getPresents().divide(paySlip.getTotalDays());
