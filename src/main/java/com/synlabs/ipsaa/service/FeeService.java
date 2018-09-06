@@ -283,7 +283,9 @@ public class FeeService extends BaseService
     {
       throw new ValidationException("Missing program");
     }
-
+    if(request.getAdmissionFee()==null){
+     request.setAdmissionFee(0);
+    }
     if (request.getDeposit() == null)
     {
       request.setDeposit(0);
@@ -543,6 +545,8 @@ public class FeeService extends BaseService
 
 
   //----------------------------shubham ---------------------------------------------------------------------------//
+
+
 
   // shubham for feeReport with extraout hours
   public File FeeReport2(FeeReportRequest slipRequest) throws IOException

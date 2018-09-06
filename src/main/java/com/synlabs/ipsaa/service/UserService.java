@@ -285,7 +285,6 @@ public class UserService extends BaseService implements UserDetailsService
       menu = menuBuilder.buildForUser(user);
       menuCache.put(user.getEmail(), menu);
     }
-
     return menu;
   }
 

@@ -21,6 +21,9 @@ public class StaffSummaryPageResponse extends PageResponse
     this.stafflist = staffSummaries;
   }
 
+  public StaffSummaryPageResponse(List<Employee> employee){
+  stafflist=employee.stream().map(StaffSummaryResponse::new).collect(Collectors.toList());
+  }
   public StaffSummaryPageResponse(Page<Employee> page)
   {
     super(page);

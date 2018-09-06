@@ -17,10 +17,12 @@ import com.synlabs.ipsaa.ex.UploadException;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.store.FileStore;
+import com.synlabs.ipsaa.util.StringUtil;
 import com.synlabs.ipsaa.view.batchimport.ImportEmployee;
 import com.synlabs.ipsaa.view.batchimport.ImportSalary;
 import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.report.excel.StaffExcelReport;
+import com.synlabs.ipsaa.view.report.excel.StaffReport;
 import com.synlabs.ipsaa.view.staff.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -103,6 +105,17 @@ public class StaffService extends BaseService
     List<Center> usercenters = getUserCenters();
     return employeeRepository.findByCostCenterIn(usercenters);
   }
+  public List<Employee> listV2()
+  {
+    List<Employee> list=new ArrayList<>();
+    List<Center> usercenters = getUserCenters();
+    List<Employee> staff= employeeRepository.findByCostCenterIn(usercenters);
+    for(Employee e:staff){
+      if(employeeSalaryRepository.findByEmployee(e)==null)
+        list.add(e);
+    }
+    return list;
+  }
 
   public StaffSummaryPageResponse list(StaffFilterRequest request)
   {
@@ -174,13 +187,15 @@ public class StaffService extends BaseService
   }
 // shubham
   public File getEmployeeSalary(StaffFilterRequest staffRequest){
-    List<EmployeeSalary> list;
 
-    list= employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
-    StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository,staffRequest.getEmployerCode());
-    return excel.createExcel(); // returning file
+    List<EmployeeSalary> list=new ArrayList<>();
+
+    if (!StringUtils.isEmpty(staffRequest.getEmployerCode()) || staffRequest.getEmployerCode().equals("ALL")) {
+      list = employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
+    }
+      StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository, staffRequest.getEmployerCode());
+      return excel.createExcel(); // returning file
   }
-
   @Transactional
   public Employee save(StaffRequest request) throws ParseException
   {

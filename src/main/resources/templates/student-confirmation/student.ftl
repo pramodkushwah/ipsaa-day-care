@@ -135,8 +135,8 @@
                     <tr>
                         <th>Occupation/Designation<span class="right"> : </span></th>
                         <td>
-                            
-                            ${father.occupation}</td>
+                            <#if father.occupation??>${father.occupation}</#if>
+                            </td>
                     </tr>
                     <tr>
                         <th>Designation<span class="right"> : </span></th>
@@ -209,8 +209,10 @@
                     <tr>
                         <th>Occupation/Designation<span class="right"> : </span></th>
                         <td>
-                            
-                            ${mother.occupation}</td>
+                            <#if mother.occupation??>
+                             ${mother.occupation}
+                            </#if>
+                         </td>
                     </tr>
                     <tr>
                         <th>Designation<span class="right"> : </span></th>
