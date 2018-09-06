@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
+import com.synlabs.ipsaa.enums.CenterType;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -380,5 +381,76 @@ public class StudentAttendanceService extends BaseService {
 
 		}
 		return finalStudentAttendance;
+	}
+
+
+
+	//////////////////Avneet
+	public void clockIn(StudentAttendanceRequest request) {
+
+		Student student = studentRepository.findByIdAndCenterIn(request.getStudentId(), userService.getUserCenters());
+
+		if (student == null) {
+			throw new NotFoundException("Cannot locate student");
+		}
+
+
+		StudentAttendance attendance=null;
+		List<StudentAttendance> attendanceList=new ArrayList<>();
+
+		List<Student> studentList=new ArrayList<>();
+
+		//if(student.getCenter().getCenterType() == CenterType.valueOf("Corporate"))
+		if(student.getCenter().getCode() == "BRGS"){					//replace the check with centertype
+			if(attendanceRepository.countByStudentAndAttendanceDate(student, LocalDate.now().toDate()) > 0){
+				attendance=attendanceRepository.findByStudentAndAttendanceDate(student,LocalDate.now().toDate());
+				attendanceRepository.delete(attendance);
+			}
+			else {
+				studentList = studentRepository.findByActiveTrueAndCenterAndIdNot(student.getCenter(), student.getId());
+				studentList.stream().forEach(student1 -> {
+					if(student1.getName() == student.getName()){
+					boolean yes=true;
+					}else{
+						System.out.println("not in here");
+					}
+				});
+				studentList.stream().forEach(s -> {
+
+					StudentAttendance attendance1 = new StudentAttendance();
+					attendance1.setCenter(s.getCenter());
+					attendance1.setCheckin(s.getExpectedIn());///set to actual in and out
+					attendance1.setCheckout(s.getExpectedOut());
+					attendance1.setStatus(AttendanceStatus.Present);
+					attendance1.setStudent(s);
+					attendance1.setAttendanceDate(DateTime.now().toDate());
+					//attendanceRepository.saveAndFlush(attendance1);   //no extra hours to be counted
+
+				});
+			}
+
+		}
+		else{
+			if (attendanceRepository.countByStudentAndAttendanceDate(student, LocalDate.now().toDate()) > 0) {
+				throw new ValidationException("Student is already marked present");
+			}
+
+			attendance = new StudentAttendance();
+			attendance.setCenter(student.getCenter());
+			attendance.setCheckin(DateTime.now().toDate());
+			attendance.setStatus(AttendanceStatus.Present);
+			attendance.setStudent(student);
+			attendance.setAttendanceDate(DateTime.now().toDate());
+
+		}
+
+
+
+
+		// shubham
+		int extra = countExtra(student, attendance, true);
+		attendance.setExtraHours(extra);
+		attendanceRepository.saveAndFlush(attendance);
+		eventBus.post(attendance);
 	}
 }

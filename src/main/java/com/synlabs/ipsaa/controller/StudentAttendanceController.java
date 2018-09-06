@@ -31,7 +31,7 @@ public class StudentAttendanceController
   @Secured(STUDENT_CLOCKINOUT)
   @PostMapping("clockin")
   public void clockin(@RequestBody StudentAttendanceRequest request) {
-    attendanceService.clockin(request);
+    attendanceService.clockIn(request);
   }
 
   @Secured(STUDENT_CLOCKINOUT)
