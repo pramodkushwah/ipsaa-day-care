@@ -1,0 +1,25 @@
+{
+  "label": "Pay Roll",
+  "icon": "attach_money",
+  "seq": 200,
+  "submenu": [
+    {
+      "label": "Manage Salary",
+      "state": "payroll/salarymanagement",
+      "p": "SALARY_READ",
+      "seq": 100
+    },
+    {
+      "label": "Staff Leaves",
+      "state": "payroll/staffleaves",
+      "p": "STAFF_CLOCKINOUT",
+      "seq": 200
+    },
+    {
+      "label": "Generate Monthly Salary",
+      "state": "payroll/monthlysalary",
+      "p": "PAYSLIP_READ",
+      "seq": 300
+    }
+  ]
+}

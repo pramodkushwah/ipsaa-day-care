@@ -37,7 +37,7 @@ public class UserMenuBuilder
 
       Resource[] resources
           = ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
-                                .getResources("classpath*:/menus/*.json");          ////////////Cahnge it for angular1
+                                .getResources("classpath*:/menu/*.json");
 
       for (Resource resource : resources) {
         logger.info("Loaded menu from {}", resource.getFilename());
@@ -49,6 +49,23 @@ public class UserMenuBuilder
           submannuMap.put(submenu.getLabel(), submenu);
         }
       }
+
+
+     /* Resource[] resourcess
+              = ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
+              .getResources("classpath*:/menus/*.json");
+
+      for (Resource resource : resourcess) {
+        logger.info("Loaded menu from {}", resource.getFilename());
+        MenuItem item = jsonMapper.readValue(resource.getFile(), MenuItem.class);
+        mannuMap.put(item.getLabel(), item);
+
+        for (MenuItem submenu : item.getSubmenu()) {
+          submenu.setParent(item.getLabel());
+          submannuMap.put(submenu.getLabel(), submenu);
+        }
+      }*/
+
 
     } catch (IOException e) {
       logger.error("Cannot load menu from disk!", e);
