@@ -1,10 +1,13 @@
 package com.synlabs.ipsaa.jpa;
 
 import com.synlabs.ipsaa.entity.center.Center;
+import com.synlabs.ipsaa.entity.common.LegalEntity;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.enums.EmployeeType;
+import org.hibernate.annotations.Parameter;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.Repository;
 
@@ -22,6 +25,12 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, Repos
   List<Employee> findByEmployeeTypeAndActiveIsTrue(EmployeeType employeeType);
 
   List<Employee> findByActiveIsTrueAndEmployerId(Long employerId);
+
+  @Query("SELECT e from Employee e  WHERE e.active=true or ( e.active =false and month(e.profile.dol)=?1 and year(e.profile.dol)=?2))")
+  List<Employee> findEmployeeByDolInMonthAndYear(int dol_month,int dol_year);
+
+  @Query("SELECT e from Employee e  WHERE e.employer=?3 and e.active=true or ( e.active =false and month(e.profile.dol)=?1 and year(e.profile.dol)=?2))")
+  List<Employee> findEmployeeByDolInMonthAndYearAndEmployer(int dol_month,int dol_year,LegalEntity employer);
 
   Employee findByIdAndCostCenterIn(Long employeeId, List<Center> centers);
 

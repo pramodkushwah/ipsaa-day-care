@@ -104,13 +104,13 @@ public class PaySlipService extends BaseService {
 		List<Employee> employees;
 		LegalEntity legalEntity=null;
 		if(employerId.equals("ALL")){
-			employees = employeeRepository.findByActiveIsTrue();
+			employees = employeeRepository.findEmployeeByDolInMonthAndYear(year,month);
 		}else{
 			legalEntity = legalEntityRepository.findOne(unmask(Long.parseLong(employerId)));
 			if (legalEntity == null) {
 				throw new ValidationException(String.format("Cannot locate Employer[id = %s]", mask(Long.parseLong(employerId))));
 			}
-			employees = employeeRepository.findByActiveIsTrueAndEmployerId(legalEntity.getId());
+			employees = employeeRepository.findEmployeeByDolInMonthAndYearAndEmployer(2018,8,legalEntity);
 		}
 		for (Employee emp : employees) {
 			String doj = format.format(emp.getProfile().getDoj());
@@ -130,9 +130,7 @@ public class PaySlipService extends BaseService {
 						}
 						generateNewPayslip(emp, employeeSalary, year, month);
 					}
-
 				}
-
 			}
 		}
 
