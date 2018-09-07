@@ -24,7 +24,11 @@ public class DashStaffResponse implements Response
   private Date expectedIn;
   private Date expectedOut;
 
+  //////////Avneet- id ssets in all 3 constructors.
+  private Long id;
+
   public DashStaffResponse(EmployeeSalary employeeSalary){
+    id=mask(employeeSalary.getEmployee().getId());
     ctc=employeeSalary.getCtc();
     eid=employeeSalary.getEmployee().getEid();
     name=employeeSalary.getEmployee().getName();
@@ -36,8 +40,10 @@ public class DashStaffResponse implements Response
     employer=employeeSalary.getEmployee().getEmployer().getName();
     netSalary=employeeSalary.getNetSalary();
   }
+
   
   public DashStaffResponse(EmployeeSalary employeeSalary,EmployeeAttendance employeeAttandence,Employee emp){
+    id=mask(emp.getId());
     eid=employeeSalary.getEmployee().getEid();
     name=employeeSalary.getEmployee().getName();
     designation= employeeSalary.getEmployee().getDesignation();
@@ -55,6 +61,7 @@ public class DashStaffResponse implements Response
 
   public DashStaffResponse(Employee emp)
   {
+    id=mask(emp.getId());
     eid=emp.getEid();
     name=emp.getName();
     designation= emp.getDesignation();
@@ -62,6 +69,14 @@ public class DashStaffResponse implements Response
     email=emp.getEmail();
     expectedIn  = emp.getExpectedIn();
     expectedOut = emp.getExpectedOut();
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getName()
