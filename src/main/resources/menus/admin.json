@@ -29,13 +29,13 @@
     },
     {
       "label": "Manage Users",
-      "state": "admin/usermanagement",
+      "state": "admin/user",
       "p": "USER_WRITE",
       "seq": 700
     },
     {
       "label": "Manage Roles",
-      "state": "admin/rolemanagement",
+      "state": "admin/role",
       "p": "ROLE_WRITE",
       "seq": 800
     },

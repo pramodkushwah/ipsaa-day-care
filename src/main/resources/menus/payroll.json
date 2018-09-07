@@ -5,7 +5,7 @@
   "submenu": [
     {
       "label": "Manage Salary",
-      "state": "payroll/salarymanagement",
+      "state": "payroll/salary",
       "p": "SALARY_READ",
       "seq": 100
     },
@@ -17,7 +17,7 @@
     },
     {
       "label": "Generate Monthly Salary",
-      "state": "payroll/monthlysalary",
+      "state": "payroll/generate-monthly-salary",
       "p": "PAYSLIP_READ",
       "seq": 300
     }

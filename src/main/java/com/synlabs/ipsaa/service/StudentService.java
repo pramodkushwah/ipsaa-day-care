@@ -362,6 +362,7 @@ public class StudentService extends BaseService {
 
 		Student student;
 		try {
+			request.setActive(true);
 			student = request.toEntity();
 		} catch (ParseException e) {
 			throw new ValidationException("Invalid date");

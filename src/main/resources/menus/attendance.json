@@ -5,19 +5,19 @@
   "submenu": [
     {
       "label": "Student Attendance",
-      "state": "attendance/studentattendance",
+      "state": "attendance/student-attendance",
       "p" : "STUDENT_CLOCKINOUT",
       "seq" : 100
     },
     {
       "label": "Staff Attendance",
-      "state": "attendance/staffattendance",
+      "state": "attendance/staff-attendance",
       "p" : "STAFF_CLOCKINOUT",
       "seq" : 200
     },
     {
       "label": "Staff Attendance Logs",
-      "state": "attendance/staffattendancelog",
+      "state": "attendance/staff-attendance-log",
       "p" : "SELF_ATTENDANCE_READ",
       "seq" : 200
     }
