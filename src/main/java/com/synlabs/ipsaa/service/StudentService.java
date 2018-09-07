@@ -272,7 +272,7 @@ public class StudentService extends BaseService {
 		if (request.getCenterId() != null) {
 			fees = query.where(fee.student.center.id.eq(request.getCenterId())).fetch();
 			// to ajust chnages
-			ajustChnages();
+//			ajustChnages();
 			return fees;
 		}
 		fees = query.where(fee.student.center.in(getUserCenters())).fetch();
