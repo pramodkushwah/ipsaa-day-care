@@ -362,6 +362,7 @@ public class StudentService extends BaseService {
 
 		Student student;
 		try {
+			request.setActive(true);
 			student = request.toEntity();
 		} catch (ParseException e) {
 			throw new ValidationException("Invalid date");
@@ -471,7 +472,9 @@ public class StudentService extends BaseService {
 		dbStudent.setProgram(program);
 		dbStudent.setCenter(center);
 
-		if(feeChange || isFormalChange){
+		boolean isCorporateChange=(dbStudent.isCorporate() ^ request.isCorporate());
+
+		if((feeChange || isFormalChange) && isCorporateChange ){
 			request.getFee().setStudentId(mask(dbStudent.getId()));
 			studentFeeService.updateStudentFee(request.getFee());
 		}
