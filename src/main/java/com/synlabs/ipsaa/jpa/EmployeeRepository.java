@@ -26,12 +26,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, Repos
 
   List<Employee> findByActiveIsTrueAndEmployerId(Long employerId);
 
-  @Query("SELECT e from Employee e  WHERE e.active=true or ( e.active =false and month(e.profile.dol)=?1 and year(e.profile.dol)=?2))")
-  List<Employee> findEmployeeByDolInMonthAndYear(int dol_month,int dol_year);
-
-  @Query("SELECT e from Employee e  WHERE e.employer=?3 and e.active=true or ( e.active =false and month(e.profile.dol)=?1 and year(e.profile.dol)=?2))")
-  List<Employee> findEmployeeByDolInMonthAndYearAndEmployer(int dol_month,int dol_year,LegalEntity employer);
-
   Employee findByIdAndCostCenterIn(Long employeeId, List<Center> centers);
 
   Employee findByEidAndCostCenter(String eid, Center center);

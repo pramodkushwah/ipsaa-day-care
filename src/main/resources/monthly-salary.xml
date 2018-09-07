@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<workbook>
+  <worksheet name="Sheet1">
+    <section startRow="0" endRow="0">
+    </section>
+    <loop startRow="1" endRow="1" items="monthlysalaries" var="monthlysalary" varType="com.synlabs.ipsaa.view.batchimport.ImportMonthlySalary">
+      <section startRow="4" endRow="4">
+        <mapping row="4" col="1">monthlysalary.eid</mapping>
+        <mapping row="4" col="2">monthlysalary.presentDay</mapping>
+        <mapping row="4" col="3">monthlysalary.otherAllowance</mapping>
+        <mapping row="4" col="4">monthlysalary.otherDeduction</mapping>
+        <mapping row="4" col="5">monthlysalary.tds</mapping>
+        <mapping row="4" col="6">monthlysalary.comments</mapping>
+      </section>
+      <loopbreakcondition>
+        <rowcheck offset="0">
+          <cellcheck offset="0"></cellcheck>
+        </rowcheck>
+      </loopbreakcondition>
+    </loop>
+  </worksheet>
+</workbook>
