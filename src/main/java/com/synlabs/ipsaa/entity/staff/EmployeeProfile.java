@@ -64,6 +64,19 @@ public class EmployeeProfile extends BaseEntity
   private String branchName;
   private String holderName;
   //
+
+  /////Avneet
+  private String fatherName;
+  private String husbandName;
+
+  public String getFatherName() { return fatherName; }
+
+  public void setFatherName(String fatherName) { this.fatherName = fatherName; }
+
+  public String getHusbandName() { return husbandName; }
+
+  public void setHusbandName(String husbandName) { this.husbandName = husbandName; }
+
   public String getBan()
   {
     return ban;
