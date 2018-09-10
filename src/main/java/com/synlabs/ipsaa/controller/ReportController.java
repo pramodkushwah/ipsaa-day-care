@@ -229,5 +229,26 @@ public class ReportController {
 			throw new IOException("Could not delete temporary file after processing: " + file);
 		}
 	}
+	@PostMapping("staff/excel")
+	@Secured(COLLECTION_FEE_REPORT)
+	public void staffExcel(HttpServletResponse response, @RequestBody StaffFilterRequest staffRequest)
+			throws IOException {
+		// modifiy by shubham
+		File file = staffService.getEmployee(staffRequest);
+
+		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
+				staffRequest.getEmployerCode(), staffRequest.getMonth(), staffRequest.getYear()));
+		response.setHeader("fileName", String.format("%s_Month_%s_Year_%s.xlsx", staffRequest.getEmployerCode(),
+				staffRequest.getMonth(), staffRequest.getYear()));
+		OutputStream out = response.getOutputStream();
+		FileInputStream in = new FileInputStream(file);
+		// copy from in to out
+		IOUtils.copy(in, out);
+		out.flush();
+		in.close();
+		if (!file.delete()) {
+			throw new IOException("Could not delete temporary file after processing: " + file);
+		}
+	}
 
 }

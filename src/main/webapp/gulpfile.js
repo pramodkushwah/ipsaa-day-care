@@ -112,6 +112,7 @@ const misAppScripts = [
     'mis/app/controllers/report/inquiryreport.controller.js',
     'mis/app/controllers/report/collectionfeereport.controller.js',
     'mis/app/controllers/report/staffsalarymonthlyreport.controller.js',
+    'mis/app/controllers/report/staffreport.controller.js',
     'mis/app/controllers/staffattendancelogs.controller.js',
     'mis/app/controllers/staffleaves.controller.js',
     'mis/app/controllers/gallery/gallery.controller.js'

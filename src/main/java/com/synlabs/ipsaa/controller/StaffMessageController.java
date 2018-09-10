@@ -28,7 +28,8 @@ public class StaffMessageController
       , @RequestParam(value = "ids", required = false) Long[] ids
       , @RequestParam(value = "files", required = false) List<MultipartFile> attachments
       , @RequestParam(value = "images", required = false) List<MultipartFile> images
-      , @RequestParam(value = "cids", required = false) List<String> cids) throws IOException
+      , @RequestParam(value = "cids", required = false) List<String> cids
+      , @RequestParam(value = "cc", required = false) List<String> cc) throws IOException
   {
     EmailRequest request = new EmailRequest();
     request.setSubject(subject);
@@ -37,6 +38,7 @@ public class StaffMessageController
     request.setIds(ids);
     request.setCids(cids);
     request.setImages(images);
+    request.setCc(cc);
     communicationService.sendStaffEmail(request);
   }
 

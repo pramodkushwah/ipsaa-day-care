@@ -8,6 +8,7 @@ import com.synlabs.ipsaa.service.PaySlipService;
 import com.synlabs.ipsaa.view.staff.*;
 import com.synlabs.ipsaa.view.student.EmployeeSalaryRequest;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +63,7 @@ public class EmployeeController
 
   @Secured(SALARY_READ)
   @PostMapping("payslip")
-  public List<EmployeePaySlipResponse> list(@RequestParam Integer month, @RequestParam Integer year, @RequestParam Long employerId) throws ParseException
+  public List<EmployeePaySlipResponse> list(@RequestParam Integer month, @RequestParam Integer year, @RequestParam String employerId) throws ParseException
   {
     return paySlipService.listPayslips(month, year, employerId).stream().map(EmployeePaySlipResponse::new).collect(Collectors.toList());
   }
@@ -95,7 +96,14 @@ public class EmployeeController
   @PutMapping("/payslip/")
   public EmployeePaySlipResponse update(@RequestBody EmployeePaySlipRequest request) throws IOException, DocumentException
   {
+     //to upload present days excel
+//    try {
+//      paySlipService.uploadData();
+//    } catch (InvalidFormatException e) {
+//      e.printStackTrace();
+//    }
     return new EmployeePaySlipResponse(paySlipService.updatePaySlip(request));
+
   }
 
   @Secured(PAYSLIP_WRITE)
@@ -105,14 +113,15 @@ public class EmployeeController
     return new EmployeePaySlipResponse(paySlipService.reGeneratePaySlip(request));
   }
 
+
+  //------------------------------shubham-----------------------------------------------------------------
+  // shubham
   @Secured(PAYSLIP_WRITE)
   @PostMapping("/payslip/regenerateall/")
   public void regeneratePaySlipAll(@RequestBody PaySlipRegenerateRequest request) throws IOException, DocumentException, ParseException
   {
     paySlipService.reGeneratePaySlipAll(request);
   }
-  //------------------------------shubham-----------------------------------------------------------------
-  // shubham
   @Secured(PAYSLIP_LOCK)
   @PutMapping("/payslip/lock")
   public boolean lockPaySalary(@RequestBody EmployeePaySlipRequest request) throws IOException, DocumentException, ParseException
