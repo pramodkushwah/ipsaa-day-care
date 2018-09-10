@@ -17,6 +17,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.synlabs.ipsaa.entity.staff.QEmployee;
 import com.synlabs.ipsaa.view.batchimport.ImportMonthlySalary;
 import com.synlabs.ipsaa.view.staff.EmployeePaySlipResponse;
+import com.synlabs.ipsaa.view.staff.ErrorPayslipResponce;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -400,24 +401,28 @@ public class PaySlipService extends BaseService {
 //	}
 
     @Transactional
-	public Map<String,Object> uploadData(MultipartFile file,Integer month,Integer year)throws IOException, InvalidFormatException {
+	public Map<String,Object> uploadData(MultipartFile file,Integer month,Integer year,String employerId)throws IOException, InvalidFormatException {
 		boolean errorInFile = false;
 		Map<String, Object> statusMap = new HashMap<>();
 		statusMap.put("error", "false");
-		List<EmployeePaySlip> ungenerate=new ArrayList<>();
+		List<ErrorPayslipResponce> ungenerate=new ArrayList<>();
 
 		List<ImportMonthlySalary> employees = excelImportService.importMonthlySalaryRecords(file);
 		if(!employees.isEmpty()){
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.MONTH, month - 1);
 			cal.set(Calendar.YEAR, year);
-
 			for (ImportMonthlySalary newslip : employees) {
 				EmployeePaySlip slip = employeePaySlipRepository.findByEmployeeEidAndMonthAndYear(newslip.getEid(), month, year);
 
 				if (slip != null) {
 					EmployeePaySlipRequest req = new EmployeePaySlipRequest();
 					try {
+
+                        if(employerId!="All" && slip.getEmployee().getEmployer().getId()==Long.parseLong(employerId)){
+                            throw new ValidationException("employer code not matched");
+                        }
+
 						if (cal.get(Calendar.DAY_OF_MONTH) >= newslip.getPresentDay().intValue()) {
 							throw new ValidationException("present days are more then no of days");
 						}
@@ -429,15 +434,14 @@ public class PaySlipService extends BaseService {
 						logger.info(String.format("Regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
 					} catch (Exception e) {
 						logger.info(String.format("error in regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
-						ungenerate.add(slip);
+						ungenerate.add(new ErrorPayslipResponce(new EmployeePaySlipResponse(slip),e.getMessage()));
 					}
 				}
 			}
 		}else{
 			statusMap.put("error", "true");
 		}
-		statusMap.put("ungenerate",
-				ungenerate.stream().map(EmployeePaySlipResponse::new).collect(Collectors.toList()));
+		statusMap.put("ungenerate", ungenerate);
 		return statusMap;
     }
 }
