@@ -167,6 +167,27 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
         );
     }
 
+    $scope.openFileExplorer = function(){
+        $('#file-tag').click();
+    }
+
+    $scope.uploadExcel = function (element) {
+            $scope.excelFile = element.files[0];
+        console.log("asdfdsf", $scope.excelFile);
+        var formData = new FormData();
+        formData.append('employerId',$scope.selectedEmployer.id);
+        formData.append('year',$scope.selectedYear.value);
+        formData.append('month',$scope.selectedMonth.value);
+        formData.append('file',$scope.excelFile);
+        $http.put('/api/employee/payslip/upload',formData,{
+            headers: {'Content-Type': undefined}
+        }).then(function(response){
+            console.log(response);
+        },function(error){
+            console.log(error);
+        });
+    }
+
     function error(message) {
         swal({
             title: message,

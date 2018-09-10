@@ -45,6 +45,8 @@
           <!-- <button class="btn btn-info pull-right" ng-click="regenerateAllPaySlip()" ng-show="salaries.length > 0">
             <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableGenerateButton"></i>REGENERATE ALL
           </button> -->
+          <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" ng-click="openFileExplorer()" ng-disabled="!(selectedEmployer && selectedYear && selectedMonth)">Upload</button>
+          <input id="file-tag" type="file" ng-model="excelFile" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style="display: none" onchange="angular.element(this).scope().uploadExcel(this)">
           </h4>
           <div class="row" ng-show="salaries.length > 0">
             <div class="col-md-4">
