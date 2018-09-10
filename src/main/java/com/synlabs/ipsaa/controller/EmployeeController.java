@@ -105,13 +105,14 @@ public class EmployeeController
     return new EmployeePaySlipResponse(paySlipService.updatePaySlip(request));
   }
 
+  // shubham
   @Secured(PAYSLIP_WRITE)
   @PutMapping("/payslip/upload")
-  public ResponseEntity<Map<String, Object>> upload(@RequestParam("file") MultipartFile file) throws IOException, DocumentException
+  public ResponseEntity<Map<String, Object>> upload(@RequestParam("file") MultipartFile file,@RequestParam Integer month, @RequestParam Integer year, @RequestParam String employerId) throws IOException, DocumentException
   {
     //to upload present days excel
     try {
-      Map<String, Object> map = paySlipService.uploadData(file);
+      Map<String, Object> map = paySlipService.uploadData(file,month,year);
       String isSuccess = (String)map.get("error");
       map.remove("error");
       if (isSuccess.equalsIgnoreCase("true"))

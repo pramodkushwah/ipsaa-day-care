@@ -59,6 +59,9 @@ public class PaySlipService extends BaseService {
 	private LegalEntityRepository legalEntityRepository;
 
 	@Autowired
+	private ExcelImportService excelImportService;
+
+	@Autowired
 	private StaffAttendanceService attendanceService;
 	@Autowired
 	private EntityManager entityManager;
@@ -115,6 +118,7 @@ public class PaySlipService extends BaseService {
 														.and(qemp.profile.dol.year().eq(year))
 											)
 						);
+
 		if(employerId.equals("ALL")){
 			employees=query.fetch();
 		}else{
@@ -395,10 +399,8 @@ public class PaySlipService extends BaseService {
 //		}
 //	}
 
-    @Autowired
-    private ExcelImportService excelImportService;
     @Transactional
-	public Map<String,Object> uploadData(MultipartFile file)throws IOException, InvalidFormatException {
+	public Map<String,Object> uploadData(MultipartFile file,Integer month,Integer year)throws IOException, InvalidFormatException {
 		boolean errorInFile = false;
 		Map<String, Object> statusMap = new HashMap<>();
 		statusMap.put("error", "false");
@@ -407,11 +409,12 @@ public class PaySlipService extends BaseService {
 		List<ImportMonthlySalary> employees = excelImportService.importMonthlySalaryRecords(file);
 		if(!employees.isEmpty()){
 			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.MONTH, 8 - 1);
-			cal.set(Calendar.YEAR, 2018);
+			cal.set(Calendar.MONTH, month - 1);
+			cal.set(Calendar.YEAR, year);
+
 			for (ImportMonthlySalary newslip : employees) {
-				// need to change year and month
-				EmployeePaySlip slip = employeePaySlipRepository.findByEmployeeEidAndMonthAndYear(newslip.getEid(), 8, 2018);
+				EmployeePaySlip slip = employeePaySlipRepository.findByEmployeeEidAndMonthAndYear(newslip.getEid(), month, year);
+
 				if (slip != null) {
 					EmployeePaySlipRequest req = new EmployeePaySlipRequest();
 					try {
@@ -423,8 +426,9 @@ public class PaySlipService extends BaseService {
 						req.setOtherDeductions(newslip.getOtherDeduction() == null ? ZERO : newslip.getOtherDeduction());
 						req.setComment(newslip.getComments() == null ? "" : newslip.getComments());
 						req.setId(mask(slip.getId()));
-						System.out.println(updatePaySlip(req).getEmployee().getEid());
+						logger.info(String.format("Regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
 					} catch (Exception e) {
+						logger.info(String.format("error in regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
 						ungenerate.add(slip);
 					}
 				}
