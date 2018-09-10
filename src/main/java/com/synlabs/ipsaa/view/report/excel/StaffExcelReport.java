@@ -73,8 +73,8 @@ public class StaffExcelReport {
 
 	private boolean createList(EmployeeSalary staffR, Row row) // creating cells for each row
 	{
-		EmployeePaySlip slip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYearAndEmployerCode(staffR.getEmployee(), month,
-				year,er_code);
+		EmployeePaySlip slip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(staffR.getEmployee(), month,
+				year);
 		int index=0;
 		if (slip != null) {
 			Cell cell = row.createCell(index++, Cell.CELL_TYPE_STRING);

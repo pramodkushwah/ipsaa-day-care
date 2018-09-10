@@ -12,7 +12,6 @@ package-lock.json
 /src/main/webapp/pp/index.html
 /src/main/webapp/pp/checkout.html
 
-
 .*log
 /target
 /src/main/webapp/kidslife/

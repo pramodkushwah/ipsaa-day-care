@@ -38,6 +38,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, Repos
   Integer countByCostCenterAndApprovalStatus(Center center, ApprovalStatus new_approval);
 
   List<Employee> findByActiveTrueAndCostCenterIn(List<Center> userCenters);
+  // shubham
+  List<Employee> findByActiveTrueAndCostCenterInAndEmployerCode(List<Center> userCenters,String employerCode);
 
   List<Employee> findByActiveTrueAndReportingManager(Employee employee);
 

@@ -176,8 +176,12 @@ public class StaffService extends BaseService
   }
   // shubham
   public File getEmployee(StaffFilterRequest staffRequest){
-    List<Employee> list;
+    List<Employee> list=null;
+    if(staffRequest.getEmployerCode().equals("All") || staffRequest.getEmployerCode().equals("ALL"))
     list= employeeRepository.findByActiveTrueAndCostCenterIn(getUserCenters());
+    else{
+       list=employeeRepository.findByActiveTrueAndCostCenterInAndEmployerCode(getUserCenters(),staffRequest.getEmployerCode());
+    }
     StaffReport excel = new StaffReport(list,exportDirectory);
     return excel.createExcel(); // returning file
   }
@@ -187,13 +191,13 @@ public class StaffService extends BaseService
 
     List<EmployeeSalary> list=new ArrayList<>();
 
-    if (!StringUtils.isEmpty(staffRequest.getEmployerCode()) || staffRequest.getEmployerCode().equals("ALL")) {
+    if (StringUtils.isEmpty(staffRequest.getEmployerCode()) || staffRequest.getEmployerCode().equals("ALL")) {
       list = employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
+    }else{
+      list = employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeEmployerCode(staffRequest.getEmployerCode());
     }
       StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository, staffRequest.getEmployerCode());
       return excel.createExcel(); // returning file
-
-
   }
 
   @Transactional
