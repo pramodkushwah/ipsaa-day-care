@@ -91,8 +91,8 @@ public class StaffReport {
 				cell.setCellValue(employee.getMaritalStatus().name());
 
 			cell = row.createCell(index++);										////Husband's name added
-			if (employee.getProfile().getHusbandName() != null)
-				cell.setCellValue(employee.getProfile().getHusbandName());
+			if (employee.getProfile().getspouseName() != null)
+				cell.setCellValue(employee.getProfile().getspouseName());
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			if (employee.getProfile().getDateOfJoining() != null) {
@@ -242,7 +242,7 @@ public class StaffReport {
 				cell.setCellValue("MaritalStatus");
 
 			cell = row.createCell(index++);							///Added
-				cell.setCellValue("Husband's Name");
+				cell.setCellValue("Spouse's Name");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 				cell.setCellValue("DateOfJoining");

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.enums.EmployeeType;
 import com.synlabs.ipsaa.enums.MaritalStatus;
+import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.view.common.Request;
 
 import java.text.ParseException;
@@ -287,6 +288,12 @@ public class StaffRequest implements Request
     if (employee.isNew() && profile != null)
     {
       employee.setProfile(profile.toEntity());
+      ///////////////////Avneet
+      if(employee.getMaritalStatus() != MaritalStatus.valueOf("Unmarried")){
+          employee.getProfile().setspouseName(profile.getspouseName());
+      }else{
+        throw new ValidationException("Spouse Name is Required!!!!!");
+      }
     }
 
     if (expectedHours == null)

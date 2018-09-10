@@ -37,7 +37,7 @@ public class StaffProfileResponse implements Response
   ///Avneet
   /////Avneet
   private String fatherName;
-    private String husbandName;
+    private String spouseName;
 
 
 
@@ -65,7 +65,7 @@ public class StaffProfileResponse implements Response
     this.holderName=profile.getHolderName();
 
     //////Avneet
-    this.husbandName=profile.getHusbandName();
+    this.spouseName=profile.getspouseName();
     this.fatherName=profile.getFatherName();
   }
 
@@ -189,7 +189,7 @@ public class StaffProfileResponse implements Response
 
     public void setFatherName(String fatherName) { this.fatherName = fatherName; }
 
-    public String getHusbandName() { return husbandName; }
+    public String getspouseName() { return spouseName; }
 
-    public void setHusbandName(String husbandName) { this.husbandName = husbandName; }
+    public void setspouseName(String spouseName) { this.spouseName = spouseName; }
 }

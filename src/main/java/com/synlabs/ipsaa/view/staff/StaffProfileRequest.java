@@ -37,7 +37,7 @@ public class StaffProfileRequest implements Request
 
   /////Avneet
   private String fatherName;
-  private String husbandName;
+  private String spouseName;
 
 
 
@@ -67,7 +67,7 @@ public class StaffProfileRequest implements Request
     employeeProfile.setBankName(bankName);
 
     /////Avneet
-    employeeProfile.setHusbandName(husbandName);
+    employeeProfile.setspouseName(spouseName);
     employeeProfile.setFatherName(fatherName);
     if (address != null)
     {
@@ -256,8 +256,8 @@ public class StaffProfileRequest implements Request
 
   public void setFatherName(String fatherName) { this.fatherName = fatherName; }
 
-  public String getHusbandName() { return husbandName; }
+  public String getspouseName() { return spouseName; }
 
-  public void setHusbandName(String husbandName) { this.husbandName = husbandName; }
+  public void setspouseName(String spouseName) { this.spouseName = spouseName; }
 
 }
