@@ -413,15 +413,18 @@ public class StaffService extends BaseService
     boolean errorInFile = false;
     Map<String, String> statusMap = new HashMap<>();
     statusMap.put("error", "false");
+
     List<ImportEmployee> employees = excelImportService.importEmployeeRecords(file);
     List<Employee> employeeList = new ArrayList<>(employees.size());
     List<EmployeeProfile> employeeProfiles = new ArrayList<>(employees.size());
     List<User> userList = new ArrayList<>(employees.size());
     Set<String> mobile = new HashSet<>();
+
     if (employees.size() < 1)
     {
       throw new Exception("Error Processing file");
     }
+
     for (ImportEmployee employee : employees)
     {
       String validationMessage = employee.validate();

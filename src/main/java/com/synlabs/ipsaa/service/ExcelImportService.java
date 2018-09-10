@@ -2,6 +2,7 @@ package com.synlabs.ipsaa.service;
 
 import com.synlabs.ipsaa.view.batchimport.ImportEmployee;
 import com.synlabs.ipsaa.view.batchimport.ImportSalary;
+import com.synlabs.ipsaa.view.batchimport.ImportMonthlySalary;
 import org.jxls.reader.ReaderBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,8 @@ public class ExcelImportService
 
   private final String IMPORT_STUDENT_FILE = "student-one.xml";
 
+  private final String IMPORT_MONTHLY_SALARY_FILE = "monthly-salary.xml";
+
   private void fileProcessor(MultipartFile file, String filePath, Map<String, ArrayList> beans)
   {
     try
@@ -55,6 +58,14 @@ public class ExcelImportService
     beans.put("salaries", new ArrayList<ImportEmployee>());
     fileProcessor(file, IMPORT_SALARY_FILE, beans);
     return beans.get("salaries");
+  }
+
+  public List<ImportMonthlySalary> importMonthlySalaryRecords(MultipartFile file)
+  {
+    Map<String, ArrayList> beans = new HashMap<>();
+    beans.put("monthlysalaries", new ArrayList<ImportMonthlySalary>());
+    fileProcessor(file, IMPORT_MONTHLY_SALARY_FILE, beans);
+    return beans.get("monthlysalaries");
   }
 
   public Map<String, ArrayList> importStudentRecords(MultipartFile file)

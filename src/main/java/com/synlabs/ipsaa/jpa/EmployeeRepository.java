@@ -1,10 +1,13 @@
 package com.synlabs.ipsaa.jpa;
 
 import com.synlabs.ipsaa.entity.center.Center;
+import com.synlabs.ipsaa.entity.common.LegalEntity;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.enums.EmployeeType;
+import org.hibernate.annotations.Parameter;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.Repository;
 

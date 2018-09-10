@@ -4,22 +4,20 @@ import static com.synlabs.ipsaa.util.BigDecimalUtils.HALF;
 import static com.synlabs.ipsaa.util.BigDecimalUtils.ONE;
 import static com.synlabs.ipsaa.util.BigDecimalUtils.ZERO;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
-import com.synlabs.ipsaa.enums.CallDisposition;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.synlabs.ipsaa.entity.staff.QEmployee;
+import com.synlabs.ipsaa.view.batchimport.ImportMonthlySalary;
+import com.synlabs.ipsaa.view.staff.EmployeePaySlipResponse;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.*;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -50,6 +48,9 @@ import com.synlabs.ipsaa.store.FileStore;
 import com.synlabs.ipsaa.util.SalaryUtilsV2;
 import com.synlabs.ipsaa.view.staff.EmployeePaySlipRequest;
 import com.synlabs.ipsaa.view.staff.PaySlipRegenerateRequest;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.EntityManager;
 
 @Service
 public class PaySlipService extends BaseService {
@@ -58,7 +59,12 @@ public class PaySlipService extends BaseService {
 	private LegalEntityRepository legalEntityRepository;
 
 	@Autowired
+	private ExcelImportService excelImportService;
+
+	@Autowired
 	private StaffAttendanceService attendanceService;
+	@Autowired
+	private EntityManager entityManager;
 
 	@Autowired
 	private EmployeeAttendanceRepository attendanceRepository;
@@ -103,23 +109,26 @@ public class PaySlipService extends BaseService {
 		String date = format.format(generationDate);
 		List<Employee> employees;
 		LegalEntity legalEntity=null;
+		JPAQuery<Employee> query = new JPAQuery<>(entityManager);
+		QEmployee qemp = QEmployee.employee;
+		query.select(qemp).from(qemp)
+				.where(qemp.active.isTrue().or(
+												qemp.active.isFalse()
+														.and(qemp.profile.dol.month().eq(month))
+														.and(qemp.profile.dol.year().eq(year))
+											)
+						);
+
 		if(employerId.equals("ALL")){
-			employees = employeeRepository.findByActiveIsTrue();
+			employees=query.fetch();
 		}else{
 			legalEntity = legalEntityRepository.findOne(unmask(Long.parseLong(employerId)));
 			if (legalEntity == null) {
 				throw new ValidationException(String.format("Cannot locate Employer[id = %s]", mask(Long.parseLong(employerId))));
 			}
-			employees = employeeRepository.findByActiveIsTrueAndEmployerId(legalEntity.getId());
-		}
-		for (Employee emp : employees) {
-			String doj = format.format(emp.getProfile().getDoj());
-			String dol = null;
-			if (emp.getProfile().getDol() != null) {
-				dol = format.format(emp.getProfile().getDol());
+			employees = query.where(qemp.employer.eq(legalEntity)).fetch();
 			}
-
-			if ((date.compareTo(doj) >= 0 && (dol==null || dol.compareTo(date) >= 0 ))) { // only this check is added
+		for (Employee emp : employees) {
 				EmployeePaySlip employeePaySlip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(emp, month,
 						year);
 				if (employeePaySlip == null) {
@@ -130,11 +139,8 @@ public class PaySlipService extends BaseService {
 						}
 						generateNewPayslip(emp, employeeSalary, year, month);
 					}
-
 				}
-
 			}
-		}
 
 		if(employerId.equals("ALL"))
 			return employeePaySlipRepository.findByMonthAndYear(month, year);
@@ -393,50 +399,45 @@ public class PaySlipService extends BaseService {
 //		}
 //	}
 
+    @Transactional
+	public Map<String,Object> uploadData(MultipartFile file,Integer month,Integer year)throws IOException, InvalidFormatException {
+		boolean errorInFile = false;
+		Map<String, Object> statusMap = new HashMap<>();
+		statusMap.put("error", "false");
+		List<EmployeePaySlip> ungenerate=new ArrayList<>();
 
+		List<ImportMonthlySalary> employees = excelImportService.importMonthlySalaryRecords(file);
+		if(!employees.isEmpty()){
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.MONTH, month - 1);
+			cal.set(Calendar.YEAR, year);
 
-	public static final String SAMPLE_XLSX_FILE_PATH = "C:\\Users\\shubham\\Desktop\\ipsaa\\new attendance report2.xlsx";
-	@Transactional
-	public void uploadData()throws IOException, InvalidFormatException {
-		Workbook workbook = WorkbookFactory.create(new File(SAMPLE_XLSX_FILE_PATH));
-		Sheet sheet = workbook.getSheetAt(0);
-		for (int i=0;i<=sheet.getPhysicalNumberOfRows();i++) {
-			if(i==0) continue;
+			for (ImportMonthlySalary newslip : employees) {
+				EmployeePaySlip slip = employeePaySlipRepository.findByEmployeeEidAndMonthAndYear(newslip.getEid(), month, year);
 
-			Row row=sheet.getRow(i);
-			if(row!=null){
-				if(row.getCell(1)!=null){
-					String eid=row.getCell(1).getStringCellValue();
-					EmployeePaySlip slip=employeePaySlipRepository.findByEmployeeEidAndMonthAndYear(eid,8,2018);
-					if(slip!=null && row.getCell(6)!=null){
-
-						EmployeePaySlipRequest req=new EmployeePaySlipRequest();
-
-						try{
-							req.setPresents(new BigDecimal(row.getCell(5).getNumericCellValue()));
-							req.setOtherAllowances(new BigDecimal(row.getCell(6).getNumericCellValue()));
-							req.setOtherDeductions(new BigDecimal(row.getCell(7).getNumericCellValue()));
-							req.setComment(row.getCell(8).getStringCellValue());
-
-							req.setId(mask(slip.getId()));
-
-						}catch (Exception e){
-							e.printStackTrace();
+				if (slip != null) {
+					EmployeePaySlipRequest req = new EmployeePaySlipRequest();
+					try {
+						if (cal.get(Calendar.DAY_OF_MONTH) >= newslip.getPresentDay().intValue()) {
+							throw new ValidationException("present days are more then no of days");
 						}
-
-						try {
-							System.out.println(updatePaySlip(req).getEmployee().getEid());
-						} catch (DocumentException e) {
-							e.printStackTrace();
-						}
-					}else{
-
+						req.setPresents(newslip.getPresentDay());
+						req.setOtherAllowances(newslip.getOtherAllowance() == null ? ZERO : newslip.getOtherAllowance());
+						req.setOtherDeductions(newslip.getOtherDeduction() == null ? ZERO : newslip.getOtherDeduction());
+						req.setComment(newslip.getComments() == null ? "" : newslip.getComments());
+						req.setId(mask(slip.getId()));
+						logger.info(String.format("Regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
+					} catch (Exception e) {
+						logger.info(String.format("error in regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
+						ungenerate.add(slip);
 					}
-
 				}
 			}
+		}else{
+			statusMap.put("error", "true");
 		}
-		workbook.close();
-	}
-
+		statusMap.put("ungenerate",
+				ungenerate.stream().map(EmployeePaySlipResponse::new).collect(Collectors.toList()));
+		return statusMap;
+    }
 }

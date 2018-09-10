@@ -1,7 +1,9 @@
 package com.synlabs.ipsaa.controller;
 
 import com.itextpdf.text.DocumentException;
+import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
+import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.service.BaseService;
 import com.synlabs.ipsaa.service.EmployeeService;
 import com.synlabs.ipsaa.service.PaySlipService;
@@ -10,8 +12,11 @@ import com.synlabs.ipsaa.view.student.EmployeeSalaryRequest;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.*;
@@ -96,14 +102,27 @@ public class EmployeeController
   @PutMapping("/payslip/")
   public EmployeePaySlipResponse update(@RequestBody EmployeePaySlipRequest request) throws IOException, DocumentException
   {
-     //to upload present days excel
-//    try {
-//      paySlipService.uploadData();
-//    } catch (InvalidFormatException e) {
-//      e.printStackTrace();
-//    }
     return new EmployeePaySlipResponse(paySlipService.updatePaySlip(request));
+  }
 
+  // shubham
+  @Secured(PAYSLIP_WRITE)
+  @PutMapping("/payslip/upload")
+  public ResponseEntity<Map<String, Object>> upload(@RequestParam("file") MultipartFile file,@RequestParam Integer month, @RequestParam Integer year, @RequestParam String employerId) throws IOException, DocumentException
+  {
+    //to upload present days excel
+    try {
+      Map<String, Object> map = paySlipService.uploadData(file,month,year);
+      String isSuccess = (String)map.get("error");
+      map.remove("error");
+      if (isSuccess.equalsIgnoreCase("true"))
+      {
+        throw new ValidationException("file not uploaded");
+      }
+      return new ResponseEntity<>(map,HttpStatus.OK);
+    } catch (InvalidFormatException e) {
+      throw new ValidationException("file not uploaded");
+    }
   }
 
   @Secured(PAYSLIP_WRITE)
