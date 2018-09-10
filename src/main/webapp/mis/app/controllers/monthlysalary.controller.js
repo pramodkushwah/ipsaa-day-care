@@ -3,6 +3,7 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
     $scope.disableUpdateBtn = false;
     $scope.regenerateRecords = {};
     $scope.years = [];
+    $scope.ungenerate = [];
 
     $http.get('/api/le/').then(function (response) {
         $scope.employers = response.data;
@@ -172,21 +173,39 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
     }
 
     $scope.uploadExcel = function (element) {
-            $scope.excelFile = element.files[0];
-        console.log("asdfdsf", $scope.excelFile);
-        var formData = new FormData();
-        formData.append('employerId',$scope.selectedEmployer.id);
-        formData.append('year',$scope.selectedYear.value);
-        formData.append('month',$scope.selectedMonth.value);
-        formData.append('file',$scope.excelFile);
-        $http.put('/api/employee/payslip/upload',formData,{
-            headers: {'Content-Type': undefined}
-        }).then(function(response){
-            console.log(response);
-        },function(error){
-            console.log(error);
+        $scope.excelFile = element.files[0];
+        swal({
+            title: 'Are you sure?',
+            text: 'you want update payslip of the year '+ $scope.selectedYear.value + ' and Month '+$scope.selectedMonth.name,
+            type: 'warning',
+            width: 600,
+            buttonsStyling: false,
+            confirmButtonClass: "btn btn-warning",
+            cancelButtonClass: "btn btn-default",
+            showCancelButton: true
+        }).then(function () {
+            var formData = new FormData();
+            formData.append('employerId',$scope.selectedEmployer.id);
+            formData.append('year',$scope.selectedYear.value);
+            formData.append('month',$scope.selectedMonth.value);
+            formData.append('file',$scope.excelFile);
+            $http.put('/api/employee/payslip/upload',formData,{
+                headers: {'Content-Type': undefined}
+            }).then(function(response){
+                console.log(response);
+                $scope.ungenerate = response.data.ungenerate;
+                $scope.excelFile = null;
+                $('#myModal').modal('show');
+            },function(error){
+                $scope.excelFile = null;
+                console.log(error);
+            });
+        },function(ignore){
+            $scope.excelFile = null;
         });
+        return;
     }
+
 
     function error(message) {
         swal({
