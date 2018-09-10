@@ -114,7 +114,7 @@ public class PaySlipService extends BaseService {
 														.and(qemp.profile.dol.month().eq(month))
 														.and(qemp.profile.dol.year().eq(year))
 											)
-				);
+						);
 		if(employerId.equals("ALL")){
 			employees=query.fetch();
 		}else{
@@ -125,11 +125,6 @@ public class PaySlipService extends BaseService {
 			employees = query.where(qemp.employer.eq(legalEntity)).fetch();
 			}
 		for (Employee emp : employees) {
-			String doj = format.format(emp.getProfile().getDoj());
-			String dol = null;
-			if (emp.getProfile().getDol() != null) {
-				dol = format.format(emp.getProfile().getDol());
-			}
 				EmployeePaySlip employeePaySlip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(emp, month,
 						year);
 				if (employeePaySlip == null) {
