@@ -112,7 +112,7 @@ public class EmployeeController
   {
     //to upload present days excel
     try {
-      Map<String, Object> map = paySlipService.uploadData(file,month,year);
+      Map<String, Object> map = paySlipService.uploadData(file,month,year,employerId);
       String isSuccess = (String)map.get("error");
       map.remove("error");
       if (isSuccess.equalsIgnoreCase("true"))
