@@ -64,6 +64,19 @@ public class EmployeeProfile extends BaseEntity
   private String branchName;
   private String holderName;
   //
+
+  /////Avneet
+  private String fatherName;
+  private String husbandName;
+
+  public String getFatherName() { return fatherName; }
+
+  public void setFatherName(String fatherName) { this.fatherName = fatherName; }
+
+  public String getHusbandName() { return husbandName; }
+
+  public void setHusbandName(String husbandName) { this.husbandName = husbandName; }
+
   public String getBan()
   {
     return ban;
@@ -206,7 +219,7 @@ public class EmployeeProfile extends BaseEntity
     String result = "";
     if (this.dob != null)
     {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+      SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy");        /////Changed format
       result = sdf.format(this.dob);
     }
     return result;
@@ -218,7 +231,7 @@ public class EmployeeProfile extends BaseEntity
     String result = "";
     if (this.doj != null)
     {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+      SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy");            /////Changed format
       result = sdf.format(this.doj);
     }
     return result;
@@ -230,7 +243,7 @@ public class EmployeeProfile extends BaseEntity
     String result = "";
     if (this.dol != null)
     {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+      SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy");            /////Changed format
       result = sdf.format(this.dol);
     }
     return result;

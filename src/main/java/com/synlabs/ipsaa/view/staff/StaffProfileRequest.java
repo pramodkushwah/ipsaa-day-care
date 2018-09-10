@@ -35,6 +35,12 @@ public class StaffProfileRequest implements Request
   private AddressRequest address;
   private AddressRequest permanentAddress;
 
+  /////Avneet
+  private String fatherName;
+  private String husbandName;
+
+
+
   public EmployeeProfile toEntity(EmployeeProfile employeeProfile)
   {
 
@@ -59,6 +65,10 @@ public class StaffProfileRequest implements Request
     employeeProfile.setBranchName(branchName);
     employeeProfile.setHolderName(holderName);
     employeeProfile.setBankName(bankName);
+
+    /////Avneet
+    employeeProfile.setHusbandName(husbandName);
+    employeeProfile.setFatherName(fatherName);
     if (address != null)
     {
       employeeProfile.setAddress(address.toEntity());
@@ -241,5 +251,13 @@ public class StaffProfileRequest implements Request
   public void setHolderName(String holderName) {
     this.holderName = holderName;
   }
+
+  public String getFatherName() { return fatherName; }
+
+  public void setFatherName(String fatherName) { this.fatherName = fatherName; }
+
+  public String getHusbandName() { return husbandName; }
+
+  public void setHusbandName(String husbandName) { this.husbandName = husbandName; }
 
 }

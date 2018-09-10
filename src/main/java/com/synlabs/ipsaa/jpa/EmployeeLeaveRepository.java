@@ -25,4 +25,7 @@ public interface EmployeeLeaveRepository extends JpaRepository<EmployeeLeave, Lo
 
   ///Avneet
   List<EmployeeLeave> findByEmployeeInAndDate(List<Employee> employees,Date date);
+
+  List<EmployeeLeave> findByEmployeeAndDateBetweenAndHalfLeaveIsTrue(Employee employee,Date from,Date to);
+
 }
