@@ -423,11 +423,11 @@ public class PaySlipService extends BaseService {
 					EmployeePaySlipRequest req = new EmployeePaySlipRequest();
 					try {
 
-                        if(employerId!="All" && slip.getEmployee().getEmployer().getId()==Long.parseLong(employerId)){
+                        if(!employerId.equals("ALL") && slip.getEmployee().getEmployer().getId()==Long.parseLong(employerId)){
                             throw new ValidationException("employer code not matched");
                         }
 
-						if (cal.get(Calendar.DAY_OF_MONTH) >= newslip.getPresentDay().intValue()) {
+						if (newslip.getPresentDay().intValue()>cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
 							throw new ValidationException("present days are more then no of days");
 						}
 						req.setPresents(newslip.getPresentDay());
@@ -435,11 +435,17 @@ public class PaySlipService extends BaseService {
 						req.setOtherDeductions(newslip.getOtherDeduction() == null ? ZERO : newslip.getOtherDeduction());
 						req.setComment(newslip.getComments() == null ? "" : newslip.getComments());
 						req.setId(mask(slip.getId()));
+						this.updatePaySlip(req);
 						logger.info(String.format("Regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
 					} catch (Exception e) {
+						System.out.println(e.getMessage());
 						logger.info(String.format("error in regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
 						ungenerate.add(new ErrorPayslipResponce(new EmployeePaySlipResponse(slip),e.getMessage()));
 					}
+				}else{
+					//slip not found
+					logger.info(String.format("error in regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
+					ungenerate.add(new ErrorPayslipResponce(null,"Salary not found of id "+newslip.getEid()));
 				}
 			}
 		}else{
