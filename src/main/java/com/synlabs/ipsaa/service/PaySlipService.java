@@ -434,6 +434,7 @@ public class PaySlipService extends BaseService {
 						req.setOtherAllowances(newslip.getOtherAllowance() == null ? ZERO : newslip.getOtherAllowance());
 						req.setOtherDeductions(newslip.getOtherDeduction() == null ? ZERO : newslip.getOtherDeduction());
 						req.setComment(newslip.getComments() == null ? "" : newslip.getComments());
+						req.setTds(newslip.getTds());
 						req.setId(mask(slip.getId()));
 						this.updatePaySlip(req);
 						logger.info(String.format("Regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
