@@ -1,6 +1,7 @@
 package com.synlabs.ipsaa.controller;
 
 import com.synlabs.ipsaa.entity.student.Student;
+import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.service.CenterService;
 import com.synlabs.ipsaa.service.StudentService;
 import com.synlabs.ipsaa.view.center.ApprovalCountResponse;
@@ -99,7 +100,16 @@ public class StudentController
   {
     StudentRequest request = new StudentRequest();
     request.setId(studentId);
-    studentService.uploadStudentPic(request, file);
+
+    //////////Avneet
+    long size=file.getSize();
+    long max = new Double(0.5*1024*1024).longValue();
+    if(size< max){
+      studentService.uploadStudentPic(request, file);
+    }else{
+        throw new ValidationException("Size should not be more than 0.5 MB");
+    }
+
   }
 
   @Secured(IMPORT_WRITE)
