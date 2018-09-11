@@ -567,13 +567,15 @@ public class StudentService extends BaseService {
 			throw new NotFoundException(String.format("Cannot locate student with id %s", request.getId()));
 		}
 		StudentFeePaymentRequest slip=studentFeeService.getStudentBalance(student);
-		if( slip.getBalance()!=null &&  slip.getBalance().intValue()>0 && !slip.getPaymentStatus().equals(PaymentStatus.Paid) ){
+		if(slip!=null)
+		if( (slip.getBalance()!=null && slip.getBalance().intValue()>0) || !slip.getPaymentStatus().equals(PaymentStatus.Paid) ){
 			throw new ValidationException(
 					String.format("Some balance fee is remaining of student [%s]", student.getName()));
 		}
+
 		student.setActive(false);
 		studentRepository.saveAndFlush(student);
-
+		logger.info("Student deactivated "+ student.getName());
 		List<StudentParent> parents = student.getParents();
 		for (StudentParent parent : parents) {
 			if (parent.isAccount()) {
