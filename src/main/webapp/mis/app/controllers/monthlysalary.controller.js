@@ -172,8 +172,9 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
         $('#file-tag').click();
     }
 
-    $scope.uploadExcel = function (element) {
-        $scope.excelFile = element.files[0];
+    $scope.uploadExcel = function (event) {
+        $scope.uploadingFile = true;
+        $scope.excelFile = event.target.files[0];
         swal({
             title: 'Are you sure?',
             text: 'you want update payslip of the year '+ $scope.selectedYear.value + ' and Month '+$scope.selectedMonth.name,
@@ -192,18 +193,25 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
             $http.put('/api/employee/payslip/upload',formData,{
                 headers: {'Content-Type': undefined}
             }).then(function(response){
-                console.log(response);
+                $scope.generate($scope.selectedMonth, $scope.selectedYear);
                 $scope.ungenerate = response.data.ungenerate;
-                $scope.excelFile = null;
-                $('#myModal').modal('show');
+                angular.element("input[type='file']").val(null); // Unset Input
+                $scope.excelFile = undefined; // Unset $scope property
+                $scope.uploadingFile = false;
+                if(response.data.ungenerate.length) {
+                    $('#myModal').modal('toggle');
+                } else {
+                    ok('Excel Successfully uploaded');
+                }
             },function(error){
-                $scope.excelFile = null;
-                console.log(error);
+                angular.element("input[type='file']").val(null); // Unset Input
+                $scope.excelFile = undefined; // Unset $scope property
             });
+            return;
         },function(ignore){
             $scope.excelFile = null;
+            return;
         });
-        return;
     }
 
 
@@ -225,3 +233,13 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
         });
     }
 });
+
+app.directive('fileOnChange', function () {
+    return {
+     restrict: 'A',
+     link: function (scope, element, attrs) {
+      var onChangeHandler = scope.$eval(attrs.fileOnChange);
+      element.bind('change', onChangeHandler);
+     }
+    };
+   });
