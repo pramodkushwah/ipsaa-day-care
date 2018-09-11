@@ -566,8 +566,8 @@ public class StudentService extends BaseService {
 		if (student == null) {
 			throw new NotFoundException(String.format("Cannot locate student with id %s", request.getId()));
 		}
-		BigDecimal balance=studentFeeService.getStudentBalance(student);
-		if(balance!=null && balance.intValue()>0){
+		StudentFeePaymentRequest slip=studentFeeService.getStudentBalance(student);
+		if( slip.getBalance()!=null &&  slip.getBalance().intValue()>0 && !slip.getPaymentStatus().equals(PaymentStatus.Paid) ){
 			throw new ValidationException(
 					String.format("Some balance fee is remaining of student [%s]", student.getName()));
 		}

@@ -864,14 +864,11 @@ public class StudentFeeService {
         return receipt;
     }
 
-    public BigDecimal getStudentBalance(Student student) {
+    public StudentFeePaymentRequest getStudentBalance(Student student) {
         Calendar cal = Calendar. getInstance();
         int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));
         int year=cal.get(Calendar.YEAR);
-        StudentFeePaymentRequest slip=feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(student,FeeDuration.Quarterly,quarter,year);
-        if(slip!=null)
-        return slip.getBalance()==null?ZERO:slip.getBalance();
-        return null;
+        return feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(student,FeeDuration.Quarterly,quarter,year);
     }
 
     public PaymentHistoryResponce getStudentPaymentHistory(Long studentId) {
