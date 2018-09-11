@@ -288,12 +288,6 @@ public class StaffRequest implements Request
     if (employee.isNew() && profile != null)
     {
       employee.setProfile(profile.toEntity());
-
-      ///////////////////Avneet
-      if(employee.getMaritalStatus() != MaritalStatus.valueOf("Unmarried")){
-          if(profile.getspouseName()!= null){
-            employee.getProfile().setspouseName(profile.getspouseName());}
-      }
     }
 
     if (expectedHours == null)
