@@ -48,7 +48,8 @@
         <div class="col-md-4" ng-show="workingUser.type == 'Employee'">
           <div class="form-group">
             <label class="control-label">*Employee</label>
-            <select class="form-control" ng-model="workingUser.employee" ng-options="emp as emp.name+' ('+emp.centerCode+')' for emp in employees | orderBy:'name' track by emp.id">
+            <select class="form-control" ng-model="workingUser.employee" ng-options="emp as emp.name+' ('+emp.centerCode+')' for emp in employees | orderBy:'name' track by emp.id"
+            ng-change="selectEmployee(workingUser.employee)">
               <option value="">Select</option>
             </select>
           </div>

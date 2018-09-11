@@ -2,6 +2,7 @@ package com.synlabs.ipsaa.controller;
 
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.ex.ValidationException;
+import com.synlabs.ipsaa.service.BaseService;
 import com.synlabs.ipsaa.service.FeeService;
 import com.synlabs.ipsaa.util.ExcelExporterCenterPrograms;
 import com.synlabs.ipsaa.view.center.*;
@@ -117,5 +118,12 @@ public class CenterFeeController
     SaveFeeSlipRequest request = new SaveFeeSlipRequest();
     request.setId(slipId);
     return new CenterProgramFeeResponse(feeService.getProgramFee(request));
+  }
+
+
+  ///////Avneet
+  @GetMapping("programs/{centerId}")
+  public List<ProgramResponse> getProgramsByCenter(@PathVariable("centerId") Long centerId){
+    return feeService.programByCenter(centerId).stream().map(ProgramResponse:: new).collect(Collectors.toList());
   }
 }

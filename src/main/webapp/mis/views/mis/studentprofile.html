@@ -34,6 +34,7 @@
                 <label class="control-label">*Center</label>
                 <select class="form-control" data-style="select-with-transition" ng-model="workingStudent.centerId"
                         title="Single Select" data-size="7"
+                        ng-change="getProgramsByCenter(workingStudent.centerId)"
                         ng-readonly="showstudent"
                         ng-disabled="showstudent"
                         required>
