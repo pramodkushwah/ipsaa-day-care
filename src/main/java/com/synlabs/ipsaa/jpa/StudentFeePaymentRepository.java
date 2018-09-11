@@ -28,8 +28,8 @@ public interface StudentFeePaymentRepository extends JpaRepository<StudentFeePay
 
   StudentFeePaymentRequest findOneByTnxid(String tnxid);
   // -----------------------------------------shubham ---------------------------------------------------------
-  List<StudentFeePaymentRequest> findByStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(ApprovalStatus ststus, FeeDuration period, int quarter, int year, String centerCode);
-  List<StudentFeePaymentRequest> findByStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(ApprovalStatus ststus, FeeDuration period, int quarter, int year);
+  List<StudentFeePaymentRequest> findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(FeeDuration period, int quarter, int year, String centerCode);
+  List<StudentFeePaymentRequest> findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(FeeDuration period, int quarter, int year);
 
 
   List<StudentFeePaymentRequest> findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(ApprovalStatus ststus, FeeDuration period, int quarter, int year, String centerCode);
