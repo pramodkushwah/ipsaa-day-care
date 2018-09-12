@@ -90,9 +90,18 @@ public class StaffExcelReport {
 			if (staffR.getEmployee().getLastName() != null)
 				cell.setCellValue(staffR.getEmployee().getLastName());
 
+			cell = row.createCell(index++);
+			if (staffR.getEmployee().getEmployer() != null)
+				cell.setCellValue(staffR.getEmployee().getEmployer().getName());
+
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			if (staffR.getEmployee().getProfile().getDateOfJoining() != null) {
 				cell.setCellValue(staffR.getEmployee().getProfile().getDateOfJoining());
+			}
+
+			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
+			if (staffR.getEmployee().getProfile().getDateOfLeaving() != null) {
+				cell.setCellValue(staffR.getEmployee().getProfile().getDateOfLeaving());
 			}
 
 //			cell = row.createCell(5);
@@ -122,7 +131,7 @@ public class StaffExcelReport {
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_NUMERIC);
 			if (staffR.getEmployee().getCenterName() != null) {
-				System.out.println(staffR.getCtc());
+				//System.out.println(staffR.getCtc());
 				cell.setCellValue((staffR.getEmployee().getCenterName()));
 			}
 			if (staffR.getEmployee().getDesignation() != null) {
@@ -191,6 +200,10 @@ public class StaffExcelReport {
 				cell.setCellValue((slip.getEsi().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
+			if (slip.getGrossSalary() != null)
+				cell.setCellValue((slip.getGrossSalary().doubleValue()*4.75/100));
+
+			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			if (slip.getProfessionalTax() != null)
 				cell.setCellValue((slip.getProfessionalTax().intValue()));
 
@@ -237,7 +250,7 @@ public class StaffExcelReport {
 		cell.setCellValue("Serial No");
 
 		cell = row.createCell(index++);
-		cell.setCellValue("Company Name");
+		cell.setCellValue("Eid");
 
 		cell = row.createCell(index++);
 		cell.setCellValue("Employee First Name");
@@ -246,7 +259,13 @@ public class StaffExcelReport {
 		cell.setCellValue("Employee Last Name");
 
 		cell = row.createCell(index++);
+		cell.setCellValue("Employer");
+
+		cell = row.createCell(index++);
 		cell.setCellValue("Date of Joining");
+
+		cell = row.createCell(index++);
+		cell.setCellValue("Date of Leaving");
 //
 //		cell = row.createCell(5);
 //		cell.setCellValue("Cost Center");
@@ -305,7 +324,10 @@ public class StaffExcelReport {
 		cell.setCellValue(("Employer PF"));
 
 		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-		cell.setCellValue(("ESI"));
+		cell.setCellValue(("ESI 1.75%"));
+
+		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
+		cell.setCellValue(("ESI 4.75%"));
 
 		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 		cell.setCellValue(("Professional Tax"));
