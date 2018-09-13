@@ -270,13 +270,13 @@
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label" ng-readonly="true">Uniform Charges</label>
-              <input class="form-control" type="number" ng-model="selected.uniformCharges">
+              <input class="form-control" type="number" ng-model="selected.uniformCharges" ng-change="calculateFinalFee(selected)">
             </div>
           </div>        
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label" ng-readonly="true">Stationery Charges</label>
-              <input class="form-control" type="number" ng-model="selected.stationary">
+              <input class="form-control" type="number" ng-model="selected.stationary" ng-change="calculateFinalFee(selected)">
             </div>
           </div>
         </div>

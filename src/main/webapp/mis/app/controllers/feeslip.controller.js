@@ -442,6 +442,14 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
             totalFee = totalFee + slip.extraCharge;
         }
 
+        if (slip.uniformCharges && !isNaN(slip.uniformCharges)) {
+            totalFee = totalFee + slip.uniformCharges;
+        }
+
+        if (slip.stationary && !isNaN(slip.stationary)) {
+            totalFee = totalFee + slip.stationary;
+        }
+
         if (slip.adjust && !isNaN(slip.adjust)) {
             totalFee = totalFee - slip.adjust;
         }
