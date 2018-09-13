@@ -54,9 +54,7 @@ public class FeeUtilsV2 {
                 .add(fee.getTransportFee().multiply(THREE))
                 .add(fee.getFinalDepositFee())
                 .add(fee.getFinalAdmissionFee())
-                .add(fee.getFinalAnnualCharges())
-                .add(fee.getUniformCharges())
-                .add(fee.getStationary());
+                .add(fee.getFinalAnnualCharges());
         BigDecimal gstAmmount;
 
         if (isGst) {
@@ -192,6 +190,7 @@ public class FeeUtilsV2 {
         return 0;
     }
 
+
     public static int quarterEndMonth(int quarter) {
         switch (quarter) {
             case 1:
@@ -206,6 +205,18 @@ public class FeeUtilsV2 {
         return 0;
     }
 
+    public static int getQuarter() {
+        Calendar cal=Calendar.getInstance();
+        int month=cal.get(Calendar.MONTH)-1;
+        if (month >= 1 && month <= 3)
+            return 1;
+        else if (month >= 4 && month <= 6)
+            return 2;
+        else if (month >= 7 && month <= 10)
+            return 3;
+        else
+            return 4;
+    }
     public static int getQuarter(int month) {
         if (month >= 1 && month <= 3)
             return 1;
@@ -225,7 +236,7 @@ public class FeeUtilsV2 {
         int currDay = cal.get(Calendar.DATE);
         int quarterEnd = quarterEndMonth(getQuarter(currMonth));
         double feeMonthRatio = quarterEnd - currMonth;
-        if (15 < currDay) {
+        if (15 <= currDay) {
             feeMonthRatio = feeMonthRatio + 0.5;
         } else {
             feeMonthRatio = feeMonthRatio + 1.00;
