@@ -362,6 +362,7 @@ public class StudentService extends BaseService {
 
 		Student student;
 		try {
+			request.setActive(true);
 			student = request.toEntity();
 		} catch (ParseException e) {
 			throw new ValidationException("Invalid date");
@@ -471,7 +472,9 @@ public class StudentService extends BaseService {
 		dbStudent.setProgram(program);
 		dbStudent.setCenter(center);
 
-		if(feeChange || isFormalChange){
+		boolean isCorporateChange=(dbStudent.isCorporate() ^ request.isCorporate());
+
+		if((feeChange || isFormalChange) && isCorporateChange ){
 			request.getFee().setStudentId(mask(dbStudent.getId()));
 			studentFeeService.updateStudentFee(request.getFee());
 		}
@@ -563,14 +566,16 @@ public class StudentService extends BaseService {
 		if (student == null) {
 			throw new NotFoundException(String.format("Cannot locate student with id %s", request.getId()));
 		}
-		BigDecimal balance=studentFeeService.getStudentBalance(student);
-		if(balance!=null && balance.intValue()>0){
+		StudentFeePaymentRequest slip=studentFeeService.getStudentBalance(student);
+		if(slip!=null)
+		if( (slip.getBalance()!=null && slip.getBalance().intValue()>0) || !slip.getPaymentStatus().equals(PaymentStatus.Paid) ){
 			throw new ValidationException(
 					String.format("Some balance fee is remaining of student [%s]", student.getName()));
 		}
+
 		student.setActive(false);
 		studentRepository.saveAndFlush(student);
-
+		logger.info("Student deactivated "+ student.getName());
 		List<StudentParent> parents = student.getParents();
 		for (StudentParent parent : parents) {
 			if (parent.isAccount()) {

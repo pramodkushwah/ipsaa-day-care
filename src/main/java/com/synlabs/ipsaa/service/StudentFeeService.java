@@ -577,6 +577,8 @@ public class StudentFeeService {
     public void resetStudentFee(){
         List<StudentFee> fees=listAllFee();
         for(StudentFee fee:fees){
+            // it will not reset ipsa club student fee
+            if(fee.getStudent().getProgram().getId()!=FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID && fee.getStudent().getProgram().getId()!=FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID){
             CenterProgramFee centerProgramFee=centerProgramFeeRepository.findByProgramIdAndCenterId(fee.getStudent().getProgram().getId(),fee.getStudent().getCenter().getId());
             try{
                 if(centerProgramFee==null){
@@ -609,6 +611,7 @@ public class StudentFeeService {
                     studentFeeRepository.save(fee);
             }catch(Exception e){
                 logger.error(String.format("Student Fee scheduler program center not found error .%s",fee));
+            }
             }
         }
     }
@@ -861,14 +864,11 @@ public class StudentFeeService {
         return receipt;
     }
 
-    public BigDecimal getStudentBalance(Student student) {
+    public StudentFeePaymentRequest getStudentBalance(Student student) {
         Calendar cal = Calendar. getInstance();
         int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));
         int year=cal.get(Calendar.YEAR);
-        StudentFeePaymentRequest slip=feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(student,FeeDuration.Quarterly,quarter,year);
-        if(slip!=null)
-        return slip.getBalance()==null?ZERO:slip.getBalance();
-        return null;
+        return feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(student,FeeDuration.Quarterly,quarter,year);
     }
 
     public PaymentHistoryResponce getStudentPaymentHistory(Long studentId) {
