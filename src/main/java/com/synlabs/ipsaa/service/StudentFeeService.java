@@ -237,9 +237,12 @@ public class StudentFeeService {
                 if(p.getActive()){
                     paidAmount=paidAmount.add(p.getPaidAmount());
                 }
-                if(p.getConfirmed()==null || !p.getConfirmed()){
-                    unPaidList.add(s);
-                    unConfirmCount++;
+                if(p.getConfirmed()==null || !p.getConfirmed()) {
+
+                    if(!p.getConfirmed() && p.getActive()){
+                        unPaidList.add(s);
+                        unConfirmCount++;
+                    }
                 }
             }
             totalAmount=totalAmount.add(s.getTotalFee());
@@ -466,7 +469,7 @@ public class StudentFeeService {
     }
 
     public List<StudentFeePaymentRequest> generateFeeSlips(StudentFeeSlipRequest request) {
-        validateQuarter(request);
+        //validateQuarter(request);
         QStudentFee qStudentFee = QStudentFee.studentFee;
         JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
 
@@ -666,6 +669,9 @@ public class StudentFeeService {
         if (slip == null)
         {
             throw new NotFoundException("Missing slip");
+        }
+        if(slip.isExpire()){
+            throw new ValidationException("can not update expire slip");
         }
         double alreadypaid=0;
         double uniformPaid=0;
