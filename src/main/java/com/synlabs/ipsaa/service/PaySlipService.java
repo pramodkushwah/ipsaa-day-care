@@ -119,7 +119,7 @@ public class PaySlipService extends BaseService {
 		query.select(qemp).from(qemp)
 				.where(qemp.active.isTrue().or(
 												qemp.active.isFalse()
-														.and(qemp.profile.dol.month().eq(month))
+														.and(qemp.profile.dol.month().goe(month))			///////Avneet-changed from equals to greater than equals
 														.and(qemp.profile.dol.year().eq(year))
 											)
 						);
