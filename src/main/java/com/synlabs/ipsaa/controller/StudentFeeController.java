@@ -148,7 +148,6 @@ public class StudentFeeController
   @PostMapping("/fee/")
   public StudentFeeResponse saveStudentFee(@RequestBody StudentFeeRequestV2 request)
   {
-    //return new StudentFeeResponse(studentService.saveStudentFee(request));
     return new StudentFeeResponse(studentFeeService.saveStudentFee(request));
   }
 
@@ -180,23 +179,21 @@ public class StudentFeeController
   @PostMapping("/feeslip/generate")
   public List<StudentFeeSlipResponse> generateStudentSlips(@RequestBody StudentFeeSlipRequest request)
   {
-    //return studentService.generateFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
     return studentFeeService.generateFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
   }
     @Secured(STUDENTFEE_SLIP_WRITE)
     @PostMapping("/feeslip/regenerate")
     public StudentFeeSlipResponse reGenerateStudentSlip(@RequestBody StudentFeeSlipRequestV2 request)
     {
-      //return new StudentFeeSlipResponse(studentService.regenerateStudentSlip(request));
         return new StudentFeeSlipResponse(studentFeeService.regenerateStudentSlip(request));
     }
   @Secured(STUDENTFEE_SLIP_WRITE)
   @PostMapping("/feeslip/regenerateAll")
   public void reGenerateStudentSlipAll(@RequestBody List<Long> ids)
   {
-    //return new StudentFeeSlipResponse(studentService.regenerateStudentSlip(request));
     studentFeeService.regenerateStudentSlipAll(ids);
   }
+
     @Secured(STUDENTFEE_SLIP_WRITE)
     @PostMapping("/feeslip")
     // Called when slip save button is pressed
