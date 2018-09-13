@@ -469,7 +469,7 @@ public class StudentFeeService {
     }
 
     public List<StudentFeePaymentRequest> generateFeeSlips(StudentFeeSlipRequest request) {
-        //validateQuarter(request);
+        validateQuarter(request);
         QStudentFee qStudentFee = QStudentFee.studentFee;
         JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
 
@@ -650,6 +650,32 @@ public class StudentFeeService {
         slip.setTotalFee(FeeUtilsV2.calculateSaveFinalFee(slip,slip.getFeeRatio()));
         slip.setTotalFee(slip.getTotalFee().add(slip.getBalance()));
        return feePaymentRepository.saveAndFlush(slip);
+    }
+    public StudentFeePaymentRequest updateSlipHard(StudentFeeSlipRequestV2 request) {
+        StudentFeePaymentRequest slip = feePaymentRepository.findOne(request.getId());
+        if (slip == null)
+        {
+            throw new NotFoundException("Missing slip");
+        }
+
+        if (slip.getPaymentStatus() == PaymentStatus.Paid)
+        {
+            throw new ValidationException("Already paid.");
+        }
+        slip.setUniformCharges(request.getUniformCharges()==null?ZERO:request.getUniformCharges());
+        slip.setStationary(request.getStationary()==null?ZERO:request.getStationary());
+
+        if(request.getExtraCharge()!=null)
+            slip.setExtraCharge(request.getExtraCharge());
+        if(request.getLatePaymentCharge()!=null)
+            slip.setLatePaymentCharge(request.getLatePaymentCharge());
+        if(request.getAdjust()!=null){
+            slip.setAdjust(request.getAdjust());
+        }
+
+        slip.setTotalFee(FeeUtilsV2.calculateSaveFinalFee(slip,slip.getFeeRatio()));
+        slip.setTotalFee(slip.getTotalFee().add(slip.getBalance()));
+        return feePaymentRepository.saveAndFlush(slip);
     }
 
     @Transactional
