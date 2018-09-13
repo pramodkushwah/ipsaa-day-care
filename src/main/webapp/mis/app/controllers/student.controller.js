@@ -423,12 +423,12 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     };
 
     function refresh() {
-        $http.get('/api/program/').then(function (response) {
-            $scope.programs = response.data;
-        });
-        $http.get('/api/group/').then(function (response) {
-            $scope.groups = response.data;
-        });
+//        $http.get('/api/program/').then(function (response) {
+//            $scope.programs = response.data;
+//        });
+//        $http.get('/api/group/').then(function (response) {
+//            $scope.groups = response.data;
+//        });
 
         $http.get('/api/center/').then(function (response) {
             $scope.centers = response.data;
@@ -450,6 +450,17 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
                 $scope.privileges = [];
             }
         );
+    }
+
+    $scope.getProgramsByCenter = function(centerId){
+      console.log(centerId);
+      $http.get('/api/center/programs/'+centerId).then(function (response) {
+        $scope.programs = response.data;
+        });
+    }
+
+    $scope.getGroupsByProgram = function(program){
+        $scope.groups = program.groups;
     }
 
     $scope.deleteStudentSwal = function (student) {

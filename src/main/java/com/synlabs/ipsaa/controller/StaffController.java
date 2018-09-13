@@ -2,6 +2,7 @@ package com.synlabs.ipsaa.controller;
 
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
+import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.service.BaseService;
 import com.synlabs.ipsaa.service.CenterService;
 import com.synlabs.ipsaa.service.DocumentService;
@@ -212,7 +213,16 @@ public class StaffController
   {
     StaffRequest request = new StaffRequest();
     request.setId(empId);
-    staffService.uploadStaffPic(request, file);
+
+    /////Avneet
+    long size=file.getSize();
+    long max = new Double(0.5*1024*1024).longValue();
+    if(size< max){
+      staffService.uploadStaffPic(request, file);
+    }else{
+      throw new ValidationException("Size should not be more than 0.5 MB");
+    }
+
   }
 
   @GetMapping("approvals/count")

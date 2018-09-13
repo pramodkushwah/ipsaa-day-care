@@ -36,6 +36,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -762,4 +763,22 @@ public class FeeService extends BaseService
   }
   //--------------------------------------shubham ---------------------------------------------------------------
 
+  ///////////Avneet
+  public List<Program> programByCenter(Long id){
+    List<Program> list=new ArrayList<>();
+
+    List<CenterProgramFee> centers=centerProgramFeeRepository.findByCenterIdOrderByProgramId(unmask(id));
+    List<Program> programs=programRepository.findAllByOrderByIdAsc();     ////by default returns in order ?
+
+    int size= centers.size();
+    int j=0;
+
+    for(Program p:programs){
+      if(j<size && p.getId().equals(centers.get(j).getProgram().getId())){
+        list.add(p);
+        j++;
+      }
+    }
+    return list;
+  }
 }

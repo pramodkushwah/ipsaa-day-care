@@ -225,6 +225,14 @@ app.controller('UserManagementController', function ($scope, $http, $filter) {
 
     };
 
+    $scope.selectEmployee = function(employee){
+    console.log(employee);
+        $scope.workingUser.firstname = employee.name;
+        $scope.workingUser.lastname = " ";
+        $scope.workingUser.email = employee.email;
+        $scope.workingUser.phone = employee.mobile;
+    }
+
     $scope.newUser = function () {
         $scope.workingUser = {
             mode: 'New',
