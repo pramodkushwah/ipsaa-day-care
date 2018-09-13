@@ -430,7 +430,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
         var totalFee;
         $scope.studentfeelist.filter( (fee) => {
           if(fee.id === slip.id) {
-            totalFee = fee.totalFee - fee.extraCharge - fee.latePaymentCharge - fee.adjust;
+            totalFee = fee.totalFee - fee.extraCharge - fee.latePaymentCharge - fee.adjust - fee.uniformCharges - fee.stationary;
           }
         });
 

@@ -633,6 +633,9 @@ public class StudentFeeService {
         {
             throw new ValidationException("Already paid.");
         }
+        slip.setUniformCharges(request.getUniformCharges()==null?ZERO:request.getUniformCharges());
+        slip.setStationary(request.getStationary()==null?ZERO:request.getStationary());
+
         if(request.getExtraCharge()!=null)
             slip.setExtraCharge(request.getExtraCharge());
         if(request.getLatePaymentCharge()!=null)
