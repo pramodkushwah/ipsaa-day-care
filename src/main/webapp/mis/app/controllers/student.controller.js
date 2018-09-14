@@ -139,6 +139,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             $scope.workingStudent = response.data;
             $scope.workingStudent.mode = "Show";
             $scope.workingStudent.centerId = $scope.workingStudent.center.id + "";
+            $scope.getProgramsByCenter($scope.workingStudent.centerId);
+            $scope.getGroupsByProgram($scope.workingStudent.program);
             $scope.workingStudent.programId = $scope.workingStudent.program.id + "";
             $scope.workingStudent.groupId = $scope.workingStudent.group.id + "";
             for (var i = 0; i < $scope.workingStudent.parents.length; i++) {
@@ -423,12 +425,12 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     };
 
     function refresh() {
-//        $http.get('/api/program/').then(function (response) {
-//            $scope.programs = response.data;
-//        });
-//        $http.get('/api/group/').then(function (response) {
-//            $scope.groups = response.data;
-//        });
+        $http.get('/api/program/').then(function (response) {
+            $scope.programs = response.data;
+        });
+        $http.get('/api/group/').then(function (response) {
+            $scope.groups = response.data;
+        });
 
         $http.get('/api/center/').then(function (response) {
             $scope.centers = response.data;
