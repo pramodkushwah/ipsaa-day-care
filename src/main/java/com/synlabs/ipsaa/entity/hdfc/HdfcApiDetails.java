@@ -12,8 +12,6 @@ import javax.persistence.OneToOne;
 @Entity
 public class HdfcApiDetails  extends BaseEntity {
 
-
-    private Long id;
     @Column(length = 200)
  private String workingKey;
 
@@ -83,7 +81,6 @@ public class HdfcApiDetails  extends BaseEntity {
     @Override
     public String toString() {
         return "HdfcApiDetails{" +
-                "id=" + id +
                 ", workingKey='" + workingKey + '\'' +
                 ", accessCode='" + accessCode + '\'' +
                 ", vsa='" + vsa + '\'' +

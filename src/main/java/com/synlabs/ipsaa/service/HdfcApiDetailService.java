@@ -3,6 +3,7 @@ package com.synlabs.ipsaa.service;
 import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.hdfc.HdfcApiDetails;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.jpa.CenterRepository;
 import com.synlabs.ipsaa.jpa.HdfcApiDetailRepository;
 import com.synlabs.ipsaa.jpa.StudentFeePaymentRepository;
 import com.synlabs.ipsaa.view.hdfcGateWayDetails.HdfcApiDetailRequest;
@@ -24,6 +25,8 @@ public class HdfcApiDetailService {
     HdfcApiDetailRepository hdfcApiDetailRepository;
     @Autowired
     private StudentFeePaymentRepository slipRepository;
+    @Autowired
+    private CenterRepository centerRepository;
 
     public HdfcApiDetails getDetailsByCenter(Center center){
        return hdfcApiDetailRepository.findByCenter(center);
@@ -35,7 +38,7 @@ public class HdfcApiDetailService {
 
     @Transactional
     public void upload() {
-        String SAMPLE_XLSX_FILE_PATH ="C:/Users/shubham/Desktop/ipsaa/query/Live2.xlsx";
+        String SAMPLE_XLSX_FILE_PATH ="C:/Users/shubham/Desktop/ipsaa/query/centre name with code5.xlsx";
              try{
                  File file = new File(SAMPLE_XLSX_FILE_PATH);
                  FileInputStream inputStream = new FileInputStream(file);
@@ -51,23 +54,32 @@ public class HdfcApiDetailService {
                          Cell currentCell = cellIterator.next();
                          if(currentCell.getStringCellValue().equals("Merchant Name"))
                              continue;
+
+                        String mname=currentCell.getStringCellValue();
                          currentCell = cellIterator.next();
-                         HdfcApiDetails details=new HdfcApiDetails();
-                         currentCell = cellIterator.next();
-                         details.setMerchantName(currentCell.getStringCellValue());
-                         currentCell = cellIterator.next();
-                         details.setVsa(currentCell.getStringCellValue()+"");
-                         currentCell = cellIterator.next();
-                         if(currentCell.getCellType()==Cell.CELL_TYPE_NUMERIC)
-                         details.setAccessCode(currentCell.getNumericCellValue()+"");
-                         else
+                         Center center =centerRepository.findByCode(currentCell.getStringCellValue());
+                         if(center!=null){
+                             HdfcApiDetails details=new HdfcApiDetails();
+                             details.setMerchantName(mname);
+                             details.setCenter(center);
+                             currentCell = cellIterator.next();
+                             if(currentCell.getCellType()==Cell.CELL_TYPE_NUMERIC){
+                                 details.setVsa(((int)currentCell.getNumericCellValue())+"");
+                             }
+                             else
+                                 details.setVsa(Integer.parseInt(currentCell.getStringCellValue()+"")+"");
+
+                             currentCell = cellIterator.next();
                              details.setAccessCode(currentCell.getStringCellValue());
-                         currentCell=cellIterator.next();
-                         details.setWorkingKey(currentCell.getStringCellValue());
-                         currentCell=cellIterator.next();
-                         details.setHdfcTid(currentCell.getStringCellValue());
-                     System.out.println(details);
-                     hdfcApiDetailRepository.save(details);
+                             currentCell=cellIterator.next();
+                             details.setWorkingKey(currentCell.getStringCellValue());
+                             currentCell=cellIterator.next();
+                             details.setHdfcTid(((long)currentCell.getNumericCellValue())+"");
+                             System.out.println(details);
+                             hdfcApiDetailRepository.save(details);
+                         }else {
+                             System.out.println("center not found"+currentCell.getStringCellValue());
+                         }
                  }
              }catch(Exception e){
                  e.printStackTrace();

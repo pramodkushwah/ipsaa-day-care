@@ -7,6 +7,7 @@ import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.student.*;
 import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.enums.FeeDuration;
+import com.synlabs.ipsaa.enums.GST;
 import com.synlabs.ipsaa.enums.PaymentStatus;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.ValidationException;
@@ -476,100 +477,47 @@ public class StudentFeeService {
         if(thisQuarterSlip==null){
             throw new NotFoundException(String.format("Payslip not found [%s]", request.getStudentId()));
         }
-        int slipCount=feePaymentRepository.countByStudentId(thisQuarterSlip.getStudent().getId());
-
         StudentFee fee=studentFeeRepository.findByStudentId(thisQuarterSlip.getStudent().getId());
         if(fee==null){
             throw new NotFoundException(String.format("Student fee not found [%s]", request.getStudentId()));
         }
 
-        if(thisQuarterSlip!=null)
-        {
-            thisQuarterSlip.setStudent(fee.getStudent());
-            thisQuarterSlip.setReGenerateSlip(true);
-            thisQuarterSlip.setExtraCharge(thisQuarterSlip.getExtraCharge()==null?ZERO:thisQuarterSlip.getExtraCharge());
-            thisQuarterSlip.setLatePaymentCharge(thisQuarterSlip.getLatePaymentCharge()==null?ZERO:thisQuarterSlip.getLatePaymentCharge());
 
-            thisQuarterSlip.setCgst(fee.getCgst());
-            thisQuarterSlip.setSgst(fee.getSgst());
-            thisQuarterSlip.setIgst(fee.getIgst());
+        Calendar cal =Calendar.getInstance();
+        BigDecimal nextRatio=FeeUtilsV2.calculateFeeRatioForQuarter(cal.getTime());
 
-            // hander fee chnage in running quarter
-                if(fee.getBaseFee().doubleValue()!=thisQuarterSlip.getBaseFee().doubleValue()){
-                    // base fee change handel
-                    Calendar cal =Calendar.getInstance();
+        // hander fee chnage or discount change in running quarter
+        if(fee.getBaseFee().doubleValue()!=thisQuarterSlip.getBaseFee().doubleValue() ||
+                fee.getFinalBaseFee().doubleValue()!=thisQuarterSlip.getFinalFee().divide(thisQuarterSlip.getFeeRatio()).doubleValue()){
+            // base fee change handel
+            thisQuarterSlip.setFinalBaseFee(thisQuarterSlip.getFinalBaseFee().divide(thisQuarterSlip.getFeeRatio()));
 
-                    BigDecimal nextRatio=FeeUtilsV2.calculateFeeRatioForQuarter(cal.getTime());
+            thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee()
+                        .subtract(thisQuarterSlip.getFinalBaseFee().multiply(nextRatio))
+                );
+            thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee().add(fee.getFinalBaseFee().multiply(nextRatio)));
+            BigDecimal gstAmmount=ZERO;
 
-                    thisQuarterSlip.setFinalBaseFee(thisQuarterSlip.getFinalBaseFee().divide(thisQuarterSlip.getFeeRatio()));
-
-                    thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee()
-                                .subtract(thisQuarterSlip.getFinalBaseFee().multiply(nextRatio))
-                        );
-                    thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee().add(fee.getFinalBaseFee().multiply(nextRatio)));
-
-                }else{
-                    thisQuarterSlip.setBaseFee(fee.getBaseFee());
-                    thisQuarterSlip.setFinalBaseFee(fee.getFinalBaseFee()==null?ZERO:fee.getFinalBaseFee());
-                    thisQuarterSlip.setBaseFeeDiscount(fee.getBaseFeeDiscount()==null?ZERO:fee.getBaseFeeDiscount());
-                }
-                if(fee.getTransportFee()!=thisQuarterSlip.getTransportFee()){
-                // transport fee change handel
-                }
-
-            thisQuarterSlip.setUniformCharges(ZERO);
-            thisQuarterSlip.setStationary(ZERO);
-            thisQuarterSlip.setTransportFee(fee.getTransportFee()==null?ZERO:fee.getTransportFee());
-
-            thisQuarterSlip.setGstAmount(fee.getGstAmount());
-            thisQuarterSlip.setAdjust(thisQuarterSlip.getAdjust()==null?ZERO:thisQuarterSlip.getAdjust());
-
-            if(thisQuarterSlip.getFinalDepositFee()!=null && thisQuarterSlip.getFinalDepositFee().doubleValue()>0){
-                // one time only
-                thisQuarterSlip.setDepositFeeDiscount(fee.getDepositFeeDiscount()==null?ZERO:fee.getDepositFeeDiscount());
-                thisQuarterSlip.setDeposit(fee.getDepositFee()==null?ZERO:fee.getDepositFee());
-                thisQuarterSlip.setFinalDepositFee(fee.getFinalDepositFee()==null?ZERO:fee.getFinalDepositFee());
-            }else{
-                // one time only
-                thisQuarterSlip.setDepositFeeDiscount(ZERO);
-                thisQuarterSlip.setDeposit(ZERO);
-                thisQuarterSlip.setFinalDepositFee(ZERO);
+            // handel chnage in gst
+            if (fee.getIgst() != null && fee.getIgst().intValue() != 0) {
+                gstAmmount = FeeUtilsV2.calculateGST(thisQuarterSlip.getFinalBaseFee(), null, GST.IGST);
+                fee.setGstAmount(thisQuarterSlip.getGstAmount().subtract(gstAmmount.multiply(nextRatio)));
+                gstAmmount = FeeUtilsV2.calculateGST(fee.getFinalBaseFee(), null, GST.IGST);
+                fee.setGstAmount(thisQuarterSlip.getGstAmount().add(gstAmmount.multiply(nextRatio)));
+            } else {
+                fee.setGstAmount(ZERO);
             }
-            BigDecimal baseFeeRatio=THREE;
-            thisQuarterSlip.setFeeRatio(baseFeeRatio);
-            // to check is it new addmission
-            if(slipCount==1){
-                baseFeeRatio=FeeUtilsV2.calculateFeeRatioForQuarter(thisQuarterSlip.getStudent().getProfile().getAdmissionDate());
-                thisQuarterSlip.setFeeRatio(baseFeeRatio);
-                thisQuarterSlip.setAdmissionFee(fee.getAdmissionFee()==null?ZERO:fee.getAdmissionFee());
-                thisQuarterSlip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
-                thisQuarterSlip.setFinalAdmissionFee(fee.getFinalAdmissionFee()==null?ZERO:fee.getFinalAdmissionFee());
-            }else{
-                thisQuarterSlip.setAdmissionFee(ZERO);
-                thisQuarterSlip.setAddmissionFeeDiscount(ZERO);
-                thisQuarterSlip.setFinalAdmissionFee(ZERO);
-            }
-
-            if(thisQuarterSlip.getQuarter()==2 || (thisQuarterSlip.getFinalAnnualCharges()!=null &&thisQuarterSlip.getFinalAnnualCharges().intValue()>0)  ){
-                thisQuarterSlip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount()==null?ZERO:fee.getAnnualFeeDiscount());
-                thisQuarterSlip.setAnnualFee(fee.getAnnualCharges()==null?ZERO:fee.getAnnualCharges());
-                thisQuarterSlip.setFinalAnnualCharges(fee.getFinalAnnualCharges()==null?ZERO:fee.getFinalAnnualCharges());
-            }else{
-                thisQuarterSlip.setAnnualFee(ZERO);
-                thisQuarterSlip.setAnnualFeeDiscount(ZERO);
-                thisQuarterSlip.setFinalAnnualCharges(ZERO);
-            }
-
-            thisQuarterSlip.setTotalFee(FeeUtilsV2.calculateReGenrateFinalFee(thisQuarterSlip,thisQuarterSlip.getFeeRatio()));
-            thisQuarterSlip.setFinalFee(thisQuarterSlip.getTotalFee()); // without balance
-            thisQuarterSlip.setTotalFee(thisQuarterSlip.getTotalFee()
-                    .add(thisQuarterSlip.getBalance()==null?ZERO:thisQuarterSlip.getBalance()));
-
-            return  feePaymentRepository.saveAndFlush(thisQuarterSlip);
         }
-        else {
-            throw new NotFoundException(String.format("Pay Slip not found", request.getStudentId()));
+        if(fee.getTransportFee()!=thisQuarterSlip.getTransportFee()){
+        // transport fee change handel
+            thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee()
+                    .subtract(thisQuarterSlip.getTransportFee().multiply(nextRatio))
+            );
+            thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee().add(fee.getTransportFee().multiply(nextRatio)));
+            thisQuarterSlip.setTransportFee(fee.getTransportFee());
+            thisQuarterSlip.setFinalTransportFee(fee.getTransportFee().multiply(thisQuarterSlip.getFeeRatio()));
         }
+        return  feePaymentRepository.saveAndFlush(thisQuarterSlip);
     }
 
 
@@ -731,7 +679,7 @@ public class StudentFeeService {
         Calendar cal = Calendar. getInstance();
         int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));
         int year=cal.get(Calendar.YEAR);
-        return this.regenerateFeeSlipV2(request,quarter,year);
+        return this.regenerateFeeSlip(request,quarter,year);
     }
 
     public StudentFeePaymentRequest updateSlip(StudentFeeSlipRequestV2 request) {
