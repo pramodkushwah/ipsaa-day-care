@@ -174,18 +174,30 @@ public class StaffService extends BaseService
   {
     return employeeRepository.findOne(request.getId());
   }
-// shubham
+  // shubham
+  public File getEmployee(StaffFilterRequest staffRequest){
+    List<Employee> list=null;
+    if(staffRequest.getEmployerCode().equals("All") || staffRequest.getEmployerCode().equals("ALL"))
+    list= employeeRepository.findByActiveTrueAndCostCenterIn(getUserCenters());
+    else{
+       list=employeeRepository.findByActiveTrueAndCostCenterInAndEmployerCode(getUserCenters(),staffRequest.getEmployerCode());
+    }
+    StaffReport excel = new StaffReport(list,exportDirectory);
+    return excel.createExcel(); // returning file
+  }
+
+  // shubham
   public File getEmployeeSalary(StaffFilterRequest staffRequest){
 
     List<EmployeeSalary> list=new ArrayList<>();
 
-    if (!StringUtils.isEmpty(staffRequest.getEmployerCode()) || staffRequest.getEmployerCode().equals("ALL")) {
+    if (StringUtils.isEmpty(staffRequest.getEmployerCode()) || staffRequest.getEmployerCode().equals("ALL")) {
       list = employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
+    }else{
+      list = employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeEmployerCode(staffRequest.getEmployerCode());
     }
       StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository, staffRequest.getEmployerCode());
       return excel.createExcel(); // returning file
-
-
   }
   @Transactional
   public Employee save(StaffRequest request) throws ParseException
@@ -400,15 +412,18 @@ public class StaffService extends BaseService
     boolean errorInFile = false;
     Map<String, String> statusMap = new HashMap<>();
     statusMap.put("error", "false");
+
     List<ImportEmployee> employees = excelImportService.importEmployeeRecords(file);
     List<Employee> employeeList = new ArrayList<>(employees.size());
     List<EmployeeProfile> employeeProfiles = new ArrayList<>(employees.size());
     List<User> userList = new ArrayList<>(employees.size());
     Set<String> mobile = new HashSet<>();
+
     if (employees.size() < 1)
     {
       throw new Exception("Error Processing file");
     }
+
     for (ImportEmployee employee : employees)
     {
       String validationMessage = employee.validate();

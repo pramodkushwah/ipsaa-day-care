@@ -1,11 +1,13 @@
 app.controller('MonthlySalaryController', function ($scope, $http) {
     $scope.disableGenerateButton = false;
     $scope.disableUpdateBtn = false;
-
+    $scope.regenerateRecords = {};
     $scope.years = [];
+    $scope.ungenerate = [];
 
     $http.get('/api/le/').then(function (response) {
         $scope.employers = response.data;
+        $scope.employers.push({code: 'ALL', name: 'ALL', id: 'ALL'});
     });
 
     $scope.generate = function (month, year) {
@@ -32,6 +34,28 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
             $scope.disableGenerateButton = false;
         });
     };
+
+    $scope.regenerateAllPaySlip = function(){
+        const requestObject = {}
+        const regeneratedRecordIds = []
+        Object.keys($scope.regenerateRecords).forEach((key)=>{
+            if($scope.regenerateRecords[key]) {
+                regeneratedRecordIds.push(key);
+            }
+        })
+        requestObject.month = $scope.selectedMonth.value;
+        requestObject.year = $scope.selectedYear.value;
+        requestObject.ids = regeneratedRecordIds;
+        console.log(requestObject);
+
+        $http.post('/api/employee/payslip/regenerateall/', requestObject).then(function(response){
+            ok("All selected Payslip regenerated successfully.");
+            $scope.regenerateRecords = {};
+        }, function(error){
+            error(response.data.error);
+        })
+        
+    }
 
     $scope.showSlip = function (salary) {
         $scope.paySlip = angular.copy(salary);
@@ -144,6 +168,53 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
         );
     }
 
+    $scope.openFileExplorer = function(){
+        $('#file-tag').click();
+    }
+
+    $scope.uploadExcel = function (event) {
+        $scope.uploadingFile = true;
+        $scope.excelFile = event.target.files[0];
+        swal({
+            title: 'Are you sure?',
+            text: 'you want update payslip of the year '+ $scope.selectedYear.value + ' and Month '+$scope.selectedMonth.name,
+            type: 'warning',
+            width: 600,
+            buttonsStyling: false,
+            confirmButtonClass: "btn btn-warning",
+            cancelButtonClass: "btn btn-default",
+            showCancelButton: true
+        }).then(function () {
+            var formData = new FormData();
+            formData.append('employerId',$scope.selectedEmployer.id);
+            formData.append('year',$scope.selectedYear.value);
+            formData.append('month',$scope.selectedMonth.value);
+            formData.append('file',$scope.excelFile);
+            $http.put('/api/employee/payslip/upload',formData,{
+                headers: {'Content-Type': undefined}
+            }).then(function(response){
+                $scope.generate($scope.selectedMonth, $scope.selectedYear);
+                $scope.ungenerate = response.data.ungenerate;
+                angular.element("input[type='file']").val(null); // Unset Input
+                $scope.excelFile = undefined; // Unset $scope property
+                $scope.uploadingFile = false;
+                if(response.data.ungenerate.length) {
+                    $('#myModal').modal('toggle');
+                } else {
+                    ok('Excel Successfully uploaded');
+                }
+            },function(error){
+                angular.element("input[type='file']").val(null); // Unset Input
+                $scope.excelFile = undefined; // Unset $scope property
+            });
+            return;
+        },function(ignore){
+            $scope.excelFile = null;
+            return;
+        });
+    }
+
+
     function error(message) {
         swal({
             title: message,
@@ -162,3 +233,13 @@ app.controller('MonthlySalaryController', function ($scope, $http) {
         });
     }
 });
+
+app.directive('fileOnChange', function () {
+    return {
+     restrict: 'A',
+     link: function (scope, element, attrs) {
+      var onChangeHandler = scope.$eval(attrs.fileOnChange);
+      element.bind('change', onChangeHandler);
+     }
+    };
+   });

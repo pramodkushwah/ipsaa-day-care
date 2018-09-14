@@ -770,23 +770,22 @@ public class FeeService extends BaseService
   }
   //--------------------------------------shubham ---------------------------------------------------------------
 
-
   ///////////Avneet
   public List<Program> programByCenter(Long id){
-      List<Program> list=new ArrayList<>();
+    List<Program> list=new ArrayList<>();
 
-      List<CenterProgramFee> centers=centerProgramFeeRepository.findByCenterIdOrderByProgramId(id);
-      List<Program> programs=programRepository.findAll();
+    List<CenterProgramFee> centers=centerProgramFeeRepository.findByCenterIdOrderByProgramId(unmask(id));
+    List<Program> programs=programRepository.findAllByOrderByIdAsc();     ////by default returns in order ?
 
-      int size= centers.size();
-      int j=0;
+    int size= centers.size();
+    int j=0;
 
-      for(Program p:programs){
-        if(j<size && p.getId().equals(centers.get(j).getProgram().getId())){
-            list.add(p);
-            j++;
-        }
+    for(Program p:programs){
+      if(j<size && p.getId().equals(centers.get(j).getProgram().getId())){
+        list.add(p);
+        j++;
       }
-      return list;
+    }
+    return list;
   }
 }

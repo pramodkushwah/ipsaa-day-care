@@ -1,10 +1,6 @@
 package com.synlabs.ipsaa.view.report.excel;
 
 import com.synlabs.ipsaa.entity.staff.Employee;
-import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
-import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
-import com.synlabs.ipsaa.jpa.EmployeePaySlipRepository;
-import com.synlabs.ipsaa.jpa.EmployeeRepository;
 import com.synlabs.ipsaa.view.staff.StaffFilterRequest;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -14,7 +10,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -84,13 +79,26 @@ public class StaffReport {
 				cell.setCellValue(employee.getEmail());
 
 			cell = row.createCell(index++);
+			if (employee.getEmployer() != null)
+				cell.setCellValue(employee.getEmployer().getName());
+
+
+			cell = row.createCell(index++);
 			if (employee.getProfile().getGender() != null)
 				cell.setCellValue(employee.getProfile().getGender().name());
+
+
+			cell = row.createCell(index++);											///Father's name added
+			if (employee.getProfile().getFatherName() != null)
+				cell.setCellValue(employee.getProfile().getFatherName());
 
 			cell = row.createCell(index++);
 			if (employee.getMaritalStatus() != null)
 				cell.setCellValue(employee.getMaritalStatus().name());
 
+			cell = row.createCell(index++);										////Husband's name added
+			if (employee.getProfile().getspouseName() != null)
+				cell.setCellValue(employee.getProfile().getspouseName());
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			if (employee.getProfile().getDateOfJoining() != null) {
@@ -219,137 +227,113 @@ public class StaffReport {
 			cell.setCellValue(row.getRowNum());
 
 			cell = row.createCell(index++);
-
 				cell.setCellValue("Eid");
 
 			cell = row.createCell(index++);
-			cell.setCellValue("FirstName");
+				cell.setCellValue("FirstName");
 
 			cell = row.createCell(index++);
 				cell.setCellValue("LastName");
 
-		cell = row.createCell(index++);
+			cell = row.createCell(index++);
 				cell.setCellValue("Email");
 
-
-		cell = row.createCell(index++);
-				cell.setCellValue("Gender");
-
-		cell = row.createCell(index++);
-				cell.setCellValue("MaritalStatus");
+				cell = row.createCell(index++);
+			cell.setCellValue("Employer");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
+				cell.setCellValue("Gender");
 
+			cell = row.createCell(index++);							///Added
+				cell.setCellValue("Father's Name");
+
+			cell = row.createCell(index++,Cell.CELL_TYPE_STRING);
+				cell.setCellValue("MaritalStatus");
+
+			cell = row.createCell(index++);							///Added
+				cell.setCellValue("Spouse's Name");
+
+			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 				cell.setCellValue("DateOfJoining");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue("DateOfLeaving");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue("DateOfBirth");
 
-
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue("Mobile");
 
 			cell = row.createCell(index++);
-
 				cell.setCellValue("CostCenter");
 
 			cell = row.createCell(index++);
-
 				cell.setCellValue("EmployeeType");
 
-
 			cell = row.createCell(index++);
-
 				cell.setCellValue("ExpectedIn");
 
-
 			cell = row.createCell(index++);
-
 				cell.setCellValue("ExpectedOut");
 
-
 			cell = row.createCell(index++);
-
 				cell.setCellValue("ExpectedHours");
 
-
 			cell = row.createCell(index++);
-
 				cell.setCellValue("ReportingManager");
 
 			cell = row.createCell(index++);
-
 				cell.setCellValue("BiometricId");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				//System.out.println(staffR.getEmployee().getProfile().getBan());
 				cell.setCellValue("Ban");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue(("HolderName"));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue(("IfscCode"));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue(("BankName"));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue(("BranchName"));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_NUMERIC);
-
 				cell.setCellValue(("CenterName"));
 
-
-				cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
+			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 				cell.setCellValue(("Designation"));
 
-
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue("AadharNumber");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue("Pan");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue("Esin");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue("Pran");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue("Address");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue("City");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue("State");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-
 				cell.setCellValue("Zipcode");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
+				cell.setCellValue("Phone");
 
-				cell.setCellValue("Phone");	}
+			}
 }

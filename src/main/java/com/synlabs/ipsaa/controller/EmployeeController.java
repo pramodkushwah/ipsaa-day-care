@@ -1,16 +1,22 @@
 package com.synlabs.ipsaa.controller;
 
 import com.itextpdf.text.DocumentException;
+import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
+import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.service.BaseService;
 import com.synlabs.ipsaa.service.EmployeeService;
 import com.synlabs.ipsaa.service.PaySlipService;
 import com.synlabs.ipsaa.view.staff.*;
 import com.synlabs.ipsaa.view.student.EmployeeSalaryRequest;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.*;
@@ -62,7 +69,7 @@ public class EmployeeController
 
   @Secured(SALARY_READ)
   @PostMapping("payslip")
-  public List<EmployeePaySlipResponse> list(@RequestParam Integer month, @RequestParam Integer year, @RequestParam Long employerId) throws ParseException
+  public List<EmployeePaySlipResponse> list(@RequestParam Integer month, @RequestParam Integer year, @RequestParam String employerId) throws ParseException
   {
     return paySlipService.listPayslips(month, year, employerId).stream().map(EmployeePaySlipResponse::new).collect(Collectors.toList());
   }
@@ -98,6 +105,26 @@ public class EmployeeController
     return new EmployeePaySlipResponse(paySlipService.updatePaySlip(request));
   }
 
+  // shubham
+  @Secured(PAYSLIP_WRITE)
+  @PutMapping("/payslip/upload")
+  public ResponseEntity<Map<String, Object>> upload(@RequestParam("file") MultipartFile file,@RequestParam Integer month, @RequestParam Integer year, @RequestParam String employerId) throws IOException, DocumentException
+  {
+    //to upload present days excel
+    try {
+      Map<String, Object> map = paySlipService.uploadData(file,month,year,employerId);
+      String isSuccess = (String)map.get("error");
+      map.remove("error");
+      if (isSuccess.equalsIgnoreCase("true"))
+      {
+        throw new ValidationException("file not uploaded");
+      }
+      return new ResponseEntity<>(map,HttpStatus.OK);
+    } catch (InvalidFormatException e) {
+      throw new ValidationException("file not uploaded");
+    }
+  }
+
   @Secured(PAYSLIP_WRITE)
   @PutMapping("/payslip/regenerate/")
   public EmployeePaySlipResponse regeneratePaySlip(@RequestBody EmployeePaySlipRequest request) throws IOException, DocumentException, ParseException
@@ -105,20 +132,14 @@ public class EmployeeController
     return new EmployeePaySlipResponse(paySlipService.reGeneratePaySlip(request));
   }
 
+
+  //------------------------------shubham-----------------------------------------------------------------
+  // shubham
   @Secured(PAYSLIP_WRITE)
   @PostMapping("/payslip/regenerateall/")
   public void regeneratePaySlipAll(@RequestBody PaySlipRegenerateRequest request) throws IOException, DocumentException, ParseException
   {
     paySlipService.reGeneratePaySlipAll(request);
-  }
-  //------------------------------shubham-----------------------------------------------------------------
-  // shubham
-  
-  @Secured(PAYSLIP_WRITE)
-  @PostMapping("/payslip/regenerateselected/")
-  public void regeneratePaySlipSelected(@RequestBody PaySlipRegenerateRequest request) throws IOException, DocumentException, ParseException
-  {
-    paySlipService.reGenerate(request);
   }
   @Secured(PAYSLIP_LOCK)
   @PutMapping("/payslip/lock")

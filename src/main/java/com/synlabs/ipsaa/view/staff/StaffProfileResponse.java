@@ -34,6 +34,13 @@ public class StaffProfileResponse implements Response
   private String branchName;
   private String holderName;
 
+  ///Avneet
+  /////Avneet
+  private String fatherName;
+    private String spouseName;
+
+
+
 
   public StaffProfileResponse(EmployeeProfile profile)
   {
@@ -56,6 +63,10 @@ public class StaffProfileResponse implements Response
     this.bankName=profile.getBankName();
     this.branchName=profile.getBranchName();
     this.holderName=profile.getHolderName();
+
+    //////Avneet
+    this.spouseName=profile.getspouseName();
+    this.fatherName=profile.getFatherName();
   }
 
   // shubham
@@ -173,4 +184,12 @@ public class StaffProfileResponse implements Response
   {
     this.permanentAddress = permanentAddress;
   }
+
+    public String getFatherName() { return fatherName; }
+
+    public void setFatherName(String fatherName) { this.fatherName = fatherName; }
+
+    public String getspouseName() { return spouseName; }
+
+    public void setspouseName(String spouseName) { this.spouseName = spouseName; }
 }
