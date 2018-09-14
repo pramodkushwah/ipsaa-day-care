@@ -297,8 +297,6 @@ public class StudentService extends BaseService {
 			if(studentFee.getDiscount()!=null && studentFee.getDiscount().intValue()>0)
 				studentFee.setBaseFeeDiscount(studentFee.getDiscount());
 			studentFee.setFinalBaseFee(FeeUtilsV2.calculateDiscountAmount(studentFee.getBaseFee(),studentFee.getBaseFeeDiscount()));
-			studentFee.setUniformCharges(ZERO);
-			studentFee.setStationary(ZERO);
 			studentFee.setFinalFee(studentFee.getFinalFee().subtract(adjust));
 			studentFeeService.saveStudentFee(studentFee);
 			System.out.println(studentFee.getStudent().getName());
@@ -462,6 +460,7 @@ public class StudentService extends BaseService {
 
 		boolean feeChange = !(dbStudent.getProgram().equals(program) && dbStudent.getCenter().equals(center));
 		if(feeChange){
+			request.getFee().setProgramChange(true);
 		   Set<String> privileges= getUser().getPrivileges();
 		   List<Role> roles=getUser().getRoles();
         }
@@ -474,7 +473,7 @@ public class StudentService extends BaseService {
 
 		boolean isCorporateChange=(dbStudent.isCorporate() ^ request.isCorporate());
 
-		if((feeChange || isFormalChange) && isCorporateChange ){
+		if((feeChange || isFormalChange) && !request.isCorporate()){
 			request.getFee().setStudentId(mask(dbStudent.getId()));
 			studentFeeService.updateStudentFee(request.getFee());
 		}

@@ -143,7 +143,7 @@ public class StudentFeeRequestV2 implements Request
 
   public StudentFee toEntity(StudentFee studentFee, CenterProgramFee fee)
   {
-      if(studentFee==null || !this.isProgramChange){
+      if(studentFee==null || this.isProgramChange){
         if(studentFee==null) {
           studentFee = new StudentFee();
         }
