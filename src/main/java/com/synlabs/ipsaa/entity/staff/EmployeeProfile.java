@@ -3,6 +3,7 @@ package com.synlabs.ipsaa.entity.staff;
 import com.synlabs.ipsaa.entity.common.Address;
 import com.synlabs.ipsaa.entity.common.BaseEntity;
 import com.synlabs.ipsaa.enums.Gender;
+import org.joda.time.LocalDate;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
@@ -219,8 +220,9 @@ public class EmployeeProfile extends BaseEntity
     String result = "";
     if (this.dob != null)
     {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");        /////Changed format
+      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");        /////Changed format
       result = sdf.format(this.dob);
+
     }
     return result;
   }
@@ -231,10 +233,19 @@ public class EmployeeProfile extends BaseEntity
     String result = "";
     if (this.doj != null)
     {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");            /////Changed format
+      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");            /////Changed format
       result = sdf.format(this.doj);
     }
     return result;
+  }
+
+  @Transient
+  public LocalDate getDOJ(){
+    LocalDate date=null;
+    if(this.doj!=null){
+      date=LocalDate.fromDateFields(doj);
+    }
+    return date;
   }
 
   @Transient
@@ -243,7 +254,7 @@ public class EmployeeProfile extends BaseEntity
     String result = "";
     if (this.dol != null)
     {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");            /////Changed format
+      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");            /////Changed format
       result = sdf.format(this.dol);
     }
     return result;

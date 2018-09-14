@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -46,6 +47,7 @@ public class StaffExcelReport {
 				FileOutputStream fileOutputStream = new FileOutputStream(file);
 				SXSSFWorkbook workbook = new SXSSFWorkbook();
 				Sheet feeCollectionReportSheet = workbook.createSheet("SalarySlip");// creating a blank sheet
+				CellStyle cellStyle=workbook.createCellStyle();
 				int rownum = 0;
 				boolean isCreateList = true;
 				Row row = null;
@@ -58,7 +60,7 @@ public class StaffExcelReport {
 					if(isCreateList==true) {
 						row = feeCollectionReportSheet.createRow(rownum++);
 					}
-					isCreateList = createList(satffSalary, row);
+					isCreateList = createList(satffSalary, row,cellStyle);
 				}
 				workbook.write(fileOutputStream);
 				workbook.dispose();
@@ -71,8 +73,9 @@ public class StaffExcelReport {
 		return file;
 	}
 
-	private boolean createList(EmployeeSalary staffR, Row row) // creating cells for each row
+	private boolean createList(EmployeeSalary staffR, Row row, CellStyle style) // creating cells for each row
 	{
+		style.setDataFormat((short)14);				//////////sets excel built-in date format
 		EmployeePaySlip slip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(staffR.getEmployee(), month,
 				year);
 		int index=0;
@@ -90,9 +93,10 @@ public class StaffExcelReport {
 			if (staffR.getEmployee().getLastName() != null)
 				cell.setCellValue(staffR.getEmployee().getLastName());
 
-			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
+			cell = row.createCell(index++);
 			if (staffR.getEmployee().getProfile().getDateOfJoining() != null) {
-				cell.setCellValue(staffR.getEmployee().getProfile().getDateOfJoining());
+				cell.setCellValue(staffR.getEmployee().getProfile().getDoj());
+				cell.setCellStyle(style);
 			}
 
 //			cell = row.createCell(5);
