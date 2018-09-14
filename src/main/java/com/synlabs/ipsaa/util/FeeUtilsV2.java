@@ -212,7 +212,7 @@ public class FeeUtilsV2 {
             return 1;
         else if (month >= 4 && month <= 6)
             return 2;
-        else if (month >= 7 && month <= 10)
+        else if (month >= 7 && month <= 9)
             return 3;
         else
             return 4;
@@ -222,7 +222,7 @@ public class FeeUtilsV2 {
             return 1;
         else if (month >= 4 && month <= 6)
             return 2;
-        else if (month >= 7 && month <= 10)
+        else if (month >= 7 && month <= 9)
             return 3;
         else
             return 4;

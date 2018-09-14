@@ -374,18 +374,21 @@ public class StudentFeeService {
     }
 
     public StudentFeePaymentRequest regenerateFeeSlip(StudentFeeSlipRequestV2 request, int quarter, int year) {
-        long id=request.getId();
         StudentFeePaymentRequest thisQuarterSlip=null;
         thisQuarterSlip = feePaymentRepository.findOne(request.getId());
+        if(thisQuarterSlip==null){
+            throw new NotFoundException(String.format("Payslip not found [%s]", request.getStudentId()));
+        }
+        int slipCount=feePaymentRepository.countByStudentId(thisQuarterSlip.getStudent().getId());
 
         StudentFee fee=studentFeeRepository.findByStudentId(thisQuarterSlip.getStudent().getId());
         if(fee==null){
             throw new NotFoundException(String.format("Student fee not found [%s]", request.getStudentId()));
         }
-        if (thisQuarterSlip.getPaymentStatus() == PaymentStatus.Paid ||thisQuarterSlip.getPaymentStatus() == PaymentStatus.PartiallyPaid)
-        {
-            throw new ValidationException("Already paid some or full amount.");
-        }
+//        if (thisQuarterSlip.getPaymentStatus() == PaymentStatus.Paid ||thisQuarterSlip.getPaymentStatus() == PaymentStatus.PartiallyPaid)
+//        {
+//            throw new ValidationException("Already paid some or full amount.");
+//        }
 
         if(thisQuarterSlip!=null)
         {
@@ -429,8 +432,11 @@ public class StudentFeeService {
                 thisQuarterSlip.setDeposit(ZERO);
                 thisQuarterSlip.setFinalDepositFee(ZERO);
             }
-
-             if(thisQuarterSlip.getFinalAdmissionFee()!=null && thisQuarterSlip.getFinalAdmissionFee().intValue()>0){
+            BigDecimal baseFeeRatio=THREE;
+            thisQuarterSlip.setFeeRatio(baseFeeRatio);
+            if(slipCount==1){
+                    baseFeeRatio=FeeUtilsV2.calculateFeeRatioForQuarter(thisQuarterSlip.getStudent().getProfile().getAdmissionDate());
+                    thisQuarterSlip.setFeeRatio(baseFeeRatio);
                  thisQuarterSlip.setAdmissionFee(fee.getAdmissionFee()==null?ZERO:fee.getAdmissionFee());
                  thisQuarterSlip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
                  thisQuarterSlip.setFinalAdmissionFee(fee.getFinalAdmissionFee()==null?ZERO:fee.getFinalAdmissionFee());
@@ -461,6 +467,8 @@ public class StudentFeeService {
                 throw new NotFoundException(String.format("Pay Slip not found", request.getStudentId()));
         }
     }
+
+
     public StudentFeePaymentRequest generateFirstFeeSlip(Long slipId){
         Calendar cal = Calendar. getInstance();
         int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));

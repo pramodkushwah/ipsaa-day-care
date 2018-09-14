@@ -15,6 +15,7 @@ import com.synlabs.ipsaa.view.fee.StudentFeeRequest;
 import com.synlabs.ipsaa.view.fee.StudentFeeRequestV2;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -331,12 +332,10 @@ public class StudentRequest implements Request
 
     studentProfile.setDob(parseDate(getDob()));
     Calendar cal=Calendar.getInstance();
-    cal.set(Calendar.DAY_OF_MONTH,1);
-    cal.set(Calendar.MONTH,FeeUtils.quarterStartMonth(FeeUtilsV2.getQuarter())-1);
-    System.out.println(cal.getTime().toString());
-    System.out.println(parseDate(getAdmissionDate()));
-    if((parseDate(getAdmissionDate()).before(cal.getTime()))){
-      throw new ValidationException("Addmission date can not be befor this quarter");
+    cal.setTime(parseDate(getAdmissionDate()));
+
+    if(FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH))!=FeeUtilsV2.getQuarter() || cal.get(Calendar.YEAR)!=LocalDate.now().getYear()){
+      throw new ValidationException("Admission date can not be set to before or after running quarter");
     }
     studentProfile.setAdmissionDate(parseDate(getAdmissionDate()));
 

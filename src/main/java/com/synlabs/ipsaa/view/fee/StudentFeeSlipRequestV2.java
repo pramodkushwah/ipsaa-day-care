@@ -20,6 +20,16 @@ public class StudentFeeSlipRequestV2 implements Request
   private Boolean confirm;
   private BigDecimal stationary;
   private BigDecimal uniformCharges;
+  private String spaceifyRegenrationDate;
+
+
+  public String getSpaceifyRegenrationDate() {
+    return spaceifyRegenrationDate;
+  }
+
+  public void setSpaceifyRegenrationDate(String spaceifyRegenrationDate) {
+    this.spaceifyRegenrationDate = spaceifyRegenrationDate;
+  }
 
   public BigDecimal getStationary() {
     return stationary;
