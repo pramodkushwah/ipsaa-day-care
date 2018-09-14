@@ -219,7 +219,7 @@ public class EmployeeProfile extends BaseEntity
     String result = "";
     if (this.dob != null)
     {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy");        /////Changed format
+      SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");        /////Changed format
       result = sdf.format(this.dob);
     }
     return result;
@@ -231,7 +231,7 @@ public class EmployeeProfile extends BaseEntity
     String result = "";
     if (this.doj != null)
     {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy");            /////Changed format
+      SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");            /////Changed format
       result = sdf.format(this.doj);
     }
     return result;
@@ -243,7 +243,7 @@ public class EmployeeProfile extends BaseEntity
     String result = "";
     if (this.dol != null)
     {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy");            /////Changed format
+      SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");            /////Changed format
       result = sdf.format(this.dol);
     }
     return result;
