@@ -299,7 +299,7 @@ public class StudentService extends BaseService {
 			studentFee.setFinalBaseFee(FeeUtilsV2.calculateDiscountAmount(studentFee.getBaseFee(),studentFee.getBaseFeeDiscount()));
 			studentFee.setFinalFee(studentFee.getFinalFee().subtract(adjust));
 			studentFeeService.saveStudentFee(studentFee);
-			System.out.println(studentFee.getStudent().getName());
+			//System.out.println(studentFee.getStudent().getName());
 			studentFeeRepository.save(studentFee);
 		}
 	}

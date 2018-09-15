@@ -108,6 +108,7 @@ public class PaySlipService extends BaseService {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.MONTH, month - 1);
 		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.DAY_OF_MONTH, calendar.getMaximum(Calendar.DAY_OF_MONTH));
 		Date generationDate = calendar.getTime();
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
@@ -117,10 +118,10 @@ public class PaySlipService extends BaseService {
 		JPAQuery<Employee> query = new JPAQuery<>(entityManager);
 		QEmployee qemp = QEmployee.employee;
 		query.select(qemp).from(qemp)
-				.where(qemp.active.isTrue().or(
+				.where(qemp.active.isTrue().and(qemp.profile.doj.loe(generationDate)).or(
 												qemp.active.isFalse()
-														.and(qemp.profile.dol.month().goe(month))			///////Avneet-changed from equals to greater than equals
-														.and(qemp.profile.dol.year().eq(year))
+														.and(qemp.profile.dol.month().eq(month))
+														.and(qemp.profile.dol.year().eq(year))///////Avneet-changed from equals to greater than equals
 											)
 						);
 

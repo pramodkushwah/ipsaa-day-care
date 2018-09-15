@@ -19,7 +19,7 @@ import com.synlabs.ipsaa.jpa.EmployeePaySlipRepository;
 import com.synlabs.ipsaa.view.staff.StaffFilterRequest;
 
 public class StaffExcelReport {
-	List<EmployeeSalary> staff;
+	List<EmployeePaySlip> staff;
 
 	StaffFilterRequest staffRequest;
 	String path;
@@ -28,12 +28,11 @@ public class StaffExcelReport {
 	private String er_code;
 	private EmployeePaySlipRepository employeePaySlipRepository;
 
-	public StaffExcelReport(List<EmployeeSalary> staff, StaffFilterRequest staffRequest, String path,
-			EmployeePaySlipRepository employeePaySlipRepository,String er_code) {
+	public StaffExcelReport(List<EmployeePaySlip> staff, StaffFilterRequest staffRequest, String path,
+							String er_code) {
 		this.staff = staff;
 		this.path = path;
 		this.staffRequest = staffRequest;
-		this.employeePaySlipRepository = employeePaySlipRepository;
 		this.year = staffRequest.getYear();
 		this.month = staffRequest.getMonth();
 		this.er_code=er_code;
@@ -56,7 +55,7 @@ public class StaffExcelReport {
 					setupheaders(row);
 					rownum++;
 				}
-				for (EmployeeSalary satffSalary : this.staff) {
+				for (EmployeePaySlip satffSalary : this.staff) {
 					if(isCreateList==true) {
 						row = feeCollectionReportSheet.createRow(rownum++);
 					}
@@ -73,13 +72,11 @@ public class StaffExcelReport {
 		return file;
 	}
 
-	private boolean createList(EmployeeSalary staffR, Row row, CellStyle style) // creating cells for each row
+	private boolean createList(EmployeePaySlip staffR, Row row, CellStyle style) // creating cells for each row
 	{
 		style.setDataFormat((short)14);				//////////sets excel built-in date format
-		EmployeePaySlip slip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(staffR.getEmployee(), month,
-				year);
 		int index=0;
-		if (slip != null) {
+		if (staffR != null) {
 			Cell cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			cell.setCellValue(row.getRowNum());
 
@@ -92,6 +89,12 @@ public class StaffExcelReport {
 			cell = row.createCell(index++);
 			if (staffR.getEmployee().getLastName() != null)
 				cell.setCellValue(staffR.getEmployee().getLastName());
+
+
+			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
+			if (staffR.getEmployee().getEmployer().getName() != null) {
+				cell.setCellValue(staffR.getEmployee().getEmployer().getName());
+			}
 
 			cell = row.createCell(index++);
 			if (staffR.getEmployee().getProfile().getDateOfJoining() != null) {
@@ -140,13 +143,13 @@ public class StaffExcelReport {
 			}
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			cell.setCellValue((slip.isPfd()?"YES":"NO"));
+			cell.setCellValue((staffR.isPfd()?"YES":"NO"));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			cell.setCellValue((slip.isEsid()?"YES":"NO"));
+			cell.setCellValue((staffR.isEsid()?"YES":"NO"));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			cell.setCellValue((slip.isProfd()?"YES":"NO"));
+			cell.setCellValue((staffR.isProfd()?"YES":"NO"));
 
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.MONTH, month - 1);// o to 11
@@ -155,89 +158,89 @@ public class StaffExcelReport {
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			cell.setCellValue((totalDays));
 
-			if (slip.getPresents() != null)
+			if (staffR.getPresents() != null)
 				cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			cell.setCellValue((slip.getPresents().intValue()));
+			cell.setCellValue((staffR.getPresents().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_NUMERIC);
-			if (slip.getCtc() != null)
-				cell.setCellValue((slip.getCtc()).intValue());
+			if (staffR.getCtc() != null)
+				cell.setCellValue((staffR.getCtc()).intValue());
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_NUMERIC);
-			if (slip.getBasic() != null)
-				cell.setCellValue((slip.getBasic().intValue()));
+			if (staffR.getBasic() != null)
+				cell.setCellValue((staffR.getBasic().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_NUMERIC);
-			if (slip.getHra() != null)
-				cell.setCellValue((slip.getHra().intValue()));
+			if (staffR.getHra() != null)
+				cell.setCellValue((staffR.getHra().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_NUMERIC);
-			if (slip.getConveyance() != null)
-				cell.setCellValue((slip.getConveyance()).intValue());
+			if (staffR.getConveyance() != null)
+				cell.setCellValue((staffR.getConveyance()).intValue());
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_NUMERIC);
-			if (slip.getBonus() != null)
-				cell.setCellValue((slip.getBonus()).intValue());
+			if (staffR.getBonus() != null)
+				cell.setCellValue((staffR.getBonus()).intValue());
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_NUMERIC);
-			if (slip.getSpecial() != null)
-				cell.setCellValue((slip.getSpecial().intValue()));
+			if (staffR.getSpecial() != null)
+				cell.setCellValue((staffR.getSpecial().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_NUMERIC);
-			if (slip.getGrossSalary() != null)
-				cell.setCellValue((slip.getGrossSalary().intValue()));
+			if (staffR.getGrossSalary() != null)
+				cell.setCellValue((staffR.getGrossSalary().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (slip.getPfe() != null)
-				cell.setCellValue((slip.getPfe().intValue()));
+			if (staffR.getPfe() != null)
+				cell.setCellValue((staffR.getPfe().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (slip.getPfr() != null)
-				cell.setCellValue((slip.getPfr().intValue()));
+			if (staffR.getPfr() != null)
+				cell.setCellValue((staffR.getPfr().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (slip.getEsi() != null)
-				cell.setCellValue((slip.getEsi().intValue()));
+			if (staffR.getEsi() != null)
+				cell.setCellValue((staffR.getEsi().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (slip.getGrossSalary() != null)
-				cell.setCellValue((slip.getGrossSalary().doubleValue()*4.75/100));
+			if (staffR.getGrossSalary() != null)
+				cell.setCellValue((staffR.getGrossSalary().doubleValue()*4.75/100));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (slip.getProfessionalTax() != null)
-				cell.setCellValue((slip.getProfessionalTax().intValue()));
+			if (staffR.getProfessionalTax() != null)
+				cell.setCellValue((staffR.getProfessionalTax().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (slip.getNetSalary() != null)
-				cell.setCellValue((slip.getNetSalary().intValue()));
+			if (staffR.getNetSalary() != null)
+				cell.setCellValue((staffR.getNetSalary().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (slip.getOtherAllowances() != null)
-				cell.setCellValue((slip.getOtherAllowances().intValue()));
+			if (staffR.getOtherAllowances() != null)
+				cell.setCellValue((staffR.getOtherAllowances().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING); // other d
-			if (slip.getOtherDeductions() != null)
-				cell.setCellValue((slip.getOtherDeductions().intValue()));
+			if (staffR.getOtherDeductions() != null)
+				cell.setCellValue((staffR.getOtherDeductions().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 
-			if (slip.getExtraMonthlyAllowance() != null)
-				cell.setCellValue((slip.getExtraMonthlyAllowance().intValue()));
+			if (staffR.getExtraMonthlyAllowance() != null)
+				cell.setCellValue((staffR.getExtraMonthlyAllowance().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (slip.getTds() != null)
-				cell.setCellValue((slip.getTds().intValue()));
+			if (staffR.getTds() != null)
+				cell.setCellValue((staffR.getTds().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (slip.getNetSalary() != null)
-				cell.setCellValue((slip.getNetSalary().intValue()));
+			if (staffR.getNetSalary() != null)
+				cell.setCellValue((staffR.getNetSalary().intValue()));
 			// comment
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (slip.getComment() != null)
-				cell.setCellValue((slip.getComment()));
+			if (staffR.getComment() != null)
+				cell.setCellValue((staffR.getComment()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_BOOLEAN);
-			cell.setCellValue(slip.isLock()?"YES":"NO");
+			cell.setCellValue(staffR.isLock()?"YES":"NO");
 			
 			return true;
 		}

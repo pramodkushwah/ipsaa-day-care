@@ -547,12 +547,12 @@ public class StudentFeeService {
         int requestYear = request.getYear();
 
         for(StudentFee studentFee:feelist){
-            if(studentFee.getStudent().getProgram().getId()!=FeeUtilsV2.IPSAA_CLUB_REGULAR_PROGRAM_ID &&
-                    studentFee.getStudent().getProgram().getId()!=FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID){
+//            if(studentFee.getStudent().getProgram().getId()!=FeeUtilsV2.IPSAA_CLUB_REGULAR_PROGRAM_ID &&
+//                    studentFee.getStudent().getProgram().getId()!=FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID){
                 StudentFeePaymentRequest req=this.generateFeeSlip(studentFee.getId(),requestQuarter,requestYear,false);
                 if(req!=null)
                 allslips.add(req);
-            }
+   //         }
         }
         return allslips;
     }
