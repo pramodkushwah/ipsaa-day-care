@@ -2,10 +2,7 @@ package com.synlabs.ipsaa.view.report.excel;
 
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.view.staff.StaffFilterRequest;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.DateFormatConverter;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
@@ -38,11 +35,10 @@ public class StaffReport {
 				//String excelFormatPattern = DateFormatConverter.convert(LocaleManager.currentLocale(), "dd MMMM, yyyy");
 				Sheet feeCollectionReportSheet = workbook.createSheet("SalarySlip");// creating a blank sheet
 				CellStyle cellStyle=workbook.createCellStyle();
-				/*Cell cell=null;
-				cellStyle.setDataFormat(poiFormat.getFormat(excelFormatPattern));
-				cell.setCellValue(new Date());
-				cell.setCellStyle(cellStyle);
-				*/
+				CreationHelper creationHelper = workbook.getCreationHelper();
+				cellStyle.setDataFormat(creationHelper.createDataFormat().getFormat(
+						"dd-mmm-yy"));
+
 				int rownum = 0;
 				boolean isCreateList = true;
 				Row row = null;
@@ -54,7 +50,7 @@ public class StaffReport {
 						setupheaders(row);
 						//rownum++;
 					} else
-						isCreateList = createList(emp, row,cellStyle);
+						isCreateList = createList(emp, row, cellStyle);
 				}
 				workbook.write(fileOutputStream);
 				workbook.dispose();
@@ -69,7 +65,7 @@ public class StaffReport {
 
 	private boolean createList(Employee employee, Row row, CellStyle style) // creating cells for each row
 	{
-		style.setDataFormat((short)14);
+		//style.setDataFormat((short)14);
 		int index=0;
 		if (employee != null) {
 			Cell cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
@@ -111,7 +107,7 @@ public class StaffReport {
 			if (employee.getProfile().getspouseName() != null)
 				cell.setCellValue(employee.getProfile().getspouseName());
 
-			cell = row.createCell(index++);			////////////check
+			cell = row.createCell(index++);			////////////styled cell to cell date format
 			//cell.setCellStyle();
 			//style.setDataFormat((short)14);
 			if (employee.getProfile().getDoj()!= null) {
@@ -120,14 +116,14 @@ public class StaffReport {
 				cell.setCellStyle(style);
 			}
 			cell = row.createCell(index++);
-			if (employee.getProfile().getDateOfLeaving() != null) {
-				cell.setCellValue(employee.getProfile().getDateOfLeaving());
+			if (employee.getProfile().getDol() != null) {
+				cell.setCellValue(employee.getProfile().getDol());
 				cell.setCellStyle(style);
 			}
 			cell = row.createCell(index++);
-			if (employee.getProfile().getDateOfBirth() != null) {
+			if (employee.getProfile().getDob() != null) {
 				cell.setCellValue(employee.getProfile().getDob());
-				//cell.setCellStyle(style);
+				cell.setCellStyle(style);
 			}
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);

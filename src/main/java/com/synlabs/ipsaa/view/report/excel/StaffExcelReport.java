@@ -7,10 +7,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
@@ -26,10 +24,9 @@ public class StaffExcelReport {
 	int year;
 	int month;
 	private String er_code;
-	private EmployeePaySlipRepository employeePaySlipRepository;
 
 	public StaffExcelReport(List<EmployeePaySlip> staff, StaffFilterRequest staffRequest, String path,
-							String er_code) {
+			String er_code) {
 		this.staff = staff;
 		this.path = path;
 		this.staffRequest = staffRequest;
@@ -47,6 +44,11 @@ public class StaffExcelReport {
 				SXSSFWorkbook workbook = new SXSSFWorkbook();
 				Sheet feeCollectionReportSheet = workbook.createSheet("SalarySlip");// creating a blank sheet
 				CellStyle cellStyle=workbook.createCellStyle();
+				CreationHelper creationHelper = workbook.getCreationHelper();
+				cellStyle.setDataFormat(creationHelper.createDataFormat().getFormat(
+						"dd-mmm-yy"));
+
+
 				int rownum = 0;
 				boolean isCreateList = true;
 				Row row = null;
@@ -59,7 +61,7 @@ public class StaffExcelReport {
 					if(isCreateList==true) {
 						row = feeCollectionReportSheet.createRow(rownum++);
 					}
-					isCreateList = createList(satffSalary, row,cellStyle);
+					isCreateList = createList(satffSalary, row, cellStyle );
 				}
 				workbook.write(fileOutputStream);
 				workbook.dispose();
@@ -74,7 +76,8 @@ public class StaffExcelReport {
 
 	private boolean createList(EmployeePaySlip staffR, Row row, CellStyle style) // creating cells for each row
 	{
-		style.setDataFormat((short)14);				//////////sets excel built-in date format
+		//System.out.println(staffR.getEmployee().getName());
+		//EmployeePaySlip slip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(staffR.getEmployee(), month,year);
 		int index=0;
 		if (staffR != null) {
 			Cell cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
@@ -97,14 +100,16 @@ public class StaffExcelReport {
 			}
 
 			cell = row.createCell(index++);
-			if (staffR.getEmployee().getProfile().getDateOfJoining() != null) {
+			if (staffR.getEmployee().getProfile().getDoj() != null) {
 				cell.setCellValue(staffR.getEmployee().getProfile().getDoj());
 				cell.setCellStyle(style);
+
 			}
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (staffR.getEmployee().getProfile().getDateOfLeaving() != null) {
-				cell.setCellValue(staffR.getEmployee().getProfile().getDateOfLeaving());
+			if (staffR.getEmployee().getProfile().getDol() != null) {
+				cell.setCellValue(staffR.getEmployee().getProfile().getDol());
+				cell.setCellStyle(style);
 			}
 
 //			cell = row.createCell(5);
