@@ -139,6 +139,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     $scope.showStudent = function (student, callback, corporateChanged) {
         $http.get('/api/student/' + student.id).then(function (response) {
             $scope.workingStudent = response.data;
+            $scope.selectedStudent = JSON.parse(JSON.stringify(response.data));     
             $scope.workingStudent.mode = "Show";
             $scope.workingStudent.centerId = $scope.workingStudent.center.id + "";
             $scope.workingStudent.programId = $scope.workingStudent.program.id + "";
@@ -187,7 +188,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     $scope.editStudent = function (student, callback, corporateChanged) {
         $http.get('/api/student/' + student.id).then(function (response) {
             $scope.workingStudent = response.data;
-            $scope.selectedStudent = JSON.parse(JSON.stringify(response.data));
+            console.log(JSON.parse(JSON.stringify($scope.workingStudent)));
+            $scope.selectedStudent = JSON.parse(JSON.stringify($scope.workingStudent));     
             $scope.workingStudent.mode = "Edit";
             $scope.workingStudent.centerId = $scope.workingStudent.center.id + "";
             $scope.workingStudent.programId = $scope.workingStudent.program.id + "";
@@ -276,10 +278,11 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
         if (validateStudent(postStudent)) {
           // to update existing student record on click of save button because admission no. already found
-          if (postStudent.admissionNumber) {
-              const admissionDateChanged = postStudent.admissionDate !== $scope.selectedStudent.admissionDate;
-              const programIdChanged = postStudent.programId !== $scope.selectedStudent.programId;
-              const formalSchoolChanged = postStudent.formalSchool !== $scope.selectedStudent.formalSchool;
+          if (postStudent.admissionNumber) {              
+              const admissionDateChanged = postStudent.admissionDate != $scope.selectedStudent.admissionDate;
+              const programIdChanged = postStudent.programId != $scope.selectedStudent.program.id;
+              console.log(programIdChanged);
+              const formalSchoolChanged = postStudent.formalSchool != $scope.selectedStudent.formalSchool;
               if(admissionDateChanged||programIdChanged||formalSchoolChanged){
                   var message = "";
                   (admissionDateChanged) ? message+=" Admission Date, ": "";
@@ -338,9 +341,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
     }, 200, true);
 
-    function validateStudent(student) {
-        console.log(student);
-        
+    function validateStudent(student) {   
         if (student.mode == 'New' && !student.fee && !student.corporate) {
             $scope.selectTab(4);
             error("Student fee is not created.");
