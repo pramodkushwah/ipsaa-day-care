@@ -40,7 +40,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
         'FYQ2',
         'FYQ3'
     ];
-
+    
 
     $scope.day = moment().date();
     $scope.month = moment().month() + 1;
@@ -459,6 +459,9 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
 
     $http.get('/api/center/').then(function (response) {
         $scope.centers = response.data;
+        if(Math.floor(new Date().getMonth() / 3)===3){
+            $scope.years.push(moment().year()+1);
+        }
     });
 
     function ok(message) {

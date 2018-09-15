@@ -16,7 +16,7 @@
       ng-model="selectedQuarter"
       ng-options="quarter.quarter as quarterNames[quarter.quarter-1] for quarter in dropdownData | filter: {duration: selectedPeriod}"
       ng-change="setSlips([])"></select> -->
-      <select class="form-control" ng-model="selectedQuarter" ng-options="quarter.value as quarter.name for quarter in quarters" disabled></select>
+      <select class="form-control" ng-model="selectedQuarter" ng-options="quarter.value as quarter.name for quarter in quarters"></select>
       <span class="material-input"></span>
     </div>
   </div>
@@ -28,7 +28,7 @@
         ng-options="y as y for y in getYears(selectedPeriod,selectedMonth,selectedQuarter)"
         ng-change="setSlips([])">
       </select> -->
-      <select class="form-control" ng-model="selectedYear" ng-options="year as year for year in years" disabled>
+      <select class="form-control" ng-model="selectedYear" ng-options="year as year for year in years">
       </select>
       <span class="material-input"></span>
     </div>

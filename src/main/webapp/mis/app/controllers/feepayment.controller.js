@@ -207,6 +207,7 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
           }, function(cancel) {});
       }
     }
+    
 
     function ok(message) {
         swal({
