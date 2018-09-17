@@ -7,10 +7,15 @@ import com.synlabs.ipsaa.entity.student.StudentParent;
 import com.synlabs.ipsaa.entity.student.StudentProfile;
 import com.synlabs.ipsaa.enums.FamilyType;
 import com.synlabs.ipsaa.enums.Gender;
+import com.synlabs.ipsaa.ex.ValidationException;
+import com.synlabs.ipsaa.util.FeeUtils;
+import com.synlabs.ipsaa.util.FeeUtilsV2;
 import com.synlabs.ipsaa.view.common.Request;
 import com.synlabs.ipsaa.view.fee.StudentFeeRequest;
+import com.synlabs.ipsaa.view.fee.StudentFeeRequestV2;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,7 +48,7 @@ public class StudentRequest implements Request
   private boolean formalSchool;
   private String schoolName;
 
-  private StudentFeeRequest fee;
+  private StudentFeeRequestV2 fee;
 
   @JsonFormat(pattern = "HH:mm", timezone = "IST")
   private Date expectedIn;
@@ -51,12 +56,12 @@ public class StudentRequest implements Request
   private Date expectedOut;
 
 
-  public StudentFeeRequest getFee()
+  public StudentFeeRequestV2 getFee()
   {
     return fee;
   }
 
-  public void setFee(StudentFeeRequest fee)
+  public void setFee(StudentFeeRequestV2 fee)
   {
     this.fee = fee;
   }
@@ -319,11 +324,21 @@ public class StudentRequest implements Request
     student.setFormalSchool(isFormalSchool());
 
     if(student.isFormalSchool()){
+      if(getSchoolName()!=null)
         student.setSchoolName(getSchoolName());
+      else
+        throw new ValidationException("Please Add School name");
     }
 
     studentProfile.setDob(parseDate(getDob()));
+    Calendar cal=Calendar.getInstance();
+    cal.setTime(parseDate(getAdmissionDate()));
+
+    if(FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH))!=FeeUtilsV2.getQuarter() || cal.get(Calendar.YEAR)!=LocalDate.now().getYear()){
+      throw new ValidationException("Admission date can not be set to before or after running quarter");
+    }
     studentProfile.setAdmissionDate(parseDate(getAdmissionDate()));
+
     studentProfile.setFamilyType(FamilyType.valueOf(getFamilyType()));
 
     Calendar calendar = Calendar.getInstance();

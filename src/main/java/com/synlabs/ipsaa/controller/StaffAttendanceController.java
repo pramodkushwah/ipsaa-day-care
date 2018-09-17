@@ -62,7 +62,7 @@ public class StaffAttendanceController {
 	@GetMapping
 	@Secured(STAFF_ATTENDANCE_READ)
 	public List<EmployeeAttendanceResponse> list() {
-		return attendanceService.list().stream().map(EmployeeAttendanceResponse::new).collect(Collectors.toList());
+		return attendanceService.employeeAttendanceList().stream().map(EmployeeAttendanceResponse::new).collect(Collectors.toList());
 	}
 
 	@Secured(STAFF_CLOCKINOUT)

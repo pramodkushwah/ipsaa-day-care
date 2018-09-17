@@ -5,9 +5,7 @@ package com.synlabs.ipsaa.enums;
  */
 public enum AuditEvent
 {
-  ADD,
-  DELETE,
-  UPDATE;
+  ADD, DELETE, UPDATE;
 
   public String getCode()
   {

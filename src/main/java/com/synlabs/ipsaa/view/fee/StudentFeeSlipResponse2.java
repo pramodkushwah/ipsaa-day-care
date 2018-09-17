@@ -54,7 +54,7 @@ public class StudentFeeSlipResponse2 implements Response
       slip.getPayments().forEach(payment -> {
         payments.add(new StudentFeePaymentResponse(payment));
         this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
-        System.out.println("break");
+     //   System.out.println("break");
       });
     }
   }

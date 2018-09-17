@@ -9,5 +9,6 @@ public enum PaymentMode
   Cheque,
   NEFT,
   PayU,
-  Hdfc
+  Hdfc,
+  Card
 }

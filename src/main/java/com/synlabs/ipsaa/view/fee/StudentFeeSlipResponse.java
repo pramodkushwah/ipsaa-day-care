@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.synlabs.ipsaa.util.FeeUtils.ZERO;
+
 public class StudentFeeSlipResponse implements Response
 {
   private Long id;
@@ -36,7 +38,122 @@ public class StudentFeeSlipResponse implements Response
   private String     autoComments;
   private boolean generateActive;
 
+
+  private BigDecimal uniformCharges;
+  private BigDecimal stationary;
+  private BigDecimal transportFee;
+
+  private BigDecimal finalTransportFee;
+  private BigDecimal finalAnnualCharges;
+
+  private BigDecimal admissionFee;
+  private BigDecimal finalAdmissionFee;
+  private BigDecimal finalBaseFee;
+  private BigDecimal baseFee;
+  private BigDecimal finalDepositFee;
+
+  private BigDecimal baseFeeDiscount;
+  private BigDecimal annualFeeDiscount;
+  private BigDecimal addmissionFeeDiscount;
+  private BigDecimal depositFeeDiscount;
+
+  private BigDecimal gstAmount;
+  private BigDecimal feeRatio;
+
+  private BigDecimal totalOtherPaidAmount=ZERO;
+  private BigDecimal totalOtherRemainningAmount=ZERO;
+
+  private BigDecimal totalPaidAmount=ZERO;
+  private BigDecimal uniformPaidAmountTotal=ZERO;
+  private BigDecimal stationaryPaidAmountTotal=ZERO;
+  private BigDecimal annualPaidAmountTotal=ZERO;
+  private BigDecimal addmissionPaidAmountTotal=ZERO;
+  private BigDecimal depositPaidAmountTotal=ZERO;
+  private BigDecimal programPaidAmountTotal=ZERO;
+  private BigDecimal transportPaidAmountTotal=ZERO;
+
+
   private List<StudentFeePaymentResponse> payments;
+
+  public BigDecimal getTotalOtherPaidAmount() {
+    return totalOtherPaidAmount;
+  }
+
+  public BigDecimal getTotalOtherRemainningAmount() {
+    return totalOtherRemainningAmount;
+  }
+
+  public BigDecimal getTotalPaidAmount() {
+    return totalPaidAmount;
+  }
+
+  public void setTotalPaidAmount(BigDecimal totalPaidAmount) {
+    this.totalPaidAmount = totalPaidAmount;
+  }
+
+  public BigDecimal getFinalTransportFee() {
+    return finalTransportFee;
+  }
+
+  public void setFinalTransportFee(BigDecimal finalTransportFee) {
+    this.finalTransportFee = finalTransportFee;
+  }
+
+  public BigDecimal getUniformPaidAmountTotal() {
+    return uniformPaidAmountTotal;
+  }
+
+  public void setUniformPaidAmountTotal(BigDecimal uniformPaidAmountTotal) {
+    this.uniformPaidAmountTotal = uniformPaidAmountTotal;
+  }
+
+  public BigDecimal getStationaryPaidAmountTotal() {
+    return stationaryPaidAmountTotal;
+  }
+
+  public void setStationaryPaidAmountTotal(BigDecimal stationaryPaidAmountTotal) {
+    this.stationaryPaidAmountTotal = stationaryPaidAmountTotal;
+  }
+
+  public BigDecimal getAnnualPaidAmountTotal() {
+    return annualPaidAmountTotal;
+  }
+
+  public void setAnnualPaidAmountTotal(BigDecimal annualPaidAmountTotal) {
+    this.annualPaidAmountTotal = annualPaidAmountTotal;
+  }
+
+  public BigDecimal getAddmissionPaidAmountTotal() {
+    return addmissionPaidAmountTotal;
+  }
+
+  public void setAddmissionPaidAmountTotal(BigDecimal addmissionPaidAmountTotal) {
+    this.addmissionPaidAmountTotal = addmissionPaidAmountTotal;
+  }
+
+  public BigDecimal getDepositPaidAmountTotal() {
+    return depositPaidAmountTotal;
+  }
+
+  public void setDepositPaidAmountTotal(BigDecimal depositPaidAmountTotal) {
+    this.depositPaidAmountTotal = depositPaidAmountTotal;
+  }
+
+  public BigDecimal getProgramPaidAmountTotal() {
+    return programPaidAmountTotal;
+  }
+
+  public void setProgramPaidAmountTotal(BigDecimal programPaidAmountTotal) {
+    this.programPaidAmountTotal = programPaidAmountTotal;
+  }
+
+  public BigDecimal getTransportPaidAmountTotal() {
+    return transportPaidAmountTotal;
+  }
+
+  public void setTransportPaidAmountTotal(BigDecimal transportPaidAmountTotal) {
+    this.transportPaidAmountTotal = transportPaidAmountTotal;
+  }
 
   public BigDecimal getIgst()
   {
@@ -70,7 +187,22 @@ public class StudentFeeSlipResponse implements Response
     this.balance = slip.getBalance();
     this.adjust = slip.getAdjust();
     this.generateActive = slip.isGenerateActive();
-
+    this.uniformCharges=slip.getUniformCharges()==null?ZERO:slip.getUniformCharges();
+    this.stationary=slip.getStationary()==null?ZERO:slip.getStationary();
+    this.transportFee=slip.getTransportFee()==null?ZERO:slip.getTransportFee();
+    this.finalAnnualCharges=slip.getFinalAnnualCharges()==null?ZERO:slip.getFinalAnnualCharges();
+    this.admissionFee=slip.getAdmissionFee()==null?ZERO:slip.getAdmissionFee();
+    this.finalAdmissionFee=slip.getFinalAdmissionFee()==null?ZERO:slip.getFinalAdmissionFee();
+    this.finalBaseFee=slip.getFinalBaseFee()==null?ZERO:slip.getFinalBaseFee();
+    this.baseFee=slip.getBaseFee()==null?ZERO:slip.getBaseFee();
+    this.finalDepositFee=slip.getFinalDepositFee()==null?ZERO:slip.getFinalDepositFee();
+    this.baseFeeDiscount=slip.getBaseFeeDiscount()==null?ZERO:slip.getBaseFeeDiscount();
+    this.annualFeeDiscount=slip.getAnnualFeeDiscount()==null?ZERO:slip.getAnnualFeeDiscount();
+    this.addmissionFeeDiscount=slip.getAddmissionFeeDiscount()==null?ZERO:slip.getAddmissionFeeDiscount();
+    this.depositFeeDiscount=slip.getDepositFeeDiscount()==null?ZERO:slip.getDepositFeeDiscount();
+    this.gstAmount=slip.getGstAmount()==null?ZERO:slip.getGstAmount();
+    this.feeRatio=slip.getFeeRatio()==null?ZERO:slip.getFeeRatio();
+    this.finalTransportFee=slip.getFinalTransportFee()==null?ZERO:slip.getFinalTransportFee();
     this.adjust = this.adjust == null ? BigDecimal.ZERO : this.adjust;
     this.balance = this.balance == null ? BigDecimal.ZERO : this.balance;
     this.autoComments = slip.getAutoComments();
@@ -78,10 +210,258 @@ public class StudentFeeSlipResponse implements Response
     {
       payments = new ArrayList<>(slip.getPayments().size());
       slip.getPayments().forEach(payment -> {
+        if(payment.getActive()){
+          uniformPaidAmountTotal=  uniformPaidAmountTotal.add(payment.getUniformPaidAmount()==null?ZERO:payment.getUniformPaidAmount());
+          stationaryPaidAmountTotal=stationaryPaidAmountTotal.add(payment.getStationaryPaidAmount()==null?ZERO:payment.getStationaryPaidAmount());
+          annualPaidAmountTotal=annualPaidAmountTotal.add(payment.getAnnualPaidAmount()==null?ZERO:payment.getAnnualPaidAmount());
+          addmissionPaidAmountTotal=addmissionPaidAmountTotal.add(payment.getAddmissionPaidAmount()==null?ZERO:payment.getAddmissionPaidAmount());
+          depositPaidAmountTotal=depositPaidAmountTotal.add(payment.getDepositPaidAmount()==null?ZERO:payment.getDepositPaidAmount());
+          programPaidAmountTotal=programPaidAmountTotal.add(payment.getProgramPaidAmount()==null?ZERO:payment.getProgramPaidAmount());
+          transportPaidAmountTotal=transportPaidAmountTotal.add(payment.getTransportPaidAmount()==null?ZERO:payment.getTransportPaidAmount());
+          this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
+          this.totalPaidAmount=this.totalPaidAmount.add(payment.getPaidAmount());
+        }
         payments.add(new StudentFeePaymentResponse(payment));
-        this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
       });
     }
+    BigDecimal totalPaid=uniformCharges
+                    .add(stationary)
+                    .add(finalAnnualCharges)
+                    .add(finalAdmissionFee)
+                    .add(finalDepositFee)
+                    .add(finalBaseFee)
+                    .add(finalTransportFee);
+
+    if(totalPaidAmount.intValue()>totalPaid.intValue()){
+      totalOtherPaidAmount=totalPaidAmount.subtract(totalPaid);
+    }else{
+      totalOtherPaidAmount=ZERO;
+    }
+
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
+  }
+
+  public void setGroup(String group) {
+    this.group = group;
+  }
+
+  public void setProgram(String program) {
+    this.program = program;
+  }
+
+  public void setMonth(int month) {
+    this.month = month;
+  }
+
+  public void setQuarter(int quarter) {
+    this.quarter = quarter;
+  }
+
+  public void setYear(int year) {
+    this.year = year;
+  }
+
+  public void setFee(BigDecimal fee) {
+    this.fee = fee;
+  }
+
+  public void setExtraCharge(BigDecimal extraCharge) {
+    this.extraCharge = extraCharge;
+  }
+
+  public void setLatePaymentCharge(BigDecimal latePaymentCharge) {
+    this.latePaymentCharge = latePaymentCharge;
+  }
+
+  public void setTotalFee(BigDecimal totalFee) {
+    this.totalFee = totalFee;
+  }
+
+  public void setInvoiceDate(String invoiceDate) {
+    this.invoiceDate = invoiceDate;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public void setComments(String comments) {
+    this.comments = comments;
+  }
+
+  public void setFeeDuration(String feeDuration) {
+    this.feeDuration = feeDuration;
+  }
+
+  public void setDeposit(BigDecimal deposit) {
+    this.deposit = deposit;
+  }
+
+  public void setAnnualFee(BigDecimal annualFee) {
+    this.annualFee = annualFee;
+  }
+
+  public void setPayableAmount(BigDecimal payableAmount) {
+    this.payableAmount = payableAmount;
+  }
+
+  public void setCgst(BigDecimal cgst) {
+    this.cgst = cgst;
+  }
+
+  public void setSgst(BigDecimal sgst) {
+    this.sgst = sgst;
+  }
+
+  public void setIgst(BigDecimal igst) {
+    this.igst = igst;
+  }
+
+  public void setBalance(BigDecimal balance) {
+    this.balance = balance;
+  }
+
+  public void setAdjust(BigDecimal adjust) {
+    this.adjust = adjust;
+  }
+
+  public void setAutoComments(String autoComments) {
+    this.autoComments = autoComments;
+  }
+
+  public void setGenerateActive(boolean generateActive) {
+    this.generateActive = generateActive;
+  }
+
+  public BigDecimal getUniformCharges() {
+    return uniformCharges;
+  }
+
+  public void setUniformCharges(BigDecimal uniformCharges) {
+    this.uniformCharges = uniformCharges;
+  }
+
+  public BigDecimal getStationary() {
+    return stationary;
+  }
+
+  public void setStationary(BigDecimal stationary) {
+    this.stationary = stationary;
+  }
+
+  public BigDecimal getTransportFee() {
+    return transportFee;
+  }
+
+  public void setTransportFee(BigDecimal transportFee) {
+    this.transportFee = transportFee;
+  }
+
+  public BigDecimal getFinalAnnualCharges() {
+    return finalAnnualCharges;
+  }
+
+  public void setFinalAnnualCharges(BigDecimal finalAnnualCharges) {
+    this.finalAnnualCharges = finalAnnualCharges;
+  }
+
+  public BigDecimal getAdmissionFee() {
+    return admissionFee;
+  }
+
+  public void setAdmissionFee(BigDecimal admissionFee) {
+    this.admissionFee = admissionFee;
+  }
+
+  public BigDecimal getFinalAdmissionFee() {
+    return finalAdmissionFee;
+  }
+
+  public void setFinalAdmissionFee(BigDecimal finalAdmissionFee) {
+    this.finalAdmissionFee = finalAdmissionFee;
+  }
+
+  public BigDecimal getFinalBaseFee() {
+    return finalBaseFee;
+  }
+
+  public void setFinalBaseFee(BigDecimal finalBaseFee) {
+    this.finalBaseFee = finalBaseFee;
+  }
+
+  public BigDecimal getBaseFee() {
+    return baseFee;
+  }
+
+  public void setBaseFee(BigDecimal baseFee) {
+    this.baseFee = baseFee;
+  }
+
+  public BigDecimal getFinalDepositFee() {
+    return finalDepositFee;
+  }
+
+  public void setFinalDepositFee(BigDecimal finalDepositFee) {
+    this.finalDepositFee = finalDepositFee;
+  }
+
+  public BigDecimal getBaseFeeDiscount() {
+    return baseFeeDiscount;
+  }
+
+  public void setBaseFeeDiscount(BigDecimal baseFeeDiscount) {
+    this.baseFeeDiscount = baseFeeDiscount;
+  }
+
+  public BigDecimal getAnnualFeeDiscount() {
+    return annualFeeDiscount;
+  }
+
+  public void setAnnualFeeDiscount(BigDecimal annualFeeDiscount) {
+    this.annualFeeDiscount = annualFeeDiscount;
+  }
+
+  public BigDecimal getAddmissionFeeDiscount() {
+    return addmissionFeeDiscount;
+  }
+
+  public void setAddmissionFeeDiscount(BigDecimal addmissionFeeDiscount) {
+    this.addmissionFeeDiscount = addmissionFeeDiscount;
+  }
+
+  public BigDecimal getDepositFeeDiscount() {
+    return depositFeeDiscount;
+  }
+
+  public void setDepositFeeDiscount(BigDecimal depositFeeDiscount) {
+    this.depositFeeDiscount = depositFeeDiscount;
+  }
+
+  public BigDecimal getGstAmount() {
+    return gstAmount;
+  }
+
+  public void setGstAmount(BigDecimal gstAmount) {
+    this.gstAmount = gstAmount;
+  }
+
+  public BigDecimal getFeeRatio() {
+    return feeRatio;
+  }
+
+  public void setFeeRatio(BigDecimal feeRatio) {
+    this.feeRatio = feeRatio;
+  }
+
+  public void setPayments(List<StudentFeePaymentResponse> payments) {
+    this.payments = payments;
   }
 
   public boolean isGenerateActive() {

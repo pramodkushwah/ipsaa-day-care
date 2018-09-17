@@ -106,27 +106,63 @@ public class FeeCollectionExcelReport2
     this.rowNum=rowNumber;
 //    if(slip.getPayments().size()>=1)
 //      this.rowNum++;
-
     for(StudentFeePaymentRecord record:slip.getPayments()){
       Row row = sheet.createRow(++this.rowNum);
-      row.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(this.rowNum-1);
-      row.createCell(1, Cell.CELL_TYPE_STRING).setCellValue(id);
-      row.createCell(2, Cell.CELL_TYPE_STRING).setCellValue(name);
-      row.createCell(3, Cell.CELL_TYPE_STRING).setCellValue(centerName);
-      row.createCell(4, Cell.CELL_TYPE_STRING).setCellValue(programName);
-      row.createCell(5, Cell.CELL_TYPE_STRING).setCellValue(motherName);
-      row.createCell(6, Cell.CELL_TYPE_STRING).setCellValue(FatherName);
+      int index=0;
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(this.rowNum-1);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(id);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(name);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(centerName);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(programName);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(motherName);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(FatherName);
 
-      row.createCell(7, Cell.CELL_TYPE_STRING).setCellValue(raisedAmount.doubleValue());
-      row.createCell(8, Cell.CELL_TYPE_NUMERIC).setCellValue(dueAmount.doubleValue());
-      row.createCell(9, Cell.CELL_TYPE_STRING).setCellValue(paymentStatus);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(raisedAmount.doubleValue());
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(dueAmount.doubleValue());
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(paymentStatus);
       if(record.getTxnid()!=null)
-        row.createCell(10, Cell.CELL_TYPE_STRING).setCellValue(record.getTxnid());
-      row.createCell(11, Cell.CELL_TYPE_STRING).setCellValue(record.getPaymentDate().toString());
-      row.createCell(12, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getPaidAmount().doubleValue());
+        row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(record.getTxnid());
+      else
+        row.createCell(index++,Cell.CELL_TYPE_STRING).setCellValue("");
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(record.getPaymentDate().toString());
+      if(record.getUniformPaidAmount()!=null)
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getUniformPaidAmount().doubleValue());
+      else
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
+
+      if(record.getStationaryPaidAmount()!=null)
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getStationaryPaidAmount().doubleValue());
+      else
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
+
+      if(record.getStationaryPaidAmount()!=null)
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getTransportPaidAmount().doubleValue());
+      else
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
+
+      if(record.getAnnualPaidAmount()!=null)
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getAnnualPaidAmount().doubleValue());
+    else
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
+
+    if(record.getAddmissionPaidAmount()!=null)
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getAddmissionPaidAmount().doubleValue());
+else
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
+      if(record.getProgramPaidAmount()!=null)
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getProgramPaidAmount().doubleValue());
+else
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
+
+      if(record.getDepositPaidAmount()!=null)
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getDepositPaidAmount().doubleValue());
+else
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
+
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getPaidAmount().doubleValue());
       this.paidAmount.add(new BigDecimal(record.getPaidAmount().doubleValue()));
-      row.createCell(13, Cell.CELL_TYPE_STRING).setCellValue(record.getPaymentMode().name());
-      row.createCell(14, Cell.CELL_TYPE_STRING).setCellValue(record.getConfirmed());
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(record.getPaymentMode().name());
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(record.getConfirmed());
        }
     return sheet;
   }
@@ -135,21 +171,30 @@ public class FeeCollectionExcelReport2
   {
     Row row = sheet.createRow(rowNumber);
 
-    row.createCell(0, Cell.CELL_TYPE_STRING).setCellValue("S no.");
-        row.createCell(1, Cell.CELL_TYPE_STRING).setCellValue("Addmision Id");
-        row.createCell(2, Cell.CELL_TYPE_STRING).setCellValue("Student Name");
-        row.createCell(3, Cell.CELL_TYPE_STRING).setCellValue("Center Name");
-        row.createCell(4, Cell.CELL_TYPE_STRING).setCellValue("Program Name");
-        row.createCell(5, Cell.CELL_TYPE_STRING).setCellValue("Mother Name");
-    row.createCell(6, Cell.CELL_TYPE_STRING).setCellValue("Father Name");
-    row.createCell(7, Cell.CELL_TYPE_STRING).setCellValue("Raised Amount");
-    row.createCell(8, Cell.CELL_TYPE_STRING).setCellValue("Due Amount");
-    row.createCell(9, Cell.CELL_TYPE_STRING).setCellValue("Payment Status");
-    row.createCell(10, Cell.CELL_TYPE_STRING).setCellValue("TXN ID");
-    row.createCell(11, Cell.CELL_TYPE_STRING).setCellValue("Payment Date");
-    row.createCell(12, Cell.CELL_TYPE_STRING).setCellValue("Transaction Amount");
-    row.createCell(13, Cell.CELL_TYPE_STRING).setCellValue("Payment Mode");
-    row.createCell(14, Cell.CELL_TYPE_STRING).setCellValue("Confirmed");
+    int index=0;
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("S no.");
+        row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Addmision Id");
+        row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Student Name");
+        row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Center Name");
+        row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Program Name");
+        row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Mother Name");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Father Name");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Raised Amount");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Due Amount");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Payment Status");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("TXN ID");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Payment Date");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Uniform");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Stationary");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Transport");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Annual fee");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Addmission fee");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Program fee");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Deposit fee");
+
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Transaction Amount");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Payment Mode");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Confirmed");
 
     return rowNumber + 1;
   }

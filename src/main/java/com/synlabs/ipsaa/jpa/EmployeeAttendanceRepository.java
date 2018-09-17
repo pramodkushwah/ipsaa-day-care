@@ -21,5 +21,5 @@ public interface EmployeeAttendanceRepository extends JpaRepository<EmployeeAtte
   EmployeeAttendance findOneByAttendanceDateAndEmployee(Date date,Employee employee);
 
   //Avneet
-  List<EmployeeAttendance>findByEmployeeInAndAttendanceDate(List<Employee> employees,Date date);
+  List<EmployeeAttendance>findByEmployeeInAndAttendanceDateOrderByEmployeeIdAsc(List<Employee> employees,Date date);
 }

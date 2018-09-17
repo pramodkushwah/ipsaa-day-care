@@ -86,8 +86,14 @@ public class StaffReport {
 				cell.setCellValue(employee.getEmail());
 
 			cell = row.createCell(index++);
+			if (employee.getEmployer() != null)
+				cell.setCellValue(employee.getEmployer().getName());
+
+
+			cell = row.createCell(index++);
 			if (employee.getProfile().getGender() != null)
 				cell.setCellValue(employee.getProfile().getGender().name());
+
 
 			cell = row.createCell(index++);											///Father's name added
 			if (employee.getProfile().getFatherName() != null)
@@ -244,6 +250,9 @@ public class StaffReport {
 
 			cell = row.createCell(index++);
 				cell.setCellValue("Email");
+
+				cell = row.createCell(index++);
+			cell.setCellValue("Employer");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 				cell.setCellValue("Gender");

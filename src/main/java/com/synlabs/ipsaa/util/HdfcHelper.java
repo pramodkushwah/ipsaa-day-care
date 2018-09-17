@@ -2,6 +2,7 @@ package com.synlabs.ipsaa.util;
 
 import com.synlabs.ipsaa.ccavenue.AesCryptUtil;
 import com.synlabs.ipsaa.entity.fee.HdfcResponse;
+import com.synlabs.ipsaa.entity.hdfc.HdfcApiDetails;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecord;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
 import com.synlabs.ipsaa.entity.student.StudentParent;
@@ -15,6 +16,7 @@ import com.synlabs.ipsaa.jpa.StudentFeePaymentRecordRepository;
 import com.synlabs.ipsaa.jpa.StudentFeePaymentRepository;
 import com.synlabs.ipsaa.jpa.StudentParentRepository;
 import com.synlabs.ipsaa.service.BaseService;
+import com.synlabs.ipsaa.service.HdfcApiDetailService;
 import com.synlabs.ipsaa.view.fee.HdfcCheckoutDetails;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,17 +35,17 @@ import java.util.Map;
 @Service
 public class HdfcHelper extends BaseService
 {
-  @Value("${ipsaa.hdfc.accesscode}")
-  private String accesscode;
-
-  @Value("${ipsaa.hdfc.tid}")
-  private String tid;
-
-  @Value("${ipsaa.hdfc.merchant_id}")
-  private String merchantId;
-
-  @Value("${ipsaa.hdfc.workingkey}")
-  private String workingkey;
+//  @Value("${ipsaa.hdfc.accesscode}")
+//  private String accesscode;
+//
+//  @Value("${ipsaa.hdfc.tid}")
+//  private String tid;
+//
+//  @Value("${ipsaa.hdfc.merchant_id}")
+//  private String merchantId;
+//
+//  @Value("${ipsaa.hdfc.workingkey}")
+//  private String workingkey;
 
   @Value("${ipsaa.hdfc.baseurl}")
   private String baseurl;
@@ -56,6 +58,9 @@ public class HdfcHelper extends BaseService
 
   @Value("${ipsaa.hdfc.failureurl}")
   private String failureurl;
+
+  @Autowired
+  HdfcApiDetailService hdfcApiDetailService;
 
   @Autowired
   private StudentFeePaymentRepository slipRepository;
@@ -74,7 +79,8 @@ public class HdfcHelper extends BaseService
   public Long recordPaymentSuccess(String encResp, String orderNumber)
   {
     //decrypt response
-    AesCryptUtil aesUtil = new AesCryptUtil(workingkey);
+    HdfcApiDetails hdfcApiDetails=hdfcApiDetailService.findByOrderId(orderNumber);
+    AesCryptUtil aesUtil = new AesCryptUtil(hdfcApiDetails.getWorkingKey());
     String resp = aesUtil.decrypt(encResp);
     HdfcResponse hdfcResponse = new HdfcResponse();
     hdfcResponse.setType(HdfcResponseType.Success);
@@ -150,7 +156,9 @@ public class HdfcHelper extends BaseService
 
   public Long recordPaymentFailure(String encResp, String orderNumber)
   {
-    AesCryptUtil aesUtil = new AesCryptUtil(workingkey);
+
+    HdfcApiDetails hdfcApiDetails=hdfcApiDetailService.findByOrderId(orderNumber);
+    AesCryptUtil aesUtil = new AesCryptUtil(hdfcApiDetails.getWorkingKey());
     String resp = aesUtil.decrypt(encResp);
     HdfcResponse hdfcResponse = new HdfcResponse();
     hdfcResponse.setType(HdfcResponseType.Failure);
@@ -210,19 +218,22 @@ public class HdfcHelper extends BaseService
       throw new ValidationException("Missing checkout details.");
     }
 
+    HdfcApiDetails hdfcApiDetails=hdfcApiDetailService.getDetailsByCenter(slip.getStudent().getCenter());
+
+    if(hdfcApiDetails==null){
+      throw new ValidationException("Can not find gateway details for this center! contact tech support.");
+    }
+
     HdfcCheckoutDetails details = new HdfcCheckoutDetails();
-
-
 
     String tnxid = slip.getTnxid();
     tnxid = RandomStringUtils.randomNumeric(16);
     slip.setTnxid(tnxid);
     slipRepository.saveAndFlush(slip);
-
     details.setTnxId(tnxid);
     details.setOrderId(tnxid);
-    details.setAccessCode(accesscode);
-    details.setMerchantId(merchantId);
+    details.setAccessCode(hdfcApiDetails.getAccessCode());
+    details.setMerchantId(hdfcApiDetails.getVsa());
     details.setCheckoutDetailsUrl(checkoutBaseUrl);
 
     details.setSlipDetails(slip);
@@ -241,7 +252,7 @@ public class HdfcHelper extends BaseService
     });
     params.deleteCharAt(params.length() - 1);
 
-    AesCryptUtil aesUtil = new AesCryptUtil(workingkey);
+    AesCryptUtil aesUtil = new AesCryptUtil(hdfcApiDetails.getWorkingKey());
     String encryptedParams = aesUtil.encrypt(params.toString());
     details.setEncRequest(encryptedParams);
 
@@ -266,7 +277,7 @@ public class HdfcHelper extends BaseService
   {
     req = req == null ? new HashMap<>() : req;
 
-    req.put("merchant_id", merchantId);
+    req.put("merchant_id", details.getMerchantId());
     req.put("currency", "INR");
     req.put("redirect_url", successurl);
     req.put("cancel_url", failureurl);

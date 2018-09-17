@@ -108,24 +108,30 @@ public class PaySlipService extends BaseService {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.MONTH, month - 1);
 		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 		Date generationDate = calendar.getTime();
 
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
-		String date = format.format(generationDate);
+		Calendar calendar1=Calendar.getInstance();
+		calendar1.set(Calendar.MONTH,month-1);
+		calendar1.set(Calendar.DAY_OF_MONTH, calendar.getMinimum(Calendar.DAY_OF_MONTH));
+		Date startDate=calendar1.getTime();
+
 		List<Employee> employees;
 		LegalEntity legalEntity=null;
 		JPAQuery<Employee> query = new JPAQuery<>(entityManager);
 		QEmployee qemp = QEmployee.employee;
 		query.select(qemp).from(qemp)
-				.where(qemp.active.isTrue().or(
+				.where(qemp.active.isTrue().and(qemp.profile.doj.loe(generationDate).and(qemp.profile.dol.isNull().or(qemp.profile.dol.gt(startDate)))).or(
 												qemp.active.isFalse()
-														.and(qemp.profile.dol.month().goe(month))			///////Avneet-changed from equals to greater than equals
-														.and(qemp.profile.dol.year().eq(year))
+														.and(qemp.profile.dol.goe(startDate))
+														.and(qemp.profile.doj.loe(generationDate))   ///////Avneet-changed from equals to greater than equals
 											)
 						);
 
 		if(employerId.equals("ALL")){
 			employees=query.fetch();
+			employees.stream().forEach(s-> System.out.println(s.getEid()));
+			System.out.println(employees.size());
 		}else{
 			legalEntity = legalEntityRepository.findOne(unmask(Long.parseLong(employerId)));
 			if (legalEntity == null) {
@@ -147,9 +153,14 @@ public class PaySlipService extends BaseService {
 				}
 			}
 
-		if(employerId.equals("ALL"))
+		if(employerId.equals("ALL")){
+			List<EmployeePaySlip> pay=employeePaySlipRepository.findByMonthAndYear(month,year);
+			pay.stream().forEach(p->p.getEmployee().getEid());
+			System.out.println(pay.size());
+			System.out.println();
 			return employeePaySlipRepository.findByMonthAndYear(month, year);
-		else {
+
+		} else {
 			if (legalEntity != null)
 				return employeePaySlipRepository.findByEmployerIdAndMonthAndYear(legalEntity.getId(), month, year);
 			else {
@@ -418,7 +429,6 @@ public class PaySlipService extends BaseService {
 			cal.set(Calendar.YEAR, year);
 			for (ImportMonthlySalary newslip : employees) {
 				EmployeePaySlip slip = employeePaySlipRepository.findByEmployeeEidAndMonthAndYear(newslip.getEid(), month, year);
-
 				if (slip != null) {
 					EmployeePaySlipRequest req = new EmployeePaySlipRequest();
 					try {
@@ -428,7 +438,7 @@ public class PaySlipService extends BaseService {
                         }
 
 						if (newslip.getPresentDay().intValue()>cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
-							throw new ValidationException("present days are more then no of days");
+							throw new ValidationException("present days are more then no of days"+ newslip.getEid());
 						}
 						req.setPresents(newslip.getPresentDay());
 						req.setOtherAllowances(newslip.getOtherAllowance() == null ? ZERO : newslip.getOtherAllowance());
@@ -436,10 +446,10 @@ public class PaySlipService extends BaseService {
 						req.setComment(newslip.getComments() == null ? "" : newslip.getComments());
 						req.setTds(newslip.getTds());
 						req.setId(mask(slip.getId()));
+
 						this.updatePaySlip(req);
 						logger.info(String.format("Regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
 					} catch (Exception e) {
-						System.out.println(e.getMessage());
 						logger.info(String.format("error in regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
 						ungenerate.add(new ErrorPayslipResponce(new EmployeePaySlipResponse(slip),e.getMessage()));
 					}
