@@ -69,7 +69,7 @@ public class FeeUtils
     {
       case 1:
         return 1;
-      case 2:
+      case 2:  // first quater
         return 4;
       case 3:
         return 7;
@@ -100,13 +100,13 @@ public class FeeUtils
     switch (quarter)
     {
       case 1:
-        return "FYQ4";
+        return "FYQ4";// jan feb march
       case 2:
-        return "FYQ1";
+        return "FYQ1";// april may june
       case 3:
-        return "FYQ2";
+        return "FYQ2";// july aug sep
       case 4:
-        return "FYQ3";
+        return "FYQ3";// oct nov dec
     }
     return "";
   }
@@ -195,9 +195,9 @@ public class FeeUtils
 
   public static BigDecimal calculateFinalFee(StudentFee studentFee)
   {
-    studentFee.setDiscount(studentFee.getDiscount() == null ?
+    studentFee.setBaseFeeDiscount(studentFee.getBaseFeeDiscount() == null ?
                            BigDecimal.ZERO :
-                           studentFee.getDiscount());
+                           studentFee.getBaseFeeDiscount());
     studentFee.setTransportFee(studentFee.getTransportFee() == null ?
                                BigDecimal.ZERO :
                                studentFee.getTransportFee());
@@ -206,10 +206,11 @@ public class FeeUtils
                          studentFee.getAdjust());
 
     BigDecimal baseFee = studentFee.getBaseFee();
-    BigDecimal discount = studentFee.getDiscount();
+    BigDecimal discount = studentFee.getBaseFeeDiscount();
     BigDecimal transportFee = studentFee.getTransportFee();
     BigDecimal adjust = studentFee.getAdjust();
     FeeDuration feeDuration = studentFee.getFeeDuration();
+
     BigDecimal finalFee = calculateFinalFee(baseFee, feeDuration, discount, adjust);
     switch(feeDuration){
     case Monthly:

@@ -1,5 +1,6 @@
 package com.synlabs.ipsaa.jpa;
 
+import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.programs.Program;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;

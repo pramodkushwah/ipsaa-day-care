@@ -57,6 +57,10 @@ public class StudentProfile extends BaseEntity
   @Column(nullable = false, length = 20)
   private FamilyType familyType;
 
+  ////Avneet
+  @Temporal(TemporalType.DATE)
+  private Date leavingDate;
+
   public String getFirstName()
   {
     return firstName;
@@ -218,6 +222,10 @@ public class StudentProfile extends BaseEntity
     }
     return result;
   }
+
+  public Date getLeavingDate() { return leavingDate; }
+
+  public void setLeavingDate(Date leavingDate) { this.leavingDate = leavingDate; }
 
   @Override
   public String toString()

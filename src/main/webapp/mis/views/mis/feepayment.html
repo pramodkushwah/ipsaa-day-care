@@ -8,27 +8,8 @@
       <span class="material-input"></span>
     </div>
   </div>
-  <div class="col-md-2">
-    <div class="form-group">
-      <label class="control-label">Period:</label>
-      <select class="form-control" ng-model="selectedPeriod">
-        <option value="Monthly">Monthly</option>
-        <option value="Quarterly">Quarterly</option>
-        <option value="Yearly">Yearly</option>
-      </select>
-      <span class="material-input"></span>
-    </div>
-  </div>
 
-  <div class="col-md-2" ng-show="selectedPeriod == 'Monthly'">
-    <div class="form-group">
-      <label class="control-label">Month:</label>
-      <select class="form-control" ng-model="selectedMonth" ng-options="month.moy as month.name for month in months" ng-change="filterChange()">
-      </select>
-      <span class="material-input"></span>
-    </div>
-  </div>
-  <div class="col-md-2" ng-show="selectedPeriod == 'Quarterly'">
+  <div class="col-md-2">
     <div class="form-group">
       <label class="control-label">Quarter:</label>
       <select class="form-control" ng-model="selectedQuarter" ng-options="quarter as quarter.name for quarter in quarters"></select>
@@ -44,7 +25,7 @@
       <span class="material-input"></span>
     </div>
   </div>
-  <button class="btn btn-info" ng-click="getFeeSlips()">GET</button>
+  <button class="btn btn-info mt-4" ng-click="getFeeSlips()">GET</button>
 </div>
 
 
@@ -66,7 +47,6 @@
         </div>
         <span class="label label-info">{{selectedCenter.code}}</span>
         <span class="label label-info">{{selectedPeriod}}</span>
-        <span class="label label-info" ng-show="selectedPeriod == 'Monthly'">{{months[selectedMonth-1].name}}</span>
         <span class="label label-info" ng-show="selectedPeriod == 'Quarterly'">{{selectedQuarter.name}}</span>
         <span class="label label-info">{{selectedYear}}</span>
         <div class="table-responsive">
@@ -117,52 +97,64 @@
         <span class="label label-info">{{selected.center}}</span>
         <span class="label label-info">{{selected.program}}</span>
         <span class="label label-info">{{selected.group}}</span>
+        <a class="pointer right" ng-click="toggleHide()">
+          View Fees Details
+          
+          <i class="fa fa-bars" aria-hidden="true" ng-show="!showFeeDetails"></i>
+          <i class="fa fa-times" aria-hidden="true" ng-show="showFeeDetails"></i>
+        </a>
+        <div class="row panel-body" ng-show="showFeeDetails">
 
-        <div class="row">
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Fee</label>
-              <input class="form-control" type="text" readonly ng-model="selected.fee">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Extra</label>
-              <input class="form-control" type="text" readonly ng-model="selected.extraCharge">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Late Payment</label>
-              <input class="form-control" type="text" readonly ng-model="selected.latePaymentCharge">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label class="control-label">Balance</label>
-              <input class="form-control" type="text" readonly ng-model="selected.balance">
-            </div>
-          </div>
+          <table class="table table-bordered table-responsive table-striped">
+            <tr>
+              <th>Fee / Charges</th>
+              <th>Final Amount</th>
+              <th>Paid Amount</th>
+              <th>Remaining</th>
+
+            </tr>
+            <tr ng-repeat="feeType in feeTypes">
+              <td><strong>{{feeType.type}}</strong></td>
+              <td>{{selected[feeType['final']]}}</td>
+              <td>{{selected[feeType['paid']]}}</td>
+              <td>{{selected[feeType['final']]-selected[feeType['paid']]}}</td>
+            </tr>
+            <tr >
+              <td><strong>Late Payment</strong></td>
+              <td>{{selected.latePaymentCharge}}</td>
+
+              <td colspan="1" rowspan="6">{{selected.totalOtherPaidAmount}}</td>
+              <td  rowspan="6">{{(selected.latePaymentCharge+selected.extraCharge+selected.gstAmount+selected.balance+selected.adjust)-selected.totalOtherPaidAmount}}</td>
+            
+            </tr>
+
+            <tr>
+              <td><strong>Extra</strong></td>
+              <td>{{selected.extraCharge}}</td>
+              <!-- <td colspan="2"></td>    -->
+             </tr>
+             <tr>
+                <td><strong>GST</strong></td>
+                <td>{{selected.gstAmount}}</td>
+                <!-- <td colspan="2"></td>    -->
+               </tr>
+               <tr>
+                  <td><strong>Balance</strong></td>
+                  <td>{{selected.balance}}</td>
+                  <!-- <td colspan="2"></td>    -->
+                 </tr>
+                 <tr>
+                    <td><strong>Adjust</strong></td>
+                    <td>{{selected.adjust}}</td>
+                    <!-- <td colspan="2"></td>    -->
+                   </tr>
+          </table>
+
         </div>
         <div class="row">
-          <div class="col-md-6" ng-show="selected.annualFee">
-            <div class="form-group">
-              <label class="control-label">Annual Fee</label>
-              <input class="form-control" type="number" readonly ng-model="selected.annualFee">
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group" ng-show="selected.deposit">
-              <label class="control-label">Deposit</label>
-              <input class="form-control" type="number" readonly ng-model="selected.deposit">
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
           <div class="col-md-3">
             <div class="form-group">
-              <label class="control-label">Final fee</label>
+              <label class="control-label">Total Amount</label>
               <input class="form-control" type="text" readonly ng-model="selected.totalFee">
             </div>
           </div>
@@ -184,17 +176,24 @@
               <select class="form-control"
                       ng-model="selected.paymentMode"
                       ng-disabled="selected.status=='Paid'">
-                <option value="Cash">Cash</option>
-                <option value="Cheque">Cheque</option>
+                <option value="Cash">CASH</option>
+                <option value="Cheque">CHEQUE</option>
                 <option value="NEFT">NEFT</option>
-                <option value="Hdfc" disabled>Hdfc</option>
+                <option value="Hdfc" disabled>HDFC</option>
+                <option value="Card" >CARD</option>
               </select>
             </div>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Payment Date (YYYY-MM-DD)</label>
+              <input class="form-control" type="text" required ng-model="selected.paymentDate" ng-readonly="selected.status=='Paid'" value="{{currentDate}}">
+            </div>
+          </div>
+          <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Reference</label>
               <input class="form-control" type="text" required ng-model="selected.txnid" ng-readonly="selected.status=='Paid'">
@@ -202,13 +201,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-4">
-            <div class="form-group">
-              <label class="control-label">Payment Date (YYYY-MM-DD)</label>
-              <input class="form-control" type="text" required ng-model="selected.paymentDate" ng-readonly="selected.status=='Paid'">
-            </div>
-          </div>
-          <div class="col-md-8">
+          <div class="col-md-12">
             <div class="form-group">
               <label class="control-label">Comments*</label>
               <textarea class="form-control" type="text" required ng-model="selected.comments" ng-readonly="selected.status=='Paid'"></textarea>
@@ -243,7 +236,7 @@
                 <th>Mode</th>
                 <th>Amount</th>
                 <th>Date</th>
-                <th>Confirm</th>
+                <th>Action</th>
               </tr>
               <tr ng-repeat="payment in selected.payments">
                 <td>{{payment.txnid}}</td>
@@ -251,13 +244,20 @@
                 <td>{{payment.paidAmount}}</td>
                 <td>{{payment.paymentDate}}</td>
                 <td>
+                  <span ng-hide="payment.active">Rejected &nbsp;
+                    <a href="#" data-toggle="tooltip" title="{{payment.comment}}">
+                      <i class="fa fa-info"></i>
+                    </a>
+                  </span>
                   <button class="btn btn-sm"
                           ng-class="payment.confirmed?'btn-success':'btn-rose'"
                           ng-click="payment.confirmed?null:confirm(payment)"
-                          ng-disabled="payment.disabled">
+                          ng-disabled="payment.disabled" ng-hide="!payment.active">
                     <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="payment.disabled"></i>
                     {{payment.confirmed?'confirmed':'confirm'}}
                   </button>
+                  <button class="btn btn-sm" ng-hide="payment.confirmed || !payment.active" ng-click="showCommentField(payment)">Reject</button>
+                  
                 </td>
               </tr>
               </thead>

@@ -1,6 +1,8 @@
 package com.synlabs.ipsaa.service;
 
+import static com.synlabs.ipsaa.util.BigDecimalUtils.THREE;
 import static com.synlabs.ipsaa.util.StringUtil.in;
+import static java.math.BigDecimal.ZERO;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -13,23 +15,18 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 
+import com.synlabs.ipsaa.entity.common.*;
+import com.synlabs.ipsaa.util.FeeUtilsV2;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.dom4j.DocumentException;
 import org.joda.time.LocalDate;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
@@ -48,10 +45,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.common.io.ByteStreams;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.synlabs.ipsaa.entity.center.Center;
-import com.synlabs.ipsaa.entity.common.Address;
-import com.synlabs.ipsaa.entity.common.AdmissionNumberSequence;
-import com.synlabs.ipsaa.entity.common.Role;
-import com.synlabs.ipsaa.entity.common.User;
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.programs.Program;
 import com.synlabs.ipsaa.entity.programs.ProgramGroup;
@@ -117,6 +110,8 @@ import com.synlabs.ipsaa.view.student.StudentPageResponse;
 import com.synlabs.ipsaa.view.student.StudentRequest;
 import com.synlabs.ipsaa.view.student.StudentResponse;
 import com.synlabs.ipsaa.view.student.StudentSummaryResponse;
+
+import freemarker.template.TemplateException;
 
 @Service
 public class StudentService extends BaseService {
@@ -191,6 +186,9 @@ public class StudentService extends BaseService {
 	private CenterProgramFeeRepository centerProgramFeeRepository;
 
 	@Autowired
+	private StudentFeeService studentFeeService;
+
+	@Autowired
 	private StudentFeeRepository studentFeeRepository;
 
 	@Value("${ipsaa.hdfc.payment.baseurl}")
@@ -251,8 +249,9 @@ public class StudentService extends BaseService {
 	}
 
 	public StudentResponse getStudent(StudentRequest request) {
-		Student student = repository.getOne(request.getId());
-		StudentResponse response = new StudentResponse(student);
+		StudentFee fee=studentFeeRepository.findByStudentId(request.getId());
+		Student student=fee.getStudent();
+		StudentResponse response = new StudentResponse(fee);
 		if (!StringUtils.isEmpty(student.getProfile().getImagePath())) {
 			response.setStudentImageData(getStudentImageData(student));
 		}
@@ -262,17 +261,47 @@ public class StudentService extends BaseService {
 	public List<StudentFee> listFee(StudentFeeRequest request) {
 		QStudentFee fee = QStudentFee.studentFee;
 		JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
-		query.select(fee).from(fee).where(fee.student.active.isTrue()).where(fee.student.corporate.isFalse());
+		query.select(fee).from(fee).where(fee.student.active.isTrue()).where(fee.feeDuration.eq(FeeDuration.Quarterly))
+				.where(fee.student.corporate.isFalse());
 
+		List<StudentFee> fees;
 		if (request.getStudentId() != null) {
 			return query.where(fee.student.id.eq(request.getStudentId())).fetch();
 		}
 
 		if (request.getCenterId() != null) {
-			return query.where(fee.student.center.id.eq(request.getCenterId())).fetch();
+			fees = query.where(fee.student.center.id.eq(request.getCenterId())).fetch();
+			// to ajust chnages
+			//ajustChnages();
+			return fees;
 		}
+		fees = query.where(fee.student.center.in(getUserCenters())).fetch();
+		return fees;
+	}
 
-		return query.where(fee.student.center.in(getUserCenters())).fetch();
+	@Transactional
+	private void ajustChnages() {
+		//  code for adjust new fee changes
+		QStudentFee fee = QStudentFee.studentFee;
+		JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
+		query.select(fee).from(fee)
+				.where(fee.student.active.isTrue())
+				.where(fee.feeDuration.eq(FeeDuration.Quarterly))
+				.where(fee.student.corporate.isFalse());
+
+		for (StudentFee studentFee:query.fetch() ){
+			BigDecimal adjust=ZERO;
+			if(studentFee.getAdjust()!=null)
+				adjust=studentFee.getAdjust().multiply(THREE);
+
+			if(studentFee.getDiscount()!=null && studentFee.getDiscount().intValue()>0)
+				studentFee.setBaseFeeDiscount(studentFee.getDiscount());
+			studentFee.setFinalBaseFee(FeeUtilsV2.calculateDiscountAmount(studentFee.getBaseFee(),studentFee.getBaseFeeDiscount()));
+			studentFee.setFinalFee(studentFee.getFinalFee().subtract(adjust));
+			studentFeeService.saveStudentFee(studentFee);
+			System.out.println(studentFee.getStudent().getName());
+			//studentFeeRepository.save(studentFee);
+		}
 	}
 
 	public List<StudentFeePaymentRequest> listFeeLedger(StudentFeeLedgerRequest request) {
@@ -313,6 +342,11 @@ public class StudentService extends BaseService {
 		return StringUtils.isEmpty(string) || string.equalsIgnoreCase("na");
 	}
 
+	public byte[] generateStudentPdf(StudentResponse student) throws IOException, DocumentException, TemplateException,
+			InterruptedException, ParseException, com.itextpdf.text.DocumentException {
+		return documentService.generateStudentPdf(student);
+	}
+
 	@Transactional
 	public StudentResponse saveStudent(StudentRequest request) {
 		validateStudentRequest(request);
@@ -326,6 +360,7 @@ public class StudentService extends BaseService {
 
 		Student student;
 		try {
+			request.setActive(true);
 			student = request.toEntity();
 		} catch (ParseException e) {
 			throw new ValidationException("Invalid date");
@@ -357,8 +392,9 @@ public class StudentService extends BaseService {
 			if (request.getFee() != null && !request.getFee().isEmpty()) {
 				request.getFee().setStudentId(mask(student.getId()));
 				request.getFee().setCenterId(mask(center.getId()));
-				StudentFee studentFee = saveStudentFee(request.getFee());
-				feeRepository.saveAndFlush(studentFee);
+				StudentFee slip = studentFeeService.saveStudentFee(request.getFee());
+				studentFeeService.generateFirstFeeSlip(slip.getId());
+				// feeRepository.saveAndFlush(studentFee);
 			}
 
 			communicationService.sendStudentApprovalEmail(student);
@@ -393,8 +429,9 @@ public class StudentService extends BaseService {
 		if (request.getFee() != null && !request.getFee().isEmpty()) {
 			request.getFee().setCenterId(mask(center.getId()));
 			request.getFee().setStudentId(mask(student.getId()));
-			StudentFee studentFee = saveStudentFee(request.getFee());
-			feeRepository.saveAndFlush(studentFee);
+			StudentFee slip = studentFeeService.saveStudentFee(request.getFee());
+			studentFeeService.generateFirstFeeSlip(slip.getId());
+			// feeRepository.saveAndFlush(studentFee);
 		}
 
 		return response;
@@ -422,31 +459,42 @@ public class StudentService extends BaseService {
 		updateParents(dbStudent, request);
 
 		boolean feeChange = !(dbStudent.getProgram().equals(program) && dbStudent.getCenter().equals(center));
+		if(feeChange){
+			request.getFee().setProgramChange(true);
+		   Set<String> privileges= getUser().getPrivileges();
+		   List<Role> roles=getUser().getRoles();
+        }
+		boolean isFormalChange=(dbStudent.isFormalSchool() ^ request.isFormalSchool());
 
 		dbStudent = request.toEntity(dbStudent);
 		dbStudent.setGroup(programGroup);
 		dbStudent.setProgram(program);
 		dbStudent.setCenter(center);
 
-		if (feeChange) {
-			CenterProgramFee centerFee = centerProgramFeeRepository.findByProgramIdAndCenterId(program.getId(),
-					center.getId());
-			StudentFee oldStudentFee = studentFeeRepository.findByStudent(dbStudent);
+		boolean isCorporateChange=(dbStudent.isCorporate() ^ request.isCorporate());
 
-			if (oldStudentFee != null) {
-				if (centerFee != null) {
-					oldStudentFee.setBaseFee(new BigDecimal(centerFee.getFee()));
-					oldStudentFee.setCgst(centerFee.getCgst());
-					oldStudentFee.setIgst(centerFee.getIgst());
-					oldStudentFee.setSgst(centerFee.getSgst());
-					oldStudentFee.setFinalFee(FeeUtils.calculateFinalFee(oldStudentFee));
-					studentFeeRepository.saveAndFlush(oldStudentFee);
-				} else {
-					studentFeeRepository.delete(oldStudentFee.getId());
-				}
-			}
+		if((feeChange || isFormalChange) && !request.isCorporate()){
+			request.getFee().setStudentId(mask(dbStudent.getId()));
+			studentFeeService.updateStudentFee(request.getFee());
 		}
-
+//		if (feeChange) {
+//			CenterProgramFee centerFee = centerProgramFeeRepository.findByProgramIdAndCenterId(program.getId(),
+//					center.getId());
+//			StudentFee oldStudentFee = studentFeeRepository.findByStudent(dbStudent);
+//
+//			if (oldStudentFee != null) {
+//				if (centerFee != null) {
+//					oldStudentFee.setBaseFee(new BigDecimal(centerFee.getFee()));
+//					oldStudentFee.setCgst(centerFee.getCgst());
+//					oldStudentFee.setIgst(centerFee.getIgst());
+//					oldStudentFee.setSgst(centerFee.getSgst());
+//					oldStudentFee.setFinalFee(FeeUtils.calculateFinalFee(oldStudentFee));
+//					studentFeeRepository.saveAndFlush(oldStudentFee);
+//				} else {
+//					studentFeeRepository.delete(oldStudentFee.getId());
+//				}
+//			}
+//		}
 		studentRepository.saveAndFlush(dbStudent);
 		return dbStudent;
 	}
@@ -517,9 +565,16 @@ public class StudentService extends BaseService {
 		if (student == null) {
 			throw new NotFoundException(String.format("Cannot locate student with id %s", request.getId()));
 		}
+		StudentFeePaymentRequest slip=studentFeeService.getStudentBalance(student);
+		if(slip!=null)
+		if( (slip.getBalance()!=null && slip.getBalance().intValue()>0) || !slip.getPaymentStatus().equals(PaymentStatus.Paid) ){
+			throw new ValidationException(
+					String.format("Some balance fee is remaining of student [%s]", student.getName()));
+		}
+
 		student.setActive(false);
 		studentRepository.saveAndFlush(student);
-
+		logger.info("Student deactivated "+ student.getName());
 		List<StudentParent> parents = student.getParents();
 		for (StudentParent parent : parents) {
 			if (parent.isAccount()) {
@@ -859,14 +914,13 @@ public class StudentService extends BaseService {
 			int requestQuarter = request.getQuarter();
 			int requestYear = request.getYear();
 			return feePaymentRepository
-					.findByStudentActiveIsTrueAndStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
-							ApprovalStatus.Approved, period, requestQuarter, requestYear, request.getCenterCode());
+					.findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode( period, requestQuarter, requestYear, request.getCenterCode());
 		} else {
 			int requestQuarter = request.getQuarter();
 			int requestYear = request.getYear();
 			return feePaymentRepository
-					.findByStudentActiveIsTrueAndStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
-							ApprovalStatus.Approved, period, requestQuarter, requestYear);
+					.findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
+							 period, requestQuarter, requestYear);
 		}
 	}
 
@@ -876,12 +930,12 @@ public class StudentService extends BaseService {
 		FeeDuration period = FeeDuration.valueOf(request.getPeriod());
 		if (request.getCenterCode().equals("All")) {
 			slips = feePaymentRepository
-					.findByStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
-							ApprovalStatus.Approved, period, request.getQuarter(), request.getYear());
+					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
+							 period, request.getQuarter(), request.getYear());
 		} else {
 			slips = feePaymentRepository
-					.findByStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
-							ApprovalStatus.Approved, period, request.getQuarter(), request.getYear(),
+					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
+							 period, request.getQuarter(), request.getYear(),
 							request.getCenterCode());
 		}
 
@@ -956,8 +1010,8 @@ public class StudentService extends BaseService {
 					slip.setPaymentStatus(PaymentStatus.Raised);
 					slip.setTotalFee(baseFee);
 					slip.setReGenerateSlip(true);
-					slip.setExtraCharge(BigDecimal.ZERO);
-					slip.setLatePaymentCharge(BigDecimal.ZERO);
+					slip.setExtraCharge(ZERO);
+					slip.setLatePaymentCharge(ZERO);
 					slip.setCgst(fee.getCgst());
 					slip.setSgst(fee.getSgst());
 					slip.setIgst(fee.getIgst());
@@ -995,9 +1049,9 @@ public class StudentService extends BaseService {
 					slip.setQuarter(requestQuarter);
 					slip.setTotalFee(baseFee);
 					slip.setReGenerateSlip(true);
-					slip.setExtraCharge(BigDecimal.ZERO);
-					slip.setLatePaymentCharge(BigDecimal.ZERO);
-					slip.setAnnualFee(BigDecimal.ZERO);
+					slip.setExtraCharge(ZERO);
+					slip.setLatePaymentCharge(ZERO);
+					slip.setAnnualFee(ZERO);
 					slip.setCgst(fee.getCgst());
 					slip.setSgst(fee.getSgst());
 					slip.setIgst(fee.getIgst());
@@ -1083,12 +1137,12 @@ public class StudentService extends BaseService {
 
 		int quarterStartMonth = FeeUtils.quarterStartMonth(slip.getQuarter());
 
-		BigDecimal newBaseFee = BigDecimal.ZERO;
-		BigDecimal factor = BigDecimal.ZERO;
+		BigDecimal newBaseFee = ZERO;
+		BigDecimal factor = ZERO;
 		switch (feeDuration) {
 		case Quarterly:
 			int dif = admissionMonth - quarterStartMonth;
-			if (dif <= 0) {
+			if (dif == 0) {
 				newBaseFee = slip.getBaseFee();
 			} else if (dif == 1 || dif == 2) {
 				factor = BigDecimal.ONE.divide(new BigDecimal(3), 6, BigDecimal.ROUND_HALF_UP)
@@ -1244,7 +1298,7 @@ public class StudentService extends BaseService {
 		List<StudentFeePaymentRecord> payments = slip.getPayments();
 
 		if (!CollectionUtils.isEmpty(payments)) {
-			BigDecimal paidAmount = BigDecimal.ZERO;
+			BigDecimal paidAmount = ZERO;
 			for (StudentFeePaymentRecord payment : payments) {
 				paidAmount = paidAmount.add(payment.getPaidAmount());
 			}
@@ -1345,7 +1399,12 @@ public class StudentService extends BaseService {
 			throw new ValidationException("Confirmed Receipt cannot update.");
 		}
 
-		receipt.setConfirmed(request.getConfirmed());
+		if (request.getConfirmed())
+			receipt.setConfirmed(request.getConfirmed());
+		else {
+
+			receipt.setActive(false);
+		}
 		return paymentRecordRepository.saveAndFlush(receipt);
 	}
 
@@ -1672,9 +1731,6 @@ public class StudentService extends BaseService {
 		return repository.findByActiveTrueAndCenter(center);
 	}
 
-	// <<<<<<< HEAD
-	// =======
-
 	// -------------------------------------shubham
 	// ----------------------------------------------------------------
 
@@ -1684,12 +1740,12 @@ public class StudentService extends BaseService {
 		FeeDuration period = FeeDuration.valueOf("Quarterly");
 		if (request.getCenterCode().equals("All")) {
 			slip2 = feePaymentRepository
-					.findByStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
-							ApprovalStatus.Approved, period, request.getQuarter(), request.getYear());
+					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
+							period, request.getQuarter(), request.getYear());
 		} else {
 			slip2 = feePaymentRepository
-					.findByStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
-							ApprovalStatus.Approved, period, request.getQuarter(), request.getYear(),
+					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
+							 period, request.getQuarter(), request.getYear(),
 							request.getCenterCode());
 		}
 		return slip2;
@@ -1701,15 +1757,14 @@ public class StudentService extends BaseService {
 		FeeDuration period = FeeDuration.valueOf("Quarterly");
 		if (request.getCenterCode().equals("All")) {
 			slip2 = feePaymentRepository
-					.findByStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
-							ApprovalStatus.Approved, period, request.getQuarter(), request.getYear());
+					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
+							period, request.getQuarter(), request.getYear());
 		} else {
 			slip2 = feePaymentRepository
-					.findByStudentApprovalStatusAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
-							ApprovalStatus.Approved, period, request.getQuarter(), request.getYear(),
+					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
+							period, request.getQuarter(), request.getYear(),
 							request.getCenterCode());
 		}
 		return slip2.stream().map(StudentFeeSlipResponse3::new).collect(Collectors.toList());
 	}
-	// >>>>>>> bf013c7db40b19f757f12092cc8c19bea24b1735
 }

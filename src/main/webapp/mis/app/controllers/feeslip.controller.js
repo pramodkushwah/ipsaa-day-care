@@ -1,12 +1,24 @@
 app.controller('StudentFeeSlipController', function ($scope, $http) {
-
+    
+    $scope.quarters = [
+        {value: 1, name: "FYQ4"},
+        {value: 2, name: "FYQ1"},
+        {value: 3, name: "FYQ2"},
+        {value: 4, name: "FYQ3"}
+    ];
+    
+    $scope.years = [moment().year() - 1,moment().year()];
     $scope.generateSlipDisable = false;
     $scope.generateSlipPdfDisable = false;
     $scope.slipEmail = {};
     $scope.checkedSlipCount = 0;
     $scope.sendPaymentLinkDisable = false;
+    $scope.reGenerateSlipLoader = false;
     $scope.slectedElementList = []
     $scope.generateSlip = false;
+    $scope.selectedPeriod = 'Quarterly';
+    $scope.selectedQuarter = Math.floor(new Date().getMonth() / 3) + 1;
+    $scope.selectedYear = new Date().getFullYear();
     $scope.monthNames = [
         'January',
         'February',
@@ -28,6 +40,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
         'FYQ2',
         'FYQ3'
     ];
+    
 
     $scope.day = moment().date();
     $scope.month = moment().month() + 1;
@@ -205,7 +218,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
                     studentFee.isDeposit = studentFee.deposit != null;
 
                 });
-                $scope.showDetails(null)
+                $scope.showDetails(null);
             }, function (response) {
                 $scope.generateSlipDisable = false;
                 error(response.data.error);
@@ -219,45 +232,17 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
             return false;
         }
 
-        if (!$scope.selectedPeriod) {
-            error("Select Period");
-            return false;
-        }
-
-        if ($scope.selectedPeriod === 'Monthly' && !$scope.selectedMonth) {
-            error("Select Month");
-            return false;
-        }
-
-        if ($scope.selectedPeriod === 'Quarterly' && !$scope.selectedQuarter) {
+        if (!$scope.selectedQuarter) {
             error("Select Quarter");
             return false;
         }
 
-        if ($scope.selectedPeriod === 'Yearly' && !$scope.selectedYear) {
+        if (!$scope.selectedYear) {
             error("Select Year");
             return false;
         }
         return true;
     }
-
-    $scope.annualFeeChecked = function (selected) {
-        if (selected.isAnnualFee) {
-            selected.annualFee = $scope.programFee.annualFee;
-        } else {
-            selected.annualFee = "";
-        }
-        $scope.calculateFinalFee(selected);
-    };
-
-    $scope.depositChecked = function (selected) {
-        if (selected.isDeposit) {
-            selected.deposit = $scope.programFee.deposit;
-        } else {
-            selected.deposit = "";
-        }
-        $scope.calculateFinalFee(selected);
-    };
 
     $scope.toggleAll = function (allchecked) {
         $scope.checkedSlipCount = 0;
@@ -373,6 +358,27 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
         );
     };
 
+    $scope.reGenerateFeeSlips = function(){
+        console.log("asdfsd");
+        
+        $scope.slectedElementList = [];
+        for (var i = 0; i < $scope.studentfeelist.length; i++) {
+            var slip = $scope.studentfeelist[i];
+            if (slip.selected) {
+                $scope.slectedElementList.push(slip.id);
+            }
+        }
+        $scope.reGenerateSlipLoader = true;
+    
+        $http.post('/api/student/feeslip/regenerateAll',$scope.slectedElementList, {responseType: 'arraybuffer'}).then(function(response){
+            $scope.getFeeSlips();
+            $scope.reGenerateSlipLoader = false;
+            ok("Slips regenerated Successfully");
+        },function(error){
+
+        });
+    }
+
     $scope.saveStudentSlip = function () {
         if (!$scope.selected.isDeposit) {
             $scope.selected.deposit = null;
@@ -393,54 +399,55 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
     };
 
     $scope.showDetails = function (studentfee) {
+        console.log(studentfee);
+        
         if (!studentfee) {
             $scope.showPanel = "";
             $scope.selected = {};
         } else {
             $scope.showPanel = "slip";
             $scope.selected = angular.copy(studentfee);
-            $scope.calculateFinalFee($scope.selected);
-            $http.get('/api/center/program/fee/slip/' + studentfee.id)
-                .then(
-                    function (resposne) {
-                        $scope.programFee = resposne.data;
-                    }, function (response) {
-                        error(response.data.error);
-                    });
-
+            $scope.selected.actualBaseFee = $scope.selected.totalFee - $scope.selected.adjust - $scope.selected.balance - $scope.selected.latePaymentCharge - $scope.selected.extraCharge;
+            // $scope.calculateFinalFee($scope.selected);
+            $scope.selected.finalBaseFee = ($scope.selected.baseFee * ((100 - $scope.selected.baseFeeDiscount)/100)).toFixed(2);
+            $scope.selected.finalTransportFees = $scope.selected.transportFee * $scope.selected.feeRatio;
+            if($scope.selected.gstAmount){
+                $scope.selected.gstFee = Number(((Number($scope.selected.finalAnnualCharges)) * 0.18).toFixed(2));//annual-fee-gst
+                if($scope.selected.feeRatio){
+                    $scope.selected.baseFeeGst = Number((((Number($scope.selected.finalBaseFee) * $scope.selected.feeRatio)) * 0.18).toFixed(2));
+                } else {
+                    $scope.selected.baseFeeGst = Number((((Number($scope.selected.finalBaseFee) * 3)) * 0.18).toFixed(2));
+                }
+            } else {
+                $scope.selected.gstFee = 0;
+                $scope.selected.baseFeeGst = 0;
+            }
         }
     };
 
     $scope.calculateFinalFee = function (slip) {
-        var totalFee = slip.fee;
-        if (slip.isAnnualFee && !isNaN(slip.annualFee)) {
-            totalFee = totalFee + slip.annualFee;
-        }
-        var totalGstAmount = 0;
-        if (slip.cgst) {
-            totalGstAmount = totalGstAmount + ((totalFee * slip.cgst) / 100);
-        }
-        if (slip.sgst) {
-            totalGstAmount = totalGstAmount + ((totalFee * slip.sgst) / 100);
-        }
-        if (slip.igst) {
-            totalGstAmount = totalGstAmount + ((totalFee * slip.igst) / 100);
-        }
-        totalFee = totalFee + totalGstAmount;
-        if (slip.isDeposit && !isNaN(slip.deposit)) {
-            totalFee = totalFee + slip.deposit;
-        }
+
+        var totalFee;
+        $scope.studentfeelist.filter( (fee) => {
+          if(fee.id === slip.id) {
+            totalFee = fee.totalFee - fee.extraCharge - fee.latePaymentCharge - fee.adjust - fee.uniformCharges - fee.stationary;
+          }
+        });
 
         if (slip.latePaymentCharge && !isNaN(slip.latePaymentCharge)) {
             totalFee = totalFee + slip.latePaymentCharge;
         }
 
-        if (slip.balance && !isNaN(slip.balance)) {
-            totalFee = totalFee + slip.balance;
-        }
-
         if (slip.extraCharge && !isNaN(slip.extraCharge)) {
             totalFee = totalFee + slip.extraCharge;
+        }
+
+        if (slip.uniformCharges && !isNaN(slip.uniformCharges)) {
+            totalFee = totalFee + slip.uniformCharges;
+        }
+
+        if (slip.stationary && !isNaN(slip.stationary)) {
+            totalFee = totalFee + slip.stationary;
         }
 
         if (slip.adjust && !isNaN(slip.adjust)) {
@@ -452,6 +459,9 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
 
     $http.get('/api/center/').then(function (response) {
         $scope.centers = response.data;
+        if(Math.floor(new Date().getMonth() / 3)===3){
+            $scope.years.push(moment().year()+1);
+        }
     });
 
     function ok(message) {

@@ -7,10 +7,7 @@ import com.synlabs.ipsaa.entity.common.Address;
 import com.synlabs.ipsaa.entity.common.EIDNumberSequence;
 import com.synlabs.ipsaa.entity.common.LegalEntity;
 import com.synlabs.ipsaa.entity.common.User;
-import com.synlabs.ipsaa.entity.staff.Employee;
-import com.synlabs.ipsaa.entity.staff.EmployeeProfile;
-import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
-import com.synlabs.ipsaa.entity.staff.QEmployee;
+import com.synlabs.ipsaa.entity.staff.*;
 import com.synlabs.ipsaa.enums.*;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.UploadException;
@@ -186,20 +183,22 @@ public class StaffService extends BaseService
     return excel.createExcel(); // returning file
   }
 
-  // shubham
+
   public File getEmployeeSalary(StaffFilterRequest staffRequest){
 
-    List<EmployeeSalary> list=new ArrayList<>();
+    List<EmployeePaySlip> list= new ArrayList<>();
 
-    if (StringUtils.isEmpty(staffRequest.getEmployerCode()) || staffRequest.getEmployerCode().equals("ALL")) {
-      list = employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
-    }else{
-      list = employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeEmployerCode(staffRequest.getEmployerCode());
+    if(staffRequest.getEmployerCode().equals("ALL")){
+      list=employeePaySlipRepository.findByMonthAndYear(staffRequest.getMonth(),staffRequest.getYear());
     }
-      StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository, staffRequest.getEmployerCode());
-      return excel.createExcel(); // returning file
-  }
+    else{
+      LegalEntity employer =legalEntityRepository.findByCode(staffRequest.getEmployerCode());
+      list= employeePaySlipRepository.findByEmployerIdAndMonthAndYear(unmask(employer.getId()),staffRequest.getMonth(),staffRequest.getYear());
+    }
 
+    StaffExcelReport report=new StaffExcelReport(list,staffRequest,exportDirectory, staffRequest.getEmployerCode());
+    return report.createExcel();
+  }
   @Transactional
   public Employee save(StaffRequest request) throws ParseException
   {

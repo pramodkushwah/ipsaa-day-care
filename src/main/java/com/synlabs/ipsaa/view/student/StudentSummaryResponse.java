@@ -8,6 +8,7 @@ import com.synlabs.ipsaa.view.common.Response;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class StudentSummaryResponse implements Response
 {
@@ -33,6 +34,10 @@ public class StudentSummaryResponse implements Response
 
   private String schoolName;
 
+  private Boolean active;
+
+  private Date leavingDate;     //Done.
+
   private final DateFormat formatter = new SimpleDateFormat("hh:mm a");
 
   public StudentSummaryResponse() {}
@@ -50,6 +55,9 @@ public class StudentSummaryResponse implements Response
     this.corporate = student.isCorporate();
     this.formalSchool=student.isFormalSchool();
     this.schoolName=student.getSchoolName();
+    this.active = student.isActive();
+    this.leavingDate=student.isActive()? null:student.getProfile().getLeavingDate();
+
   }
 
   public Boolean getCorporate()
@@ -97,6 +105,10 @@ public class StudentSummaryResponse implements Response
   public Boolean getFormalSchool() { return formalSchool; }
 
   public String getSchoolName() { return schoolName; }
+
+  public Date getLeavingDate() { return leavingDate; }
+
+  public Boolean getActive() { return active; }
 
 
 }

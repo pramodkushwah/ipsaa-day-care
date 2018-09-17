@@ -2,15 +2,15 @@ package com.synlabs.ipsaa.view.report.excel;
 
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.view.staff.StaffFilterRequest;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.DateFormatConverter;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class StaffReport {
@@ -32,7 +32,13 @@ public class StaffReport {
 				file.createNewFile();
 				FileOutputStream fileOutputStream = new FileOutputStream(file);
 				SXSSFWorkbook workbook = new SXSSFWorkbook();
+				//String excelFormatPattern = DateFormatConverter.convert(LocaleManager.currentLocale(), "dd MMMM, yyyy");
 				Sheet feeCollectionReportSheet = workbook.createSheet("SalarySlip");// creating a blank sheet
+				CellStyle cellStyle=workbook.createCellStyle();
+				CreationHelper creationHelper = workbook.getCreationHelper();
+				cellStyle.setDataFormat(creationHelper.createDataFormat().getFormat(
+						"dd-mmm-yy"));
+
 				int rownum = 0;
 				boolean isCreateList = true;
 				Row row = null;
@@ -44,7 +50,7 @@ public class StaffReport {
 						setupheaders(row);
 						//rownum++;
 					} else
-						isCreateList = createList(emp, row);
+						isCreateList = createList(emp, row, cellStyle);
 				}
 				workbook.write(fileOutputStream);
 				workbook.dispose();
@@ -57,8 +63,9 @@ public class StaffReport {
 		return file;
 	}
 
-	private boolean createList(Employee employee, Row row) // creating cells for each row
+	private boolean createList(Employee employee, Row row, CellStyle style) // creating cells for each row
 	{
+		//style.setDataFormat((short)14);
 		int index=0;
 		if (employee != null) {
 			Cell cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
@@ -79,8 +86,14 @@ public class StaffReport {
 				cell.setCellValue(employee.getEmail());
 
 			cell = row.createCell(index++);
+			if (employee.getEmployer() != null)
+				cell.setCellValue(employee.getEmployer().getName());
+
+
+			cell = row.createCell(index++);
 			if (employee.getProfile().getGender() != null)
 				cell.setCellValue(employee.getProfile().getGender().name());
+
 
 			cell = row.createCell(index++);											///Father's name added
 			if (employee.getProfile().getFatherName() != null)
@@ -94,17 +107,23 @@ public class StaffReport {
 			if (employee.getProfile().getspouseName() != null)
 				cell.setCellValue(employee.getProfile().getspouseName());
 
-			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (employee.getProfile().getDateOfJoining() != null) {
-				cell.setCellValue(employee.getProfile().getDateOfJoining());
+			cell = row.createCell(index++);			////////////styled cell to cell date format
+			//cell.setCellStyle();
+			//style.setDataFormat((short)14);
+			if (employee.getProfile().getDoj()!= null) {
+
+				cell.setCellValue(employee.getProfile().getDoj());
+				cell.setCellStyle(style);
 			}
-			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (employee.getProfile().getDateOfLeaving() != null) {
-				cell.setCellValue(employee.getProfile().getDateOfLeaving());
+			cell = row.createCell(index++);
+			if (employee.getProfile().getDol() != null) {
+				cell.setCellValue(employee.getProfile().getDol());
+				cell.setCellStyle(style);
 			}
-			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (employee.getProfile().getDateOfBirth() != null) {
-				cell.setCellValue(employee.getProfile().getDateOfBirth());
+			cell = row.createCell(index++);
+			if (employee.getProfile().getDob() != null) {
+				cell.setCellValue(employee.getProfile().getDob());
+				cell.setCellStyle(style);
 			}
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
@@ -231,6 +250,9 @@ public class StaffReport {
 
 			cell = row.createCell(index++);
 				cell.setCellValue("Email");
+
+				cell = row.createCell(index++);
+			cell.setCellValue("Employer");
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 				cell.setCellValue("Gender");

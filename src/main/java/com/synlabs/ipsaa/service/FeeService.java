@@ -22,7 +22,9 @@ import com.synlabs.ipsaa.util.BigDecimalUtils;
 import com.synlabs.ipsaa.util.FeeUtils;
 import com.synlabs.ipsaa.view.center.CenterChargeRequest;
 import com.synlabs.ipsaa.view.center.CenterFeeRequest;
+import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.center.CenterProgramFeeRequest;
+import com.synlabs.ipsaa.view.center.ProgramResponse;
 import com.synlabs.ipsaa.view.fee.*;
 import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport;
 import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport2;
@@ -31,6 +33,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.hibernate.criterion.Order;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
@@ -280,7 +283,9 @@ public class FeeService extends BaseService
     {
       throw new ValidationException("Missing program");
     }
-
+    if(request.getAdmissionFee()==null){
+     request.setAdmissionFee(0);
+    }
     if (request.getDeposit() == null)
     {
       request.setDeposit(0);
@@ -540,6 +545,8 @@ public class FeeService extends BaseService
 
 
   //----------------------------shubham ---------------------------------------------------------------------------//
+
+
 
   // shubham for feeReport with extraout hours
   public File FeeReport2(FeeReportRequest slipRequest) throws IOException

@@ -54,8 +54,15 @@ public class DashboardController
   @Secured(DASHBOARD_STATS)
   public List<DashStudentResponse> getStudentList(@RequestBody DashboardRequest request)
   {
-	  List<DashStudentResponse> results = dashboardService.listStudent(request);
-	  return results;
+	  return dashboardService.listStudent(request);
+  }
+
+  // shubham
+  @PostMapping("/dash/allstudent")
+  @Secured(DASHBOARD_STATS)
+  public List<DashStudentResponse> getAllStudentList(@RequestBody DashboardRequest request)
+  {
+    return dashboardService.allStudentList(request);
   }
 
   @PostMapping("/dash/staff")
