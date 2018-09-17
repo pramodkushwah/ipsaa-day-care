@@ -418,7 +418,6 @@ public class PaySlipService extends BaseService {
 			cal.set(Calendar.YEAR, year);
 			for (ImportMonthlySalary newslip : employees) {
 				EmployeePaySlip slip = employeePaySlipRepository.findByEmployeeEidAndMonthAndYear(newslip.getEid(), month, year);
-
 				if (slip != null) {
 					EmployeePaySlipRequest req = new EmployeePaySlipRequest();
 					try {
@@ -428,7 +427,7 @@ public class PaySlipService extends BaseService {
                         }
 
 						if (newslip.getPresentDay().intValue()>cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
-							throw new ValidationException("present days are more then no of days");
+							throw new ValidationException("present days are more then no of days"+ newslip.getEid());
 						}
 						req.setPresents(newslip.getPresentDay());
 						req.setOtherAllowances(newslip.getOtherAllowance() == null ? ZERO : newslip.getOtherAllowance());
@@ -436,10 +435,10 @@ public class PaySlipService extends BaseService {
 						req.setComment(newslip.getComments() == null ? "" : newslip.getComments());
 						req.setTds(newslip.getTds());
 						req.setId(mask(slip.getId()));
+
 						this.updatePaySlip(req);
 						logger.info(String.format("Regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
 					} catch (Exception e) {
-						System.out.println(e.getMessage());
 						logger.info(String.format("error in regenrating payslip eid %s present days [%s] ",newslip.getEid(),newslip.getPresentDay()));
 						ungenerate.add(new ErrorPayslipResponce(new EmployeePaySlipResponse(slip),e.getMessage()));
 					}

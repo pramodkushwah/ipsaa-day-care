@@ -212,6 +212,7 @@
           <div class="card-content table-responsive table-full-width">
             <table class="table">
               <thead class="text-primary">
+                <th>S No.</th>
                 <th>Eid</th>
                 <th>Employee</th>
                 <th>CTC</th>
@@ -219,6 +220,7 @@
               </thead>
               <tbody>
                 <tr ng-repeat="payslip in ungenerate;">
+                  <td>{{$index +1}}</td>
                   <td>{{payslip.payslip.eid}}</td>
                   <td>{{payslip.payslip.ctc}}</td>
                   <td>{{payslip.payslip.empName}}</td>
