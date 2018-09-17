@@ -76,7 +76,7 @@ public class StaffExcelReport {
 
 	private boolean createList(EmployeePaySlip staffR, Row row, CellStyle style) // creating cells for each row
 	{
-		System.out.println(staffR.getEmployee().getName());
+		//System.out.println(staffR.getEmployee().getName());
 		//EmployeePaySlip slip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(staffR.getEmployee(), month,year);
 		int index=0;
 		if (staffR != null) {
@@ -93,23 +93,23 @@ public class StaffExcelReport {
 			if (staffR.getEmployee().getLastName() != null)
 				cell.setCellValue(staffR.getEmployee().getLastName());
 
-			cell = row.createCell(index++);
-			if (staffR.getEmployee().getEmployer() != null)
+
+			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
+			if (staffR.getEmployee().getEmployer().getName() != null) {
 				cell.setCellValue(staffR.getEmployee().getEmployer().getName());
+			}
 
-			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (staffR.getEmployee().getProfile().getDateOfJoining() != null) {
-				cell.setCellValue(staffR.getEmployee().getProfile().getDateOfJoining());
+			cell = row.createCell(index++);
+			if (staffR.getEmployee().getProfile().getDoj() != null) {
+				cell.setCellValue(staffR.getEmployee().getProfile().getDoj());
+				cell.setCellStyle(style);
+
 			}
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (staffR.getEmployee().getProfile().getDateOfLeaving() != null) {
-				cell.setCellValue(staffR.getEmployee().getProfile().getDateOfLeaving());
-			}
-
-			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (staffR.getEmployee().getProfile().getDateOfLeaving() != null) {
-				cell.setCellValue(staffR.getEmployee().getProfile().getDateOfLeaving());
+			if (staffR.getEmployee().getProfile().getDol() != null) {
+				cell.setCellValue(staffR.getEmployee().getProfile().getDol());
+				cell.setCellStyle(style);
 			}
 
 //			cell = row.createCell(5);
