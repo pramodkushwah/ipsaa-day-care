@@ -38,7 +38,7 @@ public class HdfcApiDetailService {
 
     @Transactional
     public void upload() {
-        String SAMPLE_XLSX_FILE_PATH ="C:/Users/shubham/Desktop/ipsaa/query/centre name with code5.xlsx";
+        String SAMPLE_XLSX_FILE_PATH ="C:/Users/shubham/Desktop/ipsaa/query/duplicate.xlsx";
              try{
                  File file = new File(SAMPLE_XLSX_FILE_PATH);
                  FileInputStream inputStream = new FileInputStream(file);

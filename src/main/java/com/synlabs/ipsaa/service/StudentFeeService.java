@@ -693,6 +693,9 @@ public class StudentFeeService {
         {
             throw new ValidationException("Already paid.");
         }
+        if(slip.isExpire()){
+            throw new ValidationException("You can't update expire pay slip.");
+        }
         slip.setUniformCharges(request.getUniformCharges()==null?ZERO:request.getUniformCharges());
         slip.setStationary(request.getStationary()==null?ZERO:request.getStationary());
 
