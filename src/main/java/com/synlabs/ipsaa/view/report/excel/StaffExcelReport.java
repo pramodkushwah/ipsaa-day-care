@@ -107,6 +107,11 @@ public class StaffExcelReport {
 				cell.setCellValue(staffR.getEmployee().getProfile().getDateOfLeaving());
 			}
 
+			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
+			if (staffR.getEmployee().getProfile().getDateOfLeaving() != null) {
+				cell.setCellValue(staffR.getEmployee().getProfile().getDateOfLeaving());
+			}
+
 //			cell = row.createCell(5);
 //			if (staffR.getEmployee().getCostCenter() != null && staffR.getEmployee().getCostCenter().getName() != null)
 //				cell.setCellValue(staffR.getEmployee().getCostCenter().getName());
