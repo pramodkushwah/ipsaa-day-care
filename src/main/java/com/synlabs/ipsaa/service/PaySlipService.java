@@ -105,26 +105,26 @@ public class PaySlipService extends BaseService {
 			throw new ValidationException("Month is required.");
 		}
 		// Avneet
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.MONTH, month - 1);
-		calendar.set(Calendar.YEAR, year);
-		calendar.set(Calendar.DAY_OF_MONTH, calendar.getMaximum(Calendar.DAY_OF_MONTH));
+		Calendar calendar =Calendar.getInstance();
+		calendar.set(year,month-1, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 		Date generationDate = calendar.getTime();
 
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
-		String date = format.format(generationDate);
+		calendar.set(year,month-1,1);
+		Date startDate=calendar.getTime();
+
 		List<Employee> employees;
 		LegalEntity legalEntity=null;
+
 		JPAQuery<Employee> query = new JPAQuery<>(entityManager);
 		QEmployee qemp = QEmployee.employee;
 		query.select(qemp).from(qemp)
-				.where(qemp.active.isTrue().and(qemp.profile.doj.loe(generationDate)).or(
+				.where(qemp.active.isTrue().and(qemp.profile.doj.loe(generationDate))
+											.and(qemp.profile.dol.isNull().or(qemp.profile.dol.goe(startDate)) ).or(
 												qemp.active.isFalse()
-														.and(qemp.profile.dol.month().eq(month))
-														.and(qemp.profile.dol.year().eq(year))///////Avneet-changed from equals to greater than equals
+														.and(qemp.profile.dol.goe(startDate))
+														.and(qemp.profile.doj.loe(generationDate))///////Avneet-changed from equals to greater than equals
 											)
 						);
-
 		if(employerId.equals("ALL")){
 			employees=query.fetch();
 		}else{
@@ -141,11 +141,16 @@ public class PaySlipService extends BaseService {
 					EmployeeSalary employeeSalary = employeeSalaryRepository.findByEmployee(emp);
 					if (employeeSalary != null) {
 						if (employeeSalary.getCtc() == null) {
+							//System.out.println("ctc not found" +emp.getEid());
 							continue;
 						}
 						generateNewPayslip(emp, employeeSalary, year, month);
 					}
+					else{
+						//System.out.println("salary not found"+emp.getEid());
+					}
 				}
+
 			}
 
 		if(employerId.equals("ALL"))
