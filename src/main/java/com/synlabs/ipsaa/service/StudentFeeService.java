@@ -239,8 +239,7 @@ public class StudentFeeService {
                     paidAmount=paidAmount.add(p.getPaidAmount());
                 }
                 if(p.getConfirmed()==null || !p.getConfirmed()) {
-
-                    if(!p.getConfirmed() && p.getActive()){
+                    if( p.getActive()){
                         unPaidList.add(s);
                         unConfirmCount++;
                     }
