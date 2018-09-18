@@ -249,11 +249,18 @@ public class StudentService extends BaseService {
 	}
 
 	public StudentResponse getStudent(StudentRequest request) {
-		StudentFee fee=studentFeeRepository.findByStudentId(request.getId());
-		Student student=fee.getStudent();
-		StudentResponse response = new StudentResponse(fee);
-		if (!StringUtils.isEmpty(student.getProfile().getImagePath())) {
-			response.setStudentImageData(getStudentImageData(student));
+		Student student=studentRepository.findOne(request.getId());
+		StudentResponse response=null;
+		if(student!=null){
+			StudentFee fee=studentFeeRepository.findByStudentId(request.getId());
+			if(fee!=null){
+				response = new StudentResponse(fee);
+			}else{
+				response = new StudentResponse(student);
+			}
+			if (!StringUtils.isEmpty(student.getProfile().getImagePath())) {
+				response.setStudentImageData(getStudentImageData(student));
+			}
 		}
 		return response;
 	}
