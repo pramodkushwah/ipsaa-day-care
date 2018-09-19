@@ -336,6 +336,7 @@ public class StudentAttendanceService extends BaseService {
 	}
 	public double getLastQuarterExtraHours(Student student,int quarter,int year){
 		quarter=FeeUtilsV2.getLastQuarter(quarter,year).get("quarter");
+		year=FeeUtilsV2.getLastQuarter(quarter,year).get("year");
 		return getExtraHours(student,quarter,year);
 	}
 	////////////////////////////////////////// Avneet
