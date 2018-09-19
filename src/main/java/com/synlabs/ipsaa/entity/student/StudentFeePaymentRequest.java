@@ -123,6 +123,9 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(precision = 16, scale = 2)
   private BigDecimal sgst;
 
+  @Column(precision = 16, scale = 2,columnDefinition = "default 0")
+  private BigDecimal extraHours;
+
   @Column(precision = 16, scale = 2)
   private BigDecimal cgst;
 
@@ -138,6 +141,14 @@ public class StudentFeePaymentRequest extends BaseEntity
 
   @Column(precision = 16, scale = 2)
   private BigDecimal finalFee;
+
+  public BigDecimal getExtraHours() {
+    return extraHours;
+  }
+
+  public void setExtraHours(BigDecimal extraHours) {
+    this.extraHours = extraHours;
+  }
 
   public BigDecimal getFeeRatio() {
     return feeRatio;

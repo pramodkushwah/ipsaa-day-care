@@ -14,7 +14,15 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
 
+import com.querydsl.jpa.impl.JPAQuery;
+import com.synlabs.ipsaa.entity.attendance.QStudentAttendance;
+import com.synlabs.ipsaa.entity.student.QStudentFee;
+import com.synlabs.ipsaa.entity.student.StudentFee;
+import com.synlabs.ipsaa.enums.FeeDuration;
+import com.synlabs.ipsaa.util.FeeUtils;
+import com.synlabs.ipsaa.util.FeeUtilsV2;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -316,6 +324,20 @@ public class StudentAttendanceService extends BaseService {
 		return extra;
 	}
 
+	//-----------------------------------------shubham-----------------------------------------------------------
+
+	@Autowired
+	private EntityManager entityManager;
+	public double getExtraHours(Student student,int quarter,int year){
+
+		Date startDate=FeeUtilsV2.quarterStartDate(quarter,year);
+		Date endDate=FeeUtilsV2.quarterEndDate(quarter,year);
+		return attendanceRepository.findByStudentAndCreatedDateBetween(student,startDate,endDate).stream().mapToDouble(s->s.getExtraHours()).sum();
+	}
+	public double getLastQuarterExtraHours(Student student,int quarter,int year){
+		quarter=FeeUtilsV2.getLastQuarter(quarter,year).get("quarter");
+		return getExtraHours(student,quarter,year);
+	}
 	////////////////////////////////////////// Avneet
 
 	// list of present and absent Students

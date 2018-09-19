@@ -478,7 +478,16 @@ public class StudentService extends BaseService {
         }
 		boolean isFormalChange=(dbStudent.isFormalSchool() ^ request.isFormalSchool());
 
-		dbStudent = request.toEntity(dbStudent);
+		// check chnage in addmision date and validate it
+        Calendar cal=Calendar.getInstance();
+        if(!dbStudent.getProfile().getAdmissionDate().equals(request.parseDate(request.getAdmissionDate()))){
+            cal.setTime(request.parseDate(request.getAdmissionDate()));
+            if(FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH))!=FeeUtilsV2.getQuarter() || cal.get(Calendar.YEAR)!= java.time.LocalDate.now().getYear()){
+                throw new ValidationException("Admission date can not be set to before or after running quarter");
+            }
+        }
+
+        dbStudent = request.toEntity(dbStudent);
 		dbStudent.setGroup(programGroup);
 		dbStudent.setProgram(program);
 		dbStudent.setCenter(center);
