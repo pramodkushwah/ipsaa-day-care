@@ -300,11 +300,16 @@ public class StudentService extends BaseService {
 			BigDecimal adjust=ZERO;
 			if(studentFee.getAdjust()!=null)
 				adjust=studentFee.getAdjust().multiply(THREE);
+			else
+				studentFee.setAdjust(ZERO);
 
 			if(studentFee.getDiscount()!=null && studentFee.getDiscount().intValue()>0)
 				studentFee.setBaseFeeDiscount(studentFee.getDiscount());
 			studentFee.setFinalBaseFee(FeeUtilsV2.calculateDiscountAmount(studentFee.getBaseFee(),studentFee.getBaseFeeDiscount()));
-			studentFee.setFinalFee(studentFee.getFinalFee().subtract(adjust));
+
+			studentFee.setBaseFeeDiscount(FeeUtilsV2.calculateDiscount(studentFee.getBaseFee(),studentFee.getFinalBaseFee().add(studentFee.getAdjust())));
+			studentFee.setFinalFee(studentFee.getFinalFee().add(adjust));
+
 			studentFeeService.saveStudentFee(studentFee);
 			System.out.println(studentFee.getStudent().getName());
 			//studentFeeRepository.save(studentFee);

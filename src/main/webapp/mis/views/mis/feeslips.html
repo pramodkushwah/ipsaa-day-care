@@ -293,7 +293,7 @@
             <div class="form-group">
               <label class="control-label">Balance</label>
               <input class="form-control" type="number"
-              ng-model="selected.balance" readonly>
+              ng-model="selected.balance" ng-change="calculateFinalFee(selected)" >
             </div>
           </div><!--Balance-->
           <div class="col-md-4">

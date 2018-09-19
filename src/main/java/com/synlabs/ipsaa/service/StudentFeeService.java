@@ -698,6 +698,9 @@ public class StudentFeeService {
         slip.setUniformCharges(request.getUniformCharges()==null?ZERO:request.getUniformCharges());
         slip.setStationary(request.getStationary()==null?ZERO:request.getStationary());
 
+        if(request.getBalance()!=null){
+            slip.setBalance(request.getBalance());
+        }
         if(request.getExtraCharge()!=null)
             slip.setExtraCharge(request.getExtraCharge());
         if(request.getLatePaymentCharge()!=null)

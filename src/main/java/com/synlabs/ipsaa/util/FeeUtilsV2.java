@@ -118,7 +118,7 @@ public class FeeUtilsV2 {
                 .add(fee.getStationary())
                 .add(fee.getExtraCharge())
                 .add(fee.getLatePaymentCharge())
-                .subtract(fee.getAdjust());
+                .add(fee.getAdjust());
         BigDecimal gstAmmount;
 
         if (fee.getIgst() != null && fee.getIgst().intValue() != 0) {
@@ -246,5 +246,9 @@ public class FeeUtilsV2 {
 
     public static BigDecimal calculateDiscountAmount(BigDecimal baseFee, BigDecimal baseFeeDiscount) {
         return baseFee.subtract(baseFee.multiply(baseFeeDiscount).divide(HUNDRED, 2, BigDecimal.ROUND_CEILING));
+    }
+    public static BigDecimal calculateDiscount(BigDecimal baseFee, BigDecimal DiscountAmmount) {
+        BigDecimal dis=baseFee.subtract(DiscountAmmount);
+        return dis.divide(baseFee,6).multiply(HUNDRED);
     }
 }
