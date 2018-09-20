@@ -16,6 +16,7 @@ public class StudentAttendance extends BaseAttendance
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   private Student student;
 
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private int extraHours;
 
   public int getExtraHours() {

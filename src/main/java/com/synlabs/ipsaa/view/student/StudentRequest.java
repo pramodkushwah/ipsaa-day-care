@@ -331,12 +331,6 @@ public class StudentRequest implements Request
     }
 
     studentProfile.setDob(parseDate(getDob()));
-    Calendar cal=Calendar.getInstance();
-    cal.setTime(parseDate(getAdmissionDate()));
-
-    if(FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH))!=FeeUtilsV2.getQuarter() || cal.get(Calendar.YEAR)!=LocalDate.now().getYear()){
-      throw new ValidationException("Admission date can not be set to before or after running quarter");
-    }
     studentProfile.setAdmissionDate(parseDate(getAdmissionDate()));
 
     studentProfile.setFamilyType(FamilyType.valueOf(getFamilyType()));

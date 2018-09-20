@@ -300,11 +300,16 @@ public class StudentService extends BaseService {
 			BigDecimal adjust=ZERO;
 			if(studentFee.getAdjust()!=null)
 				adjust=studentFee.getAdjust().multiply(THREE);
+			else
+				studentFee.setAdjust(ZERO);
 
 			if(studentFee.getDiscount()!=null && studentFee.getDiscount().intValue()>0)
 				studentFee.setBaseFeeDiscount(studentFee.getDiscount());
 			studentFee.setFinalBaseFee(FeeUtilsV2.calculateDiscountAmount(studentFee.getBaseFee(),studentFee.getBaseFeeDiscount()));
-			studentFee.setFinalFee(studentFee.getFinalFee().subtract(adjust));
+
+			studentFee.setBaseFeeDiscount(FeeUtilsV2.calculateDiscount(studentFee.getBaseFee(),studentFee.getFinalBaseFee().add(studentFee.getAdjust())));
+			studentFee.setFinalFee(studentFee.getFinalFee().add(adjust));
+
 			studentFeeService.saveStudentFee(studentFee);
 			System.out.println(studentFee.getStudent().getName());
 			//studentFeeRepository.save(studentFee);
@@ -473,7 +478,16 @@ public class StudentService extends BaseService {
         }
 		boolean isFormalChange=(dbStudent.isFormalSchool() ^ request.isFormalSchool());
 
-		dbStudent = request.toEntity(dbStudent);
+		// check chnage in addmision date and validate it
+        Calendar cal=Calendar.getInstance();
+        if(!dbStudent.getProfile().getAdmissionDate().equals(request.parseDate(request.getAdmissionDate()))){
+            cal.setTime(request.parseDate(request.getAdmissionDate()));
+            if(FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH))!=FeeUtilsV2.getQuarter() || cal.get(Calendar.YEAR)!= java.time.LocalDate.now().getYear()){
+                throw new ValidationException("Admission date can not be set to before or after running quarter");
+            }
+        }
+
+        dbStudent = request.toEntity(dbStudent);
 		dbStudent.setGroup(programGroup);
 		dbStudent.setProgram(program);
 		dbStudent.setCenter(center);

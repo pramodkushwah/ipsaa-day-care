@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.synlabs.ipsaa.util.BigDecimalUtils.THREE;
 import static com.synlabs.ipsaa.util.FeeUtils.FEE_CALCULATION_TOLERANCE;
@@ -118,7 +120,7 @@ public class FeeUtilsV2 {
                 .add(fee.getStationary())
                 .add(fee.getExtraCharge())
                 .add(fee.getLatePaymentCharge())
-                .subtract(fee.getAdjust());
+                .add(fee.getAdjust());
         BigDecimal gstAmmount;
 
         if (fee.getIgst() != null && fee.getIgst().intValue() != 0) {
@@ -189,7 +191,29 @@ public class FeeUtilsV2 {
         }
         return 0;
     }
+    public static Map<String,Integer> getLastQuarter(int quarter, int year) {
 
+        Map<String,Integer> map=new HashMap<String,Integer>();
+        switch (quarter) {
+            case 1:
+                map.put("year",--year);
+                map.put("quarter",4);
+                return map;
+            case 2:  // first quater
+                map.put("year",year);
+                map.put("quarter",1);
+                return map;
+            case 3:
+                map.put("year",year);
+                map.put("quarter",2);
+                return map;
+            case 4:
+                map.put("year",year);
+                map.put("quarter",3);
+                return map;
+        }
+        return null;
+    }
 
     public static int quarterEndMonth(int quarter) {
         switch (quarter) {
@@ -203,6 +227,50 @@ public class FeeUtilsV2 {
                 return 12;
         }
         return 0;
+    }
+    public static Date quarterEndDate(int quarter,int year) {
+        Calendar cal=Calendar.getInstance();
+        switch (quarter) {
+            case 1:
+                cal.set(Calendar.MONTH,3);
+                cal.set(year,3,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+                return cal.getTime();
+            case 2:
+                cal.set(Calendar.MONTH,6);
+                cal.set(year,6,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+                return cal.getTime();
+            case 3:
+
+                cal.set(Calendar.MONTH,9);
+                cal.set(year,9,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+                return cal.getTime();
+            case 4:
+                cal.set(Calendar.MONTH,12);
+                cal.set(year,12,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+                return cal.getTime();
+        }
+        return null;
+    }
+    public static Date quarterStartDate(int quarter,int year) {
+        Calendar cal=Calendar.getInstance();
+        switch (quarter) {
+            case 1: cal.set(Calendar.MONTH,1);
+                cal.set(year,1,1);
+                return cal.getTime();
+            case 2:  // first quater
+                cal.set(Calendar.MONTH,4);
+                cal.set(year,4,1);
+                return cal.getTime();
+            case 3:
+                cal.set(Calendar.MONTH,7);
+                cal.set(year,7,1);
+                return cal.getTime();
+            case 4:
+                cal.set(Calendar.MONTH,10);
+                cal.set(year,10,1);
+                return cal.getTime();
+        }
+        return null;
     }
 
     public static int getQuarter() {
@@ -246,5 +314,9 @@ public class FeeUtilsV2 {
 
     public static BigDecimal calculateDiscountAmount(BigDecimal baseFee, BigDecimal baseFeeDiscount) {
         return baseFee.subtract(baseFee.multiply(baseFeeDiscount).divide(HUNDRED, 2, BigDecimal.ROUND_CEILING));
+    }
+    public static BigDecimal calculateDiscount(BigDecimal baseFee, BigDecimal DiscountAmmount) {
+        BigDecimal dis=baseFee.subtract(DiscountAmmount);
+        return dis.divide(baseFee,6).multiply(HUNDRED);
     }
 }

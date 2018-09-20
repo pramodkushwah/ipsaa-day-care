@@ -72,8 +72,17 @@ public class StudentFeeSlipResponse implements Response
   private BigDecimal programPaidAmountTotal=ZERO;
   private BigDecimal transportPaidAmountTotal=ZERO;
 
+  private BigDecimal extraHours;
 
   private List<StudentFeePaymentResponse> payments;
+
+  public BigDecimal getExtraHours() {
+    return extraHours;
+  }
+
+  public void setExtraHours(BigDecimal extraHours) {
+    this.extraHours = extraHours;
+  }
 
   public BigDecimal getTotalOtherPaidAmount() {
     return totalOtherPaidAmount;
@@ -164,6 +173,7 @@ public class StudentFeeSlipResponse implements Response
   {
 
     this.id = slip.getId();
+    this.extraHours=slip.getExtraHours();
     this.fullName = slip.getStudent().getProfile().getFullName();
     this.group = slip.getStudent().getGroup().getName();
     this.program = slip.getStudent().getProgram().getName();

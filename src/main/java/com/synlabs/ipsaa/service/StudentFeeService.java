@@ -68,7 +68,8 @@ public class StudentFeeService {
 
     @Autowired
     private StudentFeePaymentRepository feePaymentRepository;
-
+    @Autowired
+    private StudentAttendanceService attendanceService;
 
     @Autowired
     private EntityManager entityManager;
@@ -226,16 +227,21 @@ public class StudentFeeService {
         List<StudentFeePaymentRequest> lastQuarterSlips= new ArrayList<>();
         List<StudentFeePaymentRequest> unPaidList=new ArrayList<>();
         BigDecimal paidAmount=ZERO;
-        BigDecimal totalAmount=ZERO;
         BigDecimal balance=ZERO;
         List<StudentFeePaymentRequest> slips = feePaymentRepository.findByStudentAndFeeDuration(fee.getStudent(),FeeDuration.Quarterly);
         boolean isAllConfirm=false;
 
         int unConfirmCount=0;
+        StudentFeePaymentRequest lastQuarterSlip=null;
         if(slips!=null && !slips.isEmpty()){
         for(StudentFeePaymentRequest s:slips){
+
+            if(s.getQuarter()==FeeUtilsV2.getLastQuarter(quarter,year).get("quarter") && s.getYear()==FeeUtilsV2.getLastQuarter(quarter,year).get("year")){
+                lastQuarterSlip=s;
+            }
             for(StudentFeePaymentRecord p:s.getPayments()){
-                if(p.getActive()){
+                if(s.getQuarter()==FeeUtilsV2.getLastQuarter(quarter,year).get("quarter") && s.getYear()==FeeUtilsV2.getLastQuarter(quarter,year).get("year")){
+
                     paidAmount=paidAmount.add(p.getPaidAmount());
                 }
                 if(p.getConfirmed()==null || !p.getConfirmed()) {
@@ -245,7 +251,6 @@ public class StudentFeeService {
                     }
                 }
             }
-            totalAmount=totalAmount.add(s.getTotalFee());
         }
         }
         if(unConfirmCount>0)
@@ -253,7 +258,8 @@ public class StudentFeeService {
         else if(unConfirmCount==0 || slips==null || slips.isEmpty()){ // to check there is no old  slip found
             isAllConfirm=true;
         }
-        balance=totalAmount.subtract(paidAmount);
+        if(lastQuarterSlip!=null)
+        balance=lastQuarterSlip.getTotalFee().subtract(paidAmount);
 
         if(slips!=null && !slips.isEmpty()){
             List<StudentFeePaymentRequest> list=slips.stream()
@@ -271,6 +277,8 @@ public class StudentFeeService {
         if(thisQuarterSlips==null && isAllConfirm) // checking old payments status too if yes then generate
         {
             slip = new StudentFeePaymentRequest();
+            double extraHours=attendanceService.getLastQuarterExtraHours(fee.getStudent(),quarter,year);
+            slip.setExtraHours(new BigDecimal(extraHours));
             slip.setStudent(fee.getStudent());
             slip.setFeeDuration(FeeDuration.Quarterly);
             slip.setInvoiceDate(LocalDate.now().toDate());
@@ -354,7 +362,7 @@ public class StudentFeeService {
                 }
 
                 slip.setBalance(balance);
-                slip.setTotalFee(FeeUtilsV2.calculateSaveFinalFee(slip,baseFeeRatio));
+                slip.setTotalFee(FeeUtilsV2.calculateSaveFinalFee(slip,baseFeeRatio).setScale(2, BigDecimal.ROUND_HALF_EVEN));
                 slip.setFinalFee(slip.getTotalFee());
                 slip.setTotalFee(slip.getTotalFee().add(balance));
 
@@ -698,6 +706,9 @@ public class StudentFeeService {
         slip.setUniformCharges(request.getUniformCharges()==null?ZERO:request.getUniformCharges());
         slip.setStationary(request.getStationary()==null?ZERO:request.getStationary());
 
+        if(request.getBalance()!=null){
+            slip.setBalance(request.getBalance());
+        }
         if(request.getExtraCharge()!=null)
             slip.setExtraCharge(request.getExtraCharge());
         if(request.getLatePaymentCharge()!=null)
