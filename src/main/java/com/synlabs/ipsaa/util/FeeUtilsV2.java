@@ -311,7 +311,22 @@ public class FeeUtilsV2 {
         }
         return new BigDecimal(feeMonthRatio);
     }
-
+    public static BigDecimal calculateNextFeeRatioForQuarter(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int currMonth = cal.get(Calendar.MONTH);
+        currMonth = currMonth + 1;// for removing 0 to one indexing
+        int currDay = cal.get(Calendar.DATE);
+        int quarterEnd = quarterEndMonth(getQuarter(currMonth));
+        double feeMonthRatio = quarterEnd - currMonth;
+        if (15 >= currDay) {
+            feeMonthRatio = feeMonthRatio + 0.5;
+        } else {
+            if(feeMonthRatio!=0)
+            feeMonthRatio = feeMonthRatio + 1.00;
+        }
+        return new BigDecimal(feeMonthRatio);
+    }
     public static BigDecimal calculateDiscountAmount(BigDecimal baseFee, BigDecimal baseFeeDiscount) {
         return baseFee.subtract(baseFee.multiply(baseFeeDiscount).divide(HUNDRED, 2, BigDecimal.ROUND_CEILING));
     }

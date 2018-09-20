@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.*;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
@@ -455,7 +456,7 @@ public class StudentFeeService {
         }
     }
 
-    public StudentFeePaymentRequest regenerateFeeSlipV2(StudentFeeSlipRequestV2 request, int quarter, int year) {
+    public StudentFeePaymentRequest regenerateFeeSlipV2(StudentFeeSlipRequestV2 request) throws ParseException {
         StudentFeePaymentRequest thisQuarterSlip=null;
         thisQuarterSlip = feePaymentRepository.findOne(request.getId());
         if(thisQuarterSlip==null){
@@ -467,14 +468,31 @@ public class StudentFeeService {
         }
 
 
-        Calendar cal =Calendar.getInstance();
-        BigDecimal nextRatio=FeeUtilsV2.calculateFeeRatioForQuarter(cal.getTime());
+        Date regenrationDate;
+        if(request.getSpaceifyRegenrationDate()==null){
+            Calendar cal =Calendar.getInstance();
+            regenrationDate=cal.getTime();
+        }else{
+            regenrationDate=request.parseDate(request.getSpaceifyRegenrationDate());
+        }
 
+        // test case
+        Calendar cal =Calendar.getInstance();
+        cal.set(2018,9-1,14);
+        regenrationDate=cal.getTime();
+        BigDecimal nextRatio=FeeUtilsV2.calculateNextFeeRatioForQuarter(regenrationDate);
         // hander fee chnage or discount change in running quarter
-        if(fee.getBaseFee().doubleValue()!=thisQuarterSlip.getBaseFee().doubleValue() ||
-                fee.getFinalBaseFee().doubleValue()!=thisQuarterSlip.getFinalFee().divide(thisQuarterSlip.getFeeRatio()).doubleValue()){
+        int newBaseFee=fee.getBaseFee().intValue();
+        int oldBaseFee=thisQuarterSlip.getBaseFee().intValue();
+
+        int newFinalBaseFee=fee.getFinalBaseFee().divide(THREE,2,BigDecimal.ROUND_CEILING).intValue();
+        int oldFinalBaseFee=thisQuarterSlip.getFinalBaseFee().divide(thisQuarterSlip.getFeeRatio(),2,BigDecimal.ROUND_CEILING).intValue();
+
+        if(newBaseFee!=oldBaseFee ||
+                newFinalBaseFee!=oldFinalBaseFee){
             // base fee change handel
-            thisQuarterSlip.setFinalBaseFee(thisQuarterSlip.getFinalBaseFee().divide(thisQuarterSlip.getFeeRatio()));
+            thisQuarterSlip.setFinalBaseFee(thisQuarterSlip.getFinalBaseFee().divide(thisQuarterSlip.getFeeRatio(),2,BigDecimal.ROUND_CEILING));
+
 
             thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee()
                         .subtract(thisQuarterSlip.getFinalBaseFee().multiply(nextRatio))
@@ -491,8 +509,10 @@ public class StudentFeeService {
             } else {
                 fee.setGstAmount(ZERO);
             }
+
+            thisQuarterSlip.setAutoComments(thisQuarterSlip.getAutoComments()+" "+"change in transport fee" +thisQuarterSlip.getBaseFee() +" to "+ fee.getBaseFee());
         }
-        if(fee.getTransportFee()!=thisQuarterSlip.getTransportFee()){
+        if(fee.getTransportFee().intValue()!=thisQuarterSlip.getTransportFee().intValue()){
         // transport fee change handel
             thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee()
                     .subtract(thisQuarterSlip.getTransportFee().multiply(nextRatio))
@@ -500,7 +520,10 @@ public class StudentFeeService {
             thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee().add(fee.getTransportFee().multiply(nextRatio)));
             thisQuarterSlip.setTransportFee(fee.getTransportFee());
             thisQuarterSlip.setFinalTransportFee(fee.getTransportFee().multiply(thisQuarterSlip.getFeeRatio()));
+
+            thisQuarterSlip.setAutoComments(thisQuarterSlip.getAutoComments()+" "+"change in transport fee" +thisQuarterSlip.getTransportFee() +" to " +fee.getTransportFee());
         }
+        thisQuarterSlip.setTotalFee(thisQuarterSlip.getBalance().add(thisQuarterSlip.getFinalFee()));
         return  feePaymentRepository.saveAndFlush(thisQuarterSlip);
     }
 
@@ -651,12 +674,12 @@ public class StudentFeeService {
                     fee.setFinalFee(FeeUtilsV2.calculateFinalFee(fee,false));
                     studentFeeRepository.save(fee);
             }catch(Exception e){
-                logger.error(String.format("Student Fee scheduler program center not found error .%s",fee));
+                logger.error(String.format("Student Fee scheduler, program center not found error .%s",fee));
             }
             }
         }
     }
-    public StudentFeePaymentRequest regenerateStudentSlip(StudentFeeSlipRequestV2 request) {
+    public StudentFeePaymentRequest regenerateStudentSlip(StudentFeeSlipRequestV2 request) throws ParseException {
         return this.regenerateFeeSlip(request);
     }
 
