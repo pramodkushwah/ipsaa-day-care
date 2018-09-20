@@ -104,7 +104,7 @@ public class FeeUtilsV2 {
 
         fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(),fee.getFinalBaseFee().divide(THREE), "Base Fee"));
         // need to re calculate the discount bcz finalBaseFee saves discount amount + quarterly amount too
-        fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(finalRatio));
+        fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(finalRatio).setScale(2,BigDecimal.ROUND_CEILING));
 
         return calculateFinalFee(fee);
     }

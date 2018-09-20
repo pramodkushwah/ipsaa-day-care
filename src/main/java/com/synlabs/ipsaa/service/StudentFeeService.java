@@ -222,59 +222,34 @@ public class StudentFeeService {
         Calendar cal = Calendar. getInstance();
         cal.setTime(fee.getStudent().getProfile().getAdmissionDate());
 
+        int slipCount=feePaymentRepository.countByStudentAndFeeDuration(fee.getStudent(),FeeDuration.Quarterly);
         StudentFeePaymentRequest slip=null;
-        StudentFeePaymentRequest thisQuarterSlips=null;
-        List<StudentFeePaymentRequest> lastQuarterSlips= new ArrayList<>();
-        List<StudentFeePaymentRequest> unPaidList=new ArrayList<>();
+        StudentFeePaymentRequest thisQuarterSlip=feePaymentRepository.findByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(),FeeDuration.Quarterly,quarter,year);
+        StudentFeePaymentRequest lastQuarterSlip=feePaymentRepository.findByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(),FeeDuration.Quarterly,FeeUtilsV2.getLastQuarter(quarter,year).get("quarter"),FeeUtilsV2.getLastQuarter(quarter,year).get("year"));
         BigDecimal paidAmount=ZERO;
         BigDecimal balance=ZERO;
-        List<StudentFeePaymentRequest> slips = feePaymentRepository.findByStudentAndFeeDuration(fee.getStudent(),FeeDuration.Quarterly);
         boolean isAllConfirm=false;
 
         int unConfirmCount=0;
-        StudentFeePaymentRequest lastQuarterSlip=null;
-        if(slips!=null && !slips.isEmpty()){
-        for(StudentFeePaymentRequest s:slips){
-
-            if(s.getQuarter()==FeeUtilsV2.getLastQuarter(quarter,year).get("quarter") && s.getYear()==FeeUtilsV2.getLastQuarter(quarter,year).get("year")){
-                lastQuarterSlip=s;
-            }
-            for(StudentFeePaymentRecord p:s.getPayments()){
-                if(s.getQuarter()==FeeUtilsV2.getLastQuarter(quarter,year).get("quarter") && s.getYear()==FeeUtilsV2.getLastQuarter(quarter,year).get("year")){
-
+        if(lastQuarterSlip!=null){
+            for(StudentFeePaymentRecord p:lastQuarterSlip.getPayments()){
                     paidAmount=paidAmount.add(p.getPaidAmount());
-                }
                 if(p.getConfirmed()==null || !p.getConfirmed()) {
                     if( p.getActive()){
-                        unPaidList.add(s);
                         unConfirmCount++;
                     }
                 }
             }
         }
-        }
         if(unConfirmCount>0)
             isAllConfirm=false;
-        else if(unConfirmCount==0 || slips==null || slips.isEmpty()){ // to check there is no old  slip found
+        else if(unConfirmCount==0){ // to check there is no old  slip found
             isAllConfirm=true;
         }
         if(lastQuarterSlip!=null)
         balance=lastQuarterSlip.getTotalFee().subtract(paidAmount);
 
-        if(slips!=null && !slips.isEmpty()){
-            List<StudentFeePaymentRequest> list=slips.stream()
-                                        .filter(s->s.getQuarter()==quarter)
-                                        .filter(s->s.getStudent().equals(fee.getStudent()))
-                                        .filter(s->s.getYear()==year)
-                                        .collect(Collectors.toList());
-            if(list!=null && !list.isEmpty())
-                thisQuarterSlips=list.get(0);
-        }
-        if(slips!=null && !slips.isEmpty()){
-            lastQuarterSlips=slips.stream().collect(Collectors.toList());
-            lastQuarterSlips.removeIf(req->req.getQuarter()==quarter && req.getYear()==year);
-        }
-        if(thisQuarterSlips==null && isAllConfirm) // checking old payments status too if yes then generate
+        if(thisQuarterSlip==null && isAllConfirm) // checking old payments status too if yes then generate
         {
             slip = new StudentFeePaymentRequest();
             double extraHours=attendanceService.getLastQuarterExtraHours(fee.getStudent(),quarter,year);
@@ -319,7 +294,7 @@ public class StudentFeeService {
             slip.setGstAmount(fee.getGstAmount());
             BigDecimal baseFeeRatio=THREE;
             slip.setFeeRatio(baseFeeRatio);
-            if(slips==null || slips.isEmpty()) // for checking first time genration or not
+            if(lastQuarterSlip==null && slipCount==0) // for checking first time genration or not
                 {
                     baseFeeRatio=FeeUtilsV2.calculateFeeRatioForQuarter(slip.getStudent().getProfile().getAdmissionDate());
                     slip.setFeeRatio(baseFeeRatio);
@@ -366,22 +341,21 @@ public class StudentFeeService {
                 slip.setFinalFee(slip.getTotalFee());
                 slip.setTotalFee(slip.getTotalFee().add(balance));
 
-                for(StudentFeePaymentRequest lastQuarter:lastQuarterSlips){  // expiring all old slips
-                     if(lastQuarter!=null && !lastQuarter.isExpire()){
-                        lastQuarter.setExpire(true);
-                        feePaymentRepository.saveAndFlush(lastQuarter);
+                  // expiring all old slips
+                     if(lastQuarterSlip!=null && !lastQuarterSlip.isExpire()){
+                        lastQuarterSlip.setExpire(true);
+                        feePaymentRepository.saveAndFlush(lastQuarterSlip);
                     }
-                }
             return  feePaymentRepository.saveAndFlush(slip);
         }
-        else {
+            else {
             if (wantException)
                 throw new NotFoundException(String.format("Pay Slip Already Exist", feeId));
-                return thisQuarterSlips;
+                return thisQuarterSlip;
             }
     }
 
-    public StudentFeePaymentRequest regenerateFeeSlip(StudentFeeSlipRequestV2 request, int quarter, int year) {
+    public StudentFeePaymentRequest regenerateFeeSlip(StudentFeeSlipRequestV2 request) {
         StudentFeePaymentRequest thisQuarterSlip=null;
         thisQuarterSlip = feePaymentRepository.findOne(request.getId());
         if(thisQuarterSlip==null){
@@ -397,6 +371,9 @@ public class StudentFeeService {
         {
             throw new ValidationException("Already paid some or full amount.");
         }
+         if(thisQuarterSlip.isExpire()){
+             throw new ValidationException("Can Not Regenerate Expire Slip.");
+         }
 
         if(thisQuarterSlip!=null)
         {
@@ -619,14 +596,11 @@ public class StudentFeeService {
         }
     }
     public void regenerateStudentSlipAll(List<Long> ids) {
-        Calendar cal = Calendar. getInstance();
-        int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));
-        int year=cal.get(Calendar.YEAR);
         for(Long id:ids){
             StudentFeeSlipRequestV2 request=new StudentFeeSlipRequestV2();
             request.setId(id);
             try{
-                this.regenerateFeeSlip(request,quarter,year);
+                this.regenerateFeeSlip(request);
             }catch (Exception ignored){
                 ignored.printStackTrace();
             }
@@ -683,10 +657,7 @@ public class StudentFeeService {
         }
     }
     public StudentFeePaymentRequest regenerateStudentSlip(StudentFeeSlipRequestV2 request) {
-        Calendar cal = Calendar. getInstance();
-        int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));
-        int year=cal.get(Calendar.YEAR);
-        return this.regenerateFeeSlip(request,quarter,year);
+        return this.regenerateFeeSlip(request);
     }
 
     public StudentFeePaymentRequest updateSlip(StudentFeeSlipRequestV2 request) {
