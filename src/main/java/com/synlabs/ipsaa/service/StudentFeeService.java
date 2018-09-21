@@ -952,6 +952,7 @@ public class StudentFeeService {
         if (request.getConfirmed()){
             receipt.setActive(true);
             receipt.setConfirmed(request.getConfirmed());
+            logger.info(String.format("Student Fee payment confirm .%s",slip));
         }
         else {
             receipt.setActive(false);
@@ -967,9 +968,10 @@ public class StudentFeeService {
             } else {
                 slip.setPaymentStatus(PaymentStatus.PartiallyPaid);
             }
+            logger.info(String.format("Student Fee payment rejected .%s",slip));
         }
         slip.setAutoComments(request.getComments());
-        logger.info(String.format("Student Fee payment rejected .%s",slip));
+
         feePaymentRepository.saveAndFlush(slip);
         return receipt;
     }
