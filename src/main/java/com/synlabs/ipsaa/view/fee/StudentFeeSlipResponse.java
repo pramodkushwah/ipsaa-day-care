@@ -37,6 +37,7 @@ public class StudentFeeSlipResponse implements Response
   private BigDecimal adjust;
   private String     autoComments;
   private boolean generateActive;
+  private BigDecimal finalFee;
 
 
   private BigDecimal uniformCharges;
@@ -75,6 +76,14 @@ public class StudentFeeSlipResponse implements Response
   private BigDecimal extraHours;
 
   private List<StudentFeePaymentResponse> payments;
+
+  public BigDecimal getFinalFee() {
+    return finalFee;
+  }
+
+  public void setFinalFee(BigDecimal finalFee) {
+    this.finalFee = finalFee;
+  }
 
   public BigDecimal getExtraHours() {
     return extraHours;
@@ -215,6 +224,9 @@ public class StudentFeeSlipResponse implements Response
     this.finalTransportFee=slip.getFinalTransportFee()==null?ZERO:slip.getFinalTransportFee();
     this.adjust = this.adjust == null ? BigDecimal.ZERO : this.adjust;
     this.balance = this.balance == null ? BigDecimal.ZERO : this.balance;
+
+    this.finalFee=slip.getFinalFee()==null?this.totalFee:slip.getFinalFee();
+
     this.autoComments = slip.getAutoComments();
     if (slip.getPayments() != null && !slip.getPayments().isEmpty())
     {
