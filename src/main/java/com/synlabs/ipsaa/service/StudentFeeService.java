@@ -355,7 +355,6 @@ public class StudentFeeService {
                 return thisQuarterSlip;
             }
     }
-
     public StudentFeePaymentRequest regenerateFeeSlip(StudentFeeSlipRequestV2 request) {
         StudentFeePaymentRequest thisQuarterSlip=null;
         thisQuarterSlip = feePaymentRepository.findOne(request.getId());
@@ -433,7 +432,6 @@ public class StudentFeeService {
                  thisQuarterSlip.setAddmissionFeeDiscount(ZERO);
                  thisQuarterSlip.setFinalAdmissionFee(ZERO);
              }
-
              if(thisQuarterSlip.getQuarter()==2 || (thisQuarterSlip.getFinalAnnualCharges()!=null &&thisQuarterSlip.getFinalAnnualCharges().intValue()>0)  ){
                  thisQuarterSlip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount()==null?ZERO:fee.getAnnualFeeDiscount());
                  thisQuarterSlip.setAnnualFee(fee.getAnnualCharges()==null?ZERO:fee.getAnnualCharges());
@@ -456,7 +454,7 @@ public class StudentFeeService {
         }
     }
 
-    public StudentFeePaymentRequest regenerateFeeSlipV2(StudentFeeSlipRequestV2 request) throws ParseException {
+    public StudentFeePaymentRequest regenerateFeeSlipV2(StudentFeeSlipRequestV2 request){
         StudentFeePaymentRequest thisQuarterSlip=null;
         thisQuarterSlip = feePaymentRepository.findOne(request.getId());
         if(thisQuarterSlip==null){
@@ -466,6 +464,9 @@ public class StudentFeeService {
         if(fee==null){
             throw new NotFoundException(String.format("Student fee not found [%s]", request.getStudentId()));
         }
+        if(thisQuarterSlip.isExpire()){
+            throw new ValidationException("Can Not Regenerate Expire Slip.");
+        }
 
 
         Date regenrationDate;
@@ -473,7 +474,11 @@ public class StudentFeeService {
             Calendar cal =Calendar.getInstance();
             regenrationDate=cal.getTime();
         }else{
-            regenrationDate=request.parseDate(request.getSpaceifyRegenrationDate());
+            try {
+                regenrationDate=request.parseDate(request.getSpaceifyRegenrationDate());
+            } catch (ParseException e) {
+                throw new ValidationException("error in date");
+            }
         }
 
         // test case
@@ -487,6 +492,8 @@ public class StudentFeeService {
 
         int newFinalBaseFee=fee.getFinalBaseFee().divide(THREE,2,BigDecimal.ROUND_CEILING).intValue();
         int oldFinalBaseFee=thisQuarterSlip.getFinalBaseFee().divide(thisQuarterSlip.getFeeRatio(),2,BigDecimal.ROUND_CEILING).intValue();
+
+        thisQuarterSlip.setTotalFee(thisQuarterSlip.getTotalFee().subtract(thisQuarterSlip.getFinalFee()));
 
         if(newBaseFee!=oldBaseFee ||
                 newFinalBaseFee!=oldFinalBaseFee){
@@ -523,7 +530,7 @@ public class StudentFeeService {
 
             thisQuarterSlip.setAutoComments(thisQuarterSlip.getAutoComments()+" "+"change in transport fee" +thisQuarterSlip.getTransportFee() +" to " +fee.getTransportFee());
         }
-        thisQuarterSlip.setTotalFee(thisQuarterSlip.getBalance().add(thisQuarterSlip.getFinalFee()));
+        thisQuarterSlip.setTotalFee(thisQuarterSlip.getTotalFee().add(thisQuarterSlip.getFinalFee()));
         return  feePaymentRepository.saveAndFlush(thisQuarterSlip);
     }
 
@@ -679,8 +686,12 @@ public class StudentFeeService {
             }
         }
     }
-    public StudentFeePaymentRequest regenerateStudentSlip(StudentFeeSlipRequestV2 request) throws ParseException {
-        return this.regenerateFeeSlip(request);
+    public StudentFeePaymentRequest regenerateStudentSlip(StudentFeeSlipRequestV2 request){
+        if(request.getSpaceifyRegenrationDate()==null){
+            return this.regenerateFeeSlip(request);
+        }else{
+            return this.regenerateFeeSlipV2(request);
+        }
     }
 
     public StudentFeePaymentRequest updateSlip(StudentFeeSlipRequestV2 request) {

@@ -184,7 +184,7 @@ public class StudentFeeController
   }
     @Secured(STUDENTFEE_SLIP_WRITE)
     @PostMapping("/feeslip/regenerate")
-    public StudentFeeSlipResponse reGenerateStudentSlip(@RequestBody StudentFeeSlipRequestV2 request) throws ParseException {
+    public StudentFeeSlipResponse reGenerateStudentSlip(@RequestBody StudentFeeSlipRequestV2 request) {
         return new StudentFeeSlipResponse(studentFeeService.regenerateStudentSlip(request));
     }
   @Secured(STUDENTFEE_SLIP_WRITE)

@@ -123,7 +123,7 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(precision = 16, scale = 2)
   private BigDecimal sgst;
 
-  @Column(precision = 16, scale = 2,columnDefinition = "default 0")
+  @Column(precision = 16, scale = 2,columnDefinition = "Decimal(10,2) default '0.00'")
   private BigDecimal extraHours;
 
   @Column(precision = 16, scale = 2)

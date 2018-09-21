@@ -280,11 +280,38 @@ public class StudentService extends BaseService {
 			fees = query.where(fee.student.center.id.eq(request.getCenterId())).fetch();
 			// to ajust chnages
 			//ajustChnages();
+			//adjustGst();
+
 			return fees;
 		}
 		fees = query.where(fee.student.center.in(getUserCenters())).fetch();
 		return fees;
 	}
+
+
+	private void adjustGst() {
+		QStudentFee fee = QStudentFee.studentFee;
+		JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
+		query.select(fee).from(fee)
+				.where(fee.student.active.isTrue())
+				.where(fee.feeDuration.eq(FeeDuration.Quarterly))
+				.where(fee.student.corporate.isFalse());
+
+		for (StudentFee studentFee:query.fetch() ){
+			if(studentFee.getStudent().getProgram().getId()==11) {
+				CenterProgramFee centerProgramFee=centerProgramFeeRepository.findByProgramIdAndCenterId(studentFee.getStudent().getProgram().getId(),studentFee.getStudent().getCenter().getId());
+				if(centerProgramFee==null){
+					throw new NotFoundException("Center program fee not found ");
+				}
+				studentFee.getStudent().setFormalSchool(true);
+				studentFee.getStudent().setSchoolName("Formal School Name yet to be added");
+				studentFee.setIgst(new BigDecimal(18));
+				studentFee.setGstAmount(studentFee.getFinalBaseFee().multiply(new BigDecimal(0.18)));
+				studentFeeRepository.saveAndFlush(studentFee);
+				System.out.println(studentFee.getStudent().getName());
+				}
+			}
+		}
 
 	@Transactional
 	private void ajustChnages() {
