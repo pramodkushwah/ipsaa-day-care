@@ -359,6 +359,7 @@ public class DocumentService extends BaseService
           String html = out.toString();
 
           String fileName = UUID.randomUUID() + ".pdf";
+          System.out.println(fileName);
           feeSlip.setSlipFileName(fileName);
           Map<String, String> params = new HashMap<>();
           params.put("-O", "landscape");
@@ -437,10 +438,13 @@ public class DocumentService extends BaseService
       rootMap.put("cgst", slip.getCgst());
       rootMap.put("cgstAmount", FeeUtils.calculateGST(slip, GST.CGST));
     }
-    if (slip.getIgst() != null && !slip.getIgst().equals(ZERO))
+    if (slip.getIgst() != null && !slip.getIgst().equals(ZERO))         /////Added else because igst can't be null or misssing in template.
     {
       rootMap.put("igst", slip.getIgst());
       rootMap.put("igstAmount", FeeUtils.calculateGST(slip, GST.IGST));
+    }else{        //set if igst is zero.
+      rootMap.put("igst",0.0);
+      rootMap.put("igstAmount", FeeUtils.calculateGST(slip,GST.IGST));
     }
 
     return rootMap;
