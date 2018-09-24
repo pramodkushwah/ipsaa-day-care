@@ -5,12 +5,7 @@ import static com.synlabs.ipsaa.util.StringUtil.in;
 import static java.math.BigDecimal.ZERO;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,10 +17,12 @@ import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 
 import com.synlabs.ipsaa.entity.common.*;
+import com.synlabs.ipsaa.entity.hdfc.HdfcApiDetails;
 import com.synlabs.ipsaa.util.FeeUtilsV2;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.poi.ss.usermodel.*;
 import org.dom4j.DocumentException;
 import org.joda.time.LocalDate;
 import org.jxls.common.Context;
@@ -281,6 +278,7 @@ public class StudentService extends BaseService {
 			// to ajust chnages
 			//ajustChnages();
 			//adjustGst();
+			addSecurity();
 
 			return fees;
 		}
@@ -289,6 +287,46 @@ public class StudentService extends BaseService {
 	}
 
 
+	@Transactional
+	private void addSecurity() {
+			String SAMPLE_XLSX_FILE_PATH ="C:/Users/shubham/Desktop/ipsaa/query/duplicate.xlsx";
+			try{
+				File file = new File(SAMPLE_XLSX_FILE_PATH);
+				FileInputStream inputStream = new FileInputStream(file);
+				Workbook workbook = WorkbookFactory.create(inputStream);
+				workbook = WorkbookFactory.create(new File(SAMPLE_XLSX_FILE_PATH));
+				Sheet sheet = workbook.getSheetAt(0);
+				Iterator<Row> iterator = sheet.iterator();
+				while (iterator.hasNext()) {
+
+					Row currentRow = iterator.next();
+					Iterator<Cell> cellIterator = currentRow.iterator();
+
+					Cell currentCell = cellIterator.next();
+					if(currentCell.getStringCellValue().equals("Merchant Name"))
+						continue;
+					currentCell = cellIterator.next();
+					Student student =studentRepository.findByAdmissionNumber(currentCell.getStringCellValue());
+					if(student!=null){
+						StudentFee fee=studentFeeRepository.findByStudent(student);
+						if(fee!=null){
+							fee.setDepositFeeDiscount(new BigDecimal(0));
+							fee.setDepositFee(new BigDecimal(0));
+							fee.setFinalDepositFee(new BigDecimal(0));
+							fee.setFinalFee(fee.getFinalFee().add(fee.getDepositFee()));
+						}
+						System.out.println(student);
+						studentRepository.save(student);
+					}else {
+						System.out.println("center not found"+currentCell.getStringCellValue());
+					}
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+	}
+
+	@Transactional
 	private void adjustGst() {
 		QStudentFee fee = QStudentFee.studentFee;
 		JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
