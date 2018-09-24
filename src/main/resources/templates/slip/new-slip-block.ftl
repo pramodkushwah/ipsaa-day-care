@@ -57,7 +57,7 @@
 
 <#if slip.gstAmount?? && slip.igst??>
   <tr>
-    <th>GST (${igst}%)</th>
+    <th>GST (${slip.igst}%)</th>
     <td><span> : ${slip.gstAmount}</span></td>
   </tr>
 </#if>

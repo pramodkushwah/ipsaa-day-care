@@ -206,15 +206,7 @@ public class DocumentService extends BaseService
       StudentFeePaymentRequest slip1 = feeService.getSlip(unmask(slipId));
       if (flag)
       {
-        if(!slip1.getStudent().getCenter().getAddress().getCity().equals("Gurgaon")){
-          slip1.setSgst(new BigDecimal(9));
-          slip1.setCgst(new BigDecimal(9));
-          slip1.setIgst(null);
-        }else{
-          slip1.setSgst(null);
-          slip1.setCgst(null);
-          slip1.setIgst(new BigDecimal(18));
-        }
+
         slip.setCenterCode(slip1.getStudent().getCenter().getCode());
         slip.setPeriod(slip1.getFeeDuration().toString());
         flag = false;
@@ -403,6 +395,15 @@ public class DocumentService extends BaseService
       serial = generateSerial(slip.getStudent().getCenter().getCode(), "SLIP");
       slip.setSlipSerial(serial);
       slipRepository.saveAndFlush(slip);
+    }
+    if(!slip.getStudent().getCenter().getAddress().getCity().equals("Gurgaon")){
+      slip.setSgst(new BigDecimal(9));
+      slip.setCgst(new BigDecimal(9));
+      slip.setIgst(null);
+    }else{
+      slip.setSgst(null);
+      slip.setCgst(null);
+      slip.setIgst(new BigDecimal(18));
     }
     rootMap = rootMap == null ? new HashMap<>() : rootMap;
     rootMap.put("student", slip.getStudent());
