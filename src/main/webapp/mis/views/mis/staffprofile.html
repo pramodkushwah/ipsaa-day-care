@@ -183,7 +183,7 @@
                                 type="text" ng-readonly="showstaff">
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                 <li ng-repeat="staff in allStaff | filter: {name: workingStaff.searchReportingManager}">
-                                    <a ng-click="selectReportingManager(staff)">{{staff.name}}</a>
+                                    <a ng-click="selectReportingManager(staff)">{{staff.name}} ({{staff.designation}})</a>
                                 </li>
                             </ul>
                         </div>
