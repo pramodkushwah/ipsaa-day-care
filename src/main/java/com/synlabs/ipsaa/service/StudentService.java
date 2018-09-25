@@ -547,7 +547,7 @@ public class StudentService extends BaseService {
         Calendar cal=Calendar.getInstance();
         if(!dbStudent.getProfile().getAdmissionDate().equals(request.parseDate(request.getAdmissionDate()))){
             cal.setTime(request.parseDate(request.getAdmissionDate()));
-            if(FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH))!=FeeUtilsV2.getQuarter() || cal.get(Calendar.YEAR)!= java.time.LocalDate.now().getYear()){
+            if(FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH)+1)!=FeeUtilsV2.getQuarter() || cal.get(Calendar.YEAR)!= java.time.LocalDate.now().getYear()){
                 throw new ValidationException("Admission date can not be set to before or after running quarter");
             }
         }
