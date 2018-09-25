@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static com.synlabs.ipsaa.util.BigDecimalUtils.THREE;
 import static com.synlabs.ipsaa.util.FeeUtils.FEE_CALCULATION_TOLERANCE;
+import static java.math.BigDecimal.ROUND_CEILING;
 import static java.math.BigDecimal.ZERO;
 
 public class FeeUtilsV2 {
@@ -328,7 +329,8 @@ public class FeeUtilsV2 {
         return new BigDecimal(feeMonthRatio);
     }
     public static BigDecimal calculateDiscountAmount(BigDecimal baseFee, BigDecimal baseFeeDiscount) {
-        return baseFee.subtract(baseFee.multiply(baseFeeDiscount).divide(HUNDRED, 2, BigDecimal.ROUND_CEILING));
+        // worng way to do this
+        return baseFee.subtract(baseFee.multiply(baseFeeDiscount).divide(HUNDRED).setScale(0,ROUND_CEILING));
     }
     public static BigDecimal calculateDiscount(BigDecimal baseFee, BigDecimal DiscountAmmount) {
         BigDecimal dis=baseFee.subtract(DiscountAmmount);
