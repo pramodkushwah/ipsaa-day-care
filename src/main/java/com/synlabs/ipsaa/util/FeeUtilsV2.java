@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static com.synlabs.ipsaa.util.BigDecimalUtils.THREE;
 import static com.synlabs.ipsaa.util.FeeUtils.FEE_CALCULATION_TOLERANCE;
+import static java.math.BigDecimal.ROUND_CEILING;
 import static java.math.BigDecimal.ZERO;
 
 public class FeeUtilsV2 {
@@ -89,9 +90,10 @@ public class FeeUtilsV2 {
         }
         fee.setFinalTransportFee(fee.getTransportFee().multiply(finalRatio));
 
-        fee.setFinalBaseFee(calculateDiscountAmount(fee.getBaseFee(),fee.getBaseFeeDiscount()));
 
-        fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(finalRatio));
+        fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(),fee.getFinalBaseFee().divide(THREE), "Base Fee"));
+
+        fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(finalRatio).setScale(2,BigDecimal.ROUND_CEILING));
 
         return calculateFinalFee(fee);
     }
@@ -328,7 +330,8 @@ public class FeeUtilsV2 {
         return new BigDecimal(feeMonthRatio);
     }
     public static BigDecimal calculateDiscountAmount(BigDecimal baseFee, BigDecimal baseFeeDiscount) {
-        return baseFee.subtract(baseFee.multiply(baseFeeDiscount).divide(HUNDRED, 2, BigDecimal.ROUND_CEILING));
+        // worng way to do this
+        return baseFee.subtract(baseFee.multiply(baseFeeDiscount).divide(HUNDRED));
     }
     public static BigDecimal calculateDiscount(BigDecimal baseFee, BigDecimal DiscountAmmount) {
         BigDecimal dis=baseFee.subtract(DiscountAmmount);
