@@ -278,7 +278,7 @@ public class StudentService extends BaseService {
 			// to ajust chnages
 			//ajustChnages();
 			//adjustGst();
-			addSecurity();
+			//addSecurity();
 
 			return fees;
 		}

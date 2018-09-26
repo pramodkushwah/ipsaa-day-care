@@ -90,9 +90,10 @@ public class FeeUtilsV2 {
         }
         fee.setFinalTransportFee(fee.getTransportFee().multiply(finalRatio));
 
-        fee.setFinalBaseFee(calculateDiscountAmount(fee.getBaseFee(),fee.getBaseFeeDiscount()));
 
-        fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(finalRatio));
+        fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(),fee.getFinalBaseFee().divide(THREE), "Base Fee"));
+
+        fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(finalRatio).setScale(2,BigDecimal.ROUND_CEILING));
 
         return calculateFinalFee(fee);
     }
@@ -330,7 +331,7 @@ public class FeeUtilsV2 {
     }
     public static BigDecimal calculateDiscountAmount(BigDecimal baseFee, BigDecimal baseFeeDiscount) {
         // worng way to do this
-        return baseFee.subtract(baseFee.multiply(baseFeeDiscount).divide(HUNDRED).setScale(0,ROUND_CEILING));
+        return baseFee.subtract(baseFee.multiply(baseFeeDiscount).divide(HUNDRED));
     }
     public static BigDecimal calculateDiscount(BigDecimal baseFee, BigDecimal DiscountAmmount) {
         BigDecimal dis=baseFee.subtract(DiscountAmmount);
