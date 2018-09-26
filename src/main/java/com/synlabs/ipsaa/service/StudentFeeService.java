@@ -234,8 +234,11 @@ public class StudentFeeService {
         int unConfirmCount=0;
         if(lastQuarterSlip!=null){
             for(StudentFeePaymentRecord p:lastQuarterSlip.getPayments()){
+
+                if(p.getActive())
                     paidAmount=paidAmount.add(p.getPaidAmount());
-                if(p.getConfirmed()==null || !p.getConfirmed()) {
+
+                    if(p.getConfirmed()==null || !p.getConfirmed()) {
                     if( p.getActive()){
                         unConfirmCount++;
                     }
