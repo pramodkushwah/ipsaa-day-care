@@ -5,10 +5,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.synlabs.ipsaa.Schedular.StudentFeeResetScheduler;
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.student.*;
-import com.synlabs.ipsaa.enums.ApprovalStatus;
-import com.synlabs.ipsaa.enums.FeeDuration;
-import com.synlabs.ipsaa.enums.GST;
-import com.synlabs.ipsaa.enums.PaymentStatus;
+import com.synlabs.ipsaa.enums.*;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
@@ -773,6 +770,14 @@ public class StudentFeeService {
         {
             throw new ValidationException("Payment mode is missing.");
         }
+
+
+        if(!request.getPaymentMode().equals(PaymentMode.Cash)){
+            if(request.getTxnid()==null){
+                throw new ValidationException(" Reference number is missing.");
+            }
+        }
+
         StudentFeePaymentRequest slip = feePaymentRepository.findOne(request.getId());
 
         if (slip == null)
