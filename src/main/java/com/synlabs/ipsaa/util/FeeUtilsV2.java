@@ -280,7 +280,7 @@ public class FeeUtilsV2 {
 
 	public static int getQuarter() {
 		Calendar cal = Calendar.getInstance();
-		int month = cal.get(Calendar.MONTH) - 1;
+		int month = cal.get(Calendar.MONTH)+1;
 		if (month >= 1 && month <= 3)
 			return 1;
 		else if (month >= 4 && month <= 6)
@@ -302,12 +302,15 @@ public class FeeUtilsV2 {
 			return 4;
 	}
 
-	public static BigDecimal calculateFeeRatioForQuarter(Date admissionDate) {
+	public static BigDecimal calculateFeeRatioForQuarter(Date admissionDate,int quarter) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(admissionDate);
 		int currMonth = cal.get(Calendar.MONTH);
 		currMonth = currMonth + 1;// for removing 0 to one indexing
 		int currDay = cal.get(Calendar.DATE);
+		if(getQuarter()!=getQuarter(currMonth)){
+			return THREE;
+		}
 		int quarterEnd = quarterEndMonth(getQuarter(currMonth));
 		double feeMonthRatio = quarterEnd - currMonth;
 		if (15 <= currDay) {

@@ -300,7 +300,7 @@ public class StudentFeeService {
             slip.setFeeRatio(baseFeeRatio);
             if(lastQuarterSlip==null && slipCount==0) // for checking first time genration or not
                 {
-                    baseFeeRatio=FeeUtilsV2.calculateFeeRatioForQuarter(slip.getStudent().getProfile().getAdmissionDate());
+                    baseFeeRatio=FeeUtilsV2.calculateFeeRatioForQuarter(slip.getStudent().getProfile().getAdmissionDate(),quarter);
                     slip.setFeeRatio(baseFeeRatio);
                     slip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
                     slip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount()==null?ZERO:fee.getAnnualFeeDiscount());
@@ -425,7 +425,7 @@ public class StudentFeeService {
             thisQuarterSlip.setFeeRatio(baseFeeRatio);
             // to check is it new addmission
             if(slipCount==1){
-                    baseFeeRatio=FeeUtilsV2.calculateFeeRatioForQuarter(thisQuarterSlip.getStudent().getProfile().getAdmissionDate());
+                    baseFeeRatio=FeeUtilsV2.calculateFeeRatioForQuarter(thisQuarterSlip.getStudent().getProfile().getAdmissionDate(),thisQuarterSlip.getQuarter());
                     thisQuarterSlip.setFeeRatio(baseFeeRatio);
                  thisQuarterSlip.setAdmissionFee(fee.getAdmissionFee()==null?ZERO:fee.getAdmissionFee());
                  thisQuarterSlip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
