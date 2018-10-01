@@ -163,6 +163,12 @@ public class FeeUtilsV2 {
 		baseAmount = baseAmount == null ? ZERO : baseAmount;
 		discountedAmount = discountedAmount == null ? ZERO : discountedAmount;
 		discountAmount = baseAmount.subtract(discountedAmount).multiply(HUNDRED);
+
+		if(discount.intValue()<100)
+			if(discountedAmount.intValue()==0){
+				discountedAmount=baseAmount;
+			}
+
 		if (baseAmount.intValue() > 0)
 			discountPercent = discountAmount.divide(baseAmount, 2, BigDecimal.ROUND_CEILING);
 

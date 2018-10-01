@@ -545,7 +545,7 @@ public class StudentFeeService {
 
     public StudentFeePaymentRequest generateFirstFeeSlip(Long slipId){
         Calendar cal = Calendar. getInstance();
-        int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));
+        int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH)+1);
         int year=cal.get(Calendar.YEAR);
         return this.generateFeeSlip(slipId,quarter,year,true);
     }
