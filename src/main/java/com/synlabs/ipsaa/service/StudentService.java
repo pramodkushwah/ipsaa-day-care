@@ -541,7 +541,6 @@ public class StudentService extends BaseService {
 		   Set<String> privileges= getUser().getPrivileges();
 		   List<Role> roles=getUser().getRoles();
         }
-		boolean isFormalChange=(dbStudent.isFormalSchool() ^ request.isFormalSchool());
 
 		// check chnage in addmision date and validate it
         Calendar cal=Calendar.getInstance();
@@ -557,12 +556,15 @@ public class StudentService extends BaseService {
 		dbStudent.setProgram(program);
 		dbStudent.setCenter(center);
 
-		boolean isCorporateChange=(dbStudent.isCorporate() ^ request.isCorporate());
+//
+//		boolean isFormalChange=(dbStudent.isFormalSchool() ^ request.isFormalSchool());
+//		boolean isCorporateChange=(dbStudent.isCorporate() ^ request.isCorporate());
 
-		if((feeChange || isFormalChange) && !request.isCorporate()){
-			request.getFee().setStudentId(mask(dbStudent.getId()));
-			studentFeeService.updateStudentFee(request.getFee());
-		}
+			if(!request.isCorporate()){
+				request.getFee().setStudentId(mask(dbStudent.getId()));
+				studentFeeService.updateStudentFee(request.getFee());
+			}
+
 //		if (feeChange) {
 //			CenterProgramFee centerFee = centerProgramFeeRepository.findByProgramIdAndCenterId(program.getId(),
 //					center.getId());

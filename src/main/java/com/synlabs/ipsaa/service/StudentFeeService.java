@@ -109,10 +109,15 @@ public class StudentFeeService {
             throw new NotFoundException(String.format("Student not fount [%s]", request.getMaskedStudentId()));
         }
         StudentFee studentFee = studentFeeRepository.findByStudent(student);
-        if (studentFee == null)
-        {
-            throw new ValidationException(String.format("Student fee not exits for student[admission_number=%s]", student.getAdmissionNumber()));
+//        if (studentFee == null)
+//        {
+//            throw new ValidationException(String.format("Student fee not exits for student[admission_number=%s]", student.getAdmissionNumber()));
+//        }
+        if(studentFee!=null)
+        if(studentFee.getFeeDuration().equals(FeeDuration.Monthly) || studentFee.getFeeDuration().equals(FeeDuration.Yearly)){
+            studentFee.setFeeDuration(FeeDuration.Quarterly);
         }
+
         CenterProgramFee centerProgramFee=centerProgramFeeRepository.findByProgramIdAndCenterId(student.getProgram().getId(),student.getCenter().getId());
         if(centerProgramFee==null){
             throw new NotFoundException("Center program fee not found ");
