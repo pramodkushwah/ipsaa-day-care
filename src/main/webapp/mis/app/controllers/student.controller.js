@@ -10,7 +10,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     function debounce(func, wait, immediate) {
         var timeout;
         return function () {
-            var context = this, args = arguments;
+            var context = this, args = arguments;getProgramsByCenter
             var later = function () {
                 timeout = null;
                 if (!immediate) func.apply(context, args);
@@ -524,7 +524,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     }
 
     $scope.getProgramsByCenter = function(centerId){
-      console.log(centerId);
+      $scope.workingStudent.programId = '';
+      $scope.workingStudent.groupId = '';
       $http.get('/api/center/programs/'+centerId).then(function (response) {
         $scope.programs = response.data;
         });
