@@ -383,13 +383,6 @@ public class StudentFeeService {
         if(thisQuarterSlip!=null)
         {
             thisQuarterSlip.setStudent(fee.getStudent());
-            //thisQuarterSlip.setFeeDuration(FeeDuration.Quarterly);
-            //thisQuarterSlip.setInvoiceDate(LocalDate.now().toDate());
-            //thisQuarterSlip.setYear(year);
-            //thisQuarterSlip.setPaymentStatus(PaymentStatus.Raised);
-            //thisQuarterSlip.setQuarter(quarter);
-            //thisQuarterSlip.setTotalFee(ZERO);
-            //thisQuarterSlip.setLastQuarterBalance(balance);
             thisQuarterSlip.setReGenerateSlip(true);
             thisQuarterSlip.setExtraCharge(thisQuarterSlip.getExtraCharge()==null?ZERO:thisQuarterSlip.getExtraCharge());
             thisQuarterSlip.setLatePaymentCharge(thisQuarterSlip.getLatePaymentCharge()==null?ZERO:thisQuarterSlip.getLatePaymentCharge());
@@ -541,7 +534,7 @@ public class StudentFeeService {
 
 
     public StudentFeePaymentRequest generateFirstFeeSlip(Long slipId){
-        Calendar cal = Calendar. getInstance();
+        Calendar cal = Calendar.getInstance();
         int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH)+1);
         int year=cal.get(Calendar.YEAR);
         return this.generateFeeSlip(slipId,quarter,year,true);
