@@ -285,15 +285,22 @@
           <div class="col-md-4">
             <div class="form-group">
               <label class="control-label" readonly>Fee</label>
-              <input class="form-control" type="text" readonly ng-model="selected.actualBaseFee">
+              <input class="form-control" type="text" readonly ng-model="selected.finalFee">
             </div>
           </div>
-      
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Extra Hours</label>
+              <input class="form-control" type="number"
+                     ng-model="selected.extraHours" min="0" >
+            </div>
+          </div>
+
           <div class="col-md-4">
             <div class="form-group">
               <label class="control-label">Balance</label>
               <input class="form-control" type="number"
-              ng-model="selected.balance" readonly>
+              ng-model="selected.balance" ng-change="calculateFinalFee(selected)" >
             </div>
           </div><!--Balance-->
           <div class="col-md-4">

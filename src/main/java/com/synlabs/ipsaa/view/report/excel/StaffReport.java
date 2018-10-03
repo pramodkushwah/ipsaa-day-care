@@ -42,15 +42,19 @@ public class StaffReport {
 				int rownum = 0;
 				boolean isCreateList = true;
 				Row row = null;
+
+				////////////Avneet
+				//set headers seperately
+				if(!staff.isEmpty()){
+					row=feeCollectionReportSheet.createRow(rownum++);
+					setupheaders(row);
+				}
+
 				for (Employee emp : this.staff) {
 					if(isCreateList==true) {
 						row = feeCollectionReportSheet.createRow(rownum++);
 					} 
-					if (rownum == 1) {
-						setupheaders(row);
-						//rownum++;
-					} else
-						isCreateList = createList(emp, row, cellStyle);
+					isCreateList = createList(emp, row, cellStyle);
 				}
 				workbook.write(fileOutputStream);
 				workbook.dispose();
@@ -65,7 +69,6 @@ public class StaffReport {
 
 	private boolean createList(Employee employee, Row row, CellStyle style) // creating cells for each row
 	{
-		//style.setDataFormat((short)14);
 		int index=0;
 		if (employee != null) {
 			Cell cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
@@ -237,7 +240,8 @@ public class StaffReport {
 	public void setupheaders(Row row) {
 		int index=0;
 			Cell cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			cell.setCellValue(row.getRowNum());
+			//cell.setCellValue(row.getRowNum());
+			cell.setCellValue("S.No");
 
 			cell = row.createCell(index++);
 				cell.setCellValue("Eid");
