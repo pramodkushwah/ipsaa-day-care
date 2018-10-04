@@ -2,8 +2,14 @@ package com.synlabs.ipsaa.service;
 
 
 import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.jpa.impl.JPAUpdateClause;
 import com.synlabs.ipsaa.Schedular.StudentFeeResetScheduler;
+import com.synlabs.ipsaa.entity.center.Center;
+import com.synlabs.ipsaa.entity.center.QCenter;
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
+import com.synlabs.ipsaa.entity.staff.Employee;
+import com.synlabs.ipsaa.entity.staff.QEmployee;
 import com.synlabs.ipsaa.entity.student.*;
 import com.synlabs.ipsaa.enums.*;
 import com.synlabs.ipsaa.ex.NotFoundException;
@@ -22,7 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.EntityManager;
+import javax.persistence.*;
+import javax.persistence.spi.PersistenceProvider;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
@@ -1004,4 +1011,37 @@ public class StudentFeeService {
         List<StudentFeePaymentRequest> slips = feePaymentRepository.findByStudentAndFeeDuration(student,FeeDuration.Quarterly);
         return new PaymentHistoryResponce(slips);
     }
+
+//    public static final QStudentFeePaymentRequest fees=new QStudentFeePaymentRequest("fees");
+
+//    public void setExpire(){
+//
+//        JPAQuery<StudentFeePaymentRequest> query = new JPAQuery<>(entityManager);
+//        QStudentFeePaymentRequest fees = QStudentFeePaymentRequest.studentFeePaymentRequest;
+//        QStudent student=QStudent.student;
+//        QCenter center=QCenter.center;
+//
+//
+//        List<Long> centers= new ArrayList<>();
+//        centers.add(Long.valueOf(54));
+//
+////        List<StudentFeePaymentRequest> feeList= query.select(fees).from(fees).innerJoin(student).innerJoin(center)
+////                .where(fees.year.eq(2018).and(fees.quarter.eq(3).and(center.id.in(centers))))
+////                .fetch();
+////
+//        List<StudentFeePaymentRequest> feeList=feePaymentRepository.findByStudentCenterIdInAndQuarterAndYear(centers,3,2018);
+//        int count=0;
+//        System.out.println(feeList.size());
+//        for(StudentFeePaymentRequest fee:feeList){
+//            System.out.println(count);
+//            if(fee.isExpire()){
+//                fee.setExpire(false);
+//                feePaymentRepository.saveAndFlush(fee);
+//                count++;
+//            }
+//        }
+//
+//
+//
+//    }
 }

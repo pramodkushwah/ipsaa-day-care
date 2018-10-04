@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -254,7 +255,11 @@ public class ReportController {
 	public void staffExcel(HttpServletResponse response, @RequestBody StaffFilterRequest staffRequest)
 			throws IOException {
 		// modifiy by shubham
-		File file = staffService.getEmployee(staffRequest);
+		int month=staffRequest.getMonth();
+		System.out.println(month);
+		File file = staffRequest.getMonth()!= 0 ? staffService.getAllEmployees(staffRequest):
+												staffService.getEmployee(staffRequest);
+		//File file=staffService.getAllEmployees(staffRequest);
 
 		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
 				staffRequest.getEmployerCode(), staffRequest.getMonth(), staffRequest.getYear()));

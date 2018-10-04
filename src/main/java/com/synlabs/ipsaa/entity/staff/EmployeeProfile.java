@@ -70,6 +70,18 @@ public class EmployeeProfile extends BaseEntity
   private String fatherName;
   private String spouseName;
 
+  private String pState;
+
+  public String getSpouseName() {
+    return spouseName;
+  }
+
+  public void setSpouseName(String spouseName) { this.spouseName = spouseName; }
+
+  public String getpState() { return pState; }
+
+  public void setpState(String pState) { this.pState = pState; }
+
   public String getFatherName() { return fatherName; }
 
   public void setFatherName(String fatherName) { this.fatherName = fatherName; }
