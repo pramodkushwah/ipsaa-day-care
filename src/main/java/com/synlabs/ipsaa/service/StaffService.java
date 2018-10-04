@@ -24,6 +24,7 @@ import com.synlabs.ipsaa.view.staff.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
+import org.joda.time.LocalDate;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 import org.slf4j.Logger;
@@ -184,12 +185,53 @@ public class StaffService extends BaseService
   }
 
 
+  //////Avneet- Get active and inactive employees in a month
+  public File getAllEmployees(StaffFilterRequest request){
+
+    int month= request.getMonth();
+    int year= LocalDate.now().getYear();
+
+    Calendar cal=Calendar.getInstance();
+    cal.set(year,month-1,cal.getMaximum(Calendar.DATE));
+    Date date=cal.getTime();          ///to restrict joinees of future
+
+    cal.set(year,month-1,1);
+    Date startDate=cal.getTime();
+
+    String employer=request.getEmployerCode();
+    List<Employee> list=null;
+
+    JPAQuery<Employee> query= new JPAQuery<>(entityManager);
+    QEmployee emp=QEmployee.employee;
+    query.select(emp).from(emp)
+            .where(emp.active.isTrue().and(emp.profile.doj.loe(date)).and(emp.profile.dol.isNull().or(emp.profile.dol.goe(startDate)))
+                    .or(emp.active.isFalse()
+                            .and(emp.profile.dol.goe(startDate))
+                            .and(emp.profile.doj.loe(date))
+                    )
+            );
+    if(employer.equals("ALL")){
+      list=query.fetch();
+      list.stream().forEach(s-> System.out.println(s.getEid()));
+    }else{
+
+      LegalEntity entity=legalEntityRepository.findByCode(employer);
+      list= query.where(emp.employer.eq(entity)).fetch();
+      System.out.println(list.size());
+      list.stream().forEach(s-> System.out.println(s.getEid()));
+    }
+
+    StaffReport excel=new StaffReport(list,exportDirectory);
+    return excel.createExcel();
+  }
+
+
   public File getEmployeeSalary(StaffFilterRequest staffRequest){
 
     List<EmployeePaySlip> list= new ArrayList<>();
 
     if(staffRequest.getEmployerCode().equals("ALL")){
-      list=employeePaySlipRepository.findByMonthAndYear(staffRequest.getMonth(),staffRequest.getYear());
+      list= employeePaySlipRepository.findByMonthAndYear(staffRequest.getMonth(),staffRequest.getYear());
     }
     else{
       LegalEntity employer =legalEntityRepository.findByCode(staffRequest.getEmployerCode());
@@ -236,6 +278,11 @@ public class StaffService extends BaseService
     employee.setActive(true);
     employee.setApprovalStatus(ApprovalStatus.NewApproval);
     employee.setCostCenter(center);
+
+    ///in case
+    if(employee.getProfile().getpState() == null){
+      employee.getProfile().setpState(employee.getCostCenter().getAddress().getState());
+    }
     employee.setEmployer(legalEntity);
     employee.setReportingManager(reportingManager);
     Employee employee1 = employeeRepository.saveAndFlush(employee);
