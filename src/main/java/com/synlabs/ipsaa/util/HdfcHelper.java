@@ -221,7 +221,9 @@ public class HdfcHelper extends BaseService
     HdfcApiDetails hdfcApiDetails=hdfcApiDetailService.getDetailsByCenter(slip.getStudent().getCenter());
 
     if(hdfcApiDetails==null){
-      throw new ValidationException("Can not find gateway details for this center! contact tech support.");
+      hdfcApiDetails=hdfcApiDetailService.findDefaultOne();
+        if(hdfcApiDetails==null)
+          throw new ValidationException("Can not find gateway details for this center! contact tech support.");
     }
 
     HdfcCheckoutDetails details = new HdfcCheckoutDetails();
