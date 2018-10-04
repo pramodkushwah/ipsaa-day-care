@@ -74,6 +74,7 @@ public class EmployeeSalaryRequest implements Request
     salary.setEsid(esid);
     salary.setPfd(pfd);
     salary.setProfd(profd);
+    salary.setProfessionalTax(professionalTax); //should be set from frontend
     salary.setEsi(esi == null ? ZERO : esi);
 
     //modify by shubham calculateGrossV2 by calculateGross
