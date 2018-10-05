@@ -217,6 +217,9 @@ public class HdfcHelper extends BaseService
     {
       throw new ValidationException("Missing checkout details.");
     }
+    if(slip.isExpire()){
+      throw new ValidationException("This slip is expired ! Please contact tech support.");
+    }
 
     HdfcApiDetails hdfcApiDetails=hdfcApiDetailService.getDetailsByCenter(slip.getStudent().getCenter());
 
