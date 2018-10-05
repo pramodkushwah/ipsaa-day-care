@@ -39,6 +39,7 @@ public class StaffProfileRequest implements Request
   private String fatherName;
   private String spouseName;
 
+  private String pState;
 
 
   public EmployeeProfile toEntity(EmployeeProfile employeeProfile)
@@ -53,6 +54,13 @@ public class StaffProfileRequest implements Request
     employeeProfile.setDoj(doj == null ? new Date() : doj);
     employeeProfile.setDol(dol);
     employeeProfile.setGender(gender);
+    if( employeeProfile.isNew()){
+      employeeProfile.setpState(pState);      ///set null on first time
+    }else{
+      /*do nothing for now
+      * remove if-else when pstate is added from frontend;*/
+    }
+
 
     employeeProfile.setPan(pan);
     employeeProfile.setUan(uan);
@@ -260,4 +268,13 @@ public class StaffProfileRequest implements Request
 
   public void setspouseName(String spouseName) { this.spouseName = spouseName; }
 
+  public String getSpouseName() { return spouseName; }
+
+  public void setSpouseName(String spouseName) { this.spouseName = spouseName; }
+
+  public String getpState() { return pState; }
+
+  public void setpState(String pState) { this.pState = pState; }
+
+  
 }

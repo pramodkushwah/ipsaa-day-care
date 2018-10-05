@@ -142,6 +142,14 @@ public class StaffExcelReport {
 				//System.out.println(staffR.getCtc());
 				cell.setCellValue((staffR.getEmployee().getCenterName()));
 			}
+
+			///pState addded
+			cell=row.createCell(index++,Cell.CELL_TYPE_STRING);
+			if(staffR.getEmployee().getProfile().getpState() != null){
+				cell.setCellValue(staffR.getEmployee().getProfile().getpState());
+			}
+
+
 			if (staffR.getEmployee().getDesignation() != null) {
 				cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 				cell.setCellValue((staffR.getEmployee().getDesignation()));
@@ -295,6 +303,9 @@ public class StaffExcelReport {
 
 		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 		cell.setCellValue(("Cost Center"));
+
+		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
+		cell.setCellValue(("PState"));
 
 		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 		cell.setCellValue(("Designation"));

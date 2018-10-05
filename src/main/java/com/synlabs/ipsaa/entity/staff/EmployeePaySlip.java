@@ -20,8 +20,10 @@ import javax.persistence.Transient;
 import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.common.BaseEntity;
 import com.synlabs.ipsaa.entity.common.LegalEntity;
+import com.synlabs.ipsaa.service.EmployeeService;
 import com.synlabs.ipsaa.util.SalaryUtils;
 import com.synlabs.ipsaa.util.SalaryUtilsV2;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Entity
 public class EmployeePaySlip extends BaseEntity {
@@ -462,6 +464,7 @@ public class EmployeePaySlip extends BaseEntity {
 		this.otherAllowances = otherAllowances;
 	}
 
+
 	@Transient
 	public void update(EmployeeSalary employeeSalary, BigDecimal totalDays, BigDecimal presents) {
 		this.totalDays = totalDays;
@@ -633,9 +636,12 @@ public class EmployeePaySlip extends BaseEntity {
 
 		this.esi = SalaryUtilsV2.calculateEsi(this.esid, this.grossSalary, SalaryUtilsV2.ESI_PERCENT);
 
-		if (this.profd)
-			this.professionalTax = SalaryUtilsV2.PROFESSIONAL_TAX;
+//		if (this.profd){
+//			this.professionalTax = employeeSalary.getProfessionalTax();//SalaryUtilsV2.PROFESSIONAL_TAX;
+//			//this.professionalTax= employeeService.updatePFT(employeeSalary,this.grossSalary);
+//			}
 
+		this.professionalTax=employeeSalary.getProfessionalTax();		////is set as 0 or whatever.
 		this.retention = employeeSalary.getRetention();
 		this.advance = employeeSalary.getAdvance();
 
@@ -644,6 +650,6 @@ public class EmployeePaySlip extends BaseEntity {
 		this.setTotalEarning(
 				SalaryUtilsV2.calculateTotalEaring(this.ctc, this.extraMonthlyAllowance, this.otherAllowances));
 		this.setNetSalary(SalaryUtilsV2.calculateNetSalary(this.totalEarning, this.totalDeduction));
-		// this.update();
+		//this.update();
 	}
 }

@@ -72,4 +72,20 @@ public class BigDecimalUtils
     }
     return BigDecimal.ZERO.setScale(number.scale(), BigDecimal.ROUND_HALF_UP).equals(number);
   }
+
+  public static boolean lessThan(BigDecimal upper,BigDecimal gross){
+    boolean less= upper.compareTo(gross)>0 ?true :false;
+    return less;
+  }
+
+  public static boolean inBetween(BigDecimal upper,BigDecimal lower,BigDecimal gross){
+    int low= gross.compareTo(lower);
+    int up= upper.compareTo(gross);
+    if(low>0 && up>0)
+      return true;
+    else
+      return false;
+
+  }
+
 }
