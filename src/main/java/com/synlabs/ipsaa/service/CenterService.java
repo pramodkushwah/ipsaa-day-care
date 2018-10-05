@@ -177,6 +177,8 @@ public class CenterService extends BaseService
     State state= stateRepository.findOneByName(request.getState());
     if(state !=null){
       center.getAddress().setState(state.getName());
+    }else{
+      center.getAddress().setState(city.getState().getName());
     }
 
     Zone zone = zoneRepository.findOneByName(request.getZone());
