@@ -193,6 +193,15 @@ public void setStaffPresent(int staffPresent) {
 // -----------------------------------------------shubham --------------------------------------------------
   private int newJoinings;
   private int newLeavings;
+  private long recruitmentCount;
+
+  public long getRecruitmentCount() {
+    return recruitmentCount;
+  }
+
+  public void setRecruitmentCount(long recruitmentCount) {
+    this.recruitmentCount = recruitmentCount;
+  }
 
   public int getNewLeavings() {
     return newLeavings;

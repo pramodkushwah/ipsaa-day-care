@@ -243,21 +243,26 @@
                 <td>{{payment.paymentMode}}</td>
                 <td>{{payment.paidAmount}}</td>
                 <td>{{payment.paymentDate}}</td>
-                <td>
+                <td ng-show="STUDENTFEE_RECEIPT_CONFIRM">
+                  <button class="btn btn-sm"
+                          ng-class="payment.confirmed?'btn-success':'btn-rose'"
+                          ng-click="payment.confirmed?null:confirm(payment)"
+                          ng-disabled="payment.disabled" ng-show="payment.active&&!payment.confirmed">
+                    <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="payment.disabled"></i>Confirm
+                  </button>
+                  <span ng-show="payment.confirmed">Confirmed</span>
+
+                  <button class="btn btn-sm" ng-hide="payment.confirmed || !payment.active" ng-click="showCommentField(payment)">Reject</button>
                   <span ng-hide="payment.active">Rejected &nbsp;
                     <a href="#" data-toggle="tooltip" title="{{payment.comment}}">
                       <i class="fa fa-info"></i>
                     </a>
                   </span>
-                  <button class="btn btn-sm"
-                          ng-class="payment.confirmed?'btn-success':'btn-rose'"
-                          ng-click="payment.confirmed?null:confirm(payment)"
-                          ng-disabled="payment.disabled" ng-hide="!payment.active">
-                    <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="payment.disabled"></i>
-                    {{payment.confirmed?'confirmed':'confirm'}}
-                  </button>
-                  <button class="btn btn-sm" ng-hide="payment.confirmed || !payment.active" ng-click="showCommentField(payment)">Reject</button>
-                  
+                </td>
+                <td ng-hide="STUDENTFEE_RECEIPT_CONFIRM">
+                  <span ng-hide="payment.confirmed || payment.active">Rejected</span>
+                  <span ng-show="payment.confirmed && payment.active">Confirmed</span>
+                  <span ng-show="payment.active&&!payment.confirmed">Pending</span>
                 </td>
               </tr>
               </thead>

@@ -256,7 +256,7 @@ public class ReportController {
 			throws IOException {
 		// modifiy by shubham
 		int month=staffRequest.getMonth();
-		System.out.println(month);
+		//System.out.println(month);
 		File file = staffRequest.getMonth()!= 0 ? staffService.getAllEmployees(staffRequest):
 												staffService.getEmployee(staffRequest);
 		//File file=staffService.getAllEmployees(staffRequest);

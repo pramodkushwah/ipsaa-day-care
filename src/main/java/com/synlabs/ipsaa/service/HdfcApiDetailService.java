@@ -3,6 +3,7 @@ package com.synlabs.ipsaa.service;
 import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.hdfc.HdfcApiDetails;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.StudentParent;
 import com.synlabs.ipsaa.jpa.CenterRepository;
 import com.synlabs.ipsaa.jpa.HdfcApiDetailRepository;
 import com.synlabs.ipsaa.jpa.StudentFeePaymentRepository;
@@ -27,6 +28,8 @@ public class HdfcApiDetailService {
     private StudentFeePaymentRepository slipRepository;
     @Autowired
     private CenterRepository centerRepository;
+
+    private long DEFULT_GATEWAY_ID=33;
 
     public HdfcApiDetails getDetailsByCenter(Center center){
        return hdfcApiDetailRepository.findByCenter(center);
@@ -89,5 +92,9 @@ public class HdfcApiDetailService {
     public HdfcApiDetailResponce save(HdfcApiDetailRequest request) {
         // add center left
        return new HdfcApiDetailResponce( hdfcApiDetailRepository.saveAndFlush(request.toEntity()));
+    }
+
+    public HdfcApiDetails findDefaultOne() {
+        return hdfcApiDetailRepository.findOne(DEFULT_GATEWAY_ID);
     }
 }

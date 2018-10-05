@@ -797,6 +797,29 @@ public class DashboardService extends BaseService
     List<Employee> employees=query.fetch();
     return employees.stream().map(StaffNewJoinings::new).collect(Collectors.toList());
   }
+  public long getRecruitmentHeadCount(List<Center> centers)
+  {
+    JPAQuery<Employee> query = new JPAQuery<>(entityManager);
+    QEmployee employee = QEmployee.employee;
+    query.select(employee).from(employee)
+            .where(employee.active.isTrue())
+            .where(employee.profile.dol.isNotNull())
+            .where(employee.costCenter.in(centers));
+    return query.fetchCount();
+  }
+  public List<StaffNewLeavings> getRecruitmentHeadCountList(DashboardRequest request)
+  {
+    List<Center> centers = getCenters(request);
+
+    JPAQuery<Employee> query = new JPAQuery<>(entityManager);
+    QEmployee employee = QEmployee.employee;
+    query.select(employee).from(employee)
+            .where(employee.active.isTrue())
+            .where(employee.profile.dol.isNotNull())
+            .where(employee.costCenter.in(centers));
+    List<Employee> employees=query.fetch();
+    return employees.stream().map(StaffNewLeavings::new).collect(Collectors.toList());
+  }
 
   public List<StaffNewLeavings> getNewLeavingsList(DashboardRequest request)
   {
@@ -903,6 +926,9 @@ public class DashboardService extends BaseService
 
           int newLeavings=countNewLeavings(centers);
           response.setNewLeavings(newLeavings);
+
+          long recruitmentCount=countStaff(centers)-getRecruitmentHeadCount(centers);
+          response.setRecruitmentCount(recruitmentCount);
           break;
         case "followup":
           calculateFollowUps(request, response);

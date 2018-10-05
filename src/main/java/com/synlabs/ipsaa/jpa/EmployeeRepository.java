@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long>, Repository<Employee, Long>, QueryDslPredicateExecutor<Employee>
@@ -21,6 +22,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, Repos
   List<Employee> findByActive(Boolean active);
 
   List<Employee> findByActiveIsTrue();
+  List<Employee> findByActiveIsTrueAndProfileDol(Date today);
 
   List<Employee> findByEmployeeTypeAndActiveIsTrue(EmployeeType employeeType);
 

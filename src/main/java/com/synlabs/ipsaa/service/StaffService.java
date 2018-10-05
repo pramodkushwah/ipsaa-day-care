@@ -217,7 +217,7 @@ public class StaffService extends BaseService
 
       LegalEntity entity=legalEntityRepository.findByCode(employer);
       list= query.where(emp.employer.eq(entity)).fetch();
-      System.out.println(list.size());
+      //System.out.println(list.size());
       list.stream().forEach(s-> System.out.println(s.getEid()));
     }
 
@@ -725,6 +725,17 @@ public class StaffService extends BaseService
 //    }
 //    return count <= 0;
 //  }
+  @Transactional
+  public void checkAndDelete(){
+    List<Employee> employees;
+    employees = employeeRepository.findByActiveIsTrueAndProfileDol(new Date());
+    for(Employee employee:employees){
+          employee.setActive(false);
+          employeeRepository.saveAndFlush(employee);
+          communicationService.sendStaffDeleteEmail(employee);
+    }
+  }
+
 
   public void deleteV2(StaffRequest request)
   {

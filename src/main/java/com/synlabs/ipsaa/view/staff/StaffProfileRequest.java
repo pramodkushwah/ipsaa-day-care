@@ -54,7 +54,7 @@ public class StaffProfileRequest implements Request
     employeeProfile.setDoj(doj == null ? new Date() : doj);
     employeeProfile.setDol(dol);
     employeeProfile.setGender(gender);
-    employeeProfile.setpState(pState);      ///set null on first time
+    employeeProfile.setpState(pState);
     employeeProfile.setPan(pan);
     employeeProfile.setUan(uan);
     employeeProfile.setPfan(pfan);
@@ -264,6 +264,4 @@ public class StaffProfileRequest implements Request
   public String getpState() { return pState; }
 
   public void setpState(String pState) { this.pState = pState; }
-
-
 }
