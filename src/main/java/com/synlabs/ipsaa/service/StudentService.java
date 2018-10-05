@@ -279,7 +279,6 @@ public class StudentService extends BaseService {
 			//ajustChnages();
 			//adjustGst();
 			//addSecurity();
-
 			return fees;
 		}
 		fees = query.where(fee.student.center.in(getUserCenters())).fetch();
@@ -1714,7 +1713,7 @@ public class StudentService extends BaseService {
 		return sharingSheetRepository.getOne(sharingSheet.getId());
 	}
 
-	private void validateEntry(SharingSheetEntryRequest request) {
+		private void validateEntry(SharingSheetEntryRequest request) {
 
 		if (request.getDate() == null) {
 			throw new ValidationException("Provide entry date");

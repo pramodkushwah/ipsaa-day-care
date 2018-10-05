@@ -114,4 +114,10 @@ public class DashboardController
   {
     return dashboardService.getNewLeavingsList(request);
   }
+  @PostMapping("/dash/recruitmentHeadCountList")
+  @Secured(DASHBOARD_STATS)
+  public List<StaffNewLeavings> getRecruitmentHeadCountList(@RequestBody DashboardRequest request)
+  {
+    return dashboardService.getRecruitmentHeadCountList(request);
+  }
 }

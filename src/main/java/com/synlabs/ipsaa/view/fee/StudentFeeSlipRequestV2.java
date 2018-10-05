@@ -22,6 +22,15 @@ public class StudentFeeSlipRequestV2 implements Request
   private BigDecimal uniformCharges;
   private String spaceifyRegenrationDate;
   private BigDecimal balance;
+  private String comments;
+
+  public String getComments() {
+    return comments;
+  }
+
+  public void setComments(String comments) {
+    this.comments = comments;
+  }
 
   public BigDecimal getBalance() {
     return balance;
