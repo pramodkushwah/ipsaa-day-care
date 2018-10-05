@@ -126,7 +126,8 @@ public class SalaryUtilsV2 {
 
 	public static EmployeeSalary calculateCTC(EmployeeSalary salary) {
 
-		salary.setProfessionalTax(salary.isProfd() ? SalaryUtilsV2.PROFESSIONAL_TAX : ZERO);
+		//salary.setProfessionalTax(salary.isProfd() ? SalaryUtilsV2.PROFESSIONAL_TAX : ZERO);
+		salary.setProfessionalTax(salary.isProfd() ? salary.getProfessionalTax() : ZERO);
 
 		// modify by shubham calculateGrossV2 by calculateGross
 

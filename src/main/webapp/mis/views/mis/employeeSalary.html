@@ -9,6 +9,7 @@
         <h4 ng-if="add">Add Salary</h4>
       </div>
 
+
       <div ng-show="add" class="row">
         <div class="col-md-4">
           <div class="form-group">
@@ -131,7 +132,7 @@
 
         <div class="col-md-3">
           <div class="form-group">
-            <input type="checkbox" name="pftax" ng-model="runningSalary.profd" ng-change="onChange()">
+            <input type="checkbox" name="pftax" ng-model="runningSalary.profd" ng-change="onChange()" disabled readonly>
             <label class="control-label">Professional Tax*</label>
             <input class="form-control" name="pf" type="number"
                    ng-disabled="!runningSalary.profd"

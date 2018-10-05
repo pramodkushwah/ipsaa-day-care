@@ -198,6 +198,14 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
+                            <label class="control-label">P state*</label>
+                            <select class="form-control" ng-options="state.name as state.name for state in states" ng-model="workingStaff.profile.pState"
+                                ng-disabled="showstaff">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
                             <label class="control-label">Biometric Id*</label>
                             <input class="form-control" type="number" required ng-model="workingStaff.biometricId" ng-readonly="showstaff">
                         </div>

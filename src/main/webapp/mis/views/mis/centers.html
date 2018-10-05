@@ -214,8 +214,10 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">*State</label>
-                <input class="form-control" name="state" type="text" required ng-model="insertedCenter.state">
-                <span class="material-input"></span>
+                <!-- <input class="form-control" name="state" type="text" required ng-model="insertedCenter.state">
+                <span class="material-input"></span> -->
+                <select class="form-control" ng-options="state.name as state.name for state in states" ng-model="insertedCenter.state">
+            </select>
               </div>
             </div>
             <div class="col-md-4">

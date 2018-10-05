@@ -12,6 +12,9 @@ public class CityRequest implements Request
   private String zone;
   private String name;
 
+  ////////Avneet
+  private String state;
+
   public CityRequest() {}
 
   public CityRequest(String zone)
@@ -53,6 +56,10 @@ public class CityRequest implements Request
   {
     this.name = name;
   }
+
+  public String getState() { return state; }
+
+  public void setState(String state) { this.state = state; }
 
   public City toEntity()
   {

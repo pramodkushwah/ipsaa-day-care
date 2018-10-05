@@ -10,11 +10,15 @@ public class CityResponse
   private String name;
   private String zone;
 
+  ////Avneet
+  private String state;
+
   public CityResponse(City city)
   {
     this.name = city.getName();
     this.zone = (city.getZone() == null ? null : city.getZone().getName());
     this.id = mask((Long)city.getId());
+    this.state= city.getState() == null ? null : city.getState().getName();
   }
 
   public Long getId()
@@ -47,4 +51,7 @@ public class CityResponse
     return this.zone;
   }
 
+  public String getState() { return state; }
+
+  public void setState(String state) { this.state = state; }
 }

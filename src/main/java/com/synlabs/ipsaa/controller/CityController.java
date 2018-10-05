@@ -3,6 +3,8 @@ package com.synlabs.ipsaa.controller;
 import com.synlabs.ipsaa.service.CenterService;
 import com.synlabs.ipsaa.view.center.CityRequest;
 import com.synlabs.ipsaa.view.center.CityResponse;
+import com.synlabs.ipsaa.view.center.StateRequest;
+import com.synlabs.ipsaa.view.center.StateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -58,5 +60,6 @@ public class CityController
     request.setId(id);
     centerService.deleteCity(request);
   }
+
 
 }

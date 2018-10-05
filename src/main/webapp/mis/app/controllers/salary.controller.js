@@ -204,12 +204,12 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
             $scope.runningSalary.totalDeduction = $scope.runningSalary.totalDeduction + $scope.runningSalary.esi;
         }
 
-        if ($scope.runningSalary.profd) {
-            $scope.runningSalary.professionalTax = 200;
-            $scope.runningSalary.totalDeduction = $scope.runningSalary.totalDeduction + $scope.runningSalary.professionalTax;
-        }else {
-            $scope.runningSalary.professionalTax = 0;
-        }
+        // if ($scope.runningSalary.profd) {
+        //     $scope.runningSalary.professionalTax = 200;
+        //     $scope.runningSalary.totalDeduction = $scope.runningSalary.totalDeduction + $scope.runningSalary.professionalTax;
+        // }else {
+        //     $scope.runningSalary.professionalTax = 0;
+        // }
         
 
         // RUNNING SALARY = CTC + EXTRA MONTHLY ALLOWANCE
@@ -221,7 +221,29 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
         
         // NET SALARY = TOTAL EARNINGS - TOTAL DEDUCTION
         $scope.runningSalary.netSalary = $scope.runningSalary.totalEarning - $scope.runningSalary.totalDeduction; 
+        $scope.fetchProfessionalTax();
     }
+
+    $scope.fetchProfessionalTax = debounce(function(){
+        const object = {
+            employeeId: $scope.runningSalary.employeeId,
+            grossSalary: $scope.runningSalary.grossSalary            
+        }
+        $http.post('/api/employee/stateTax', object).then(function(pt){
+            console.log(pt.data);
+            if(pt.data){
+                $scope.runningSalary.profd = true;
+                $scope.runningSalary.professionalTax = pt.data;
+            } else {
+                $scope.runningSalary.profd = false;
+                $scope.runningSalary.professionalTax = 0;
+            }
+        },function(errro){
+
+        });        
+    },200);
+
+    
 
     $scope.addSalary = function () {
         $scope.add = true;

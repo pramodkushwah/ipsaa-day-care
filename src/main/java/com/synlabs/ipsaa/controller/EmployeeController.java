@@ -1,12 +1,15 @@
 package com.synlabs.ipsaa.controller;
 
 import com.itextpdf.text.DocumentException;
+import com.synlabs.ipsaa.entity.center.StateTax;
 import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.service.BaseService;
 import com.synlabs.ipsaa.service.EmployeeService;
 import com.synlabs.ipsaa.service.PaySlipService;
+import com.synlabs.ipsaa.view.center.StateTaxRequest;
+import com.synlabs.ipsaa.view.center.StateTaxResponse;
 import com.synlabs.ipsaa.view.staff.*;
 import com.synlabs.ipsaa.view.student.EmployeeSalaryRequest;
 import org.apache.commons.io.IOUtils;
@@ -22,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -147,4 +151,24 @@ public class EmployeeController
   {
     return paySlipService.lockSalary(request);
   }
+
+  //////Avneet
+  @PostMapping("stateTax")
+  public BigDecimal calculatePFTax(@RequestBody StateTaxRequest request){
+    BigDecimal tax=employeeService.calculatePfTax(request);
+    return tax;
+  }
+
+  ////set Professional Tax feom Backend
+//  @PutMapping("updating")
+//  public void update(){
+//    employeeService.update();
+//  }
+//
+//  //////Set Professional Tax for particular employee
+//  @PutMapping("eid")
+//  public void updateByEid (@RequestBody StateTaxRequest request){
+//    employeeService.updateByEid(request);
+//
+//  }
 }
