@@ -217,7 +217,7 @@ public class StaffService extends BaseService
 
       LegalEntity entity=legalEntityRepository.findByCode(employer);
       list= query.where(emp.employer.eq(entity)).fetch();
-      System.out.println(list.size());
+      //System.out.println(list.size());
       list.stream().forEach(s-> System.out.println(s.getEid()));
     }
 

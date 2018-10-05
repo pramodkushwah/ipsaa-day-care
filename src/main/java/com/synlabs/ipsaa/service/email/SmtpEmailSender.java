@@ -251,7 +251,14 @@ public class SmtpEmailSender implements IEmailSender
       Writer out = new StringWriter();
       template.process(rootMap, out);
       String body = out.toString();
-      sendEmail(body, true, "Staff Deleted.", null, notificationEmailService.notificationEmailList(EmailNotificationType.DeleteStaff), null, null);
+
+      //shubham- adding cc
+      String cc[]=new String[2];
+      cc[0]=("ithelpdesk@ipsaa.in");
+      cc[1]=("ipsaahr@ipsaa.in");
+      cc[2]=("accounts@ipsaa.in");
+
+      sendEmail(body, true, "Staff Deleted.", null, notificationEmailService.notificationEmailList(EmailNotificationType.DeleteStaff), cc, null);
       return true;
     }
     catch (Exception ex)
