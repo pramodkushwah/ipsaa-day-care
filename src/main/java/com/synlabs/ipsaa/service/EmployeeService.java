@@ -176,7 +176,7 @@ public class EmployeeService extends BaseService {
 
   public BigDecimal calculatePfTax(StateTaxRequest request) {
 
-    Long id = request.getId();
+    Long id = request.getEmployeeId();
     BigDecimal gross = request.getGrossSalary();
     BigDecimal upper = new BigDecimal(10000);
     BigDecimal professionalTax = new BigDecimal(0);

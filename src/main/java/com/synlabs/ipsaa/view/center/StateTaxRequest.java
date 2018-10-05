@@ -28,9 +28,9 @@ public class StateTaxRequest implements Request {
 
     public void setPstate(String pstate) { this.pstate = pstate; }
 
-    public Long getId() { return unmask(employeeId); }
+    public Long getEmployeeId() { return employeeId; }
 
-    public void setId(Long id) { this.employeeId = id; }
+    public void setEmployeeId(Long employeeId) { this.employeeId = employeeId; }
 
     public BigDecimal getMin() { return min; }
 

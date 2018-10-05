@@ -10,7 +10,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     function debounce(func, wait, immediate) {
         var timeout;
         return function () {
-            var context = this, args = arguments;getProgramsByCenter
+            var context = this, args = arguments;
             var later = function () {
                 timeout = null;
                 if (!immediate) func.apply(context, args);
