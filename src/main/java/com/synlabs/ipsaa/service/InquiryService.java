@@ -29,6 +29,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -243,25 +244,40 @@ public class InquiryService extends BaseService
     return query.fetch();
   }
 
-  public File inquiryReport(InquiryReportRequest request) throws IOException
-  {
-    if (request.getFrom() == null)
-    {
+  public File inquiryReport(InquiryReportRequest request) throws IOException {
+    if (request.getFrom() == null) {
       throw new ValidationException("From date is required.");
     }
-    if (request.getTo() == null)
-    {
+    if (request.getTo() == null) {
       throw new ValidationException("To date is required.");
     }
-    Center center = hasCenter(request.getCenterId());
-    if (center == null)
-    {
-      throw new ValidationException(String.format("Cannot locate Center[id=%s]", request.getMaskedCenterId()));
-    }
-    request.setCenterCode(center.getCode());
+
     Date from = LocalDate.fromDateFields(request.getFrom()).toDate();
     Date to = LocalDate.fromDateFields(request.getTo()).plusDays(1).toDate();
-    List<Inquiry> inquiries = logRepository.findByCenterAndDate(center, from, to);
+    List<Inquiry> inquiries=new ArrayList<>();
+    List<Inquiry> inquiryList= new ArrayList<>();
+
+
+    if (request.getCenterCode().equals("ALL")) {
+      request.setCenterCode(request.getCenterCode());
+      List<Center> centers = getUserCenters();
+
+      for (Center c : centers) {
+        inquiryList=logRepository.findByCenterAndDate(c,from,to);
+        inquiries.addAll(inquiryList);
+        }
+
+
+    }else{
+       Center center = hasCenter(request.getCenterId());
+        if (center == null) {
+          throw new ValidationException(String.format("Cannot locate Center[id=%s]", request.getMaskedCenterId()));
+        }
+        request.setCenterCode(center.getCode());
+        inquiries=logRepository.findByCenterAndDate(center, from, to);
+    }
+
+
 
     //    2. adding fee to sheet
     File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
