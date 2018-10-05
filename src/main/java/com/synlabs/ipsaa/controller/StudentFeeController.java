@@ -210,8 +210,8 @@ public class StudentFeeController
         return new StudentFeeSlipResponse(studentFeeService.payFee(request));
     }
 
-    @Secured(STUDENTFEE_RECEIPT_WRITE)
-    // @Secured(STUDENTFEE_RECEIPT_CONFIRM)
+    //@Secured(STUDENTFEE_RECEIPT_WRITE)
+    @Secured(STUDENTFEE_RECEIPT_CONFIRM)
     @PutMapping("/payfee")
     //Confirm payment
     public StudentFeePaymentResponse updatePayFee(@RequestBody SaveFeeSlipRequest request)
