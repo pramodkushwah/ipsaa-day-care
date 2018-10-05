@@ -275,4 +275,6 @@ public class StaffProfileRequest implements Request
   public String getpState() { return pState; }
 
   public void setpState(String pState) { this.pState = pState; }
+
+  
 }
