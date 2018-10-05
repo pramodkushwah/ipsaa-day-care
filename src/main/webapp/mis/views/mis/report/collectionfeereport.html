@@ -108,13 +108,26 @@
 												<td>{{ item.paidAmount }}</td>
 												<td>{{ item.paymentDate }}</td>
 												<td>{{ item.paymentMode }}</td>
-												<td>
-													<span class="text-success" ng-show="item.confirmed">Confirmed</span>
-													<span class="text-success" ng-show="!item.active">Rejected</span>
-													<button class="btn btn-success btn-sm" ng-show="!item.confirmed && item.active" 
-													ng-click= "confirmTransaction(item)" ng-disabled="item.disabled">
-													Confirm</button>
-													<button class="btn btn-danger btn-sm" ng-hide="item.confirmed || !item.active" ng-click="showCommentField(item)">Reject </button>
+												<td ng-show="STUDENTFEE_RECEIPT_CONFIRM">
+													<button class="btn btn-sm"
+													ng-class="item.confirmed?'btn-success':'btn-rose'"
+													ng-click="item.confirmed?null:confirmTransaction(item)"
+													ng-disabled="item.disabled" ng-show="item.active&&!item.confirmed">
+														<i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="item.disabled"></i>Confirm
+													</button>
+													<span ng-show="item.confirmed">Confirmed</span>
+				
+													<button class="btn btn-sm" ng-hide="item.confirmed || !item.active" ng-click="showCommentField(item)">Reject</button>
+													<span ng-hide="item.active">Rejected &nbsp;
+														<a href="#" data-toggle="tooltip" title="{{item.comment}}">
+															<i class="fa fa-info"></i>
+														</a>
+													</span>
+												</td>
+												<td ng-hide="STUDENTFEE_RECEIPT_CONFIRM">
+													<span class="text-danger" ng-hide="item.confirmed || item.active">Rejected</span>
+													<span class="text-success" ng-show="item.confirmed && item.active">Confirmed</span>
+													<span class="text-primary" ng-show="item.active&&!item.confirmed">Pending</span>
 												</td>
 												<td id="" style="display: none"></td>
 											</tr>

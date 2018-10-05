@@ -2,6 +2,12 @@ app.controller('staffReportController', function ($http, $scope, Upload) {
   $scope.disableGenerateButton = false;
   $scope.employers = [];
 
+  var allmonths = moment.months();
+  $scope.months = [];
+  for (var mnth = 0; mnth <= 11; mnth++) {
+      $scope.months.push({moy: mnth + 1, name: allmonths[mnth]});
+  }
+
   $http.get('/api/le/').then(function (response) {
 
     $scope.employers.push({ id: "ALL", code: 'ALL', name: 'ALL' });

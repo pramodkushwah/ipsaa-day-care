@@ -1,4 +1,4 @@
-app.controller('StudentFeePaymentController', function ($scope, $http) {
+app.controller('StudentFeePaymentController', function ($scope, $http, Auth) {
 
     $scope.disabledRecordPayment=false;
     var allmonths = moment.months();
@@ -9,6 +9,7 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
     $scope.selectedPeriod = 'Quarterly';
     $scope.commentField = false;
     $scope.selected = {};
+    $scope.STUDENTFEE_RECEIPT_CONFIRM = Auth.hasPrivilege('STUDENTFEE_RECEIPT_CONFIRM');
 
     $scope.years = [moment().year() - 1,moment().year()];
 

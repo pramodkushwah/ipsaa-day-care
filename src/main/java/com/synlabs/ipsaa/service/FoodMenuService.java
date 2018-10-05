@@ -6,12 +6,15 @@ import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.CenterRepository;
 import com.synlabs.ipsaa.jpa.FoodMenuRepository;
 import com.synlabs.ipsaa.jpa.UserRepository;
+import com.synlabs.ipsaa.view.batchimport.ImportMonthlySalary;
 import com.synlabs.ipsaa.view.food.FoodMenuFilterRequest;
 import com.synlabs.ipsaa.view.food.FoodMenuRequest;
+import com.synlabs.ipsaa.view.staff.ErrorPayslipResponce;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
 import java.util.*;
@@ -128,5 +131,19 @@ public class FoodMenuService extends BaseService
     list = foodMenuRepository.findByCenterInAndDateBetween(centers, start.toDate(), end.toDate());
 
     return list;
+  }
+
+  @Autowired
+  private ExcelImportService excelImportService;
+  public Map<String,Object> uploadData(MultipartFile file, int month, long zoneId) {
+    boolean errorInFile = false;
+    Map<String, Object> statusMap = new HashMap<>();
+    statusMap.put("error", "false");
+    List<FoodMenuRequest> employees = excelImportService.importFoodMenuRecords(file);
+    if(!employees.isEmpty()){
+
+    }
+     statusMap.put("error", "true");
+    return statusMap;
   }
 }
