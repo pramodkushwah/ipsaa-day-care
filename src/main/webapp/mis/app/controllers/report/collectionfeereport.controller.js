@@ -1,4 +1,6 @@
-app.controller('CollectionFeeReportController', function ($http, $scope) {
+app.controller('CollectionFeeReportController', function ($http, $scope, Auth) {
+
+    $scope.STUDENTFEE_RECEIPT_CONFIRM = Auth.hasPrivilege('STUDENTFEE_RECEIPT_CONFIRM');
     
     $scope.loader = '';
     //populate months, years, quarter dropdown
