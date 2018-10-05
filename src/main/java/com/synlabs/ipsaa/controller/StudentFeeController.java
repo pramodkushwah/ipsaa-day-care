@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -183,8 +184,7 @@ public class StudentFeeController
   }
     @Secured(STUDENTFEE_SLIP_WRITE)
     @PostMapping("/feeslip/regenerate")
-    public StudentFeeSlipResponse reGenerateStudentSlip(@RequestBody StudentFeeSlipRequestV2 request)
-    {
+    public StudentFeeSlipResponse reGenerateStudentSlip(@RequestBody StudentFeeSlipRequestV2 request) {
         return new StudentFeeSlipResponse(studentFeeService.regenerateStudentSlip(request));
     }
   @Secured(STUDENTFEE_SLIP_WRITE)

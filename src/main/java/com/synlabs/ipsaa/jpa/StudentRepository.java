@@ -27,6 +27,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>
   List<Student> findByCenterAndProgram(Center center, Program program);
 
   List<Student> findByActiveTrueAndCenter(Center center);
+  Student findByAdmissionNumber(String admissionNumber);
 
   List<Student> findByCenterInAndActiveOrderByIdAsc(List<Center> centers,boolean active);
 

@@ -54,6 +54,7 @@ app.controller('FeeReportController', function ($scope, $http) {
         $http.get('/api/center/').then(
             function (response) {
                 $scope.centers = response.data;
+                $scope.centers.unshift({code:'All', name:'All', id:'All'});
             }, function (response) {
                 error('Fail to centers.');
             }

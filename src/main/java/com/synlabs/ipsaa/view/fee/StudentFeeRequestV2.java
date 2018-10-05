@@ -160,7 +160,7 @@ public class StudentFeeRequestV2 implements Request
 
     studentFee.setFinalFee(finalFee==null?ZERO:finalFee);
     studentFee.setComment(comment==null?"":comment);
-    studentFee.setFeeDuration(getFeeDuration());
+    studentFee.setFeeDuration(FeeDuration.Quarterly);
     studentFee.setTransportFee(transportFee == null ? ZERO : transportFee);
 
     studentFee.setFinalAdmissionFee(finalAdmissionCharges==null?ZERO:finalAdmissionCharges);

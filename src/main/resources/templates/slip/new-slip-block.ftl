@@ -48,15 +48,16 @@
     <td><span> : </span> ${subTotal?string["0"]}</td>
   </tr> -->
 
-<#if sgst?? || cgst??>
+<#if slip.gstAmount?? && (slip.sgst?? || slip.cgst??)>
   <tr>
-    <th>GST (${sgst+cgst}%)</th>
-    <td><span> : ${sgstAmount+cgstAmount}</span></td>
+    <th>I-GST (${slip.sgst+slip.cgst}%)</th>
+    <td><span> : ${slip.gstAmount}</span></td>
   </tr>
 </#if>
-<#if slip.gstAmount??>
+
+<#if slip.gstAmount?? && slip.igst??>
   <tr>
-    <th>I-GST (${igst}%)</th>
+    <th>GST (${slip.igst}%)</th>
     <td><span> : ${slip.gstAmount}</span></td>
   </tr>
 </#if>

@@ -14,7 +14,7 @@ public class StudentFee extends BaseEntity
 {
   // ---------------------------------------------------shubham------------------------------------------------------
 
-  @Column(precision = 16, scale = 2)
+  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal annualCharges;
   @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal finalAnnualCharges;

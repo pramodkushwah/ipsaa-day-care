@@ -21,7 +21,15 @@ public class StudentFeeSlipRequestV2 implements Request
   private BigDecimal stationary;
   private BigDecimal uniformCharges;
   private String spaceifyRegenrationDate;
+  private BigDecimal balance;
 
+  public BigDecimal getBalance() {
+    return balance;
+  }
+
+  public void setBalance(BigDecimal balance) {
+    this.balance = balance;
+  }
 
   public String getSpaceifyRegenrationDate() {
     return spaceifyRegenrationDate;

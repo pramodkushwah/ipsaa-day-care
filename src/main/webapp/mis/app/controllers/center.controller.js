@@ -1,6 +1,7 @@
 app.controller('CenterController', function ($scope, $http) {
     var tabs = ['#centers', '#zones', '#cities'];
     $scope.disableSave = false;
+    $scope.states = [];
 
     function debounce(func, wait, immediate) {
         var timeout;
@@ -245,6 +246,9 @@ app.controller('CenterController', function ($scope, $http) {
         });
         $http.get('/api/city/').then(function (response) {
             $scope.cities = response.data;
+        });
+        $http.get('/api/state/all').then(function (response) {
+            $scope.states = response.data;
         });
     }
 

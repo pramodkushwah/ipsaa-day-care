@@ -155,7 +155,8 @@ public class EmployeeController
   //////Avneet
   @PostMapping("stateTax")
   public BigDecimal calculatePFTax(@RequestBody StateTaxRequest request){
-    return employeeService.calculatePfTax(request);
+    BigDecimal tax=employeeService.calculatePfTax(request);
+    return tax;
   }
 
   ////set Professional Tax feom Backend

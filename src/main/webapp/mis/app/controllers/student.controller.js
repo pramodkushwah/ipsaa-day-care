@@ -524,7 +524,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     }
 
     $scope.getProgramsByCenter = function(centerId){
-      console.log(centerId);
+      $scope.workingStudent.programId = '';
+      $scope.workingStudent.groupId = '';
       $http.get('/api/center/programs/'+centerId).then(function (response) {
         $scope.programs = response.data;
         });

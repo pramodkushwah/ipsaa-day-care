@@ -127,8 +127,6 @@ public class PaySlipService extends BaseService {
 						);
 		if(employerId.equals("ALL")){
 			employees=query.fetch();
-			employees.stream().forEach(s-> System.out.println(s.getEid()));
-			System.out.println(employees.size());
 		}else{
 			legalEntity = legalEntityRepository.findOne(unmask(Long.parseLong(employerId)));
 			if (legalEntity == null) {
@@ -155,14 +153,9 @@ public class PaySlipService extends BaseService {
 
 			}
 
-		if(employerId.equals("ALL")){
-			List<EmployeePaySlip> pay=employeePaySlipRepository.findByMonthAndYear(month,year);
-			pay.stream().forEach(p->p.getEmployee().getEid());
-			System.out.println(pay.size());
-			System.out.println();
+		if(employerId.equals("ALL"))
 			return employeePaySlipRepository.findByMonthAndYear(month, year);
-
-		} else {
+		else {
 			if (legalEntity != null)
 				return employeePaySlipRepository.findByEmployerIdAndMonthAndYear(legalEntity.getId(), month, year);
 			else {
