@@ -219,7 +219,7 @@ public class StaffExcelReport {
 				cell.setCellValue((staffR.getEsi().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (staffR.getGrossSalary() != null)
+			if (staffR.getGrossSalary() != null && staffR.getEsi().intValue()!=0)
 				cell.setCellValue((staffR.getGrossSalary().multiply(new BigDecimal(4.75)).divide(HUNDRED).intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
