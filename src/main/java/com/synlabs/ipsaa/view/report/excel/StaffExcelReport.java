@@ -3,6 +3,7 @@ package com.synlabs.ipsaa.view.report.excel;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +16,8 @@ import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.jpa.EmployeePaySlipRepository;
 import com.synlabs.ipsaa.view.staff.StaffFilterRequest;
+
+import static com.synlabs.ipsaa.util.FeeUtils.HUNDRED;
 
 public class StaffExcelReport {
 	List<EmployeePaySlip> staff;
@@ -217,7 +220,7 @@ public class StaffExcelReport {
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			if (staffR.getGrossSalary() != null)
-				cell.setCellValue((staffR.getGrossSalary().doubleValue()*4.75/100));
+				cell.setCellValue((staffR.getGrossSalary().multiply(new BigDecimal(4.75)).divide(HUNDRED).intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			if (staffR.getProfessionalTax() != null)
