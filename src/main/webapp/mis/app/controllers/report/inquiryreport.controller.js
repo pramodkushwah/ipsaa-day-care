@@ -16,6 +16,7 @@ app.controller('InquiryReportController', function ($scope, $http) {
         }
         var request = {
             centerId: center.id,
+            centerCode: center.code,
             from: $scope.from,
             to: $scope.to
         };
@@ -34,11 +35,14 @@ app.controller('InquiryReportController', function ($scope, $http) {
         );
 
     };
-
+    $scope.centers = [];
     function loadCenters() {
         $http.get('/api/center/').then(
             function (response) {
-                $scope.centers = response.data;
+                $scope.centers.push({id:1,name:'ALL',code:'ALL'});
+                response.data.forEach(center => {
+                    $scope.centers.push(center);
+                });
             }, function (response) {
                 error('Fail to centers.');
             }
