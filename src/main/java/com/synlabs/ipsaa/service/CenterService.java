@@ -484,5 +484,18 @@ public class CenterService extends BaseService
     return s;
   }
 
+  public void deleteState(StateRequest request){
+
+    State state= stateRepository.findOne(request.getId());
+
+    List<City> city= cityRepository.findByState(state);
+
+    if(!city.isEmpty()){
+      throw  new ValidationException("Cannot delete this state");
+    }
+
+    stateRepository.delete(request.getId());
+  }
+
 
 }

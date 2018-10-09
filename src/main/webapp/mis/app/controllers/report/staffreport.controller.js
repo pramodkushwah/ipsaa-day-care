@@ -1,7 +1,6 @@
 app.controller('staffReportController', function ($http, $scope, Upload) {
   $scope.disableGenerateButton = false;
   $scope.employers = [];
-
   var allmonths = moment.months();
   $scope.months = [];
   for (var mnth = 0; mnth <= 11; mnth++) {
@@ -27,6 +26,7 @@ app.controller('staffReportController', function ($http, $scope, Upload) {
 
     var req_body = {
       employerCode: $scope.selectedEmployer.code,
+      month: $scope.selectedMonth
     }
 
     $http.post("/api/report/staff/excel", req_body, {
