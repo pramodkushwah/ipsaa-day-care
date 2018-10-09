@@ -18,6 +18,8 @@ import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.jpa.EmployeePaySlipRepository;
 import com.synlabs.ipsaa.view.staff.StaffFilterRequest;
 
+import static com.synlabs.ipsaa.util.FeeUtils.HUNDRED;
+
 public class StaffExcelReport {
 	List<EmployeePaySlip> staff;
 
@@ -224,8 +226,8 @@ public class StaffExcelReport {
 				cell.setCellValue((staffR.getEsi().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (staffR.getGrossSalary() != null)
-				cell.setCellValue((staffR.getGrossSalary().doubleValue()*4.75/100));
+			if (staffR.getGrossSalary() != null && staffR.getEsi().intValue()!=0)
+				cell.setCellValue((staffR.getGrossSalary().multiply(new BigDecimal(4.75)).divide(HUNDRED).intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			if (staffR.getProfessionalTax() != null)
