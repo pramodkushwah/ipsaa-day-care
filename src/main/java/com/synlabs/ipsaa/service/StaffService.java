@@ -180,7 +180,7 @@ public class StaffService extends BaseService
     else{
        list=employeeRepository.findByActiveTrueAndCostCenterInAndEmployerCode(getUserCenters(),staffRequest.getEmployerCode());
     }
-    StaffReport excel = new StaffReport(list,exportDirectory);
+    StaffReport excel = new StaffReport(list,exportDirectory,employeeSalaryRepository);
     return excel.createExcel(); // returning file
   }
 
@@ -191,7 +191,6 @@ public class StaffService extends BaseService
     int month= request.getMonth();
     if(month == 0)
       month=LocalDate.now().getMonthOfYear() -1;
-
 
     int year= LocalDate.now().getYear();
 
@@ -215,7 +214,7 @@ public class StaffService extends BaseService
 
     }
     
-    StaffReport excel=new StaffReport(list,exportDirectory);
+    StaffReport excel=new StaffReport(list,exportDirectory,employeeSalaryRepository);
     return excel.createExcel();
   }
 
@@ -232,7 +231,7 @@ public class StaffService extends BaseService
       list= employeePaySlipRepository.findByEmployerIdAndMonthAndYear(unmask(employer.getId()),staffRequest.getMonth(),staffRequest.getYear());
     }
 
-    StaffExcelReport report=new StaffExcelReport(list,staffRequest,exportDirectory, staffRequest.getEmployerCode());
+    StaffExcelReport report=new StaffExcelReport(list,staffRequest,exportDirectory, staffRequest.getEmployerCode(),employeeSalaryRepository);
     return report.createExcel();
   }
   @Transactional
