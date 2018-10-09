@@ -180,7 +180,7 @@ public class StaffService extends BaseService
     else{
        list=employeeRepository.findByActiveTrueAndCostCenterInAndEmployerCode(getUserCenters(),staffRequest.getEmployerCode());
     }
-    StaffReport excel = new StaffReport(list,exportDirectory);
+    StaffReport excel = new StaffReport(list,exportDirectory,employeeSalaryRepository);
     return excel.createExcel(); // returning file
   }
 
@@ -189,39 +189,32 @@ public class StaffService extends BaseService
   public File getAllEmployees(StaffFilterRequest request){
 
     int month= request.getMonth();
+    if(month == 0)
+      month=LocalDate.now().getMonthOfYear() -1;
+
     int year= LocalDate.now().getYear();
 
-    Calendar cal=Calendar.getInstance();
-    cal.set(year,month-1,cal.getMaximum(Calendar.DATE));
-    Date date=cal.getTime();          ///to restrict joinees of future
-
-    cal.set(year,month-1,1);
-    Date startDate=cal.getTime();
-
     String employer=request.getEmployerCode();
-    List<Employee> list=null;
+    List<Employee> list= new ArrayList<>();
 
-    JPAQuery<Employee> query= new JPAQuery<>(entityManager);
-    QEmployee emp=QEmployee.employee;
-    query.select(emp).from(emp)
-            .where(emp.active.isTrue().and(emp.profile.doj.loe(date)).and(emp.profile.dol.isNull().or(emp.profile.dol.goe(startDate)))
-                    .or(emp.active.isFalse()
-                            .and(emp.profile.dol.goe(startDate))
-                            .and(emp.profile.doj.loe(date))
-                    )
-            );
-    if(employer.equals("ALL")){
-      list=query.fetch();
-      list.stream().forEach(s-> System.out.println(s.getEid()));
-    }else{
+    List<EmployeePaySlip> employeePaySlips= employeePaySlipRepository.findByMonthAndYear(month,year);
 
+    if(employer.equals("ALL")) {
+      for (EmployeePaySlip paySlip : employeePaySlips){
+        Employee emp=paySlip.getEmployee();
+        list.add(emp);
+      }
+    } else{
       LegalEntity entity=legalEntityRepository.findByCode(employer);
-      list= query.where(emp.employer.eq(entity)).fetch();
-      //System.out.println(list.size());
-      list.stream().forEach(s-> System.out.println(s.getEid()));
-    }
+      employeePaySlips.stream().forEach(employeePaySlip -> {
+        if(employeePaySlip.getEmployee().getEmployer().getCode().equals(employer))
+          list.add(employeePaySlip.getEmployee());
+      });
 
-    StaffReport excel=new StaffReport(list,exportDirectory);
+
+    }
+    
+    StaffReport excel=new StaffReport(list,exportDirectory,employeeSalaryRepository);
     return excel.createExcel();
   }
 
@@ -238,7 +231,7 @@ public class StaffService extends BaseService
       list= employeePaySlipRepository.findByEmployerIdAndMonthAndYear(unmask(employer.getId()),staffRequest.getMonth(),staffRequest.getYear());
     }
 
-    StaffExcelReport report=new StaffExcelReport(list,staffRequest,exportDirectory, staffRequest.getEmployerCode());
+    StaffExcelReport report=new StaffExcelReport(list,staffRequest,exportDirectory, staffRequest.getEmployerCode(),employeeSalaryRepository);
     return report.createExcel();
   }
   @Transactional

@@ -3,10 +3,12 @@ package com.synlabs.ipsaa.view.report.excel;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
+import com.synlabs.ipsaa.jpa.EmployeeSalaryRepository;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -24,15 +26,17 @@ public class StaffExcelReport {
 	int year;
 	int month;
 	private String er_code;
+	EmployeeSalaryRepository employeeSalaryRepository;
 
 	public StaffExcelReport(List<EmployeePaySlip> staff, StaffFilterRequest staffRequest, String path,
-			String er_code) {
+			String er_code, EmployeeSalaryRepository employeeSalaryRepository) {
 		this.staff = staff;
 		this.path = path;
 		this.staffRequest = staffRequest;
 		this.year = staffRequest.getYear();
 		this.month = staffRequest.getMonth();
 		this.er_code=er_code;
+		this.employeeSalaryRepository= employeeSalaryRepository;
 	}
 
 	public File createExcel() {
@@ -174,6 +178,10 @@ public class StaffExcelReport {
 			if (staffR.getPresents() != null)
 				cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			cell.setCellValue((staffR.getPresents().intValue()));
+
+			cell=row.createCell(index++,Cell.CELL_TYPE_NUMERIC);
+			EmployeeSalary salary= employeeSalaryRepository.findByEmployee(staffR.getEmployee());
+			cell.setCellValue(salary.getCtc().intValue());
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_NUMERIC);
 			if (staffR.getCtc() != null)
@@ -319,6 +327,11 @@ public class StaffExcelReport {
 		cell.setCellValue(("Total Days"));
 		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 		cell.setCellValue(("Present Days"));
+
+		////Avneet
+		cell=row.createCell(index++,Cell.CELL_TYPE_STRING);
+		cell.setCellValue("Actual CTC");
+
 		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 		cell.setCellValue(("CTC Monthly"));
 

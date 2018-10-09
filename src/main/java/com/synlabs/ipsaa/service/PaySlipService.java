@@ -104,7 +104,7 @@ public class PaySlipService extends BaseService {
 		if (month == null) {
 			throw new ValidationException("Month is required.");
 		}
-		// Avneet
+		////////// Avneet
 		Calendar calendar =Calendar.getInstance();
 		calendar.set(year,month-1, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 		Date generationDate = calendar.getTime();
@@ -112,29 +112,38 @@ public class PaySlipService extends BaseService {
 		calendar.set(year,month-1,1);
 		Date startDate=calendar.getTime();
 
+		calendar.set(year,month,20);
+		Date lockDate=calendar.getTime(); ////To lock the payslip
+
+		Date today=LocalDate.now().toDate();
+
 		List<Employee> employees;
 		LegalEntity legalEntity=null;
 
-		JPAQuery<Employee> query = new JPAQuery<>(entityManager);
-		QEmployee qemp = QEmployee.employee;
-		query.select(qemp).from(qemp)
-				.where(qemp.active.isTrue().and(qemp.profile.doj.loe(generationDate))
-											.and(qemp.profile.dol.isNull().or(qemp.profile.dol.goe(startDate)) ).or(
-												qemp.active.isFalse()
-														.and(qemp.profile.dol.goe(startDate))
-														.and(qemp.profile.doj.loe(generationDate))///////Avneet-changed from equals to greater than equals
-											)
-						);
-		if(employerId.equals("ALL")){
-			employees=query.fetch();
-		}else{
-			legalEntity = legalEntityRepository.findOne(unmask(Long.parseLong(employerId)));
-			if (legalEntity == null) {
-				throw new ValidationException(String.format("Cannot locate Employer[id = %s]", mask(Long.parseLong(employerId))));
+		boolean lock= today.before(lockDate)? true:false; /////if payslip is locked , payslip is not generated nut only fetched form database.
+
+		if(lock) {
+			JPAQuery<Employee> query = new JPAQuery<>(entityManager);
+			QEmployee qemp = QEmployee.employee;
+			query.select(qemp).from(qemp)
+					.where(qemp.active.isTrue().and(qemp.profile.doj.loe(generationDate)).and(qemp.profile.dol.isNull().or(qemp.profile.dol.goe(startDate)))
+							.or(qemp.active.isFalse()
+									.and(qemp.profile.dol.goe(startDate))
+									.and(qemp.profile.doj.loe(generationDate))    ///////Avneet-changed from equals to greater than equals
+							)
+					);
+			if (employerId.equals("ALL")) {
+				employees = query.fetch();
+//				employees.stream().forEach(s -> System.out.println(s.getEid()));
+//				System.out.println(employees.size());
+			} else {
+				legalEntity = legalEntityRepository.findOne(unmask(Long.parseLong(employerId)));
+				if (legalEntity == null) {
+					throw new ValidationException(String.format("Cannot locate Employer[id = %s]", mask(Long.parseLong(employerId))));
+				}
+				employees = query.where(qemp.employer.eq(legalEntity)).fetch();
 			}
-			employees = query.where(qemp.employer.eq(legalEntity)).fetch();
-			}
-		for (Employee emp : employees) {
+			for (Employee emp : employees) {
 				EmployeePaySlip employeePaySlip = employeePaySlipRepository.findOneByEmployeeAndMonthAndYear(emp, month,
 						year);
 				if (employeePaySlip == null) {
@@ -145,17 +154,27 @@ public class PaySlipService extends BaseService {
 							continue;
 						}
 						generateNewPayslip(emp, employeeSalary, year, month);
-					}
-					else{
+					} else {
+
+
 						//System.out.println("salary not found"+emp.getEid());
 					}
 				}
 
 			}
+		}
+		else{
+			System.out.println("Just Fetched not Generated");
+		}
 
-		if(employerId.equals("ALL"))
+		if(employerId.equals("ALL")){
+			List<EmployeePaySlip> pay=employeePaySlipRepository.findByMonthAndYear(month,year);
+			pay.stream().forEach(p->p.getEmployee().getEid());
+			System.out.println(pay.size());
+			System.out.println();
 			return employeePaySlipRepository.findByMonthAndYear(month, year);
-		else {
+
+		} else {
 			if (legalEntity != null)
 				return employeePaySlipRepository.findByEmployerIdAndMonthAndYear(legalEntity.getId(), month, year);
 			else {
@@ -179,7 +198,8 @@ public class PaySlipService extends BaseService {
 			cal.set(Calendar.MONTH, month - 1);// o to 11
 			cal.set(Calendar.YEAR, year);
 			int totalDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-			payslip.setPresents(new BigDecimal(totalDays));
+			//payslip.setPresents(new BigDecimal(totalDays));
+			payslip.setPresents(presentDays(month,year,employee.getId()));			//added.
 		}
 		payslip = calculatePayslip(employee, salary, year, month, payslip);
 		employeePaySlipRepository.saveAndFlush(payslip);
@@ -206,38 +226,39 @@ public class PaySlipService extends BaseService {
 
 		EmployeePaySlip paySlip = employeePaySlipRepository.findOne(request.getId());
 
-		if (paySlip == null) {
-			throw new ValidationException(String.format("Cannot Locate PaySlip[id = %s]", mask(request.getId())));
-		}
+			if (paySlip == null) {
+				throw new ValidationException(String.format("Cannot Locate PaySlip[id = %s]", mask(request.getId())));
+			}
 
-		Employee employee = paySlip.getEmployee();
+			Employee employee = paySlip.getEmployee();
 
-		EmployeeSalary salary = employeeSalaryRepository.findByEmployee(employee);
+			EmployeeSalary salary = employeeSalaryRepository.findByEmployee(employee);
 
-		if (salary != null && paySlip.isLock()) {
-			throw new ValidationException(String.format("Cannot change locked salary", mask(request.getId())));
-		}
+			if (salary != null && paySlip.isLock()) {
+				throw new ValidationException(String.format("Cannot change locked salary", mask(request.getId())));
+			}
 
-		Integer year = paySlip.getYear();
-		Integer month = paySlip.getMonth();
-		paySlip.setComment(request.getComment());
-		// shubham
-		if (request.getPresents() != null) {
-			paySlip.setPresents(request.getPresents());
-		} else if (paySlip.getPresents() == null && request.getPresents() == null) {
-			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.MONTH, month - 1);// o to 11
-			cal.set(Calendar.YEAR, year);
-			int totalDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-			paySlip.setPresents(new BigDecimal(totalDays));
-		}
-		paySlip.setOtherAllowances(request.getOtherAllowances() == null ? ZERO : request.getOtherAllowances());
-		paySlip.setOtherDeductions(request.getOtherDeductions() == null ? ZERO : request.getOtherDeductions());
+			Integer year = paySlip.getYear();
+			Integer month = paySlip.getMonth();
+			paySlip.setComment(request.getComment());
+			// shubham
+			if (request.getPresents() != null ) {
+				paySlip.setPresents(request.getPresents());
+			} else if (paySlip.getPresents() == null && request.getPresents() == null) {
+				Calendar cal = Calendar.getInstance();
+				cal.set(Calendar.MONTH, month - 1);// o to 11
+				cal.set(Calendar.YEAR, year);
+				int totalDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+				//paySlip.setPresents(new BigDecimal(totalDays));
+				paySlip.setPresents(presentDays(month,year,employee.getId()));			//added.
+			}
+			paySlip.setOtherAllowances(request.getOtherAllowances() == null ? ZERO : request.getOtherAllowances());
+			paySlip.setOtherDeductions(request.getOtherDeductions() == null ? ZERO : request.getOtherDeductions());
 
-		paySlip = calculatePayslip(employee, salary, year, month, paySlip);
+			paySlip = calculatePayslip(employee, salary, year, month, paySlip);
 
-		employeePaySlipRepository.saveAndFlush(paySlip);
-		logger.info(String.format("Regenerated Payslip[eid=%s,month=%s,year=%s]", employee.getEid(), month, year));
+			employeePaySlipRepository.saveAndFlush(paySlip);
+			logger.info(String.format("Regenerated Payslip[eid=%s,month=%s,year=%s]", employee.getEid(), month, year));
 
 		return paySlip;
 
@@ -300,7 +321,7 @@ public class PaySlipService extends BaseService {
 		if (payslip.getPresents() != null) {
 			payslip.updateV2(salary, totalDays, payslip.getPresents());
 		} else
-			payslip.updateV2(salary, totalDays, presents);
+			payslip.updateV2(salary, totalDays, presentDays(month,year,employee.getId()));	 //presents replaced with presentDays
 		payslip.roundOff();
 		return payslip;
 	}
@@ -504,17 +525,32 @@ public class PaySlipService extends BaseService {
     List<EmployeeLeave> halfLeave=employeeLeaveRepository.findByEmployeeAndDateBetweenAndHalfLeaveIsTrue(emp,from.getTime(),to.getTime());
     for(EmployeeLeave l:halfLeave){
       if(dateSet.contains(l.getDate().toString())== false){
-        add+=0.5;
+        add+=0.5;									///in case any leave is left.
         dateSet.add(l.getDate().toString());
       }
     }
 
     BigDecimal total=BigDecimal.valueOf(dateSet.size());
-    BigDecimal totalDays=total.add(BigDecimal.valueOf(add));
+    BigDecimal totalDays=total.add(BigDecimal.valueOf(add)); //present days with half leaves.
 
-    System.out.format("Salary is accounted for %s days%n",totalDays);
+   // System.out.format("Salary is accounted for %s days%n",totalDays);
 
     return totalDays;
+  }
+
+
+  ///////Avneet- locks payslip of all employees
+  @Transactional
+  public void lockPaySlip(){
+		int year= LocalDate.now().getYear();
+		int month= LocalDate.now().getMonthOfYear() -1;
+
+		List<EmployeePaySlip> paySlips=employeePaySlipRepository.findByMonthAndYear(month,year);
+
+		paySlips.stream().forEach(employeePaySlip -> {
+			employeePaySlip.setLock(true);
+			employeePaySlipRepository.saveAndFlush(employeePaySlip);
+		});
   }
 
 }
