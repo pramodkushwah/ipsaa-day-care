@@ -168,7 +168,12 @@ public class StaffExcelReport {
 			cell.setCellValue((staffR.isEsid()?"YES":"NO"));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			cell.setCellValue((staffR.isProfd()?"YES":"NO"));
+			BigDecimal professionalTax=staffR.getProfessionalTax();
+
+			if(!staffR.isProfd())
+				cell.setCellValue("NO");
+			else{
+				cell.setCellValue((professionalTax.compareTo(BigDecimal.ZERO)== 0)? "NO":"YES");} // don't check deduction
 
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.MONTH, month - 1);// o to 11
@@ -234,8 +239,16 @@ public class StaffExcelReport {
 				cell.setCellValue((staffR.getProfessionalTax().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (staffR.getNetSalary() != null)
-				cell.setCellValue((staffR.getNetSalary().intValue()));
+			if (staffR.getNetSalary() != null){
+				BigDecimal sal=staffR.getNetSalary();
+				//System.out.println(sal);
+				sal=sal.subtract(staffR.getExtraMonthlyAllowance()).subtract(staffR.getOtherAllowances());
+				System.out.println(sal);
+				sal=sal.add(staffR.getOtherDeductions()).add(staffR.getTds());
+				System.out.println(sal);
+				System.out.println(staffR.getNetSalary()+" "+sal);
+				cell.setCellValue(sal.intValue());
+				}
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			if (staffR.getOtherAllowances() != null)
@@ -382,7 +395,7 @@ public class StaffExcelReport {
 		cell.setCellValue(("TDS"));
 
 		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-		cell.setCellValue(("NET Salary"));
+		cell.setCellValue(("Amount Payable"));
 
 		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 		cell.setCellValue(("REMARK"));

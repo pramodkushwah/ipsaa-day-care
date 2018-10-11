@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.CENTER_READ;
 import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.CENTER_WRITE;
+import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.STAFF_WRITE;
 
 @RestController
 @RequestMapping("api/state/")
@@ -26,7 +28,7 @@ public class StateController {
     CenterService centerService;
 
     @GetMapping("all")
-    @Secured(CENTER_WRITE)
+    @Secured({CENTER_WRITE, CENTER_READ, STAFF_WRITE})
     public List<StateResponse> allStates(){
         return centerService.listOfStates().stream().map(StateResponse::new).collect(Collectors.toList());
     }
