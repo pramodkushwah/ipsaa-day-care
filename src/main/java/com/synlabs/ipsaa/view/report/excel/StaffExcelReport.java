@@ -166,7 +166,12 @@ public class StaffExcelReport {
 			cell.setCellValue((staffR.isEsid()?"YES":"NO"));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			cell.setCellValue((staffR.isProfd()?"YES":"NO"));
+			BigDecimal professionalTax=staffR.getProfessionalTax();
+
+			if(!staffR.isProfd())
+				cell.setCellValue("NO");
+			else{
+				cell.setCellValue((professionalTax.compareTo(BigDecimal.ZERO)== 0)? "NO":"YES");} // don't check deduction
 
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.MONTH, month - 1);// o to 11
