@@ -18,8 +18,9 @@ import com.synlabs.ipsaa.ex.ValidationException;
 public class FeeUtilsV2 {
 	private static final String months[] = new String[] { "Jan", "Feb", "March", "April", "May", "June", "July", "Aug",
 			"Sep", "Oct", "Nov", "Dec" };
+    public static BigDecimal CHEQUE_BOUNCE_CHARGE=new BigDecimal(200);
 
-	private static BigDecimal HUNDRED = new BigDecimal(100);
+    private static BigDecimal HUNDRED = new BigDecimal(100);
 	public static final double FEE_CALCULATION_TOLERANCE = 5.0;
 	public static final double FEE_DISCOUNT_CALCULATION_TOLERANCE = 1.0;
 
