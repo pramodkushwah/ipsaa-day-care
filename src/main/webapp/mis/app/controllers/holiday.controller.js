@@ -69,6 +69,7 @@ app.controller('HolidayController', function ($scope, $http, $rootScope, $filter
 
     $http.get('/api/center/').then(function (response) {
         $scope.centerList = response.data;
+        $scope.centerList.unshift({id:'All',name:'All',code:'All'});
     });
 
     $scope.loadHolidays = function () {
@@ -142,6 +143,17 @@ app.controller('HolidayController', function ($scope, $http, $rootScope, $filter
 
     $scope.addCenter = function (center) {
         if ($scope.holiday) {
+
+            if(center.code === 'All'){
+                $scope.holiday.centers = [];
+                $scope.centerList.forEach(element => {
+                    $scope.holiday.centers.push(element);
+                });
+                $scope.holiday.centers.splice(0,1);
+                $scope.holiday.selectedCenter = '';
+                return;
+            }
+
             var alreadyThere = false;
             for (var i = 0; i < $scope.holiday.centers.length; i++) {
                 if ($scope.holiday.centers[i].code == center.code) {
