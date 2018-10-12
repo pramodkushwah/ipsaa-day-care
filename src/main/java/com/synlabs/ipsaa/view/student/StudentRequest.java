@@ -307,6 +307,11 @@ public class StudentRequest implements Request
 
   public Student toEntity(Student student) throws ParseException
   {
+
+    if(expectedIn.after(expectedOut)){
+      throw new ValidationException("please enter expected in/out in 24 hours system");
+    }
+
     student.setExpectedIn(expectedIn);
     student.setExpectedOut(expectedOut);
 
