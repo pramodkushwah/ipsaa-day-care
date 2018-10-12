@@ -593,8 +593,8 @@ public class FeeService extends BaseService
       rowNum++;
     }
     Row row = feeReportSheet.createRow(rowNum + topHeader);
-    row.createCell(5, Cell.CELL_TYPE_NUMERIC).setCellValue(raised.doubleValue());
-    row.createCell(6, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
+    row.createCell(6, Cell.CELL_TYPE_NUMERIC).setCellValue(raised.doubleValue());
+    row.createCell(7, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
 
     workbook.write(fileOutputStream);
     workbook.dispose();
@@ -677,7 +677,7 @@ public class FeeService extends BaseService
         break;
     }
 
-    list=attendanceRepository.findByStudentAndCreatedDateBetween(student,startDate,endDate);
+    list=attendanceRepository.findByStudentAndCreatedDateBetweenAndExtraHoursNot(student,startDate,endDate,0);
 
     for(StudentAttendance attendace:list){
       if(attendace.getCheckout()!=null && attendace.getCheckin() !=null)
