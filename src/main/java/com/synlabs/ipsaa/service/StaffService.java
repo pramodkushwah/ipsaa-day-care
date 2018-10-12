@@ -728,7 +728,7 @@ public class StaffService extends BaseService
   @Transactional
   public void checkAndDelete(){
     List<Employee> employees;
-    employees = employeeRepository.findByActiveIsTrueAndProfileDol(new Date());
+    employees = employeeRepository.findByActiveIsTrueAndProfileDolBeforeOrProfileDol(new Date(),new Date());
     for(Employee employee:employees){
           employee.setActive(false);
           employeeRepository.saveAndFlush(employee);

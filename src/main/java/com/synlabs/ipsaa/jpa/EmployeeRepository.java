@@ -22,7 +22,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, Repos
   List<Employee> findByActive(Boolean active);
 
   List<Employee> findByActiveIsTrue();
-  List<Employee> findByActiveIsTrueAndProfileDol(Date today);
+  List<Employee> findByActiveIsTrueAndProfileDolBeforeOrProfileDol(Date today,Date Etoday);
 
   List<Employee> findByEmployeeTypeAndActiveIsTrue(EmployeeType employeeType);
 
