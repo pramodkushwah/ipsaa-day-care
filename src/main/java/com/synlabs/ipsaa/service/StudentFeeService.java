@@ -980,7 +980,12 @@ public class StudentFeeService {
             receipt.setComment(request.getComments());
             if(receipt.getPaymentMode().equals(PaymentMode.Cheque)){
                 slip.setExtraCharge(slip.getExtraCharge().add(FeeUtilsV2.CHEQUE_BOUNCE_CHARGE));
-                slip.setAutoComments(slip.getAutoComments()==null?"":slip.getAutoComments()+" , 200rs Cheque bounce charges added");
+                if(slip.getAutoComments()==null)
+                slip.setAutoComments("200rs Cheque bounce charges added");
+                else{
+                    slip.setAutoComments(slip.getAutoComments()+",200rs Cheque bounce charges added");
+                }
+                slip.setTotalFee(FeeUtilsV2.calculateFinalFee(slip));;
             }
 
             paymentRecordRepository.saveAndFlush(receipt);
