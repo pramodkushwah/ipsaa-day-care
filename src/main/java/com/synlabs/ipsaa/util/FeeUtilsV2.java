@@ -148,8 +148,8 @@ public class FeeUtilsV2 {
 				|| centerProgramFee.getProgram().getId() == IPSAA_CLUB_REGULAR_PROGRAM_ID) {
 			// throw new ValidationException(String.format("can not save or update ipsaa
 			// club studnet from here"));
-			// fee.setIgst(new BigDecimal(18));
-			// fee.setFinalFee(calculateFinalFee(fee, true));
+			fee.setIgst(new BigDecimal(18));
+			fee.setFinalFee(calculateFinalFee(fee, true));
 		} else {
 			fee.setIgst(new BigDecimal(0));
 			fee.setFinalFee(calculateFinalFee(fee, false));
