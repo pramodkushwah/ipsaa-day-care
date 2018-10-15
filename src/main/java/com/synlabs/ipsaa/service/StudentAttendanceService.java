@@ -408,6 +408,8 @@ public class StudentAttendanceService extends BaseService {
 		//StudentAttendance attendance=new StudentAttendance();
 		students= students.stream().filter(s->s.getProgram().getId().equals(unmask(programId))).collect(Collectors.toList());
 		List<StudentAttendance> attendances= attendanceRepository.findByStudentInAndAttendanceDateOrderByStudentIdAsc(students,LocalDate.now().toDate());
+
+
 		List<StudentAttendance> list= new ArrayList<>();
 		StudentAttendance studentAttendance = null;
 
@@ -417,7 +419,7 @@ public class StudentAttendanceService extends BaseService {
 			if(attendances!= null && j<size
 					&& s.getId().equals(attendances.get(j).getStudent().getId())){
 
-				list.add(studentAttendance);
+				list.add(attendances.get(j));
 				j++;
 
 			}else {
@@ -425,7 +427,7 @@ public class StudentAttendanceService extends BaseService {
 				studentAttendance.setStudent(s);
 				studentAttendance.setCenter(s.getCenter());
 				studentAttendance.setCheckin(s.getExpectedIn());
-				studentAttendance.setCheckout(s.getExpectedOut());
+				//studentAttendance.setCheckout(s.getExpectedOut());
 				studentAttendance.setAttendanceDate(LocalDate.now().toDate());
 				studentAttendance.setStatus(AttendanceStatus.Present);
 

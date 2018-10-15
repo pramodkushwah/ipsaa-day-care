@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,9 +61,11 @@ public class StudentAttendanceController
   //////add programs
   public List<StudentAttendanceResponse> markPresent(@RequestParam("centerId") Long centerId,
                                                      @RequestParam("programId") Long programId){
-//    List<StudentAttendance> attendances=attendanceService.mark(centerId);
-//    List<StudentAttendanceResponse> responses= attendances.stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
-    return attendanceService.mark(centerId,programId).stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
+    List<StudentAttendanceResponse> responses= new ArrayList<>();
+    List<StudentAttendance> attendances=attendanceService.mark(centerId,programId);
+    responses= attendances.stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
+    return responses;
+   // return attendanceService.mark(centerId,programId).stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
   }
 
   @Secured(STUDENT_CLOCKINOUT)
