@@ -10,8 +10,6 @@ import java.util.Date;
 import java.util.List;
 
 public class StudentFeePaymentRequestIpsaaClub {
-
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Student student;
 
