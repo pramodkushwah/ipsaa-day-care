@@ -57,13 +57,17 @@ public class FoodMenuController
   {
     return foodMenuService.monthlyList(request).stream().map(FoodMenuResponse::new).collect(Collectors.toList());
   }
-  @Secured((CENTER_WRITE))
 
+  @Secured((CENTER_WRITE))
   @PostMapping(path="upload")
-  public ResponseEntity<Map> uploadFoodMenu(@RequestParam("file")MultipartFile file, @RequestParam ("month")int month,@RequestParam ("zone")long zoneId){
+  public ResponseEntity<Map> uploadFoodMenu(@RequestParam("file")MultipartFile file, @RequestParam ("month")Integer month,@RequestParam ("zone")Long zoneId ,@RequestParam ("zone")Long centerId){
     zoneId=unmask(zoneId);
+    if(centerId==null && zoneId==null){
+      throw new ValidationException("center or zone is missing");
+    }
+
     try {
-      Map<String, Object> map = foodMenuService.uploadData(file,month,zoneId);
+      Map<String, Object> map = foodMenuService.uploadData(file,month,0,0L,"");
       String isSuccess = (String)map.get("error");
       map.remove("error");
       if (isSuccess.equalsIgnoreCase("true"))
@@ -75,5 +79,4 @@ public class FoodMenuController
       throw new ValidationException("file not uploaded");
     }
   }
-
  }
