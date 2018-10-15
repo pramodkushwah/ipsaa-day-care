@@ -56,11 +56,13 @@ public class StudentAttendanceController
 
   //////////School Attendance
   @Secured(STUDENT_CLOCKINOUT)
-  @GetMapping("markPresents/{centerId}")
-  public List<StudentAttendanceResponse> markPresent(@PathVariable("centerId") Long centerId){
+  @PostMapping("markPresents")
+  //////add programs
+  public List<StudentAttendanceResponse> markPresent(@RequestParam("centerId") Long centerId,
+                                                     @RequestParam("programId") Long programId){
 //    List<StudentAttendance> attendances=attendanceService.mark(centerId);
 //    List<StudentAttendanceResponse> responses= attendances.stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
-    return attendanceService.mark(centerId).stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
+    return attendanceService.mark(centerId,programId).stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
   }
 
   @Secured(STUDENT_CLOCKINOUT)

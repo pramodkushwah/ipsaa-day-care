@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -400,14 +401,16 @@ public class StudentAttendanceService extends BaseService {
 	}
 
 	////////Avneet
-	public List<StudentAttendance> mark(Long id){
+	public List<StudentAttendance> mark(Long centerId, Long programId){
 
 
-		List<Student> students=studentRepository.findByActiveTrueAndCenterIdOrderByIdAsc(unmask(id));
+		List<Student> students=studentRepository.findByActiveTrueAndCenterIdOrderByIdAsc(unmask(centerId));
 		//StudentAttendance attendance=new StudentAttendance();
+		students= students.stream().filter(s->s.getProgram().getId().equals(unmask(programId))).collect(Collectors.toList());
 		List<StudentAttendance> attendances= attendanceRepository.findByStudentInAndAttendanceDateOrderByStudentIdAsc(students,LocalDate.now().toDate());
 		List<StudentAttendance> list= new ArrayList<>();
 		StudentAttendance studentAttendance = null;
+
 		int j=0;
 		int size= attendances.size();
 		for(Student s:students){
