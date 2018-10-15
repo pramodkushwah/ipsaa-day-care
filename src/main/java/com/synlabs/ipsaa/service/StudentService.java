@@ -10,12 +10,14 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 
+import com.synlabs.ipsaa.entity.attendance.StudentAttendance;
 import com.synlabs.ipsaa.entity.common.*;
 import com.synlabs.ipsaa.entity.hdfc.HdfcApiDetails;
 import com.synlabs.ipsaa.util.FeeUtilsV2;
@@ -24,7 +26,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.*;
 import org.dom4j.DocumentException;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 import org.slf4j.Logger;
@@ -279,13 +283,40 @@ public class StudentService extends BaseService {
 			//ajustChnages();
 			//adjustGst();
 			//addSecurity();
+			//test();
+			//test2();
 			return fees;
 		}
 		fees = query.where(fee.student.center.in(getUserCenters())).fetch();
 		return fees;
 	}
 
+	private void test2(){
 
+
+	}
+
+	private void test(){
+		QStudent student = QStudent.student;
+		JPAQuery<Student> query = new JPAQuery<>(entityManager);
+		query.select(student).from(student)
+				.where(student.active.isTrue());
+		List<Student> students=query.fetch();
+		Calendar cal=Calendar.getInstance();
+		for(Student s:students){
+			if(s.getExpectedIn() !=null && s.getExpectedOut()!=null)
+			if(s.getExpectedIn().after(s.getExpectedOut()) || s.getExpectedIn().compareTo(s.getExpectedOut())==0){
+				System.out.println("found");
+				System.out.println(s.getExpectedIn() +" "+s.getExpectedOut());
+					cal.setTime(s.getExpectedOut());
+					cal.add(Calendar.HOUR,12);
+					s.setExpectedOut(cal.getTime());
+				System.out.println("change to");
+				System.out.println(s.getExpectedIn() +" "+s.getExpectedOut());
+				studentRepository.save(s);
+			}
+		}
+	}
 	@Transactional
 	private void addSecurity() {
 			String SAMPLE_XLSX_FILE_PATH ="C:/Users/shubham/Desktop/ipsaa/query/duplicate.xlsx";
@@ -465,6 +496,12 @@ public class StudentService extends BaseService {
 			}
 			StudentResponse response = new StudentResponse(student);
 
+				Calendar cal=Calendar.getInstance();
+				cal.setTime(studentProfile.getAdmissionDate());
+				if(FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH)+1)!=FeeUtilsV2.getQuarter() || cal.get(Calendar.YEAR)!= java.time.LocalDate.now().getYear()){
+					throw new ValidationException("Admission date can not be set to before or after running quarter");
+				}
+
 			if (request.getFee() != null && !request.getFee().isEmpty()) {
 				request.getFee().setStudentId(mask(student.getId()));
 				request.getFee().setCenterId(mask(center.getId()));
@@ -487,7 +524,11 @@ public class StudentService extends BaseService {
 			address.setZipcode(
 					isEmptyOrNa(address.getZipcode()) ? center.getAddress().getZipcode() : address.getZipcode());
 		}
-
+		Calendar cal=Calendar.getInstance();
+		cal.setTime(studentProfile.getAdmissionDate());
+		if(FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH)+1)!=FeeUtilsV2.getQuarter() || cal.get(Calendar.YEAR)!= java.time.LocalDate.now().getYear()){
+			throw new ValidationException("Admission date can not be set to before or after running quarter");
+		}
 		studentProfileRepository.saveAndFlush(studentProfile);
 		List<StudentParent> parents = student.getParents();
 		for (StudentParent parent : parents) {

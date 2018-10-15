@@ -2,6 +2,7 @@ package com.synlabs.ipsaa.controller;
 
 import com.synlabs.ipsaa.entity.attendance.StudentAttendance;
 import com.synlabs.ipsaa.service.StudentAttendanceService;
+import com.synlabs.ipsaa.service.StudentFeeService;
 import com.synlabs.ipsaa.view.attendance.StudentAttendanceRequest;
 import com.synlabs.ipsaa.view.attendance.StudentAttendanceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class StudentAttendanceController
 
   @Autowired
   private StudentAttendanceService attendanceService;
+  @Autowired
+  private StudentFeeService studentFeeService;
 
   @GetMapping
   @Secured(STUDENT_READ)
@@ -52,5 +55,18 @@ public class StudentAttendanceController
   @GetMapping("/corporate/{isCorporate}")
   public List<StudentAttendanceResponse> studentList(@PathVariable("isCorporate") boolean isCorporate){
     return attendanceService.listOfStudents(isCorporate).stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
+  }
+
+  //shubham update attendance
+  @Secured(STUDENT_READ)
+  @GetMapping("updateAtt")
+  public String updateAttendance(){
+    return attendanceService.updateRunV2()+"";
+  }
+  @Secured(STUDENT_READ)
+  @GetMapping("updateFee")
+  public String updateFee(){
+    studentFeeService.updateExtraHours();
+    return "";
   }
 }
