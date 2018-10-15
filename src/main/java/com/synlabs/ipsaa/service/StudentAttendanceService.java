@@ -12,16 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
-import com.querydsl.jpa.impl.JPAQuery;
-import com.synlabs.ipsaa.entity.attendance.QStudentAttendance;
-import com.synlabs.ipsaa.entity.student.QStudentFee;
-import com.synlabs.ipsaa.entity.student.StudentFee;
-import com.synlabs.ipsaa.enums.FeeDuration;
-import com.synlabs.ipsaa.util.FeeUtils;
 import com.synlabs.ipsaa.util.FeeUtilsV2;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -403,5 +398,62 @@ public class StudentAttendanceService extends BaseService {
 
 		}
 		return finalStudentAttendance;
+	}
+
+	////////Avneet
+	public List<StudentAttendance> mark(Long centerId, Long programId){
+
+
+		List<Student> students=studentRepository.findByActiveTrueAndCenterIdOrderByIdAsc(unmask(centerId));
+		//StudentAttendance attendance=new StudentAttendance();
+		students= students.stream().filter(s->s.getProgram().getId().equals(unmask(programId))).collect(Collectors.toList());
+		List<StudentAttendance> attendances= attendanceRepository.findByStudentInAndAttendanceDateOrderByStudentIdAsc(students,LocalDate.now().toDate());
+		List<StudentAttendance> list= new ArrayList<>();
+		StudentAttendance studentAttendance = null;
+
+		int j=0;
+		int size= attendances.size();
+		for(Student s:students){
+			if(attendances!= null && j<size
+					&& s.getId().equals(attendances.get(j).getStudent().getId())){
+
+				list.add(studentAttendance);
+				j++;
+
+			}else {
+				studentAttendance= new StudentAttendance();
+				studentAttendance.setStudent(s);
+				studentAttendance.setCenter(s.getCenter());
+				studentAttendance.setCheckin(s.getExpectedIn());
+				studentAttendance.setCheckout(s.getExpectedOut());
+				studentAttendance.setAttendanceDate(LocalDate.now().toDate());
+				studentAttendance.setStatus(AttendanceStatus.Present);
+
+				attendanceRepository.saveAndFlush(studentAttendance);
+				list.add(studentAttendance);
+			}
+		}
+
+		return list;
+	}
+
+	public void markAbsents(Long id){
+
+		Student student=studentRepository.findByIdAndCenterIn(unmask(id),userService.getUserCenters());
+		StudentAttendance attendance=attendanceRepository.findByStudentAndAttendanceDate(student,LocalDate.now().toDate());
+		if(attendance!= null){
+			attendanceRepository.delete(attendance);
+		}
+	}
+
+	public List<StudentAttendance> attendanceByCenter(Long centerId,Long programId){
+
+		List<Student> students= studentRepository.findByActiveTrueAndCenterIdOrderByIdAsc(unmask(centerId));
+
+		List<StudentAttendance> attendanceList=attendanceRepository.
+				findByStudentInAndAttendanceDateOrderByStudentIdAsc(students,LocalDate.now().toDate());
+
+		List<StudentAttendance> finalAttendnce=calculateList(students,attendanceList);
+		return finalAttendnce;
 	}
 }

@@ -33,4 +33,6 @@ public interface StudentRepository extends JpaRepository<Student, Long>
 
   ////Avneet
   List<Student> findByCenterInAndActiveTrueAndCorporate(List<Center> centers,boolean corporate);
+
+  List<Student> findByActiveTrueAndCenterIdOrderByIdAsc(Long centreId);
 }
