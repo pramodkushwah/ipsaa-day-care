@@ -285,6 +285,28 @@ public class StudentService extends BaseService {
 		return fees;
 	}
 
+	public List<StudentFee> listFeeIpsaa(StudentFeeRequest request) {
+		QStudentFee fee = QStudentFee.studentFee;
+		JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
+		query.select(fee).from(fee)
+				.where(fee.student.program.id.eq(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID)
+						.or(fee.student.program.id.eq(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID)))
+				.where(fee.student.active.isTrue())
+				.where(fee.feeDuration.eq(FeeDuration.Quarterly))
+				.where(fee.student.corporate.isFalse());
+		List<StudentFee> fees;
+		if (request.getStudentId() != null) {
+			return query.where(fee.student.id.eq(request.getStudentId())).fetch();
+		}
+
+		if (request.getCenterId() != null) {
+			fees = query.where(fee.student.center.id.eq(request.getCenterId())).fetch();
+			return fees;
+		}
+		fees = query.where(fee.student.center.in(getUserCenters())).fetch();
+		return fees;
+	}
+
 
 	@Transactional
 	private void addSecurity() {

@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 public class StudentFeePaymentRequestIpsaaClub {
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     private Student student;
 
     @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
