@@ -16,6 +16,12 @@ app.controller('StudentAttendanceController', function ($scope, $http) {
     }
 
     $scope.sortType = 'expectedIn';
+    $scope.selectedProgram = '';
+    $scope.selectedCenter = '';
+
+    $http.get('/api/center/').then(function (response) {
+        $scope.centers = response.data;
+    });
 
     refresh();
 
@@ -52,17 +58,44 @@ app.controller('StudentAttendanceController', function ($scope, $http) {
     function refresh() {
         $http.get('/api/attendance/student/').then(function (response) {
             $scope.students = response.data;
-
-            angular.forEach($scope.students, function (student) {
-                if (!student.img) {
-                    student.imgPath = '/assets/img/default-avatar.png'
-                } else {
-                    student.imgPath = 'http://ipsaaprod.s3-website.ap-south-1.amazonaws.com/' + student.img;
-                }
-                student.clockinDisabled=false;
-                student.clockoutDisabled=false;
-            })
+            $scope.studentsCopy = angular.copy($scope.students);
+            // angular.forEach($scope.students, function (student) {
+            //     if (!student.img) {
+            //         student.imgPath = '/assets/img/default-avatar.png'
+            //     } else {
+            //         student.imgPath = 'http://ipsaaprod.s3-website.ap-south-1.amazonaws.com/' + student.img;
+            //     }
+            //     student.clockinDisabled=false;
+            //     student.clockoutDisabled=false;
+            // })
         });
+    }
+
+    $scope.centerChange = function(center){
+        scope = $scope;
+        if(center){
+            $scope.students = $scope.studentsCopy.filter(student => {
+                return student.center === center.name;
+            });    
+            scope.getPrograms(center.id);
+        } else{
+            $scope.students = $scope.studentsCopy;
+        }
+    }
+    $scope.programs = []
+    $scope.getPrograms = function(centerId) {
+        $http.get('/api/center/programs/'+ centerId).then(function (response) {
+            $scope.programs = response.data;
+        });
+    }
+
+    $scope.presentFilteredStudent = function(){
+        
+    }
+
+    $scope.programChange = function(program){
+        console.log(program);
+        
     }
 
     function ok(message) {

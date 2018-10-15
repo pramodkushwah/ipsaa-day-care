@@ -1,13 +1,31 @@
 <div class="row">
-  <div class="col-md-4">
-    <form>
-      <div class="form-group">
-        <div class="input-group">
-          <div class="input-group-addon"><i class="fa fa-search"></i></div>
-          <input type="text" class="form-control" placeholder="Search" ng-model="searchStudentName">
-        </div>
+  <div class="col-md-3">
+    <div class="form-group">
+        <label class="control-label"></label>
+      <div class="input-group">
+        <div class="input-group-addon"><i class="fa fa-search"></i></div>
+        <input type="text" class="form-control" placeholder="Search" ng-model="searchStudentName">
       </div>
-    </form>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="control-label">Center:</label>
+      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="centerChange(selectedCenter)">
+        <option value="">ALL</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-3" ng-show="programs.length">
+    <div class="form-group">
+      <label class="control-label">Program*</label>
+      <select class="form-control" ng-model="selectedProgram" ng-options="program as program.name for program in programs" ng-change="programChange(selectedProgram)">
+          <option value="">ALL</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-3" ng-show="selectedProgram">
+    <button class="btn btn-rose btn-round" ng-click="presentFilteredStudent()">Present</button>
   </div>
 </div>
 <br>
@@ -16,7 +34,8 @@
     <div class="card card-profile">
       <div class="card-avatar">
         <a>
-          <img class="img" ng-src="{{student.imgPath}}"/>
+          <img class="img" src="/assets/img/default-avatar.png" ng-hide="student.img"/>
+          <img class="img" ng-src="{{'http://ipsaaprod.s3-website.ap-south-1.amazonaws.com/'+ student.img}}" ng-show="student.img"/>
         </a>
       </div>
       <div class="card-content">
