@@ -119,7 +119,7 @@ public class FeeReportExcel2
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((balance==null?BigDecimal.ZERO:balance).intValue());
       row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(dueAmount.doubleValue());
       row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(paymentStatus);
-      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(autoComment);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(autoComment==null?"":autoComment);
     return sheet;
   }
   public static int createHeader(Sheet sheet, int rowNumber)
