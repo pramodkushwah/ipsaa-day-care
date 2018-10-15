@@ -593,8 +593,8 @@ public class FeeService extends BaseService
       rowNum++;
     }
     Row row = feeReportSheet.createRow(rowNum + topHeader);
-    row.createCell(6, Cell.CELL_TYPE_NUMERIC).setCellValue(raised.doubleValue());
-    row.createCell(7, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
+    row.createCell(5, Cell.CELL_TYPE_NUMERIC).setCellValue(raised.doubleValue());
+    row.createCell(14, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
 
     workbook.write(fileOutputStream);
     workbook.dispose();

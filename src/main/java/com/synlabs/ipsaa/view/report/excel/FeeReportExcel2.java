@@ -32,6 +32,14 @@ public class FeeReportExcel2
   private boolean isActive;
   private int rowNum=0;
 
+  private BigDecimal gst = BigDecimal.ZERO ;
+   private BigDecimal transport = BigDecimal.ZERO ;
+ private BigDecimal  stationary = BigDecimal.ZERO ;
+  private BigDecimal uniform = BigDecimal.ZERO ;
+  private BigDecimal annual = BigDecimal.ZERO ;
+  private BigDecimal security = BigDecimal.ZERO ;
+  private BigDecimal balance = BigDecimal.ZERO ;
+
   public FeeReportExcel2(StudentFeePaymentRequest slip)
   {
 
@@ -64,6 +72,14 @@ public class FeeReportExcel2
         extraHours=slip.getExtraHours();
         dueAmount = raisedAmount;
 
+    gst=slip.getGstAmount();
+            transport=slip.getTransportFee();
+    stationary=slip.getStationary();
+            uniform=slip.getUniformCharges();
+    annual=slip.getFinalAnnualCharges();
+            security=slip.getFinalDepositFee();
+    balance=slip.getBalance();
+
     paymentStatus = slip.getPaymentStatus().toString();
     // slip status is "Paid" or "PartiallyPaid"
     if (slip.getPaymentStatus() == PaymentStatus.Paid
@@ -89,13 +105,20 @@ public class FeeReportExcel2
 
       row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(centerName);
       row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(programName);
-    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(extraHours.intValue());
-      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(raisedAmount.doubleValue());
+
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(raisedAmount.doubleValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((gst==null?BigDecimal.ZERO:gst).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((transport==null?BigDecimal.ZERO:transport).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((extraHours==null?BigDecimal.ZERO:extraHours).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((stationary==null?BigDecimal.ZERO:stationary).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((uniform==null?BigDecimal.ZERO:uniform).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((annual==null?BigDecimal.ZERO:annual).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((security==null?BigDecimal.ZERO:security).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((balance==null?BigDecimal.ZERO:balance).intValue());
       row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(dueAmount.doubleValue());
       row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(paymentStatus);
     return sheet;
   }
-
   public static int createHeader(Sheet sheet, int rowNumber)
   {
     Row row = sheet.createRow(rowNumber);
@@ -105,8 +128,15 @@ public class FeeReportExcel2
       row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Active");
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Center Name");
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Program Name");
-    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Extra Hours");
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Raised Amount");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Gst");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Transport");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Extra Hours");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Stationary");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("uniform");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Annual fee");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Security");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Balance");
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Due Amount");
       row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Payment Status");
       return rowNumber + 1;
