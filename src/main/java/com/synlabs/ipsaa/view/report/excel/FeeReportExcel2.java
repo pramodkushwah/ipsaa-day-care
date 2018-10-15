@@ -39,6 +39,7 @@ public class FeeReportExcel2
   private BigDecimal annual = BigDecimal.ZERO ;
   private BigDecimal security = BigDecimal.ZERO ;
   private BigDecimal balance = BigDecimal.ZERO ;
+  private String autoComment="";
 
   public FeeReportExcel2(StudentFeePaymentRequest slip)
   {
@@ -79,6 +80,7 @@ public class FeeReportExcel2
     annual=slip.getFinalAnnualCharges();
             security=slip.getFinalDepositFee();
     balance=slip.getBalance();
+    autoComment=slip.getAutoComments();
 
     paymentStatus = slip.getPaymentStatus().toString();
     // slip status is "Paid" or "PartiallyPaid"
@@ -117,6 +119,7 @@ public class FeeReportExcel2
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((balance==null?BigDecimal.ZERO:balance).intValue());
       row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(dueAmount.doubleValue());
       row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(paymentStatus);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(autoComment);
     return sheet;
   }
   public static int createHeader(Sheet sheet, int rowNumber)
@@ -139,6 +142,7 @@ public class FeeReportExcel2
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Balance");
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Due Amount");
       row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Payment Status");
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Auto Comment");
       return rowNumber + 1;
   }
 
