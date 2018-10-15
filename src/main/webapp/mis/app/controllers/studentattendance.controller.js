@@ -44,21 +44,35 @@ app.controller('StudentAttendanceController', function ($scope, $http) {
 
     $scope.clockout = debounce(function (student) {
         student.clockoutDisabled=true;
-        $http.post('/api/attendance/student/clockout/', {studentId: student.id})
-            .then(function (response) {
-                student.clockoutDisabled=false;
-                ok("Clock out OK");
-                refresh();
-            }, function (response) {
-                student.clockoutDisabled=false;
-                error(response.data.error);
-            })
+        if(student.center !== 'BHARAT RAM GLOBAL SCHOOL'){
+            $http.post('/api/attendance/student/clockout/', {studentId: student.id})
+                .then(function (response) {
+                    student.clockoutDisabled=false;
+                    ok("Clock out OK");
+                    refresh();
+                }, function (response) {
+                    student.clockoutDisabled=false;
+                    error(response.data.error);
+                });
+        }else {
+            $http.put('/api/attendance/student/markAbsents/'+ student.id)
+                .then(function (response) {
+                    student.clockoutDisabled=false;
+                    ok("Absent OK");
+                }, function (response) {
+                    student.clockoutDisabled=false;
+                    error(response.data.error);
+                });
+        }
     },200,true);
 
     function refresh() {
         $http.get('/api/attendance/student/').then(function (response) {
             $scope.students = response.data;
-            $scope.studentsCopy = angular.copy($scope.students);
+            $scope.studentsCopy = angular.copy(response.data);
+            $scope.students = $scope.studentsCopy.filter(student => {
+                return student.center !== 'BHARAT RAM GLOBAL SCHOOL';
+            });
             // angular.forEach($scope.students, function (student) {
             //     if (!student.img) {
             //         student.imgPath = '/assets/img/default-avatar.png'
@@ -70,32 +84,47 @@ app.controller('StudentAttendanceController', function ($scope, $http) {
             // })
         });
     }
-
+    $scope.bharatRamSchool = false;
     $scope.centerChange = function(center){
         scope = $scope;
-        if(center){
+        if(center && center.name === 'BHARAT RAM GLOBAL SCHOOL'){
+            scope.getPrograms(center);
             $scope.students = $scope.studentsCopy.filter(student => {
                 return student.center === center.name;
-            });    
-            scope.getPrograms(center.id);
+            });
+        }
+        else if(center) {
+            $scope.students = $scope.studentsCopy.filter(student => {
+                return (student.center === center.name);
+            });
+            $scope.bharatRamSchool = false;
         } else{
-            $scope.students = $scope.studentsCopy;
+            $scope.bharatRamSchool = false;
+            $scope.students = $scope.studentsCopy.filter(student => {
+                return student.center !== 'BHARAT RAM GLOBAL SCHOOL';
+            });
         }
     }
     $scope.programs = []
-    $scope.getPrograms = function(centerId) {
-        $http.get('/api/center/programs/'+ centerId).then(function (response) {
+    $scope.getPrograms = function(center) {
+        $scope.selectedCenterId = center.id;
+        $scope.bharatRamSchool = true;
+        $http.get('/api/center/programs/'+ center.id).then(function (response) {
             $scope.programs = response.data;
         });
-    }
+    }   
 
     $scope.presentFilteredStudent = function(){
-        
+        $http.post('/api/attendance/student/markPresents?centerId='+$scope.selectedCenterId+'&programId='+ $scope.selectedProgram.id).then(function (response){
+            $scope.students = response.data;
+            
+        })
     }
 
     $scope.programChange = function(program){
-        console.log(program);
-        
+        $scope.students = $scope.studentsCopy.filter(student => {
+            return student.program === program.name;
+        });        
     }
 
     function ok(message) {

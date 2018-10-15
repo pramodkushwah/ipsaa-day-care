@@ -16,7 +16,7 @@
       </select>
     </div>
   </div>
-  <div class="col-md-3" ng-show="programs.length">
+  <div class="col-md-3" ng-show="bharatRamSchool">
     <div class="form-group">
       <label class="control-label">Program*</label>
       <select class="form-control" ng-model="selectedProgram" ng-options="program as program.name for program in programs" ng-change="programChange(selectedProgram)">
@@ -25,7 +25,9 @@
     </div>
   </div>
   <div class="col-md-3" ng-show="selectedProgram">
+    <div class="form-group">
     <button class="btn btn-rose btn-round" ng-click="presentFilteredStudent()">Present</button>
+    </div>
   </div>
 </div>
 <br>
@@ -57,7 +59,8 @@
         </button>
         <button class="btn btn-rose btn-round" ng-click="clockout(student)" ng-show="student.status=='Present' && !student.actualOut" ng-disabled="student.clockoutDisabled">
           <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="student.clockoutDisabled"></i>
-          Clock Out
+          <span ng-hide="student.center === 'BHARAT RAM GLOBAL SCHOOL'">Clock Out</span>
+          <span ng-show="student.center === 'BHARAT RAM GLOBAL SCHOOL'">Absent</span>
         </button>
       </div>
     </div>
