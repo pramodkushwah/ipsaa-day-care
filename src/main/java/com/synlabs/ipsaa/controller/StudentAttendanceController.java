@@ -34,14 +34,14 @@ public class StudentAttendanceController
 
   @Secured(STUDENT_CLOCKINOUT)
   @PostMapping("clockin")
-  public void clockin(@RequestBody StudentAttendanceRequest request) {
-    attendanceService.clockin(request);
+  public StudentAttendanceResponse clockin(@RequestBody StudentAttendanceRequest request) {
+   return new StudentAttendanceResponse(attendanceService.clockin(request));
   }
 
   @Secured(STUDENT_CLOCKINOUT)
   @PostMapping("clockout")
-  public void clockout(@RequestBody StudentAttendanceRequest request) {
-    attendanceService.clockout(request);
+  public StudentAttendanceResponse clockout(@RequestBody StudentAttendanceRequest request) {
+    return  new StudentAttendanceResponse(attendanceService.clockout(request));
   }
 
   ///////////////////////////Avneet

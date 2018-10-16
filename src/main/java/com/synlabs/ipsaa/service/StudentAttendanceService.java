@@ -93,7 +93,7 @@ public class StudentAttendanceService extends BaseService {
 		return attendances;
 	}
 
-	public void clockin(StudentAttendanceRequest request) {
+	public StudentAttendance clockin(StudentAttendanceRequest request) {
 
 		Student student = studentRepository.findByIdAndCenterIn(request.getStudentId(), userService.getUserCenters());
 
@@ -117,9 +117,11 @@ public class StudentAttendanceService extends BaseService {
 		attendance.setExtraHours(extra);
 		attendanceRepository.saveAndFlush(attendance);
 		eventBus.post(attendance);
+
+		return attendance;
 	}
 
-	public void clockout(StudentAttendanceRequest request) {
+	public StudentAttendance clockout(StudentAttendanceRequest request) {
 
 		Student student = studentRepository.findByIdAndCenterIn(request.getStudentId(), userService.getUserCenters());
 		StudentAttendance attendance = attendanceRepository.findByStudentAndAttendanceDate(student,
@@ -140,6 +142,8 @@ public class StudentAttendanceService extends BaseService {
 
 		attendanceRepository.saveAndFlush(attendance);
 		eventBus.post(attendance);
+
+		return attendance;
 	}
 
 	public File attendanceReport(AttendanceReportRequest request) throws IOException {
