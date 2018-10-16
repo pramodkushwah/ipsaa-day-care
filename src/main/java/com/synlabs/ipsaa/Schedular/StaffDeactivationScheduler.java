@@ -21,9 +21,10 @@ public class StaffDeactivationScheduler {
     @Autowired
     private StaffService staffService;
 
-    private static final Logger logger = LoggerFactory.getLogger(AttendancePullScheduler.class);
+    private static final Logger logger = LoggerFactory.getLogger(StaffDeactivationScheduler.class);
     @Scheduled(cron = "0 0 1 * * *")// every night at 1am
-    public void pullAttendance() throws ParseException, SQLException, IOException
+    //@Scheduled(cron = "1 * * * * *")
+    public void deactivate() throws ParseException, SQLException, IOException
     {
         logger.info("staff deactivation scheduler");
         staffService.checkAndDelete();

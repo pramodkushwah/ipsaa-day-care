@@ -18,7 +18,8 @@ public interface StudentAttendanceRepository
 
 	StudentAttendance findByStudentAndAttendanceDate(Student student, Date date);
 
-	List<StudentAttendance> findByStudentAndCreatedDateBetween(Student student, Date from, Date to);
+	List<StudentAttendance> findByStudentAndCreatedDateBetweenAndExtraHoursNot(Student student, Date from, Date to,int value);
+	List<StudentAttendance> findByCreatedDateBetween(Date from, Date to);
 
 	List<StudentAttendance> findByCenterAndAttendanceDateBetweenOrderByStudentAdmissionNumberAsc(Center center,
 			Date from, Date to);

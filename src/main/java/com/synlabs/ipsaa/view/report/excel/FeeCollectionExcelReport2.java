@@ -135,7 +135,7 @@ public class FeeCollectionExcelReport2
       else
         row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
 
-      if(record.getStationaryPaidAmount()!=null)
+      if(record.getTransportPaidAmount()!=null)
       row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getTransportPaidAmount().doubleValue());
       else
         row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);

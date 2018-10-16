@@ -33,6 +33,7 @@ import javax.persistence.spi.PersistenceProvider;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -962,6 +963,10 @@ public class StudentFeeService {
 
         StudentFeePaymentRequest slip = feePaymentRepository.findOne(receipt.getRequest().getId());
 
+        if(slip==null){
+            throw  new ValidationException("slip not found");
+        }
+
         if (request.getConfirmed()){
             receipt.setActive(true);
             receipt.setConfirmed(request.getConfirmed());
@@ -973,7 +978,18 @@ public class StudentFeeService {
                 throw new ValidationException("Comment is missing");
             }
             receipt.setComment(request.getComments());
+            if(receipt.getPaymentMode().equals(PaymentMode.Cheque)){
+                slip.setExtraCharge(slip.getExtraCharge().add(FeeUtilsV2.CHEQUE_BOUNCE_CHARGE));
+                if(slip.getAutoComments()==null)
+                slip.setAutoComments("200rs Cheque bounce charges added");
+                else{
+                    slip.setAutoComments(slip.getAutoComments()+",200rs Cheque bounce charges added");
+                }
+                slip.setTotalFee(FeeUtilsV2.calculateFinalFee(slip));;
+            }
+
             paymentRecordRepository.saveAndFlush(receipt);
+
             if (slip.getTotalFee().intValue() <= receipt.getRequest().getPaidAmount().intValue()) {
                 slip.setPaymentStatus(PaymentStatus.Paid);
             } else if (receipt.getRequest().getPaidAmount().intValue() == 0) {
@@ -983,7 +999,7 @@ public class StudentFeeService {
             }
             logger.info(String.format("Student Fee payment rejected .%s",slip));
         }
-        slip.setAutoComments(request.getComments());
+        //slip.setComments(request.getComments());
 
         feePaymentRepository.saveAndFlush(slip);
         return receipt;
@@ -1003,6 +1019,28 @@ public class StudentFeeService {
         }
         List<StudentFeePaymentRequest> slips = feePaymentRepository.findByStudentAndFeeDuration(student,FeeDuration.Quarterly);
         return new PaymentHistoryResponce(slips);
+    }
+
+    public void updateExtraHours() {
+
+        QStudentFeePaymentRequest qStudentFeePaymentRequest = QStudentFeePaymentRequest.studentFeePaymentRequest;
+        JPAQuery<StudentFeePaymentRequest> query = new JPAQuery<>(entityManager);
+        query.select(qStudentFeePaymentRequest)
+                .from(qStudentFeePaymentRequest)
+                .where(qStudentFeePaymentRequest.quarter.eq(4)
+                        .and(qStudentFeePaymentRequest.year.eq(2018)));
+
+        List<StudentFeePaymentRequest> feelist = query.fetch();
+
+        feelist.forEach(new Consumer<StudentFeePaymentRequest>() {
+            @Override
+            public void accept(StudentFeePaymentRequest studentFeePaymentRequest) {
+                double extraHours=attendanceService.getLastQuarterExtraHours(studentFeePaymentRequest.getStudent(),4,2018);
+                System.out.println("from "+studentFeePaymentRequest.getExtraHours() +" to "+ extraHours);
+                studentFeePaymentRequest.setExtraHours(new BigDecimal(extraHours));
+                feePaymentRepository.saveAndFlush(studentFeePaymentRequest);
+            }
+        });
     }
 
 //    public static final QStudentFeePaymentRequest fees=new QStudentFeePaymentRequest("fees");
