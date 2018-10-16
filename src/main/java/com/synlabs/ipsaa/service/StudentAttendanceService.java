@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Root;
 
 import com.synlabs.ipsaa.util.FeeUtilsV2;
+import com.synlabs.ipsaa.view.attendance.StudentAttendanceResponse;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -415,6 +416,8 @@ public class StudentAttendanceService extends BaseService {
 		//StudentAttendance attendance=new StudentAttendance();
 		students= students.stream().filter(s->s.getProgram().getId().equals(unmask(programId))).collect(Collectors.toList());
 		List<StudentAttendance> attendances= attendanceRepository.findByStudentInAndAttendanceDateOrderByStudentIdAsc(students,LocalDate.now().toDate());
+
+
 		List<StudentAttendance> list= new ArrayList<>();
 		StudentAttendance studentAttendance = null;
 
@@ -424,14 +427,14 @@ public class StudentAttendanceService extends BaseService {
 			if(attendances!= null && j<size
 					&& s.getId().equals(attendances.get(j).getStudent().getId())){
 
-				list.add(studentAttendance);
+				list.add(attendances.get(j));
 				j++;
 
 			}else {
 				studentAttendance= new StudentAttendance();
 				studentAttendance.setStudent(s);
 				studentAttendance.setCenter(s.getCenter());
-				studentAttendance.setCheckin(s.getExpectedIn());
+				studentAttendance.setCheckin(LocalDate.now().toDate());			///check with ma'am
 				//studentAttendance.setCheckout(s.getExpectedOut());
 				studentAttendance.setAttendanceDate(LocalDate.now().toDate());
 				studentAttendance.setStatus(AttendanceStatus.Present);
@@ -444,13 +447,35 @@ public class StudentAttendanceService extends BaseService {
 		return list;
 	}
 
-	public void markAbsents(Long id){
+	public StudentAttendance markAbsents(Long id){
 
 		Student student=studentRepository.findByIdAndCenterIn(unmask(id),userService.getUserCenters());
 		StudentAttendance attendance=attendanceRepository.findByStudentAndAttendanceDate(student,LocalDate.now().toDate());
 		if(attendance!= null){
 			attendanceRepository.delete(attendance);
+			attendance=new StudentAttendance();
+			attendance.setStudent(student);
+			attendance.setStatus(AttendanceStatus.Absent);
 		}
+
+		return attendance ;
+	}
+
+	public StudentAttendance markPresent(Long studentId){
+		Student student= studentRepository.findOne(unmask(studentId));
+		StudentAttendance attendance= attendanceRepository.findByStudentAndAttendanceDate(student,LocalDate.now().toDate());
+
+		if(attendance == null){
+			attendance=new StudentAttendance();
+			attendance.setStudent(student);
+			attendance.setCenter(student.getCenter());
+			attendance.setAttendanceDate(LocalDate.now().toDate());
+			attendance.setCheckin(student.getExpectedIn());
+			attendance.setStatus(AttendanceStatus.Present);
+
+			attendanceRepository.saveAndFlush(attendance);
+		}
+		 return attendance;
 	}
 
 	public List<StudentAttendance> attendanceByCenter(Long centerId,Long programId){
