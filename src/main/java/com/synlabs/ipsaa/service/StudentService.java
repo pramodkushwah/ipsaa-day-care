@@ -299,13 +299,12 @@ public class StudentService extends BaseService {
 	private void test(){
 		QStudent student = QStudent.student;
 		JPAQuery<Student> query = new JPAQuery<>(entityManager);
-		query.select(student).from(student)
-				.where(student.active.isTrue());
+		query.select(student).from(student);
 		List<Student> students=query.fetch();
 		Calendar cal=Calendar.getInstance();
 		for(Student s:students){
-			if(s.getExpectedIn() !=null && s.getExpectedOut()!=null)
-			if(s.getExpectedIn().after(s.getExpectedOut()) || s.getExpectedIn().compareTo(s.getExpectedOut())==0){
+			if(s.getExpectedIn() !=null && s.getExpectedOut()!=null){
+			if(s.getExpectedIn().after(s.getExpectedOut()) || s.getExpectedIn().getTime()==s.getExpectedOut().getTime()){
 				System.out.println("found");
 				System.out.println(s.getExpectedIn() +" "+s.getExpectedOut());
 					cal.setTime(s.getExpectedOut());
@@ -315,7 +314,21 @@ public class StudentService extends BaseService {
 				System.out.println(s.getExpectedIn() +" "+s.getExpectedOut());
 				studentRepository.save(s);
 			}
-		}
+			cal=Calendar.getInstance();
+			cal.setTime(s.getExpectedIn());
+			if(cal.get(Calendar.HOUR_OF_DAY)<7){
+				System.out.println("found");
+				System.out.println(s.getExpectedIn() +" "+s.getExpectedOut());
+				cal.add(Calendar.HOUR,12);
+				s.setExpectedIn(cal.getTime());
+				cal.setTime(s.getExpectedOut());
+				cal.add(Calendar.HOUR,12);
+				s.setExpectedOut(cal.getTime());
+				System.out.println("change to");
+				System.out.println(s.getExpectedIn() +" "+s.getExpectedOut());
+				studentRepository.save(s);
+			}
+		}}
 	}
 	@Transactional
 	private void addSecurity() {
