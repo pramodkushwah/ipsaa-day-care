@@ -427,7 +427,7 @@ public class StudentAttendanceService extends BaseService {
 				studentAttendance= new StudentAttendance();
 				studentAttendance.setStudent(s);
 				studentAttendance.setCenter(s.getCenter());
-				studentAttendance.setCheckin(s.getExpectedIn());
+				studentAttendance.setCheckin(LocalDate.now().toDate());			///check with ma'am
 				//studentAttendance.setCheckout(s.getExpectedOut());
 				studentAttendance.setAttendanceDate(LocalDate.now().toDate());
 				studentAttendance.setStatus(AttendanceStatus.Present);
