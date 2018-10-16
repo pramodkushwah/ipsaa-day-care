@@ -1,6 +1,8 @@
 package com.synlabs.ipsaa.view.report.excel;
 
 import com.synlabs.ipsaa.entity.staff.Employee;
+import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
+import com.synlabs.ipsaa.jpa.EmployeeSalaryRepository;
 import com.synlabs.ipsaa.view.staff.StaffFilterRequest;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.DateFormatConverter;
@@ -18,11 +20,13 @@ public class StaffReport {
 
 	StaffFilterRequest staffRequest;
 	String path;
+	EmployeeSalaryRepository employeeSalaryRepository;
 
 
-	public StaffReport(List<Employee> staff, String path) {
+	public StaffReport(List<Employee> staff, String path,EmployeeSalaryRepository employeeSalaryRepository) {
 		this.staff = staff;
 		this.path = path;
+		this.employeeSalaryRepository=employeeSalaryRepository;
 	}
 
 	public File createExcel() {
@@ -232,6 +236,10 @@ public class StaffReport {
 			if(employee.getProfile().getAddress()!=null)
 				cell.setCellValue(employee.getProfile().getAddress().getPhone());
 
+			cell=row.createCell(index++, Cell.CELL_TYPE_NUMERIC);
+			EmployeeSalary salary=employeeSalaryRepository.findByEmployee(employee);
+				cell.setCellValue(salary.getCtc().intValue());
+
 			return true;
 		}
 		return false;
@@ -352,5 +360,7 @@ public class StaffReport {
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 				cell.setCellValue("Phone");
 
+			cell= row.createCell(index++, Cell.CELL_TYPE_STRING);
+				cell.setCellValue("CTC");
 			}
 }

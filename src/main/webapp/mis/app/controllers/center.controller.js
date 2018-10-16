@@ -1,5 +1,5 @@
 app.controller('CenterController', function ($scope, $http) {
-    var tabs = ['#centers', '#zones', '#cities'];
+    var tabs = ['#centers', '#zones', '#cities', '#states'];
     $scope.disableSave = false;
     $scope.states = [];
 
@@ -49,12 +49,16 @@ app.controller('CenterController', function ($scope, $http) {
     };
 
     $scope.editCenter = function (center) {
+        console.log(center);
+        
+        $scope.selectedCenter = center;
         $scope.insertedCenter = angular.extend({}, center, center.address);
         $scope.insertedCenter.zone = center.zone ? center.zone.name : '';
         $scope.insertedCenter.mode = 'Edit';
         $scope.editcenter = true;
         $scope.editzone = false;
         $scope.editcity = false;
+        console.log($scope.insertedCenter);        
     };
 
     $scope.saveCenter = function (center) {
@@ -131,7 +135,7 @@ app.controller('CenterController', function ($scope, $http) {
     $scope.saveZone = function (zone) {
         if (zone.id) {
             $http.put('/api/zone/', zone).then(function (response) {
-                ok("Zone Saved");
+                ok("Zone updated");
                 $scope.editzone = false;
                 $scope.insertedZone = {};
                 refresh();
@@ -140,7 +144,7 @@ app.controller('CenterController', function ($scope, $http) {
             });
         } else {
             $http.post('/api/zone/', zone).then(function (response) {
-                ok("Zone updated");
+                ok("Zone Saved");
                 $scope.editzone = false;
                 $scope.insertedZone = {};
                 refresh();
@@ -170,6 +174,68 @@ app.controller('CenterController', function ($scope, $http) {
         });
     };
 
+    $scope.newState = function () {
+        $scope.insertedState = {
+            mode: 'New'
+            , name: ''
+        };
+        $scope.editstate = true;
+        $scope.editzone = false;
+        $scope.editcenter = false;
+        $scope.editcity = false
+    };
+
+    $scope.editState = function (state) {
+        $scope.insertedState = angular.copy(state);
+        $scope.insertedState.mode = 'Edit';
+        $scope.editstate = true;
+        $scope.editzone = false;
+        $scope.editcenter = false;
+        $scope.editcity = false;
+    }
+
+    $scope.saveState = function (state) {
+        if (state.id) {
+            $http.put('/api/state/', state).then(function (response) {
+                ok("State updated");
+                $scope.editstate = false;
+                $scope.insertedZone = {};
+                refresh();
+            }, function (response) {
+                error(response.data.error);
+            });
+        } else {
+            $http.post('/api/state/', state).then(function (response) {
+                ok("State Saved");
+                $scope.editstate = false;
+                $scope.insertedZone = {};
+                refresh();
+            }, function (response) {
+                error(response.data.error);
+            });
+        }
+    };
+
+    $scope.removeState = function (state) {
+        $http.delete('/api/state/' + state.id).then(function (response) {
+            refresh();
+            ok("State Removed");
+        }, function (response) {
+            error(response.data.error);
+        });
+    };
+
+    $scope.cancelState = function () {
+        $scope.insertedState = {
+            mode: 'New'
+            , name: ''
+        };
+        $scope.editstate = false;
+        $scope.editzone = false;
+        $scope.editcenter = false;
+        $scope.editcity = false;
+    };
+
     $scope.newCity = function () {
         $scope.insertedCity = {
             mode: 'New'
@@ -193,7 +259,7 @@ app.controller('CenterController', function ($scope, $http) {
     $scope.saveCity = function (city) {
         if (city.id) {
             $http.put('/api/city/', city).then(function (response) {
-                ok("City Saved");
+                ok("City Updated");
                 refresh();
                 $scope.insertedCity = {
                     name: ''
@@ -232,6 +298,13 @@ app.controller('CenterController', function ($scope, $http) {
         $scope.insertedCity = angular.copy(city);
         $scope.insertedCity.mode = "Edit";
     };
+
+    $scope.getState = function(city){
+        const selectedCity = $scope.selectedCenter.zone.cities.find(element => {
+            return element.name === city;
+        });
+        $scope.insertedCenter.state = selectedCity.state;
+    }
 
     function refresh() {
         $scope.editcenter = false;

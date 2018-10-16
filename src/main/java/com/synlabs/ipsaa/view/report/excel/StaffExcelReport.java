@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
+import com.synlabs.ipsaa.jpa.EmployeeSalaryRepository;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -27,15 +28,17 @@ public class StaffExcelReport {
 	int year;
 	int month;
 	private String er_code;
+	EmployeeSalaryRepository employeeSalaryRepository;
 
 	public StaffExcelReport(List<EmployeePaySlip> staff, StaffFilterRequest staffRequest, String path,
-			String er_code) {
+			String er_code, EmployeeSalaryRepository employeeSalaryRepository) {
 		this.staff = staff;
 		this.path = path;
 		this.staffRequest = staffRequest;
 		this.year = staffRequest.getYear();
 		this.month = staffRequest.getMonth();
 		this.er_code=er_code;
+		this.employeeSalaryRepository= employeeSalaryRepository;
 	}
 
 	public File createExcel() {
@@ -165,7 +168,12 @@ public class StaffExcelReport {
 			cell.setCellValue((staffR.isEsid()?"YES":"NO"));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			cell.setCellValue((staffR.isProfd()?"YES":"NO"));
+			BigDecimal professionalTax=staffR.getProfessionalTax();
+
+			if(!staffR.isProfd())
+				cell.setCellValue("NO");
+			else{
+				cell.setCellValue((professionalTax.compareTo(BigDecimal.ZERO)== 0)? "NO":"YES");} // don't check deduction
 
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.MONTH, month - 1);// o to 11
@@ -177,6 +185,10 @@ public class StaffExcelReport {
 			if (staffR.getPresents() != null)
 				cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			cell.setCellValue((staffR.getPresents().intValue()));
+
+			cell=row.createCell(index++,Cell.CELL_TYPE_NUMERIC);
+			EmployeeSalary salary= employeeSalaryRepository.findByEmployee(staffR.getEmployee());
+			cell.setCellValue(salary.getCtc().intValue());
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_NUMERIC);
 			if (staffR.getCtc() != null)
@@ -227,8 +239,16 @@ public class StaffExcelReport {
 				cell.setCellValue((staffR.getProfessionalTax().intValue()));
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-			if (staffR.getNetSalary() != null)
-				cell.setCellValue((staffR.getNetSalary().intValue()));
+			if (staffR.getNetSalary() != null){
+				BigDecimal sal=staffR.getNetSalary();
+				//System.out.println(sal);
+				sal=sal.subtract(staffR.getExtraMonthlyAllowance()).subtract(staffR.getOtherAllowances());
+				System.out.println(sal);
+				sal=sal.add(staffR.getOtherDeductions()).add(staffR.getTds());
+				System.out.println(sal);
+				System.out.println(staffR.getNetSalary()+" "+sal);
+				cell.setCellValue(sal.intValue());
+				}
 
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			if (staffR.getOtherAllowances() != null)
@@ -322,6 +342,11 @@ public class StaffExcelReport {
 		cell.setCellValue(("Total Days"));
 		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 		cell.setCellValue(("Present Days"));
+
+		////Avneet
+		cell=row.createCell(index++,Cell.CELL_TYPE_STRING);
+		cell.setCellValue("Actual CTC");
+
 		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 		cell.setCellValue(("CTC Monthly"));
 
@@ -370,7 +395,7 @@ public class StaffExcelReport {
 		cell.setCellValue(("TDS"));
 
 		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
-		cell.setCellValue(("NET Salary"));
+		cell.setCellValue(("Amount Payable"));
 
 		cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 		cell.setCellValue(("REMARK"));

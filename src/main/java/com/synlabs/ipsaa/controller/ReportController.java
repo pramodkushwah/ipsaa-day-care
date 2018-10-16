@@ -257,9 +257,10 @@ public class ReportController {
 		// modifiy by shubham
 		int month=staffRequest.getMonth();
 		//System.out.println(month);
-		File file = staffRequest.getMonth()!= 0 ? staffService.getAllEmployees(staffRequest):
+		////Avneet
+		File file = staffRequest.getMonth() != 0 ? staffService.getAllEmployees(staffRequest):
 												staffService.getEmployee(staffRequest);
-		//File file=staffService.getAllEmployees(staffRequest);
+
 
 		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
 				staffRequest.getEmployerCode(), staffRequest.getMonth(), staffRequest.getYear()));

@@ -57,6 +57,29 @@ public class StudentAttendanceController
     return attendanceService.listOfStudents(isCorporate).stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
   }
 
+  //////////School Attendance
+  @Secured(STUDENT_CLOCKINOUT)
+  @PostMapping("markPresents")
+  //////add programs
+  public List<StudentAttendanceResponse> markPresent(@RequestParam("centerId") Long centerId,
+                                                     @RequestParam("programId") Long programId){
+//    List<StudentAttendance> attendances=attendanceService.mark(centerId);
+//    List<StudentAttendanceResponse> responses= attendances.stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
+    return attendanceService.mark(centerId,programId).stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
+  }
+
+  @Secured(STUDENT_CLOCKINOUT)
+  @PutMapping("markAbsents/{studentId}")
+  public void markAbsent(@PathVariable("studentId") Long studentId){
+    attendanceService.markAbsents(studentId);
+  }
+
+  @GetMapping("school")
+  public List<StudentAttendanceResponse> attendanceByCenter(@RequestParam(value="centerId") Long centerId,
+                                                            @RequestParam(value="programId") Long programId){
+    return  attendanceService.attendanceByCenter(centerId,programId).stream().map(StudentAttendanceResponse:: new).collect(Collectors.toList());
+  }
+
   //shubham update attendance
   @Secured(STUDENT_READ)
   @GetMapping("updateAtt")
