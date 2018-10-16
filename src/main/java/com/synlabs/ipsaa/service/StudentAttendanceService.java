@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
 import com.synlabs.ipsaa.util.FeeUtilsV2;
+import com.synlabs.ipsaa.view.attendance.StudentAttendanceResponse;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -439,13 +440,35 @@ public class StudentAttendanceService extends BaseService {
 		return list;
 	}
 
-	public void markAbsents(Long id){
+	public StudentAttendance markAbsents(Long id){
 
 		Student student=studentRepository.findByIdAndCenterIn(unmask(id),userService.getUserCenters());
 		StudentAttendance attendance=attendanceRepository.findByStudentAndAttendanceDate(student,LocalDate.now().toDate());
 		if(attendance!= null){
 			attendanceRepository.delete(attendance);
+			attendance=new StudentAttendance();
+			attendance.setStudent(student);
+			attendance.setStatus(AttendanceStatus.Absent);
 		}
+
+		return attendance ;
+	}
+
+	public StudentAttendance markPresent(Long studentId){
+		Student student= studentRepository.findOne(unmask(studentId));
+		StudentAttendance attendance= attendanceRepository.findByStudentAndAttendanceDate(student,LocalDate.now().toDate());
+
+		if(attendance == null){
+			attendance=new StudentAttendance();
+			attendance.setStudent(student);
+			attendance.setCenter(student.getCenter());
+			attendance.setAttendanceDate(LocalDate.now().toDate());
+			attendance.setCheckin(student.getExpectedIn());
+			attendance.setStatus(AttendanceStatus.Present);
+
+			attendanceRepository.saveAndFlush(attendance);
+		}
+		 return attendance;
 	}
 
 	public List<StudentAttendance> attendanceByCenter(Long centerId,Long programId){

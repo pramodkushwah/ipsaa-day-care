@@ -70,10 +70,15 @@ public class StudentAttendanceController
 
   @Secured(STUDENT_CLOCKINOUT)
   @PutMapping("markAbsents/{studentId}")
-  public void markAbsent(@PathVariable("studentId") Long studentId){
-    attendanceService.markAbsents(studentId);
+  public StudentAttendanceResponse markAbsent(@PathVariable("studentId") Long studentId){
+    return new StudentAttendanceResponse(attendanceService.markAbsents(studentId));//StudentAttendanceResponse(attendanceService.markAbsents(studentId));
   }
 
+  @Secured(STUDENT_CLOCKINOUT)
+  @PutMapping("markPresent/{studentId}")
+  public StudentAttendanceResponse markPresent(@PathVariable("studentId") Long studentId){
+    return new StudentAttendanceResponse(attendanceService.markPresent(studentId));//StudentAttendanceResponse(attendanceService.markAbsents(studentId));
+  }
   @GetMapping("school")
   public List<StudentAttendanceResponse> attendanceByCenter(@RequestParam(value="centerId") Long centerId,
                                                             @RequestParam(value="programId") Long programId){
