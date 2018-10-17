@@ -5,6 +5,8 @@ import com.synlabs.ipsaa.view.common.Request;
 
 import java.math.BigDecimal;
 
+import static java.math.BigInteger.ZERO;
+
 /**
  * Created by itrs on 4/20/2017.
  */
@@ -138,7 +140,8 @@ public class CenterProgramFeeRequest implements Request
     fee.setCgst(this.cgst);
     fee.setSgst(this.sgst);
     fee.setIgst(this.igst);
-    fee.setAddmissionFee(new BigDecimal(this.admissionFee));
+
+    fee.setAddmissionFee(new BigDecimal(this.admissionFee==null?this.admissionFee:0));
     return fee;
   }
 
