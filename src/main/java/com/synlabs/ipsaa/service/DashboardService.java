@@ -362,22 +362,22 @@ public class DashboardService extends BaseService
     int total = 0;
 
     // 3. add monthly fee for this month
-    if (feeDuration == null || feeDuration == FeeDuration.Monthly)
-    {
-      JPAQuery<BigDecimal> monthlyquery = new JPAQuery<>(entityManager);
-      monthlyquery.select(slip.totalFee.sum()).from(slip)
-                  .where(slip.student.active.isTrue())
-                  .where(slip.student.corporate.isFalse())
-                  .where(slip.student.approvalStatus.eq(ApprovalStatus.Approved))
-                  .where(slip.feeDuration.eq(FeeDuration.Monthly))
-                  .where(slip.year.eq(year))
-                  .where(slip.month.eq(month))
-                  .where(slip.student.center.in(centers));
-
-      BigDecimal monthly = monthlyquery.fetchFirst();
-      total += monthly == null ? 0 : monthly.intValue();
-      feeStatsResponse.setMonthly(monthly == null ? 0 : monthly.intValue());
-    }
+//    if (feeDuration == null || feeDuration == FeeDuration.Monthly)
+//    {
+//      JPAQuery<BigDecimal> monthlyquery = new JPAQuery<>(entityManager);
+//      monthlyquery.select(slip.totalFee.sum()).from(slip)
+//                  .where(slip.student.active.isTrue())
+//                  .where(slip.student.corporate.isFalse())
+//                  //.where(slip.student.approvalStatus.eq(ApprovalStatus.Approved))
+//                  //.where(slip.feeDuration.eq(FeeDuration.Monthly))
+//                  .where(slip.year.eq(year))
+//                  .where(slip.month.eq(month))
+//                  .where(slip.student.center.in(centers));
+//
+//      BigDecimal monthly = monthlyquery.fetchFirst();
+//      total += monthly == null ? 0 : monthly.intValue();
+//      feeStatsResponse.setMonthly(monthly == null ? 0 : monthly.intValue());
+//    }
 
     //if start of quarter
     // 2. add quarterly fee for quarter in quarter start
@@ -385,9 +385,9 @@ public class DashboardService extends BaseService
     {
       JPAQuery<BigDecimal> quarterlyquery = new JPAQuery<>(entityManager);
       quarterlyquery.select(slip.totalFee.sum()).from(slip)
-                    .where(slip.student.active.isTrue())
+                    //.where(slip.student.active.isTrue())
                     .where(slip.student.corporate.isFalse())
-                    .where(slip.student.approvalStatus.eq(ApprovalStatus.Approved))
+                   // .where(slip.student.approvalStatus.eq(ApprovalStatus.Approved))
                     .where(slip.feeDuration.eq(FeeDuration.Quarterly))
                     .where(slip.year.eq(year))
                     .where(slip.quarter.eq(quarter))
