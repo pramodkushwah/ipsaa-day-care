@@ -779,19 +779,6 @@ public class FeeService extends BaseService
     {
       throw new ValidationException("Period is required.");
     }
-    if(!slipRequest.getCenterCode().equals("All")){
-      Center center = centerRepository.findByCode(slipRequest.getCenterCode());
-      if (center == null)
-      {
-        throw new ValidationException(String.format("Cannot locate Center[code = %s]", slipRequest.getCenterCode()));
-      }
-
-      if (!hasCenter(slipRequest.getCenterCode()))
-      {
-        throw new ValidationException(String.format("Unauthorized access to center[code=%s] user[email=%s].", slipRequest.getCenterCode(), getUser().getEmail()));
-      }
-    }
-
     List<HdfcResponse> hdfc = hdfcResponseRepository.findBySlipQuarterAndSlipYear(slipRequest.getQuarter(),slipRequest.getYear());
     List<Map<String,Object>> list=new ArrayList<>();
     int count=0;
