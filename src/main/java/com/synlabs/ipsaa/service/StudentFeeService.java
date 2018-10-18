@@ -405,8 +405,8 @@ public class StudentFeeService {
 
             thisQuarterSlip.setBaseFeeDiscount(fee.getBaseFeeDiscount()==null?ZERO:fee.getBaseFeeDiscount());
 
-            thisQuarterSlip.setUniformCharges(ZERO);
-            thisQuarterSlip.setStationary(ZERO);
+            thisQuarterSlip.setUniformCharges(thisQuarterSlip.getUniformCharges()==null?ZERO:thisQuarterSlip.getUniformCharges());
+            thisQuarterSlip.setStationary(thisQuarterSlip.getStationary()==null?ZERO:thisQuarterSlip.getStationary());
 
             thisQuarterSlip.setTransportFee(fee.getTransportFee()==null?ZERO:fee.getTransportFee());
 
