@@ -6,6 +6,7 @@ import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.fee.CenterCharge;
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.fee.Charge;
+import com.synlabs.ipsaa.entity.fee.HdfcResponse;
 import com.synlabs.ipsaa.entity.programs.Program;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.entity.student.QStudentFee;
@@ -19,6 +20,7 @@ import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.util.BigDecimalUtils;
+import com.synlabs.ipsaa.util.ExcelGenerater;
 import com.synlabs.ipsaa.util.FeeUtils;
 import com.synlabs.ipsaa.view.center.CenterChargeRequest;
 import com.synlabs.ipsaa.view.center.CenterFeeRequest;
@@ -91,6 +93,9 @@ public class FeeService extends BaseService
 
   @Autowired
   private StudentService studentService;
+
+  @Autowired
+  private HdfcResponseRepository hdfcResponseRepository;
 
   @Value("${ipsaa.export.directory}")
   private String exportDir;
@@ -766,6 +771,51 @@ public class FeeService extends BaseService
         e.printStackTrace();
       }
     }
+    return file;
+  }
+  public File collectionHdfcReport2(StudentFeeSlipRequest slipRequest) throws IOException
+  {
+    if (StringUtils.isEmpty(slipRequest.getPeriod()))
+    {
+      throw new ValidationException("Period is required.");
+    }
+    if(!slipRequest.getCenterCode().equals("All")){
+      Center center = centerRepository.findByCode(slipRequest.getCenterCode());
+      if (center == null)
+      {
+        throw new ValidationException(String.format("Cannot locate Center[code = %s]", slipRequest.getCenterCode()));
+      }
+
+      if (!hasCenter(slipRequest.getCenterCode()))
+      {
+        throw new ValidationException(String.format("Unauthorized access to center[code=%s] user[email=%s].", slipRequest.getCenterCode(), getUser().getEmail()));
+      }
+    }
+
+    List<HdfcResponse> hdfc = hdfcResponseRepository.findBySlipQuarterAndSlipYear(slipRequest.getQuarter(),slipRequest.getYear());
+    List<Map<String,Object>> list=new ArrayList<>();
+    int count=0;
+    for(HdfcResponse res:hdfc){
+      Map<String,Object> row=new HashMap<>();
+      row.put("s.id",count++);
+      row.put("student_name",res.getSlip().getStudent().getProfile().getFullName());
+      row.put("center",res.getSlip().getStudent().getCenterName());
+      row.put("program_name",res.getSlip().getStudent().getProgramName());
+      row.put("amount",res.getAmount());
+      row.put("trans_date",res.getTransDate());
+      row.put("slip_id",res.getSlip().getId());
+      row.put("type",res.getType());
+      row.put("status_message",res.getStatusMessage());
+      row.put("bank_ref_no",res.getBankRefNo());
+      row.put("tracking_id",res.getTrackingId());
+      row.put("billing_email",res.getBillingEmail());
+      row.put("billing_name",res.getBillingName());
+      list.add(row);
+    }
+    ExcelGenerater eg=new ExcelGenerater(list);
+    File file=eg.create(exportDir,"hdfc report");
+    //File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
+
     return file;
   }
   //--------------------------------------shubham ---------------------------------------------------------------

@@ -159,7 +159,8 @@ public class UserService extends BaseService implements UserDetailsService
 
     user.setActive(false);
     if(user.getEmail()!=null)
-    user.setEmail(user.getEmail()+"("+user.getId()+")");
+
+    user.setEmail(user.getEmail()+"("+user.getId()+")");// to create unique email that can be use next time
     user.setCenters(Collections.emptyList());
     user.setRoles(Collections.emptyList());
 
