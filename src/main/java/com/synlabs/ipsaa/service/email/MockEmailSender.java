@@ -266,13 +266,6 @@ public class MockEmailSender implements IEmailSender
   private void sendEmail(String body, String title, List<File> attachments, String... to)
   {
     MessageEmail email = new MessageEmail();
-    //shubham adding cc for employee deactivation
-      List<String>cc=new ArrayList<>();
-        cc.add("ithelpdesk@ipsaa.in");
-        cc.add("ipsaahr@ipsaa.in");
-        cc.add("accounts@ipsaa.in");
-    email.setCc(cc);
-
     email.setBody(body);
     email.setSubject(title);
     email.setTo(to == null ? new ArrayList<>() : Arrays.asList(to));
