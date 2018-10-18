@@ -112,6 +112,10 @@ app.controller('StaffController', function ($scope, $http, $localStorage, fileUp
     $http.get('/api/center/').then(function (response) {
         $scope.centers = response.data;
     });
+    $scope.states = [];
+    $http.get('/api/state/all').then(function (response) {
+        $scope.states = response.data;
+    });
 
     $scope.showStaff = function (staff) {
         $http.get('/api/staff/' + staff.id).then(function (response) {

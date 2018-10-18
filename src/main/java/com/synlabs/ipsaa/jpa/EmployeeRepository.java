@@ -1,13 +1,17 @@
 package com.synlabs.ipsaa.jpa;
 
 import com.synlabs.ipsaa.entity.center.Center;
+import com.synlabs.ipsaa.entity.common.LegalEntity;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.enums.EmployeeType;
+import org.hibernate.annotations.Parameter;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long>, Repository<Employee, Long>, QueryDslPredicateExecutor<Employee>
@@ -18,6 +22,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, Repos
   List<Employee> findByActive(Boolean active);
 
   List<Employee> findByActiveIsTrue();
+  List<Employee> findByActiveIsTrueAndProfileDolBeforeOrProfileDol(Date today,Date Etoday);
 
   List<Employee> findByEmployeeTypeAndActiveIsTrue(EmployeeType employeeType);
 
@@ -38,6 +43,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, Repos
   Integer countByCostCenterAndApprovalStatus(Center center, ApprovalStatus new_approval);
 
   List<Employee> findByActiveTrueAndCostCenterIn(List<Center> userCenters);
+  // shubham
+  List<Employee> findByActiveTrueAndCostCenterInAndEmployerCode(List<Center> userCenters,String employerCode);
 
   List<Employee> findByActiveTrueAndReportingManager(Employee employee);
 

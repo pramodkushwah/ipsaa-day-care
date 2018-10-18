@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -148,7 +149,6 @@ public class StudentFeeController
   @PostMapping("/fee/")
   public StudentFeeResponse saveStudentFee(@RequestBody StudentFeeRequestV2 request)
   {
-    //return new StudentFeeResponse(studentService.saveStudentFee(request));
     return new StudentFeeResponse(studentFeeService.saveStudentFee(request));
   }
 
@@ -180,23 +180,20 @@ public class StudentFeeController
   @PostMapping("/feeslip/generate")
   public List<StudentFeeSlipResponse> generateStudentSlips(@RequestBody StudentFeeSlipRequest request)
   {
-    //return studentService.generateFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
     return studentFeeService.generateFeeSlips(request).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
   }
     @Secured(STUDENTFEE_SLIP_WRITE)
     @PostMapping("/feeslip/regenerate")
-    public StudentFeeSlipResponse reGenerateStudentSlip(@RequestBody StudentFeeSlipRequestV2 request)
-    {
-      //return new StudentFeeSlipResponse(studentService.regenerateStudentSlip(request));
+    public StudentFeeSlipResponse reGenerateStudentSlip(@RequestBody StudentFeeSlipRequestV2 request) {
         return new StudentFeeSlipResponse(studentFeeService.regenerateStudentSlip(request));
     }
   @Secured(STUDENTFEE_SLIP_WRITE)
   @PostMapping("/feeslip/regenerateAll")
   public void reGenerateStudentSlipAll(@RequestBody List<Long> ids)
   {
-    //return new StudentFeeSlipResponse(studentService.regenerateStudentSlip(request));
     studentFeeService.regenerateStudentSlipAll(ids);
   }
+
     @Secured(STUDENTFEE_SLIP_WRITE)
     @PostMapping("/feeslip")
     // Called when slip save button is pressed
@@ -213,12 +210,18 @@ public class StudentFeeController
         return new StudentFeeSlipResponse(studentFeeService.payFee(request));
     }
 
-    @Secured(STUDENTFEE_RECEIPT_WRITE)
-    // @Secured(STUDENTFEE_RECEIPT_CONFIRM)
+    //@Secured(STUDENTFEE_RECEIPT_WRITE)
+    @Secured(STUDENTFEE_RECEIPT_CONFIRM)
     @PutMapping("/payfee")
     //Confirm payment
     public StudentFeePaymentResponse updatePayFee(@RequestBody SaveFeeSlipRequest request)
     {
         return new StudentFeePaymentResponse(studentFeeService.updatePayFee(request));
     }
+
+//    /////Avneet
+//    @PostMapping("expire")
+//    public void setExpire(){
+//      studentFeeService.setExpire();
+//    }
 }

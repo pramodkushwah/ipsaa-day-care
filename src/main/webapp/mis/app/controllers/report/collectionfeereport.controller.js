@@ -1,4 +1,6 @@
-app.controller('CollectionFeeReportController', function ($http, $scope) {
+app.controller('CollectionFeeReportController', function ($http, $scope, Auth) {
+
+    $scope.STUDENTFEE_RECEIPT_CONFIRM = Auth.hasPrivilege('STUDENTFEE_RECEIPT_CONFIRM');
     
     $scope.loader = '';
     //populate months, years, quarter dropdown
@@ -113,6 +115,43 @@ app.controller('CollectionFeeReportController', function ($http, $scope) {
         );
         
     }
+
+    $scope.showCommentField = function(reciept) {
+        var this_receipt = reciept;
+        if (reciept && reciept.id) {
+          swal({
+            title: 'Confirm',
+            type: 'warning',
+            input: 'textarea',
+            text: 'Please submit a comment to decline transaction',
+            showCancelButton: true,
+            inputValidator: value => {
+              return new Promise((resolve, reject) => {
+                if (value !== '') {
+                  resolve();
+                } else {
+                  reject('Comment Required');
+                }
+              });
+            }
+          }).then(function(text) {
+              if (text) {
+                $http
+                  .put('/api/student/payfee', {
+                    id: this_receipt.id,
+                    confirmed: false,
+                    comments: text
+                  })
+                  .then(function(response) {
+                      reciept.active = false;
+                      ok('success');
+                    }, function(response) {
+                      error(response.data.error);
+                    });
+              }
+            }, function(cancel) {});
+        }
+      }
 
 
     function loadCenters() {

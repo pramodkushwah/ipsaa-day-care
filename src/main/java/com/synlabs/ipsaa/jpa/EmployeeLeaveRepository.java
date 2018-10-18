@@ -24,5 +24,11 @@ public interface EmployeeLeaveRepository extends JpaRepository<EmployeeLeave, Lo
   int countByLeaveTypeAndDateBetweenAndEmployee(LeaveType leaveType, Date from, Date to, Employee employee);
 
   ///Avneet
+
   List<EmployeeLeave> findByEmployeeInAndDateOrderByEmployeeIdAsc(List<Employee> employees,Date date);
+
+  List<EmployeeLeave> findByEmployeeInAndDate(List<Employee> employees,Date date);
+
+  List<EmployeeLeave> findByEmployeeAndDateBetweenAndHalfLeaveIsTrue(Employee employee,Date from,Date to);
+
 }

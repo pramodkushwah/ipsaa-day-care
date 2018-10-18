@@ -8,11 +8,14 @@ import com.synlabs.ipsaa.entity.student.StudentProfile;
 import com.synlabs.ipsaa.enums.FamilyType;
 import com.synlabs.ipsaa.enums.Gender;
 import com.synlabs.ipsaa.ex.ValidationException;
+import com.synlabs.ipsaa.util.FeeUtils;
+import com.synlabs.ipsaa.util.FeeUtilsV2;
 import com.synlabs.ipsaa.view.common.Request;
 import com.synlabs.ipsaa.view.fee.StudentFeeRequest;
 import com.synlabs.ipsaa.view.fee.StudentFeeRequestV2;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -304,6 +307,12 @@ public class StudentRequest implements Request
 
   public Student toEntity(Student student) throws ParseException
   {
+    Calendar cal=Calendar.getInstance();
+    cal.setTime(expectedIn);
+    if(expectedIn.after(expectedOut) || cal.get(Calendar.HOUR_OF_DAY)<7){
+      throw new ValidationException("please enter expected in/out in 24 hours system");
+    }
+
     student.setExpectedIn(expectedIn);
     student.setExpectedOut(expectedOut);
 
@@ -329,6 +338,7 @@ public class StudentRequest implements Request
 
     studentProfile.setDob(parseDate(getDob()));
     studentProfile.setAdmissionDate(parseDate(getAdmissionDate()));
+
     studentProfile.setFamilyType(FamilyType.valueOf(getFamilyType()));
 
     Calendar calendar = Calendar.getInstance();

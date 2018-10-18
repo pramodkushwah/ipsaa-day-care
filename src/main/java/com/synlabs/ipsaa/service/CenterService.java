@@ -4,6 +4,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.center.City;
+import com.synlabs.ipsaa.entity.center.State;
 import com.synlabs.ipsaa.entity.center.Zone;
 import com.synlabs.ipsaa.entity.common.Address;
 import com.synlabs.ipsaa.entity.common.LegalEntity;
@@ -21,6 +22,8 @@ import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.view.center.*;
 import com.synlabs.ipsaa.view.common.UserRequest;
 import com.synlabs.ipsaa.view.common.UserResponse;
+import org.apache.poi.util.StringUtil;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -59,6 +62,9 @@ public class CenterService extends BaseService
   UserService userService;
   @Autowired
   FeeService centerFeeService;
+
+  @Autowired
+  StateRepository stateRepository;
 
   public List<LegalEntity> listEntities() {
     return legalEntityRepository.findAll();
@@ -104,6 +110,12 @@ public class CenterService extends BaseService
 
     Zone zone = zoneRepository.findOneByName(request.getZone());
     center.setZone(zone);
+
+    State state= stateRepository.findOneByName(request.getState());////////Avneet
+    if(state!= null){
+      center.getAddress().setState(request.getState());
+    }
+
     center.setActive(true);
     return centerRepository.saveAndFlush(center);
   }
@@ -153,12 +165,21 @@ public class CenterService extends BaseService
       center.getAddress().setCity(request.getCity());
     }
 
+
+
     Address address = center.getAddress();
     address.setAddress(request.getAddress());
     address.setAddressType(AddressType.Center);
-    address.setState(request.getState());
+    //address.setState(request.getState());
     address.setZipcode(request.getZipcode());
     address.setPhone(request.getPhone());
+
+    State state= stateRepository.findOneByName(request.getState());
+    if(state !=null){
+      center.getAddress().setState(state.getName());
+    }else{
+      center.getAddress().setState(city.getState().getName());
+    }
 
     Zone zone = zoneRepository.findOneByName(request.getZone());
     center.setZone(zone);
@@ -186,6 +207,12 @@ public class CenterService extends BaseService
       throw new NotFoundException(String.format("Cannot locate zone %s", request.getZone()));
     }
 
+    /////Avneet
+    State state=stateRepository.findOneByName(request.getState());
+    if(state == null){
+      throw new NotFoundException(String.format("Cannot locate state %s",request.getState()));
+    }
+
     if (cityRepository.countByName(request.getName()) > 0)
     {
       throw new ValidationException(String.format("City with same name [%s] already exists!", request.getName()));
@@ -193,6 +220,7 @@ public class CenterService extends BaseService
 
     City city = request.toEntity();
     city.setZone(zone);
+    city.setState(state);
     city = cityRepository.saveAndFlush(city);
     return city;
   }
@@ -221,8 +249,14 @@ public class CenterService extends BaseService
       throw new NotFoundException("Zone not Found of name " + cityRequest.getZone());
     }
 
+    State state= stateRepository.findOneByName(cityRequest.getState());
+    if(state == null){
+      throw new NotFoundException("State not found of Name" +cityRequest.getState());
+    }
+
     city.setName(cityRequest.getName());
     city.setZone(zone);
+    city.setState(state);
 
     return cityRepository.saveAndFlush(city);
   }
@@ -401,4 +435,67 @@ public class CenterService extends BaseService
     }
     return list;
   }
+
+
+  ///////////////////Avneet
+
+  //returns all states
+  public List<State> listOfStates(){
+    return stateRepository.findAll();
+  }
+
+  ///Save the new state
+  public State saveState(StateRequest request){
+
+    if(StringUtils.isEmpty(request.getName())){
+      throw new ValidationException("State name is missing");
+    }
+
+    if (stateRepository.countByName(request.getName() )  >0){
+        throw new ValidationException(String.format("State [%s] already exists",request.getName()));
+    }
+
+    return stateRepository.saveAndFlush(request.toEntity());
+  }
+
+  ///Update State
+  public State updateState(StateRequest stateRequest){
+
+    State state=stateRepository.findOne(stateRequest.getId());
+
+    if(state == null){
+      throw new NotFoundException("Cannot Locate state");
+    }
+
+    state.setName(stateRequest.getName().toUpperCase());
+    return stateRepository.saveAndFlush(state);
+  }
+
+
+  ///State by City
+  public State getState(Long id){
+
+    City city= cityRepository.findOne(unmask(id));    //check city
+
+    if(city == null){
+      throw new ValidationException("Missing City");
+    }
+    State s=city.getState();
+    return s;
+  }
+
+  public void deleteState(StateRequest request){
+
+    State state= stateRepository.findOne(request.getId());
+
+    List<City> city= cityRepository.findByState(state);
+
+    if(!city.isEmpty()){
+      throw  new ValidationException("Cannot delete this state");
+    }
+
+    stateRepository.delete(request.getId());
+  }
+
+
 }

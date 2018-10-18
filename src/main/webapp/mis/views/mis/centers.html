@@ -10,6 +10,9 @@
       <li>
         <a data-toggle="tab" ng-click="selectTab(2)">Cities</a>
       </li>
+      <li>
+        <a data-toggle="tab" ng-click="selectTab(3)">States</a>
+      </li>
     </ul>
   </div>
 </div>
@@ -29,33 +32,33 @@
             <div class="table-responsive">
               <table class="table table-condensed table-striped table-hover">
                 <thead class="text-primary">
-                <tr>
-                  <th>Code</th>
-                  <th>Capacity</th>
-                  <th>Name</th>
-                  <th>Type</th>
-                  <th>Address</th>
-                  <th>City</th>
-                  <th>Zone</th>
-                  <th>Actions</th>
-                </tr>
+                  <tr>
+                    <th>Code</th>
+                    <th>Capacity</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>Zone</th>
+                    <th>Actions</th>
+                  </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="center in centers">
-                  <td>{{center.code}}</td>
-                  <td>{{center.capacity}}</td>
-                  <td>{{center.name}}</td>
-                  <td>{{center.type}}</td>
-                  <td>{{center.address.address}}</td>
-                  <td>{{center.address.city}}</td>
-                  <td>{{center.zone.name}}</td>
-                  <td>
-                    <div class="buttons" ng-show="!editcenter">
-                      <button type="button" class="btn btn-primary btn-xs btn-tbl" ng-click="editCenter(center)">edit</button>
-                      <button type="button" class="btn btn-danger btn-xs btn-tbl" ng-click="removeCenter(center)">del</button>
-                    </div>
-                  </td>
-                </tr>
+                  <tr ng-repeat="center in centers">
+                    <td>{{center.code}}</td>
+                    <td>{{center.capacity}}</td>
+                    <td>{{center.name}}</td>
+                    <td>{{center.type}}</td>
+                    <td>{{center.address.address}}</td>
+                    <td>{{center.address.city}}</td>
+                    <td>{{center.zone.name}}</td>
+                    <td>
+                      <div class="buttons" ng-show="!editcenter">
+                        <button type="button" class="btn btn-primary btn-xs btn-tbl" ng-click="editCenter(center)">edit</button>
+                        <button type="button" class="btn btn-danger btn-xs btn-tbl" ng-click="removeCenter(center)">del</button>
+                      </div>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -75,11 +78,11 @@
             <div class="table-responsive">
               <table class="table table-condensed table-striped table-hover">
                 <thead class="text-primary">
-                <tr>
-                  <th>Name</th>
-                  <th>Cities</th>
-                  <th>Actions</th>
-                </tr>
+                  <tr>
+                    <th>Name</th>
+                    <th>Cities</th>
+                    <th>Actions</th>
+                  </tr>
                 </thead>
                 <tr ng-repeat="zone in zones">
                   <td>{{zone.name}}</td>
@@ -110,11 +113,11 @@
             <div class="table-responsive">
               <table class="table table-condensed table-striped table-hover">
                 <thead class="text-primary">
-                <tr>
-                  <th>Name</th>
-                  <th>Zone</th>
-                  <th>Actions</th>
-                </tr>
+                  <tr>
+                    <th>Name</th>
+                    <th>Zone</th>
+                    <th>Actions</th>
+                  </tr>
                 </thead>
                 <tr ng-repeat="city in cities">
                   <td>{{city.name}}</td>
@@ -125,6 +128,37 @@
                     <div class="buttons" ng-show="!editcity">
                       <button type="button" class="btn btn-primary btn-xs" ng-click="editCity(city)">edit</button>
                       <button type="button" class="btn btn-danger btn-xs" ng-click="removeCity(city)">del</button>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="states">
+        <div class="card">
+          <div class="card-header card-header-icon" data-background-color="rose">
+            <i class="material-icons">store</i>
+          </div>
+          <div class="card-content">
+            <h4 class="card-title">States</h4>
+            <button class="btn btn-info btn-sm" ng-click="newState()">New State</button>
+            <div class="table-responsive">
+              <table class="table table-condensed table-striped table-hover">
+                <thead class="text-primary">
+                  <tr>
+                    <th>Name</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tr ng-repeat="state in states">
+                  <td>{{state.name}}</td>
+                  <td>
+                    <div class="buttons" ng-show="!editstate">
+                      <button type="button" class="btn btn-primary btn-xs" ng-click="editState(state)">edit</button>
+                      <button type="button" class="btn btn-danger btn-xs" ng-click="removeState(state)">del</button>
                     </div>
                   </td>
                 </tr>
@@ -205,17 +239,17 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">*City</label>
-                <select class="form-control" ng-model="insertedCenter.city" required
-                        ng-options="city.name as city.name for city in ((zones | nameFilter:insertedCenter.zone)[0].cities)"></select>
-
+                <select class="form-control" ng-model="insertedCenter.city" required ng-options="city.name as city.name for city in ((zones | nameFilter:insertedCenter.zone)[0].cities)" ng-change="getState(insertedCenter.city)"></select>
                 <span class="material-input"></span>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">*State</label>
-                <input class="form-control" name="state" type="text" required ng-model="insertedCenter.state">
+                <input class="form-control" name="state" type="text" required ng-model="insertedCenter.state" readonly>
                 <span class="material-input"></span>
+                <!-- <select class="form-control" ng-options="state.name as state.name for state in states" ng-model="insertedCenter.state"> -->
+                </select>
               </div>
             </div>
             <div class="col-md-4">
@@ -281,12 +315,17 @@
           </div>
           <div class="form-group">
             <label class="control-label">Zone*</label>
-            <select class="form-control" data-style="select-with-transition" ng-model="insertedCity.zone"
-                    title="Single Select" data-size="7" ng-options="zone.name as zone.name for zone in zones">
+            <select class="form-control" data-style="select-with-transition" ng-model="insertedCity.zone" title="Single Select" data-size="7"
+              ng-options="zone.name as zone.name for zone in zones">
               <option value="">Select</option>
             </select>
 
             <span class="material-input"></span>
+          </div>
+          <div class="form-group">
+            <label class="control-label">*State</label>
+            <select class="form-control" ng-options="state.name as state.name for state in states" ng-model="insertedCity.state">
+            </select>
           </div>
 
           <div class="category form-category">
@@ -295,6 +334,31 @@
           <div class="form-footer text-right">
             <button class="btn btn-rose btn-fill" ng-click="saveCity(insertedCity)">Save</button>
             <button class="btn btn-default" ng-click="cancelCity()">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-md-4" ng-show="editstate">
+    <div class="card">
+      <form id="EditGroupForm" novalidate>
+        <div class="card-header card-header-icon" data-background-color="orange">
+          <i class="material-icons">store</i>
+        </div>
+        <div class="card-content">
+          <h4 class="card-title">{{insertedState.mode}} State</h4>
+          <div class="form-group">
+            <label class="control-label">Name*</label>
+            <input class="form-control" name="name" type="text" required ng-model="insertedState.name">
+            <span class="material-input"></span>
+          </div>
+          <div class="category form-category">
+            *Required Fields
+          </div>
+          <div class="form-footer text-right">
+            <button class="btn btn-rose btn-fill" ng-click="saveState(insertedState)">Save</button>
+            <button class="btn btn-default" ng-click="cancelState()">Cancel</button>
           </div>
         </div>
       </form>

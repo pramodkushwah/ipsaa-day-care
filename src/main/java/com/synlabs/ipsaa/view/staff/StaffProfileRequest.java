@@ -35,6 +35,13 @@ public class StaffProfileRequest implements Request
   private AddressRequest address;
   private AddressRequest permanentAddress;
 
+  /////Avneet
+  private String fatherName;
+  private String spouseName;
+
+  private String pState;
+
+
   public EmployeeProfile toEntity(EmployeeProfile employeeProfile)
   {
 
@@ -47,7 +54,7 @@ public class StaffProfileRequest implements Request
     employeeProfile.setDoj(doj == null ? new Date() : doj);
     employeeProfile.setDol(dol);
     employeeProfile.setGender(gender);
-
+    employeeProfile.setpState(pState);
     employeeProfile.setPan(pan);
     employeeProfile.setUan(uan);
     employeeProfile.setPfan(pfan);
@@ -59,6 +66,10 @@ public class StaffProfileRequest implements Request
     employeeProfile.setBranchName(branchName);
     employeeProfile.setHolderName(holderName);
     employeeProfile.setBankName(bankName);
+
+    /////Avneet
+    employeeProfile.setspouseName(spouseName);
+    employeeProfile.setFatherName(fatherName);
     if (address != null)
     {
       employeeProfile.setAddress(address.toEntity());
@@ -242,4 +253,15 @@ public class StaffProfileRequest implements Request
     this.holderName = holderName;
   }
 
+  public String getFatherName() { return fatherName; }
+
+  public void setFatherName(String fatherName) { this.fatherName = fatherName; }
+
+  public String getspouseName() { return spouseName; }
+
+  public void setspouseName(String spouseName) { this.spouseName = spouseName; }
+
+  public String getpState() { return pState; }
+
+  public void setpState(String pState) { this.pState = pState; }
 }

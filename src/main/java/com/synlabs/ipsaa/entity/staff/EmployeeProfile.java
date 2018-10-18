@@ -3,6 +3,7 @@ package com.synlabs.ipsaa.entity.staff;
 import com.synlabs.ipsaa.entity.common.Address;
 import com.synlabs.ipsaa.entity.common.BaseEntity;
 import com.synlabs.ipsaa.enums.Gender;
+import org.joda.time.LocalDate;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
@@ -64,6 +65,31 @@ public class EmployeeProfile extends BaseEntity
   private String branchName;
   private String holderName;
   //
+
+  /////Avneet
+  private String fatherName;
+  private String spouseName;
+
+  private String pState;
+
+  public String getSpouseName() {
+    return spouseName;
+  }
+
+  public void setSpouseName(String spouseName) { this.spouseName = spouseName; }
+
+  public String getpState() { return pState; }
+
+  public void setpState(String pState) { this.pState = pState; }
+
+  public String getFatherName() { return fatherName; }
+
+  public void setFatherName(String fatherName) { this.fatherName = fatherName; }
+
+  public String getspouseName() { return spouseName; }
+
+  public void setspouseName(String spouseName) { this.spouseName = spouseName; }
+
   public String getBan()
   {
     return ban;
@@ -206,8 +232,9 @@ public class EmployeeProfile extends BaseEntity
     String result = "";
     if (this.dob != null)
     {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");        /////Changed format
       result = sdf.format(this.dob);
+
     }
     return result;
   }
@@ -218,10 +245,19 @@ public class EmployeeProfile extends BaseEntity
     String result = "";
     if (this.doj != null)
     {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");            /////Changed format
       result = sdf.format(this.doj);
     }
     return result;
+  }
+
+  @Transient
+  public LocalDate getDOJ(){
+    LocalDate date=null;
+    if(this.doj!=null){
+      date=LocalDate.fromDateFields(doj);
+    }
+    return date;
   }
 
   @Transient
@@ -230,7 +266,7 @@ public class EmployeeProfile extends BaseEntity
     String result = "";
     if (this.dol != null)
     {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");            /////Changed format
       result = sdf.format(this.dol);
     }
     return result;

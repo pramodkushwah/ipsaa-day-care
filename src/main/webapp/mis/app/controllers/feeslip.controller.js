@@ -40,7 +40,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
         'FYQ2',
         'FYQ3'
     ];
-
+    
 
     $scope.day = moment().date();
     $scope.month = moment().month() + 1;
@@ -347,15 +347,14 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
 
     $scope.reGenerateSlip = function (id) {
         $http.post('/api/student/feeslip/regenerate', {id: id}).then(
-            function (response) {
-                $scope.selected = response.data;
-                $scope.getFeeSlips();
-                ok("Slip Successfully Regenerated.");
-            },
-            function (response) {
-                error(response.data.error)
-            }
-        );
+        function (response) {
+            $scope.selected = response.data;
+            $scope.getFeeSlips();
+            ok("Slip Successfully Regenerated.");
+        },
+        function (response) {
+            error(response.data.error)
+        });
     };
 
     $scope.reGenerateFeeSlips = function(){
@@ -430,7 +429,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
         var totalFee;
         $scope.studentfeelist.filter( (fee) => {
           if(fee.id === slip.id) {
-            totalFee = fee.totalFee - fee.extraCharge - fee.latePaymentCharge - fee.adjust;
+            totalFee = fee.totalFee - fee.extraCharge - fee.latePaymentCharge - fee.adjust - fee.uniformCharges - fee.stationary - fee.balance;
           }
         });
 
@@ -442,15 +441,30 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
             totalFee = totalFee + slip.extraCharge;
         }
 
+        if (slip.uniformCharges && !isNaN(slip.uniformCharges)) {
+            totalFee = totalFee + slip.uniformCharges;
+        }
+
+        if (slip.stationary && !isNaN(slip.stationary)) {
+            totalFee = totalFee + slip.stationary;
+        }
+
         if (slip.adjust && !isNaN(slip.adjust)) {
             totalFee = totalFee - slip.adjust;
         }
+
+        if (slip.balance && !isNaN(slip.balance)) {
+                    totalFee = totalFee + slip.balance;
+                }
 
         slip.totalFee = parseInt(totalFee + "");
     };
 
     $http.get('/api/center/').then(function (response) {
         $scope.centers = response.data;
+        if(Math.floor(new Date().getMonth() / 3)===3){
+            $scope.years.push(moment().year()+1);
+        }
     });
 
     function ok(message) {

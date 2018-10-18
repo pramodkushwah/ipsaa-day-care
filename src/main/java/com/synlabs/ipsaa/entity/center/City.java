@@ -13,6 +13,10 @@ public class City extends BaseEntity
   @ManyToOne
   private Zone zone;
 
+  ////Avneet
+  @ManyToOne
+  private State state;
+
   public String getName()
   {
     return name;
@@ -32,4 +36,8 @@ public class City extends BaseEntity
   {
     this.zone = zone;
   }
+
+  public State getState() { return state; }
+
+  public void setState(State state) { this.state = state; }
 }

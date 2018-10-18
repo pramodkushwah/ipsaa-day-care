@@ -18,6 +18,51 @@ public class StudentFeeSlipRequestV2 implements Request
   private int    year;
   private String reportType;
   private Boolean confirm;
+  private BigDecimal stationary;
+  private BigDecimal uniformCharges;
+  private String spaceifyRegenrationDate;
+  private BigDecimal balance;
+  private String comments;
+
+  public String getComments() {
+    return comments;
+  }
+
+  public void setComments(String comments) {
+    this.comments = comments;
+  }
+
+  public BigDecimal getBalance() {
+    return balance;
+  }
+
+  public void setBalance(BigDecimal balance) {
+    this.balance = balance;
+  }
+
+  public String getSpaceifyRegenrationDate() {
+    return spaceifyRegenrationDate;
+  }
+
+  public void setSpaceifyRegenrationDate(String spaceifyRegenrationDate) {
+    this.spaceifyRegenrationDate = spaceifyRegenrationDate;
+  }
+
+  public BigDecimal getStationary() {
+    return stationary;
+  }
+
+  public void setStationary(BigDecimal stationary) {
+    this.stationary = stationary;
+  }
+
+  public BigDecimal getUniformCharges() {
+    return uniformCharges;
+  }
+
+  public void setUniformCharges(BigDecimal uniformCharges) {
+    this.uniformCharges = uniformCharges;
+  }
 
   public BigDecimal getAdjust() {
     return adjust;

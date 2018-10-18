@@ -6,12 +6,15 @@ import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.CenterRepository;
 import com.synlabs.ipsaa.jpa.FoodMenuRepository;
 import com.synlabs.ipsaa.jpa.UserRepository;
+import com.synlabs.ipsaa.view.batchimport.ImportMonthlySalary;
 import com.synlabs.ipsaa.view.food.FoodMenuFilterRequest;
 import com.synlabs.ipsaa.view.food.FoodMenuRequest;
+import com.synlabs.ipsaa.view.staff.ErrorPayslipResponce;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
 import java.util.*;
@@ -128,5 +131,48 @@ public class FoodMenuService extends BaseService
     list = foodMenuRepository.findByCenterInAndDateBetween(centers, start.toDate(), end.toDate());
 
     return list;
+  }
+
+  @Autowired
+  private ExcelImportService excelImportService;
+  public Map<String,Object> uploadData(MultipartFile file, int month,int year, Long zoneId,String centerCode) {
+   boolean isCenter=centerCode==null?false:true;
+   Center center=null;
+   if(isCenter){
+    center= centerRepository.findByCode(centerCode);
+    if(center==null)
+      throw new ValidationException("center not found");
+   }
+    Calendar c = Calendar.getInstance();
+    c.set(year,month, 1, 0, 0);
+    LocalDate start = LocalDate.fromDateFields(c.getTime());
+    LocalDate end = start.dayOfMonth().withMaximumValue();
+
+    boolean errorInFile = false;
+    Map<String, Object> statusMap = new HashMap<>();
+    statusMap.put("error", "false");
+    List<FoodMenuRequest> menus = excelImportService.importFoodMenuRecords(file);
+    if(!menus.isEmpty()){
+      for(FoodMenuRequest menu:menus) {
+
+        if(isCenter){
+            FoodMenu foodMenu= foodMenuRepository.findByCenterCodeAndDate(centerCode,start.toDate());
+            if(foodMenu==null){
+               foodMenu=new FoodMenu();
+            }
+          foodMenu.setLunch(menu.getLunch());
+          foodMenu.setBreakfast(menu.getBreakfast());
+          foodMenu.setDinner(menu.getDinner());
+          foodMenu.setCenter(center);
+          foodMenuRepository.saveAndFlush(foodMenu);
+        }
+
+        else {
+
+        }
+      }
+    }
+     statusMap.put("error", "true");
+    return statusMap;
   }
 }

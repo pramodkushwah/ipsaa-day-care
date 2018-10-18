@@ -3,32 +3,31 @@ package com.synlabs.ipsaa.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.criteria.Root;
 
-import com.synlabs.ipsaa.enums.CenterType;
+import com.synlabs.ipsaa.util.FeeUtilsV2;
+import com.synlabs.ipsaa.view.attendance.StudentAttendanceResponse;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
-import org.joda.time.Days;
-import org.joda.time.DurationFieldType;
-import org.joda.time.LocalDate;
-import org.joda.time.Period;
+import org.hibernate.transform.Transformers;
+import org.joda.time.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.google.common.eventbus.EventBus;
@@ -94,7 +93,7 @@ public class StudentAttendanceService extends BaseService {
 		return attendances;
 	}
 
-	public void clockin(StudentAttendanceRequest request) {
+	public StudentAttendance clockin(StudentAttendanceRequest request) {
 
 		Student student = studentRepository.findByIdAndCenterIn(request.getStudentId(), userService.getUserCenters());
 
@@ -114,13 +113,15 @@ public class StudentAttendanceService extends BaseService {
 		attendance.setAttendanceDate(DateTime.now().toDate());
 
 		// shubham
-		int extra = countExtra(student, attendance, true);
+		int extra = countExtra(attendance, true);
 		attendance.setExtraHours(extra);
 		attendanceRepository.saveAndFlush(attendance);
 		eventBus.post(attendance);
+
+		return attendance;
 	}
 
-	public void clockout(StudentAttendanceRequest request) {
+	public StudentAttendance clockout(StudentAttendanceRequest request) {
 
 		Student student = studentRepository.findByIdAndCenterIn(request.getStudentId(), userService.getUserCenters());
 		StudentAttendance attendance = attendanceRepository.findByStudentAndAttendanceDate(student,
@@ -136,11 +137,13 @@ public class StudentAttendanceService extends BaseService {
 		attendance.setCheckout(DateTime.now().toDate());
 		// shubham
 
-		int extra = countExtra(student, attendance, false);
+		int extra = countExtra( attendance, false);
 		attendance.setExtraHours(attendance.getExtraHours() + extra);
 
 		attendanceRepository.saveAndFlush(attendance);
 		eventBus.post(attendance);
+
+		return attendance;
 	}
 
 	public File attendanceReport(AttendanceReportRequest request) throws IOException {
@@ -188,6 +191,7 @@ public class StudentAttendanceService extends BaseService {
 		row.createCell(8, Cell.CELL_TYPE_STRING).setCellValue("Actual In");
 		row.createCell(9, Cell.CELL_TYPE_STRING).setCellValue("Actual Out");
 		row.createCell(10, Cell.CELL_TYPE_STRING).setCellValue("Time (HH:MM)");
+		row.createCell(11, Cell.CELL_TYPE_STRING).setCellValue("Extra Hours");
 
 		for (StudentAttendance attendance : attendances) {
 			row = attendanceSheet.createRow(rowNumber++);
@@ -219,11 +223,14 @@ public class StudentAttendanceService extends BaseService {
 				} else {
 					row.createCell(10, Cell.CELL_TYPE_STRING).setCellValue("");
 				}
+				row.createCell(11, Cell.CELL_TYPE_STRING).setCellValue(attendance.getExtraHours());
 				break;
 			case Absent:
 				row.createCell(8, Cell.CELL_TYPE_STRING).setCellValue("A");
 				row.createCell(9, Cell.CELL_TYPE_STRING).setCellValue("A");
 				row.createCell(10, Cell.CELL_TYPE_STRING).setCellValue("A");
+				row.createCell(11, Cell.CELL_TYPE_STRING).setCellValue("A");
+
 				break;
 			}
 		}
@@ -294,29 +301,52 @@ public class StudentAttendanceService extends BaseService {
 	}
 
 	// shubham
-	public int countExtra(Student student, StudentAttendance attendance, boolean isCheckin) {
+	public int countExtra(StudentAttendance attendance, boolean isCheckin) {
+		Student student=attendance.getStudent();
 		int extra = 0;
 		if (isCheckin) {
 			if (attendance.getCheckin() != null && student.getExpectedIn() != null) {
-				if (attendance.getCheckin().before(student.getExpectedIn())) {
-					Period p = new Period(new DateTime(attendance.getCheckin()), new DateTime(student.getExpectedIn()));
-					int hours = p.getHours();
-					extra += hours;
-				}
+				LocalTime exin = new LocalTime(student.getExpectedIn());
+				LocalTime chkin=new LocalTime(attendance.getCheckin());
+				double min=getmintusDiff(exin.toDateTimeToday(),chkin.toDateTimeToday());
+				if(min>60)
+				extra= (int) (extra+(min/60));
 			}
 		} else {
 			if (attendance.getCheckout() != null && student.getExpectedOut() != null) {
-				if (attendance.getCheckout().after(student.getExpectedOut())) {
-					Period p = new Period(new DateTime(student.getExpectedOut()),
-							new DateTime(attendance.getCheckout()));
-					int hours = p.getHours();
-					extra += hours;
-				}
+				LocalTime exout = new LocalTime(student.getExpectedOut());
+				LocalTime chkout=new LocalTime(attendance.getCheckout());
+				double min=getmintusDiff(chkout.toDateTimeToday(),exout.toDateTimeToday());
+				if(min>60)
+					extra= (int) (extra+(min/60));
 			}
 		}
 		return extra;
 	}
+	private double getmintusDiff(DateTime dateTime, DateTime dateTime1) {
+		System.out.println(dateTime.toDate()+" "+dateTime1.toDate());
+		long milis=dateTime.toDate().getTime()-dateTime1.toDate().getTime();
+		long diffSec = milis / 1000;
+		double min = diffSec / 60;
+		//long sec = diffSec % 60;
+		//System.out.println("The difference is "+min+" minutes and "+sec+" seconds.");
+		return min;
+	}
 
+	//-----------------------------------------shubham-----------------------------------------------------------
+
+	@Autowired
+	private EntityManager entityManager;
+	public double getExtraHours(Student student,int quarter,int year){
+		Date startDate=FeeUtilsV2.quarterStartDate(quarter,year);
+		Date endDate=FeeUtilsV2.quarterEndDate(quarter,year);
+		return attendanceRepository.findByStudentAndCreatedDateBetweenAndExtraHoursNot(student,startDate,endDate,0).stream().mapToDouble(s->s.getExtraHours()).sum();
+	}
+	public double getLastQuarterExtraHours(Student student,int quarter,int year){
+		quarter=FeeUtilsV2.getLastQuarter(quarter,year).get("quarter");
+		year=FeeUtilsV2.getLastQuarter(quarter,year).get("year");
+		return getExtraHours(student,quarter,year);
+	}
 	////////////////////////////////////////// Avneet
 
 	// list of present and absent Students
@@ -383,74 +413,129 @@ public class StudentAttendanceService extends BaseService {
 		return finalStudentAttendance;
 	}
 
+	public List<StudentAttendance> mark(Long centerId, Long programId){
 
 
-	//////////////////Avneet
-	public void clockIn(StudentAttendanceRequest request) {
+		List<Student> students=studentRepository.findByActiveTrueAndCenterIdOrderByIdAsc(unmask(centerId));
+		//StudentAttendance attendance=new StudentAttendance();
+		students= students.stream().filter(s->s.getProgram().getId().equals(unmask(programId))).collect(Collectors.toList());
+		List<StudentAttendance> attendances= attendanceRepository.findByStudentInAndAttendanceDateOrderByStudentIdAsc(students,LocalDate.now().toDate());
 
-		Student student = studentRepository.findByIdAndCenterIn(request.getStudentId(), userService.getUserCenters());
 
-		if (student == null) {
-			throw new NotFoundException("Cannot locate student");
+		List<StudentAttendance> list= new ArrayList<>();
+		StudentAttendance studentAttendance = null;
+
+		int j=0;
+		int size= attendances.size();
+		for(Student s:students){
+			if(attendances!= null && j<size
+					&& s.getId().equals(attendances.get(j).getStudent().getId())){
+
+				list.add(attendances.get(j));
+				j++;
+
+			}else {
+				studentAttendance= new StudentAttendance();
+				studentAttendance.setStudent(s);
+				studentAttendance.setCenter(s.getCenter());
+				studentAttendance.setCheckin(LocalDate.now().toDate());			///check with ma'am
+				//studentAttendance.setCheckout(s.getExpectedOut());
+				studentAttendance.setAttendanceDate(LocalDate.now().toDate());
+				studentAttendance.setStatus(AttendanceStatus.Present);
+
+				attendanceRepository.saveAndFlush(studentAttendance);
+				list.add(studentAttendance);
+			}
 		}
 
+		return list;
+	}
 
-		StudentAttendance attendance=null;
-		List<StudentAttendance> attendanceList=new ArrayList<>();
+	public StudentAttendance markAbsents(Long id){
 
-		List<Student> studentList=new ArrayList<>();
-
-		//if(student.getCenter().getCenterType() == CenterType.valueOf("Corporate"))
-		if(student.getCenter().getCode() == "BRGS"){					//replace the check with centertype
-			if(attendanceRepository.countByStudentAndAttendanceDate(student, LocalDate.now().toDate()) > 0){
-				attendance=attendanceRepository.findByStudentAndAttendanceDate(student,LocalDate.now().toDate());
-				attendanceRepository.delete(attendance);
-			}
-			else {
-				studentList = studentRepository.findByActiveTrueAndCenterAndIdNot(student.getCenter(), student.getId());
-				studentList.stream().forEach(student1 -> {
-					if(student1.getName() == student.getName()){
-					boolean yes=true;
-					}else{
-						System.out.println("not in here");
-					}
-				});
-				studentList.stream().forEach(s -> {
-
-					StudentAttendance attendance1 = new StudentAttendance();
-					attendance1.setCenter(s.getCenter());
-					attendance1.setCheckin(s.getExpectedIn());///set to actual in and out
-					attendance1.setCheckout(s.getExpectedOut());
-					attendance1.setStatus(AttendanceStatus.Present);
-					attendance1.setStudent(s);
-					attendance1.setAttendanceDate(DateTime.now().toDate());
-					//attendanceRepository.saveAndFlush(attendance1);   //no extra hours to be counted
-
-				});
-			}
-
-		}
-		else{
-			if (attendanceRepository.countByStudentAndAttendanceDate(student, LocalDate.now().toDate()) > 0) {
-				throw new ValidationException("Student is already marked present");
-			}
-
-			attendance = new StudentAttendance();
-			attendance.setCenter(student.getCenter());
-			attendance.setCheckin(DateTime.now().toDate());
-			attendance.setStatus(AttendanceStatus.Present);
+		Student student=studentRepository.findByIdAndCenterIn(unmask(id),userService.getUserCenters());
+		StudentAttendance attendance=attendanceRepository.findByStudentAndAttendanceDate(student,LocalDate.now().toDate());
+		if(attendance!= null){
+			attendanceRepository.delete(attendance);
+			attendance=new StudentAttendance();
 			attendance.setStudent(student);
-			attendance.setAttendanceDate(DateTime.now().toDate());
-
+			attendance.setStatus(AttendanceStatus.Absent);
 		}
 
+		return attendance ;
+	}
 
+	public StudentAttendance markPresent(Long studentId){
+		Student student= studentRepository.findOne(unmask(studentId));
+		StudentAttendance attendance= attendanceRepository.findByStudentAndAttendanceDate(student,LocalDate.now().toDate());
 
+		if(attendance == null){
+			attendance=new StudentAttendance();
+			attendance.setStudent(student);
+			attendance.setCenter(student.getCenter());
+			attendance.setAttendanceDate(LocalDate.now().toDate());
+			attendance.setCheckin(student.getExpectedIn());
+			attendance.setStatus(AttendanceStatus.Present);
 
-		// shubham
-		int extra = countExtra(student, attendance, true);
-		attendance.setExtraHours(extra);
-		attendanceRepository.saveAndFlush(attendance);
-		eventBus.post(attendance);
+			attendanceRepository.saveAndFlush(attendance);
+		}
+		 return attendance;
+	}
+
+	public List<StudentAttendance> attendanceByCenter(Long centerId,Long programId){
+
+		List<Student> students= studentRepository.findByActiveTrueAndCenterIdOrderByIdAsc(unmask(centerId));
+
+		List<StudentAttendance> attendanceList=attendanceRepository.
+				findByStudentInAndAttendanceDateOrderByStudentIdAsc(students,LocalDate.now().toDate());
+
+		List<StudentAttendance> finalAttendnce=calculateList(students,attendanceList);
+		return finalAttendnce;
+	}
+	
+	public boolean updateRun() {
+	    Calendar cal=Calendar.getInstance();
+		cal.set(2018,6,1,00,00);
+		List<StudentAttendance> workingList=attendanceRepository.findByCreatedDateBetween(cal.getTime(),LocalDate.now().toDate());
+		for(StudentAttendance add:workingList){
+			add.setExtraHours(countExtra(add,true));
+			add.setExtraHours(add.getExtraHours()+countExtra(add,false));
+			attendanceRepository.save(add);
+			System.out.println(add.getAttendanceDate()+ " "+add.getExtraHours());
+		}
+
+		return true;
+	}
+
+	@Transactional
+	public boolean updateRunV2() {
+		Calendar cal=Calendar.getInstance();
+		cal.set(2018,6,1,00,00);
+		Map<Integer,List<Long>> updatelist=new HashMap<>();
+		List<StudentAttendance> workingList=attendanceRepository.findByCreatedDateBetween(cal.getTime(),LocalDate.now().toDate());
+
+		for(StudentAttendance add:workingList){
+			add.setExtraHours(countExtra(add,true));
+			add.setExtraHours(add.getExtraHours()+countExtra(add,false));
+			if(updatelist.containsKey(add.getExtraHours())){
+				updatelist.get(add.getExtraHours()).add(add.getId());
+			}else{
+				List<Long> list=new ArrayList<>();
+				list.add(add.getId());
+			updatelist.put(add.getExtraHours(),list);
+			}
+
+			System.out.println(add.getAttendanceDate() + " "+add.getExtraHours());
+		}
+		updatelist.forEach(new BiConsumer<Integer, List<Long>>() {
+			@Override
+			public void accept(Integer integer, List<Long> longs) {
+						entityManager.createQuery("update StudentAttendance set extraHours = :hours where id IN :id")
+								.setParameter("hours",integer)
+								.setParameter("id",longs)
+				.executeUpdate();
+			}
+		});
+		return true;
 	}
 }

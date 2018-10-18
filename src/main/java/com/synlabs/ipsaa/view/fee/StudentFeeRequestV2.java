@@ -29,22 +29,37 @@ public class StudentFeeRequestV2 implements Request
   private BigDecimal  annualFee;
   private BigDecimal  admissionCharges;
   private BigDecimal  securityDeposit;
-  private BigDecimal  uniformCharges;
-  private BigDecimal  stationary;
+  private BigDecimal  deposit; // copy of securityDeposit
 
   private BigDecimal  finalFee;
   private BigDecimal  transportFee;
   private BigDecimal  adjust;
   private FeeDuration feeDuration;
-
+  private Boolean isProgramChange=false;
 
   public StudentFeeRequestV2()
   {
   }
 
+  public BigDecimal getDeposit() {
+    return deposit;
+  }
+
+  public void setDeposit(BigDecimal deposit) {
+    this.deposit = deposit;
+  }
+
   public StudentFeeRequestV2(Long centerId)
   {
     this.centerId = centerId;
+  }
+
+  public Boolean getProgramChange() {
+    return isProgramChange;
+  }
+
+  public void setProgramChange(Boolean programChange) {
+    isProgramChange = programChange;
   }
 
   public BigDecimal getFinalBaseFee() {
@@ -128,6 +143,8 @@ public class StudentFeeRequestV2 implements Request
   }
 
   public BigDecimal getSecurityDeposit() {
+    if(this.securityDeposit==null)
+      this.securityDeposit=deposit;
     return securityDeposit;
   }
 
@@ -135,44 +152,29 @@ public class StudentFeeRequestV2 implements Request
     this.securityDeposit = securityDeposit;
   }
 
-  public BigDecimal getUniformCharges() {
-    return uniformCharges;
-  }
-
-  public void setUniformCharges(BigDecimal uniformCharges) {
-    this.uniformCharges = uniformCharges;
-  }
-
-  public BigDecimal getStationary() {
-    return stationary;
-  }
-
-  public void setStationary(BigDecimal stationary) {
-    this.stationary = stationary;
-  }
-
   public StudentFee toEntity(StudentFee studentFee, CenterProgramFee fee)
   {
-    if (studentFee == null)
-    {
-      studentFee = new StudentFee();
+      if(studentFee==null || this.isProgramChange){
+        if(studentFee==null) {
+          studentFee = new StudentFee();
+        }
       studentFee.setBaseFee(new BigDecimal(fee.getFee()));
       studentFee.setAdmissionFee(fee.getAddmissionFee());
       studentFee.setAnnualCharges(new BigDecimal(fee.getAnnualFee()));
       studentFee.setDepositFee(new BigDecimal(fee.getDeposit()));
     }else{
-      studentFee.setDepositFee(securityDeposit==null?ZERO:securityDeposit);
-      studentFee.setBaseFee(baseFee==null?ZERO:baseFee);
-      studentFee.setAdmissionFee(admissionCharges==null?ZERO:admissionCharges);
-      studentFee.setAnnualCharges(annualFee==null?ZERO:annualFee);
-    }
+        if(securityDeposit==null)
+        securityDeposit=deposit;
 
-    studentFee.setUniformCharges(uniformCharges==null?ZERO:uniformCharges);
-    studentFee.setStationary(stationary==null?ZERO:stationary);
+        studentFee.setDepositFee(securityDeposit==null?ZERO:securityDeposit);
+        studentFee.setBaseFee(baseFee==null?ZERO:baseFee);
+        studentFee.setAdmissionFee(admissionCharges==null?ZERO:admissionCharges);
+        studentFee.setAnnualCharges(annualFee==null?ZERO:annualFee);
+      }
 
     studentFee.setFinalFee(finalFee==null?ZERO:finalFee);
     studentFee.setComment(comment==null?"":comment);
-    studentFee.setFeeDuration(getFeeDuration());
+    studentFee.setFeeDuration(FeeDuration.Quarterly);
     studentFee.setTransportFee(transportFee == null ? ZERO : transportFee);
 
     studentFee.setFinalAdmissionFee(finalAdmissionCharges==null?ZERO:finalAdmissionCharges);
@@ -185,9 +187,6 @@ public class StudentFeeRequestV2 implements Request
     studentFee.setAddmissionFeeDiscount(discountAdmissionCharges==null?ZERO:discountAdmissionCharges);
     studentFee.setDepositFeeDiscount(discountSecurityDeposit==null?ZERO:discountSecurityDeposit);
     studentFee.setAnnualFeeDiscount(discountAnnualCharges==null?ZERO:discountAnnualCharges);
-
-
-
     studentFee.setAdjust(adjust == null ? ZERO : adjust);
     return studentFee;
   }

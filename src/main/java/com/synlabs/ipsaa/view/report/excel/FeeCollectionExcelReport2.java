@@ -122,11 +122,42 @@ public class FeeCollectionExcelReport2
       row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(paymentStatus);
       if(record.getTxnid()!=null)
         row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(record.getTxnid());
+      else
+        row.createCell(index++,Cell.CELL_TYPE_STRING).setCellValue("");
       row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(record.getPaymentDate().toString());
-
+      if(record.getUniformPaidAmount()!=null)
       row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getUniformPaidAmount().doubleValue());
+      else
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
 
-      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getStationaryPaidAmount().doubleValue());
+      if(record.getStationaryPaidAmount()!=null)
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getStationaryPaidAmount().doubleValue());
+      else
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
+
+      if(record.getTransportPaidAmount()!=null)
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getTransportPaidAmount().doubleValue());
+      else
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
+
+      if(record.getAnnualPaidAmount()!=null)
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getAnnualPaidAmount().doubleValue());
+    else
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
+
+    if(record.getAddmissionPaidAmount()!=null)
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getAddmissionPaidAmount().doubleValue());
+else
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
+      if(record.getProgramPaidAmount()!=null)
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getProgramPaidAmount().doubleValue());
+else
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
+
+      if(record.getDepositPaidAmount()!=null)
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getDepositPaidAmount().doubleValue());
+else
+        row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(0);
 
       row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(record.getPaidAmount().doubleValue());
       this.paidAmount.add(new BigDecimal(record.getPaidAmount().doubleValue()));
@@ -155,6 +186,12 @@ public class FeeCollectionExcelReport2
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Payment Date");
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Uniform");
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Stationary");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Transport");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Annual fee");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Addmission fee");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Program fee");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Deposit fee");
+
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Transaction Amount");
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Payment Mode");
     row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Confirmed");

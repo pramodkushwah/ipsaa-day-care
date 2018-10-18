@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 
 import com.synlabs.ipsaa.entity.attendance.StudentAttendance;
@@ -17,7 +18,8 @@ public interface StudentAttendanceRepository
 
 	StudentAttendance findByStudentAndAttendanceDate(Student student, Date date);
 
-	List<StudentAttendance> findByStudentAndCreatedDateBetween(Student student, Date from, Date to);
+	List<StudentAttendance> findByStudentAndCreatedDateBetweenAndExtraHoursNot(Student student, Date from, Date to,int value);
+	List<StudentAttendance> findByCreatedDateBetween(Date from, Date to);
 
 	List<StudentAttendance> findByCenterAndAttendanceDateBetweenOrderByStudentAdmissionNumberAsc(Center center,
 			Date from, Date to);

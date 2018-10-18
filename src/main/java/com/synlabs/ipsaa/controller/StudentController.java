@@ -118,12 +118,14 @@ public class StudentController
   {
     StudentRequest request = new StudentRequest();
     request.setId(studentId);
-    ///Avneet
-    long size =file.getSize();
-    if(size<(0.5*1024*1024)){
+
+    //////////Avneet
+    long size=file.getSize();
+    long max = new Double(0.5*1024*1024).longValue();
+    if(size< max){
       studentService.uploadStudentPic(request, file);
     }else{
-      throw new ValidationException("Size should not be more than 0.5 MB");
+        throw new ValidationException("Size should not be more than 0.5 MB");
     }
 
   }

@@ -25,21 +25,21 @@
             <div class="tab-pane active" id="staffprofile">
                 <h4 class="card-title">{{workingStaff.mode}} Staff </h4>
                 <div class="row">
-                    <div class="col-md-2" ng-hide="addstaff">
+                    <div class="col-md-3" ng-hide="addstaff">
                         <div class="form-group">
                             <label class="control-label">Employee Id</label>
                             <input class="form-control" name="eid" type="text" required ng-model="workingStaff.eid" ng-readonly="showstaff||editstaff">
                             <span class="material-input"></span>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label class="control-label">First Name*</label>
                             <input class="form-control" name="firstName" type="text" required ng-model="workingStaff.firstName" ng-readonly="showstaff">
                             <span class="material-input"></span>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label class="control-label">Last Name*</label>
                             <input class="form-control" name="lastName" type="text" required ng-model="workingStaff.lastName" ng-readonly="showstaff">
@@ -53,6 +53,8 @@
                             <span class="material-input"></span>
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="control-label">Gender*</label>
@@ -62,6 +64,12 @@
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Father's Name*</label>
+                            <input class="form-control" type="text" ng-model="workingStaff.profile.fatherName">
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -80,18 +88,24 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
+                            <label class="control-label">Spouse Name*</label>
+                            <input class="form-control" type="text" ng-model="workingStaff.profile.spouseName">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
                             <label class="control-label">DoJ (YYYY-MM-DD)*</label>
                             <input id="doj" class="form-control datepicker" name="doj" type="text" required ng-model="workingStaff.profile.doj" ng-readonly="showstaff">
                         </div>
                     </div>
-
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="control-label">DoL (YYYY-MM-DD)*</label>
                             <input id="dol" class="form-control datepicker" name="dol" type="text" required ng-model="workingStaff.profile.dol" ng-readonly="showstaff">
                         </div>
                     </div>
-
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="control-label">DOB (YYYY-MM-DD)*</label>
@@ -169,7 +183,7 @@
                                 type="text" ng-readonly="showstaff">
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                 <li ng-repeat="staff in allStaff | filter: {name: workingStaff.searchReportingManager}">
-                                    <a ng-click="selectReportingManager(staff)">{{staff.name}}</a>
+                                    <a ng-click="selectReportingManager(staff)">{{staff.name}} ({{staff.designation}})</a>
                                 </li>
                             </ul>
                         </div>
@@ -178,6 +192,14 @@
                         <div class="form-group">
                             <label class="control-label">Cost Center*</label>
                             <select class="form-control" ng-options="le.id as le.code+' ('+le.name+')' for le in legalEntityList" ng-model="workingStaff.employerId"
+                                ng-disabled="showstaff">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">P state*</label>
+                            <select class="form-control" ng-options="state.name as state.name for state in states" ng-model="workingStaff.profile.pState"
                                 ng-disabled="showstaff">
                             </select>
                         </div>

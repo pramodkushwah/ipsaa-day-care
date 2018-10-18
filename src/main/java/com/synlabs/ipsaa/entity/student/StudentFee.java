@@ -15,12 +15,6 @@ public class StudentFee extends BaseEntity
   // ---------------------------------------------------shubham------------------------------------------------------
 
   @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
-  private BigDecimal uniformCharges;
-  @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
-  private BigDecimal stationary;
-
-
-  @Column(precision = 16, scale = 2)
   private BigDecimal annualCharges;
   @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
   private BigDecimal finalAnnualCharges;
@@ -125,22 +119,6 @@ public class StudentFee extends BaseEntity
 
   public void setAdmissionFee(BigDecimal admissionFee) {
     this.admissionFee = admissionFee;
-  }
-
-  public BigDecimal getUniformCharges() {
-    return uniformCharges;
-  }
-
-  public void setUniformCharges(BigDecimal uniformCharges) {
-    this.uniformCharges = uniformCharges;
-  }
-
-  public BigDecimal getStationary() {
-    return stationary;
-  }
-
-  public void setStationary(BigDecimal stationary) {
-    this.stationary = stationary;
   }
 
   public BigDecimal getFinalAnnualCharges() {
@@ -286,7 +264,6 @@ public class StudentFee extends BaseEntity
   {
     this.comment = comment;
   }
-
   public FeeDuration getFeeDuration()
   {
     return feeDuration;

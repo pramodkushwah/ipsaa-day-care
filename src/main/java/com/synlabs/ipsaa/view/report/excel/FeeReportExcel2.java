@@ -28,8 +28,18 @@ public class FeeReportExcel2
   private BigDecimal raisedAmount  = BigDecimal.ZERO;
   private BigDecimal paidAmount    = BigDecimal.ZERO;
   private BigDecimal dueAmount     = BigDecimal.ZERO;
+  private BigDecimal extraHours     = BigDecimal.ZERO;
   private boolean isActive;
   private int rowNum=0;
+
+  private BigDecimal gst = BigDecimal.ZERO ;
+   private BigDecimal transport = BigDecimal.ZERO ;
+ private BigDecimal  stationary = BigDecimal.ZERO ;
+  private BigDecimal uniform = BigDecimal.ZERO ;
+  private BigDecimal annual = BigDecimal.ZERO ;
+  private BigDecimal security = BigDecimal.ZERO ;
+  private BigDecimal balance = BigDecimal.ZERO ;
+  private String autoComment="";
 
   public FeeReportExcel2(StudentFeePaymentRequest slip)
   {
@@ -60,7 +70,17 @@ public class FeeReportExcel2
       centerName = student.getCenterName();
       programName = student.getProgramName();
         raisedAmount = slip.getTotalFee();
+        extraHours=slip.getExtraHours();
         dueAmount = raisedAmount;
+
+    gst=slip.getGstAmount();
+            transport=slip.getTransportFee();
+    stationary=slip.getStationary();
+            uniform=slip.getUniformCharges();
+    annual=slip.getFinalAnnualCharges();
+            security=slip.getFinalDepositFee();
+    balance=slip.getBalance();
+    autoComment=slip.getAutoComments();
 
     paymentStatus = slip.getPaymentStatus().toString();
     // slip status is "Paid" or "PartiallyPaid"
@@ -80,29 +100,49 @@ public class FeeReportExcel2
   {
     this.rowNum=rowNumber;
       Row row = sheet.createRow(rowNum);
-      row.createCell(0, Cell.CELL_TYPE_STRING).setCellValue(id);
-      row.createCell(1, Cell.CELL_TYPE_STRING).setCellValue(name);
-      row.createCell(2, Cell.CELL_TYPE_STRING).setCellValue(isActive);
+      int index=0;
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(id);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(name);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(isActive);
 
-      row.createCell(3, Cell.CELL_TYPE_STRING).setCellValue(centerName);
-      row.createCell(4, Cell.CELL_TYPE_STRING).setCellValue(programName);
-      row.createCell(5, Cell.CELL_TYPE_STRING).setCellValue(raisedAmount.doubleValue());
-      row.createCell(6, Cell.CELL_TYPE_NUMERIC).setCellValue(dueAmount.doubleValue());
-      row.createCell(7, Cell.CELL_TYPE_STRING).setCellValue(paymentStatus);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(centerName);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(programName);
+
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(raisedAmount.doubleValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((gst==null?BigDecimal.ZERO:gst).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((transport==null?BigDecimal.ZERO:transport).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((extraHours==null?BigDecimal.ZERO:extraHours).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((stationary==null?BigDecimal.ZERO:stationary).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((uniform==null?BigDecimal.ZERO:uniform).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((annual==null?BigDecimal.ZERO:annual).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((security==null?BigDecimal.ZERO:security).intValue());
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue((balance==null?BigDecimal.ZERO:balance).intValue());
+      row.createCell(index++, Cell.CELL_TYPE_NUMERIC).setCellValue(dueAmount.doubleValue());
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(paymentStatus);
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue(autoComment==null?"":autoComment);
     return sheet;
   }
-
   public static int createHeader(Sheet sheet, int rowNumber)
   {
     Row row = sheet.createRow(rowNumber);
-    row.createCell(0, Cell.CELL_TYPE_STRING).setCellValue("Student Id");
-    row.createCell(1, Cell.CELL_TYPE_STRING).setCellValue("Student Name");
-      row.createCell(2, Cell.CELL_TYPE_STRING).setCellValue("Active");
-    row.createCell(3, Cell.CELL_TYPE_STRING).setCellValue("Center Name");
-    row.createCell(4, Cell.CELL_TYPE_STRING).setCellValue("Program Name");
-    row.createCell(5, Cell.CELL_TYPE_STRING).setCellValue("Raised Amount");
-    row.createCell(6, Cell.CELL_TYPE_STRING).setCellValue("Due Amount");
-      row.createCell(7, Cell.CELL_TYPE_STRING).setCellValue("Payment Status");
+    int index=0;
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Student Id");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Student Name");
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Active");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Center Name");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Program Name");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Raised Amount");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Gst");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Transport");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Extra Hours");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Stationary");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("uniform");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Annual fee");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Security");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Balance");
+    row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Due Amount");
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Payment Status");
+      row.createCell(index++, Cell.CELL_TYPE_STRING).setCellValue("Auto Comment");
       return rowNumber + 1;
   }
 

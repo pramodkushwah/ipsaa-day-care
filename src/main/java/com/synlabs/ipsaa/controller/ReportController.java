@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -235,6 +236,32 @@ public class ReportController {
 			throws IOException {
 		// modifiy by shubham
 		File file = staffService.getEmployeeSalary(staffRequest);
+		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
+				staffRequest.getEmployerCode(), staffRequest.getMonth(), staffRequest.getYear()));
+		response.setHeader("fileName", String.format("%s_Month_%s_Year_%s.xlsx", staffRequest.getEmployerCode(),
+				staffRequest.getMonth(), staffRequest.getYear()));
+		OutputStream out = response.getOutputStream();
+		FileInputStream in = new FileInputStream(file);
+		// copy from in to out
+		IOUtils.copy(in, out);
+		out.flush();
+		in.close();
+		if (!file.delete()) {
+			throw new IOException("Could not delete temporary file after processing: " + file);
+		}
+	}
+	@PostMapping("staff/excel")
+	@Secured(COLLECTION_FEE_REPORT)
+	public void staffExcel(HttpServletResponse response, @RequestBody StaffFilterRequest staffRequest)
+			throws IOException {
+		// modifiy by shubham
+		int month=staffRequest.getMonth();
+		//System.out.println(month);
+		////Avneet
+		File file = staffRequest.getMonth() != 0 ? staffService.getAllEmployees(staffRequest):
+												staffService.getEmployee(staffRequest);
+
+
 		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
 				staffRequest.getEmployerCode(), staffRequest.getMonth(), staffRequest.getYear()));
 		response.setHeader("fileName", String.format("%s_Month_%s_Year_%s.xlsx", staffRequest.getEmployerCode(),

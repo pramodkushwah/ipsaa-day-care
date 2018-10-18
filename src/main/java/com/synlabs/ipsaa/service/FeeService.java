@@ -594,7 +594,7 @@ public class FeeService extends BaseService
     }
     Row row = feeReportSheet.createRow(rowNum + topHeader);
     row.createCell(5, Cell.CELL_TYPE_NUMERIC).setCellValue(raised.doubleValue());
-    row.createCell(6, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
+    row.createCell(14, Cell.CELL_TYPE_NUMERIC).setCellValue(due.doubleValue());
 
     workbook.write(fileOutputStream);
     workbook.dispose();
@@ -677,7 +677,7 @@ public class FeeService extends BaseService
         break;
     }
 
-    list=attendanceRepository.findByStudentAndCreatedDateBetween(student,startDate,endDate);
+    list=attendanceRepository.findByStudentAndCreatedDateBetweenAndExtraHoursNot(student,startDate,endDate,0);
 
     for(StudentAttendance attendace:list){
       if(attendace.getCheckout()!=null && attendace.getCheckin() !=null)
@@ -770,23 +770,22 @@ public class FeeService extends BaseService
   }
   //--------------------------------------shubham ---------------------------------------------------------------
 
-
   ///////////Avneet
   public List<Program> programByCenter(Long id){
-      List<Program> list=new ArrayList<>();
+    List<Program> list=new ArrayList<>();
 
-      List<CenterProgramFee> centers=centerProgramFeeRepository.findByCenterIdOrderByProgramId(id);
-      List<Program> programs=programRepository.findAll();
+    List<CenterProgramFee> centers=centerProgramFeeRepository.findByCenterIdOrderByProgramId(unmask(id));
+    List<Program> programs=programRepository.findAllByOrderByIdAsc();     ////by default returns in order ?
 
-      int size= centers.size();
-      int j=0;
+    int size= centers.size();
+    int j=0;
 
-      for(Program p:programs){
-        if(j<size && p.getId().equals(centers.get(j).getProgram().getId())){
-            list.add(p);
-            j++;
-        }
+    for(Program p:programs){
+      if(j<size && p.getId().equals(centers.get(j).getProgram().getId())){
+        list.add(p);
+        j++;
       }
-      return list;
+    }
+    return list;
   }
 }

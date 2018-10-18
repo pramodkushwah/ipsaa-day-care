@@ -75,7 +75,7 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(unique = true, length = 200)
   private String slipFileName;
 
-  @Column(unique = true, length = 20)
+  @Column(unique = true, length = 30)
   private String receiptSerial;
 
   @Column(unique = true, length = 200)
@@ -123,6 +123,9 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(precision = 16, scale = 2)
   private BigDecimal sgst;
 
+  @Column(precision = 16, scale = 2,columnDefinition = "Decimal(10,2) default '0.00'")
+  private BigDecimal extraHours;
+
   @Column(precision = 16, scale = 2)
   private BigDecimal cgst;
 
@@ -138,6 +141,14 @@ public class StudentFeePaymentRequest extends BaseEntity
 
   @Column(precision = 16, scale = 2)
   private BigDecimal finalFee;
+
+  public BigDecimal getExtraHours() {
+    return extraHours;
+  }
+
+  public void setExtraHours(BigDecimal extraHours) {
+    this.extraHours = extraHours;
+  }
 
   public BigDecimal getFeeRatio() {
     return feeRatio;

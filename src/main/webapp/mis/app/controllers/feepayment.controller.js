@@ -1,4 +1,4 @@
-app.controller('StudentFeePaymentController', function ($scope, $http) {
+app.controller('StudentFeePaymentController', function ($scope, $http, Auth) {
 
     $scope.disabledRecordPayment=false;
     var allmonths = moment.months();
@@ -9,6 +9,7 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
     $scope.selectedPeriod = 'Quarterly';
     $scope.commentField = false;
     $scope.selected = {};
+    $scope.STUDENTFEE_RECEIPT_CONFIRM = Auth.hasPrivilege('STUDENTFEE_RECEIPT_CONFIRM');
 
     $scope.years = [moment().year() - 1,moment().year()];
 
@@ -103,20 +104,39 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
     };
 
     $scope.payStudentFee = function () {
-        if(!($scope.selected && $scope.selected.paidAmount)){
-            error("Please enter paid amount.");
-            return ;
-        }
-        $scope.disabledRecordPayment=true;
-        $http.post('/api/student/payfee', $scope.selected).then(function (response) {
-            $scope.getFeeSlips();
-            $scope.disabledRecordPayment=false;
-            ok("Successfully applied payment")
-        }, function (response) {
-            $scope.disabledRecordPayment=false;
-            error(response.data.error);
-        });
+      var fee_diff = $scope.selected.paidAmount - $scope.selected.payableAmount;
+      if(!($scope.selected && $scope.selected.paidAmount)){
+        error("Please enter paid amount.");
+        return ;
+      }
+      if(fee_diff > 0){
+        swal({
+          type: 'warning',
+          title: 'Confirmation',
+          text: 'Your are about to pay extra amount of Ruppes '+ fee_diff + '.',
+          confirmButtonText: 'Proceed',
+          showCancelButton: 'true'
+        }).then( function() {
+            //proceed callback
+            $scope.feePaymentRequest();
+          }, function (cancel) {}
+        );
+      } else {
+        $scope.feePaymentRequest();
+      }
     };
+
+    $scope.feePaymentRequest = function() {
+      $scope.disabledRecordPayment = true;
+      $http.post('/api/student/payfee', $scope.selected).then(function (response) {
+        $scope.getFeeSlips();
+        $scope.disabledRecordPayment = false;
+        ok("Successfully applied payment")
+      }, function (response) {
+        $scope.disabledRecordPayment = false;
+        error(response.data.error);
+      });
+    }
 
     $scope.downloadReceipt = function (receipt) {
         if (receipt && receipt.id) {
@@ -188,6 +208,7 @@ app.controller('StudentFeePaymentController', function ($scope, $http) {
           }, function(cancel) {});
       }
     }
+    
 
     function ok(message) {
         swal({

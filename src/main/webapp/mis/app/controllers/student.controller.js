@@ -139,8 +139,11 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     $scope.showStudent = function (student, callback, corporateChanged) {
         $http.get('/api/student/' + student.id).then(function (response) {
             $scope.workingStudent = response.data;
+            $scope.selectedStudent = JSON.parse(JSON.stringify(response.data));     
             $scope.workingStudent.mode = "Show";
             $scope.workingStudent.centerId = $scope.workingStudent.center.id + "";
+            $scope.getProgramsByCenter($scope.workingStudent.centerId);
+            $scope.getGroupsByProgram($scope.workingStudent.program);
             $scope.workingStudent.programId = $scope.workingStudent.program.id + "";
             $scope.workingStudent.groupId = $scope.workingStudent.group.id + "";
             for (var i = 0; i < $scope.workingStudent.parents.length; i++) {
@@ -187,6 +190,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     $scope.editStudent = function (student, callback, corporateChanged) {
         $http.get('/api/student/' + student.id).then(function (response) {
             $scope.workingStudent = response.data;
+            console.log(JSON.parse(JSON.stringify($scope.workingStudent)));
+            $scope.selectedStudent = JSON.parse(JSON.stringify($scope.workingStudent));     
             $scope.workingStudent.mode = "Edit";
             $scope.workingStudent.centerId = $scope.workingStudent.center.id + "";
             $scope.workingStudent.programId = $scope.workingStudent.program.id + "";
@@ -258,8 +263,9 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
         return student;
     }
 
+
     $scope.saveStudent = debounce(function (student) {
-        $scope.disableSave = true;
+        // var postStudent = jQuery.extend(true, {}, student);
         var postStudent = jQuery.extend(true, {}, student);
 
         postStudent.father.relationship = "Father";
@@ -274,21 +280,51 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
         if (validateStudent(postStudent)) {
           // to update existing student record on click of save button because admission no. already found
-          if (postStudent.admissionNumber) {
-              $http.put("/api/student/", postStudent).then(function (response) {
-                  $scope.addstudent = false;
-                  $scope.showstudent = false;
-                  $scope.editstudent = false;
-                  ok("Student updated!");
-                  $scope.disableSave = false;
-                  refresh();
-              }, function (response) {
-                  $scope.disableSave = false;
-                  error(response.data.error);
-              });
+          if (postStudent.admissionNumber) {              
+              const admissionDateChanged = postStudent.admissionDate != $scope.selectedStudent.admissionDate;
+              const programIdChanged = postStudent.programId != $scope.selectedStudent.program.id;
+              console.log(programIdChanged);
+              const formalSchoolChanged = postStudent.formalSchool != $scope.selectedStudent.formalSchool;
+              if(admissionDateChanged||programIdChanged||formalSchoolChanged){
+                  var message = "";
+                  (admissionDateChanged) ? message+=" Admission Date, ": "";
+                  (programIdChanged) ? message+=" Program, ": "";
+                  (formalSchoolChanged) ? message+=" Formal School, ": "";
+                  showConfirmationSwal('you want to change'+message+' It may affect Student Fee',function(){
+                    $scope.disableSave = true;
+                    $http.put("/api/student/", postStudent).then(function (response) {
+                        $scope.addstudent = false;
+                        $scope.showstudent = false;
+                        $scope.editstudent = false;
+                        ok("Student updated!");
+                        $scope.disableSave = false;
+                        refresh();
+                    }, function (response) {
+                        $scope.disableSave = false;
+                        error(response.data.error);
+                    });
+                  }, function(){
+                      $scope.disableSave = false;
+                      console.log($scope.disableSave);
+                  })
+              } else {
+                $scope.disableSave = true;
+                  $http.put("/api/student/", postStudent).then(function (response) {
+                      $scope.addstudent = false;
+                      $scope.showstudent = false;
+                      $scope.editstudent = false;
+                      ok("Student updated!");
+                      $scope.disableSave = false;
+                      refresh();
+                  }, function (response) {
+                      $scope.disableSave = false;
+                      error(response.data.error);
+                  });
+              }
 
           // to add new student because admission no. doesn't exist
           } else {
+            $scope.disableSave = true;
               $http.post("/api/student/", postStudent).then(function () {
                   $scope.addstudent = false;
                   $scope.showstudent = false;
@@ -307,9 +343,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
     }, 200, true);
 
-    function validateStudent(student) {
-        console.log(student);
-        
+    function validateStudent(student) {   
         if (student.mode == 'New' && !student.fee && !student.corporate) {
             $scope.selectTab(4);
             error("Student fee is not created.");
@@ -489,6 +523,18 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
         );
     }
 
+    $scope.getProgramsByCenter = function(centerId){
+      $scope.workingStudent.programId = '';
+      $scope.workingStudent.groupId = '';
+      $http.get('/api/center/programs/'+centerId).then(function (response) {
+        $scope.programs = response.data;
+        });
+    }
+
+    $scope.getGroupsByProgram = function(program){
+        $scope.groups = program.groups;
+    }
+
     $scope.deleteStudentSwal = function (student) {
         swal({
             title: 'Are you sure want to deactivate student?',
@@ -624,7 +670,6 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
                     studentFee.deposit = programFee.deposit;
                     studentFee.igst = programFee.igst;
                     studentFee.discount = 0;
-                    studentFee.transportFee =0;
                     studentFee.adjust =0;
                     studentFee.comment = '';
                     studentFee.feeDuration = 'Quarterly';

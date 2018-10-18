@@ -7,10 +7,7 @@ import com.synlabs.ipsaa.entity.common.Address;
 import com.synlabs.ipsaa.entity.common.EIDNumberSequence;
 import com.synlabs.ipsaa.entity.common.LegalEntity;
 import com.synlabs.ipsaa.entity.common.User;
-import com.synlabs.ipsaa.entity.staff.Employee;
-import com.synlabs.ipsaa.entity.staff.EmployeeProfile;
-import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
-import com.synlabs.ipsaa.entity.staff.QEmployee;
+import com.synlabs.ipsaa.entity.staff.*;
 import com.synlabs.ipsaa.enums.*;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.UploadException;
@@ -27,6 +24,7 @@ import com.synlabs.ipsaa.view.staff.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
+import org.joda.time.LocalDate;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 import org.slf4j.Logger;
@@ -185,16 +183,67 @@ public class StaffService extends BaseService
   {
     return employeeRepository.findOne(request.getId());
   }
-// shubham
+  // shubham
+  public File getEmployee(StaffFilterRequest staffRequest){
+    List<Employee> list=null;
+    if(staffRequest.getEmployerCode().equals("All") || staffRequest.getEmployerCode().equals("ALL"))
+    list= employeeRepository.findByActiveTrueAndCostCenterIn(getUserCenters());
+    else{
+       list=employeeRepository.findByActiveTrueAndCostCenterInAndEmployerCode(getUserCenters(),staffRequest.getEmployerCode());
+    }
+    StaffReport excel = new StaffReport(list,exportDirectory,employeeSalaryRepository);
+    return excel.createExcel(); // returning file
+  }
+
+
+  //////Avneet- Get active and inactive employees in a month
+  public File getAllEmployees(StaffFilterRequest request){
+
+    int month= request.getMonth();
+    if(month == 0)
+      month=LocalDate.now().getMonthOfYear() -1;
+
+    int year= LocalDate.now().getYear();
+
+    String employer=request.getEmployerCode();
+    List<Employee> list= new ArrayList<>();
+
+    List<EmployeePaySlip> employeePaySlips= employeePaySlipRepository.findByMonthAndYear(month,year);
+
+    if(employer.equals("ALL")) {
+      for (EmployeePaySlip paySlip : employeePaySlips){
+        Employee emp=paySlip.getEmployee();
+        list.add(emp);
+      }
+    } else{
+      LegalEntity entity=legalEntityRepository.findByCode(employer);
+      employeePaySlips.stream().forEach(employeePaySlip -> {
+        if(employeePaySlip.getEmployee().getEmployer().getCode().equals(employer))
+          list.add(employeePaySlip.getEmployee());
+      });
+
+
+    }
+    
+    StaffReport excel=new StaffReport(list,exportDirectory,employeeSalaryRepository);
+    return excel.createExcel();
+  }
+
+
   public File getEmployeeSalary(StaffFilterRequest staffRequest){
 
-    List<EmployeeSalary> list=new ArrayList<>();
+    List<EmployeePaySlip> list= new ArrayList<>();
 
-    if (!StringUtils.isEmpty(staffRequest.getEmployerCode()) || staffRequest.getEmployerCode().equals("ALL")) {
-      list = employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterIn(getUserCenters());
+    if(staffRequest.getEmployerCode().equals("ALL")){
+      list= employeePaySlipRepository.findByMonthAndYear(staffRequest.getMonth(),staffRequest.getYear());
     }
-      StaffExcelReport excel = new StaffExcelReport(list, staffRequest, exportDirectory, employeePaySlipRepository, staffRequest.getEmployerCode());
-      return excel.createExcel(); // returning file
+    else{
+      LegalEntity employer =legalEntityRepository.findByCode(staffRequest.getEmployerCode());
+      list= employeePaySlipRepository.findByEmployerIdAndMonthAndYear(unmask(employer.getId()),staffRequest.getMonth(),staffRequest.getYear());
+    }
+
+    StaffExcelReport report=new StaffExcelReport(list,staffRequest,exportDirectory, staffRequest.getEmployerCode(),employeeSalaryRepository);
+    return report.createExcel();
   }
   @Transactional
   public Employee save(StaffRequest request) throws ParseException
@@ -233,6 +282,11 @@ public class StaffService extends BaseService
     employee.setActive(true);
     employee.setApprovalStatus(ApprovalStatus.NewApproval);
     employee.setCostCenter(center);
+
+    ///in case
+    if(employee.getProfile().getpState() == null){
+      employee.getProfile().setpState(employee.getCostCenter().getAddress().getState());
+    }
     employee.setEmployer(legalEntity);
     employee.setReportingManager(reportingManager);
     Employee employee1 = employeeRepository.saveAndFlush(employee);
@@ -409,15 +463,18 @@ public class StaffService extends BaseService
     boolean errorInFile = false;
     Map<String, String> statusMap = new HashMap<>();
     statusMap.put("error", "false");
+
     List<ImportEmployee> employees = excelImportService.importEmployeeRecords(file);
     List<Employee> employeeList = new ArrayList<>(employees.size());
     List<EmployeeProfile> employeeProfiles = new ArrayList<>(employees.size());
     List<User> userList = new ArrayList<>(employees.size());
     Set<String> mobile = new HashSet<>();
+
     if (employees.size() < 1)
     {
       throw new Exception("Error Processing file");
     }
+
     for (ImportEmployee employee : employees)
     {
       String validationMessage = employee.validate();
@@ -672,6 +729,17 @@ public class StaffService extends BaseService
 //    }
 //    return count <= 0;
 //  }
+  @Transactional
+  public void checkAndDelete(){
+    List<Employee> employees;
+    employees = employeeRepository.findByActiveIsTrueAndProfileDolBeforeOrProfileDol(new Date(),new Date());
+    for(Employee employee:employees){
+          employee.setActive(false);
+          employeeRepository.saveAndFlush(employee);
+          communicationService.sendStaffDeleteEmail(employee);
+    }
+  }
+
 
   public void deleteV2(StaffRequest request)
   {

@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-2">
+  <div class="col-md-3">
     <div class="form-group">
       <label class="control-label">Center:</label>
       <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" >
@@ -9,18 +9,18 @@
     </div>
   </div>
   
-  <div class="col-md-2">
+  <div class="col-md-3">
     <div class="form-group">
       <label class="control-label">Quarter:</label>
       <!-- <select class="form-control"
       ng-model="selectedQuarter"
       ng-options="quarter.quarter as quarterNames[quarter.quarter-1] for quarter in dropdownData | filter: {duration: selectedPeriod}"
       ng-change="setSlips([])"></select> -->
-      <select class="form-control" ng-model="selectedQuarter" ng-options="quarter.value as quarter.name for quarter in quarters" disabled></select>
+      <select class="form-control" ng-model="selectedQuarter" ng-options="quarter.value as quarter.name for quarter in quarters"></select>
       <span class="material-input"></span>
     </div>
   </div>
-  <div class="col-md-2">
+  <div class="col-md-3">
     <div class="form-group">
       <label class="control-label">Year:</label>
       <!-- <select class="form-control"
@@ -28,14 +28,16 @@
         ng-options="y as y for y in getYears(selectedPeriod,selectedMonth,selectedQuarter)"
         ng-change="setSlips([])">
       </select> -->
-      <select class="form-control" ng-model="selectedYear" ng-options="year as year for year in years" disabled>
+      <select class="form-control" ng-model="selectedYear" ng-options="year as year for year in years">
       </select>
       <span class="material-input"></span>
     </div>
   </div>
-  <button class="btn btn-info mt-4" ng-click="getFeeSlips()" ng-disabled="generateSlipDisable">
-    <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="generateSlipDisable"></i>GET/GENERATE
-  </button>
+  <div class="col-md-3">
+    <button class="btn btn-info mt-4" ng-click="getFeeSlips()" ng-disabled="generateSlipDisable">
+      <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="generateSlipDisable"></i>GET/GENERATE
+    </button>
+  </div>
 </div>
 
 
@@ -235,22 +237,7 @@
               </label>
               <input class="form-control" type="text" ng-model="selected.finalTransportFees" readonly>
             </div>
-          </div> -->
-        
-          <div class="col-md-6">
-            <div class="form-group">
-              <label class="control-label" ng-readonly="true">Uniform Charges</label>
-              <input class="form-control" type="text" ng-model="selected.uniformCharges" readonly>
-            </div>
-          </div>
-        
-          <div class="col-md-6">
-            <div class="form-group">
-              <label class="control-label" ng-readonly="true">Stationery Charges</label>
-              <input class="form-control" type="text" ng-model="selected.stationary" readonly>
-            </div>
-          </div>
-        
+          </div> -->        
         </div>
 
         <div class="row">
@@ -264,7 +251,6 @@
               <input class="form-control" type="text" ng-model="selected.gstFee" readonly>
             </div>
           </div>
-
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Quarterly-Program-Fee-GST
@@ -281,21 +267,40 @@
               <input class="form-control" type="number" ng-model="selected.feeRatio" readonly>
             </div>
           </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label" ng-readonly="true">Uniform Charges</label>
+              <input class="form-control" type="number" ng-model="selected.uniformCharges" ng-change="calculateFinalFee(selected)">
+            </div>
+          </div>        
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label" ng-readonly="true">Stationery Charges</label>
+              <input class="form-control" type="number" ng-model="selected.stationary" ng-change="calculateFinalFee(selected)">
+            </div>
+          </div>
         </div>
 
         <div class="row">
           <div class="col-md-4">
             <div class="form-group">
               <label class="control-label" readonly>Fee</label>
-              <input class="form-control" type="text" readonly ng-model="selected.actualBaseFee">
+              <input class="form-control" type="text" readonly ng-model="selected.finalFee">
             </div>
           </div>
-      
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Extra Hours</label>
+              <input class="form-control" type="number"
+                     ng-model="selected.extraHours" min="0" >
+            </div>
+          </div>
+
           <div class="col-md-4">
             <div class="form-group">
               <label class="control-label">Balance</label>
               <input class="form-control" type="number"
-              ng-model="selected.balance" readonly>
+              ng-model="selected.balance" ng-change="calculateFinalFee(selected)" >
             </div>
           </div><!--Balance-->
           <div class="col-md-4">

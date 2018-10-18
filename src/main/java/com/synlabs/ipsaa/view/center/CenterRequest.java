@@ -63,7 +63,7 @@ public class CenterRequest implements Request
       address.setAddress(this.address);
       address.setAddressType(AddressType.Center);
       //address.setCity();
-      address.setState(this.state);
+      //address.setState(this.state);
       address.setZipcode(this.zipcode);
       address.setPhone(this.phone);
       center.setAddress(address);
@@ -171,7 +171,7 @@ public class CenterRequest implements Request
 
   public String getState()
   {
-    return state;
+    return state.toUpperCase();
   }
 
   public void setState(String state)

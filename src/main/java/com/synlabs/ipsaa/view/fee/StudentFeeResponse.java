@@ -37,8 +37,6 @@ public class StudentFeeResponse extends StudentSummaryResponse
   private BigDecimal  annualFee;
   private BigDecimal  admissionCharges;
   private BigDecimal  securityDeposit;
-  private BigDecimal  uniformCharges;
-  private BigDecimal  stationary;
   private BigDecimal gstAmount;
 
 
@@ -70,8 +68,6 @@ public class StudentFeeResponse extends StudentSummaryResponse
     this.annualFee=studentfee.getAnnualCharges();
     this.admissionCharges=studentfee.getAdmissionFee();
     this.securityDeposit=studentfee.getDepositFee();
-    this.uniformCharges=studentfee.getUniformCharges();
-    this.stationary=studentfee.getStationary();
     this.gstAmount=studentfee.getGstAmount();
   }
 
@@ -210,23 +206,6 @@ public class StudentFeeResponse extends StudentSummaryResponse
   public void setSecurityDeposit(BigDecimal securityDeposit) {
     this.securityDeposit = securityDeposit;
   }
-
-  public BigDecimal getUniformCharges() {
-    return uniformCharges;
-  }
-
-  public void setUniformCharges(BigDecimal uniformCharges) {
-    this.uniformCharges = uniformCharges;
-  }
-
-  public BigDecimal getStationary() {
-    return stationary;
-  }
-
-  public void setStationary(BigDecimal stationary) {
-    this.stationary = stationary;
-  }
-
   public BigDecimal getGstAmount() {
     return gstAmount;
   }
