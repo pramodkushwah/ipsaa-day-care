@@ -117,7 +117,7 @@ public class FeeUtilsV2 {
 				.add(fee.getAdjust());
 		BigDecimal gstAmmount;
 
-		if (fee.getIgst() != null && fee.getIgst().intValue() != 0) {
+		if (fee.getGstAmount()!=null && fee.getGstAmount().intValue()>0) {
 			gstAmmount = calculateGST(fee.getFinalBaseFee(), fee.getFinalAnnualCharges(), GST.IGST);
 			fee.setGstAmount(gstAmmount);
 			totalFee = totalFee.add(gstAmmount);
