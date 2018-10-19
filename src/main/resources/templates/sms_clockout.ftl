@@ -1,1 +1,1 @@
-${attendance.student.profile.fullName} left from IPSAA ${attendance.center.name} ${attendance.attendanceDate?date} ${attendance.checkout?time}
+${attendance.student.profile.fullName} <#if attendance.checkout??>left <#else>is absent</#if> from IPSAA ${attendance.center.name} ${attendance.attendanceDate?date} <#if attendance.checkout??>${attendance.checkout?time}</#if>
