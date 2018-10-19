@@ -75,7 +75,7 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Column(unique = true, length = 200)
   private String slipFileName;
 
-  @Column(unique = true, length = 20)
+  @Column(unique = true, length = 30)
   private String receiptSerial;
 
   @Column(unique = true, length = 200)

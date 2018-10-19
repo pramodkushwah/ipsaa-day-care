@@ -115,7 +115,8 @@ const misAppScripts = [
     'mis/app/controllers/report/staffreport.controller.js',
     'mis/app/controllers/staffattendancelogs.controller.js',
     'mis/app/controllers/staffleaves.controller.js',
-    'mis/app/controllers/gallery/gallery.controller.js'
+    'mis/app/controllers/gallery/gallery.controller.js',
+    'mis/app/controllers/report/hdfcgatewayfeereport.controller.js'
 ];
 const ppAppScripts = [
     'pp/app/app.js',

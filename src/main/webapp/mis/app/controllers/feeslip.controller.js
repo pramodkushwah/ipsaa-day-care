@@ -346,44 +346,14 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
     };
 
     $scope.reGenerateSlip = function (id) {
-        swal({
-            title: 'Are you sure?',
-            text: "You want to regenerate Slip",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'From Start',
-            cancelButtonText: 'From Specific Date'
-        }).then(function () {
-            $http.post('/api/student/feeslip/regenerate', {id: id}).then(
-                function (response) {
-                    $scope.selected = response.data;
-                    $scope.getFeeSlips();
-                    ok("Slip Successfully Regenerated.");
-                },
-                function (response) {
-                    error(response.data.error)
-                });
-        }, function(){
-            swal({
-                title: 'Specific Date',
-                // html: `<input type="date">`,
-                input:'text',
-                inputPlaceholder: new Date().toISOString(),
-                showCancelButton: true,
-                buttonsStyling: false,
-            }).then(function(date){
-                $http.post('/api/student/feeslip/regenerate', {id: id, spaceifyRegenrationDate: new Date(date)}).then(
-                    function (response) {
-                        $scope.selected = response.data;
-                        $scope.getFeeSlips();
-                        ok("Slip Successfully Regenerated.");
-                    },
-                    function (response) {
-                        error(response.data.error)
-                    });                
-            })
+        $http.post('/api/student/feeslip/regenerate', {id: id}).then(
+        function (response) {
+            $scope.selected = response.data;
+            $scope.getFeeSlips();
+            ok("Slip Successfully Regenerated.");
+        },
+        function (response) {
+            error(response.data.error)
         });
     };
 

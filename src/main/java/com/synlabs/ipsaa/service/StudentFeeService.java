@@ -405,8 +405,8 @@ public class StudentFeeService {
 
             thisQuarterSlip.setBaseFeeDiscount(fee.getBaseFeeDiscount()==null?ZERO:fee.getBaseFeeDiscount());
 
-            thisQuarterSlip.setUniformCharges(ZERO);
-            thisQuarterSlip.setStationary(ZERO);
+            thisQuarterSlip.setUniformCharges(thisQuarterSlip.getUniformCharges()==null?ZERO:thisQuarterSlip.getUniformCharges());
+            thisQuarterSlip.setStationary(thisQuarterSlip.getStationary()==null?ZERO:thisQuarterSlip.getStationary());
 
             thisQuarterSlip.setTransportFee(fee.getTransportFee()==null?ZERO:fee.getTransportFee());
 
@@ -486,11 +486,6 @@ public class StudentFeeService {
                 throw new ValidationException("error in date");
             }
         }
-
-        // test case
-        Calendar cal =Calendar.getInstance();
-        cal.set(2018,9-1,14);
-        regenrationDate=cal.getTime();
         BigDecimal nextRatio=FeeUtilsV2.calculateNextFeeRatioForQuarter(regenrationDate);
         // hander fee chnage or discount change in running quarter
         int newBaseFee=fee.getBaseFee().intValue();
@@ -504,13 +499,17 @@ public class StudentFeeService {
         if(newBaseFee!=oldBaseFee ||
                 newFinalBaseFee!=oldFinalBaseFee){
             // base fee change handel
+            thisQuarterSlip.setAutoComments(thisQuarterSlip.getAutoComments()+" "+"change in base fee" +thisQuarterSlip.getBaseFee() +" to "+ fee.getBaseFee());
+            thisQuarterSlip.setBaseFee(fee.getBaseFee());
+
             thisQuarterSlip.setFinalBaseFee(thisQuarterSlip.getFinalBaseFee().divide(thisQuarterSlip.getFeeRatio(),2,BigDecimal.ROUND_CEILING));
 
-
             thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee()
-                        .subtract(thisQuarterSlip.getFinalBaseFee().multiply(nextRatio))
-                );
-            thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee().add(fee.getFinalBaseFee().multiply(nextRatio)));
+                                            .subtract(thisQuarterSlip.getFinalBaseFee().multiply(nextRatio))
+                                        );
+            thisQuarterSlip.setFinalBaseFee(fee.getFinalBaseFee());
+            BigDecimal newFee=fee.getFinalBaseFee().divide(THREE);
+            thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee().add(newFee .multiply(nextRatio)));
             BigDecimal gstAmmount=ZERO;
 
             // handel chnage in gst
@@ -522,9 +521,8 @@ public class StudentFeeService {
             } else {
                 fee.setGstAmount(ZERO);
             }
-
-            thisQuarterSlip.setAutoComments(thisQuarterSlip.getAutoComments()+" "+"change in transport fee" +thisQuarterSlip.getBaseFee() +" to "+ fee.getBaseFee());
         }
+
         if(fee.getTransportFee().intValue()!=thisQuarterSlip.getTransportFee().intValue()){
         // transport fee change handel
             thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee()
@@ -979,13 +977,14 @@ public class StudentFeeService {
             }
             receipt.setComment(request.getComments());
             if(receipt.getPaymentMode().equals(PaymentMode.Cheque)){
+                slip.setTotalFee(slip.getTotalFee().subtract(slip.getExtraCharge()));
                 slip.setExtraCharge(slip.getExtraCharge().add(FeeUtilsV2.CHEQUE_BOUNCE_CHARGE));
                 if(slip.getAutoComments()==null)
                 slip.setAutoComments("200rs Cheque bounce charges added");
                 else{
                     slip.setAutoComments(slip.getAutoComments()+",200rs Cheque bounce charges added");
                 }
-                slip.setTotalFee(FeeUtilsV2.calculateFinalFee(slip));;
+                slip.setTotalFee(slip.getTotalFee().add(slip.getExtraCharge()));
             }
 
             paymentRecordRepository.saveAndFlush(receipt);

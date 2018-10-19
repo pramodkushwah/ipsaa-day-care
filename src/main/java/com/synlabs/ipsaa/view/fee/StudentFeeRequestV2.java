@@ -29,6 +29,7 @@ public class StudentFeeRequestV2 implements Request
   private BigDecimal  annualFee;
   private BigDecimal  admissionCharges;
   private BigDecimal  securityDeposit;
+  private BigDecimal  deposit; // copy of securityDeposit
 
   private BigDecimal  finalFee;
   private BigDecimal  transportFee;
@@ -38,6 +39,14 @@ public class StudentFeeRequestV2 implements Request
 
   public StudentFeeRequestV2()
   {
+  }
+
+  public BigDecimal getDeposit() {
+    return deposit;
+  }
+
+  public void setDeposit(BigDecimal deposit) {
+    this.deposit = deposit;
   }
 
   public StudentFeeRequestV2(Long centerId)
@@ -134,6 +143,8 @@ public class StudentFeeRequestV2 implements Request
   }
 
   public BigDecimal getSecurityDeposit() {
+    if(this.securityDeposit==null)
+      this.securityDeposit=deposit;
     return securityDeposit;
   }
 
@@ -152,6 +163,9 @@ public class StudentFeeRequestV2 implements Request
       studentFee.setAnnualCharges(new BigDecimal(fee.getAnnualFee()));
       studentFee.setDepositFee(new BigDecimal(fee.getDeposit()));
     }else{
+        if(securityDeposit==null)
+        securityDeposit=deposit;
+
         studentFee.setDepositFee(securityDeposit==null?ZERO:securityDeposit);
         studentFee.setBaseFee(baseFee==null?ZERO:baseFee);
         studentFee.setAdmissionFee(admissionCharges==null?ZERO:admissionCharges);

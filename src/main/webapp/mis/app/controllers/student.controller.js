@@ -670,7 +670,6 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
                     studentFee.deposit = programFee.deposit;
                     studentFee.igst = programFee.igst;
                     studentFee.discount = 0;
-                    studentFee.transportFee =0;
                     studentFee.adjust =0;
                     studentFee.comment = '';
                     studentFee.feeDuration = 'Quarterly';

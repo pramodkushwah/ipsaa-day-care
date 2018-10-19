@@ -176,13 +176,13 @@ public class EmployeeService extends BaseService {
 
   public BigDecimal calculatePfTax(StateTaxRequest request) {
 
-    Long id = request.getEmployeeId();
+    String eid = request.getEid();
     BigDecimal gross = request.getGrossSalary();
     BigDecimal upper = new BigDecimal(10000);
     BigDecimal professionalTax = new BigDecimal(0);
     Boolean istrue;
 
-    Employee employee = employeeRepository.findOne(id);
+    Employee employee = employeeRepository.findByEid(eid);
     EmployeeProfile profile = employee.getProfile();
     Gender gender = profile.getGender();
 

@@ -307,8 +307,9 @@ public class StudentRequest implements Request
 
   public Student toEntity(Student student) throws ParseException
   {
-
-    if(expectedIn.after(expectedOut)){
+    Calendar cal=Calendar.getInstance();
+    cal.setTime(expectedIn);
+    if(expectedIn.after(expectedOut) || cal.get(Calendar.HOUR_OF_DAY)<7){
       throw new ValidationException("please enter expected in/out in 24 hours system");
     }
 
