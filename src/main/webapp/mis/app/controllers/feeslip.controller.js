@@ -374,7 +374,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
                 showCancelButton: true,
                 buttonsStyling: false,
             }).then(function(date){
-                $http.post('/api/student/feeslip/regenerate', {id: id, spaceifyRegenrationDate: new Date(date)}).then(
+                $http.post('/api/student/feeslip/regenerate', {id: id, spaceifyRegenrationDate: date}).then(
                     function (response) {
                         $scope.selected = response.data;
                         $scope.getFeeSlips();
