@@ -29,27 +29,29 @@ app.controller('StudentAttendanceController', function ($scope, $http) {
         return attendance.status + attendance.expectedIn;
     };
 
-    $scope.clockin = debounce(function (student) {
+    $scope.clockin = function (student) {
         student.clockinDisabled=true;
         $http.post('/api/attendance/student/clockin/', {studentId: student.id})
             .then(function (response) {
+                $.extend(student,response.data);
                 student.clockinDisabled=false;
                 ok("Clock in OK");
-                refresh();
+                // refresh();
             }, function (response) {
                 student.clockinDisabled=false;
                 error(response.data.error);
             })
-    },200,true);
+    };
 
-    $scope.clockout = debounce(function (student) {
+    $scope.clockout = function (student) {
         student.clockoutDisabled=true;
         if(student.center !== 'BHARAT RAM GLOBAL SCHOOL'){
             $http.post('/api/attendance/student/clockout/', {studentId: student.id})
                 .then(function (response) {
+                    $.extend(student,response.data);
                     student.clockoutDisabled=false;
                     ok("Clock out OK");
-                    refresh();
+                    // refresh();
                 }, function (response) {
                     student.clockoutDisabled=false;
                     error(response.data.error);
@@ -57,6 +59,7 @@ app.controller('StudentAttendanceController', function ($scope, $http) {
         }else {
             $http.put('/api/attendance/student/markAbsents/'+ student.id)
                 .then(function (response) {
+                    $.extend(student,response.data);
                     student.clockoutDisabled=false;
                     ok("Absent OK");
                 }, function (response) {
@@ -64,7 +67,7 @@ app.controller('StudentAttendanceController', function ($scope, $http) {
                     error(response.data.error);
                 });
         }
-    },200,true);
+    }; 
 
     function refresh() {
         $http.get('/api/attendance/student/').then(function (response) {
@@ -117,13 +120,14 @@ app.controller('StudentAttendanceController', function ($scope, $http) {
     $scope.presentFilteredStudent = function(){
         $http.post('/api/attendance/student/markPresents?centerId='+$scope.selectedCenterId+'&programId='+ $scope.selectedProgram.id).then(function (response){
             $scope.students = response.data;
+            ok("Present Marked");
             
         })
     }
 
     $scope.programChange = function(program){
         $scope.students = $scope.studentsCopy.filter(student => {
-            return student.program === program.name;
+            return (student.program === program.name && student.center === 'BHARAT RAM GLOBAL SCHOOL');
         });        
     }
 

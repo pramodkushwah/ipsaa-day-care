@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,14 +34,14 @@ public class StudentAttendanceController
 
   @Secured(STUDENT_CLOCKINOUT)
   @PostMapping("clockin")
-  public void clockin(@RequestBody StudentAttendanceRequest request) {
-    attendanceService.clockin(request);
+  public StudentAttendanceResponse clockin(@RequestBody StudentAttendanceRequest request) {
+   return new StudentAttendanceResponse(attendanceService.clockin(request));
   }
 
   @Secured(STUDENT_CLOCKINOUT)
   @PostMapping("clockout")
-  public void clockout(@RequestBody StudentAttendanceRequest request) {
-    attendanceService.clockout(request);
+  public StudentAttendanceResponse clockout(@RequestBody StudentAttendanceRequest request) {
+    return  new StudentAttendanceResponse(attendanceService.clockout(request));
   }
 
   ///////////////////////////Avneet
@@ -63,16 +64,24 @@ public class StudentAttendanceController
   //////add programs
   public List<StudentAttendanceResponse> markPresent(@RequestParam("centerId") Long centerId,
                                                      @RequestParam("programId") Long programId){
-//    List<StudentAttendance> attendances=attendanceService.mark(centerId);
-//    List<StudentAttendanceResponse> responses= attendances.stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
+//    List<StudentAttendanceResponse> responses= new ArrayList<>();
+//    List<StudentAttendance> attendances=attendanceService.mark(centerId,programId);
+//    responses= attendances.stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
+//    return responses;
     return attendanceService.mark(centerId,programId).stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
   }
 
   @Secured(STUDENT_CLOCKINOUT)
   @PutMapping("markAbsents/{studentId}")
-  public void markAbsent(@PathVariable("studentId") Long studentId){
-    attendanceService.markAbsents(studentId);
+  public StudentAttendanceResponse markAbsent(@PathVariable("studentId") Long studentId){
+    return new StudentAttendanceResponse(attendanceService.markAbsents(studentId));//StudentAttendanceResponse(attendanceService.markAbsents(studentId));
   }
+
+//  @Secured(STUDENT_CLOCKINOUT)
+//  @PutMapping("markPresent/{studentId}")
+//  public StudentAttendanceResponse markPresent(@PathVariable("studentId") Long studentId){
+//    return new StudentAttendanceResponse(attendanceService.markPresent(studentId));//StudentAttendanceResponse(attendanceService.markAbsents(studentId));
+//  }
 
   @GetMapping("school")
   public List<StudentAttendanceResponse> attendanceByCenter(@RequestParam(value="centerId") Long centerId,

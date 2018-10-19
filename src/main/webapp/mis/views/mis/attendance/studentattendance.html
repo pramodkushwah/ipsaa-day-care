@@ -26,13 +26,13 @@
   </div>
   <div class="col-md-3" ng-show="selectedProgram">
     <div class="form-group">
-    <button class="btn btn-rose btn-round" ng-click="presentFilteredStudent()">Present</button>
+    <button class="btn btn-rose btn-round" ng-click="presentFilteredStudent()">Mark All Present</button>
     </div>
   </div>
 </div>
 <br>
 <div class="row">
-  <div class="col-md-4" ng-repeat="student in students | orderBy:attendanceSorter | filter:searchStudentName">
+  <div class="col-md-4" ng-repeat="student in students | filter:searchStudentName">
     <div class="card card-profile">
       <div class="card-avatar">
         <a>
@@ -49,13 +49,14 @@
           <div class="row"><div class="hidden-md hidden-sm hidden-xs col-lg-6">Parent (s):</div><div class="col-lg-6">{{student.parent || "NA"}}</div></div>
           <div class="row"><div class="hidden-md hidden-sm hidden-xs col-lg-6">Expected In:</div><div class="col-lg-6">{{student.expectedIn || '&nbsp;'}}</div></div>
           <div class="row"><div class="hidden-md hidden-sm hidden-xs col-lg-6">Expected Out:</div><div class="col-lg-6">{{student.expectedOut || '&nbsp;'}}</div></div>
-          <div class="row"><div class="hidden-md hidden-sm hidden-xs col-lg-6">Actual In:</div><div class="col-lg-6">{{student.actualIn || '&nbsp;'}}</div></div>
-          <div class="row"><div class="hidden-md hidden-sm hidden-xs col-lg-6">Actual Out:</div><div class="col-lg-6">{{student.actualOut || '&nbsp;'}}</div></div>
+          <div class="row" ng-show="student.actualIn"><div class="hidden-md hidden-sm hidden-xs col-lg-6">Actual In:</div><div class="col-lg-6">{{student.actualIn || '&nbsp;'}}</div></div>
+          <div class="row" ng-show="student.actualOut"><div class="hidden-md hidden-sm hidden-xs col-lg-6">Actual Out:</div><div class="col-lg-6">{{student.actualOut || '&nbsp;'}}</div></div>
           <div class="row"><div class="hidden-md hidden-sm hidden-xs col-lg-6">Status:</div><div class="col-lg-6">{{student.status}}</div></div>
         </div>
         <button class="btn btn-rose btn-round" ng-click="clockin(student)" ng-show="student.status==='Absent'" ng-disabled="student.clockinDisabled">
           <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="student.clockinDisabled"></i>
-          Clock In
+          <span ng-hide="student.center === 'BHARAT RAM GLOBAL SCHOOL'">Clock In</span>
+          <span ng-show="student.center === 'BHARAT RAM GLOBAL SCHOOL'">Present</span>
         </button>
         <button class="btn btn-rose btn-round" ng-click="clockout(student)" ng-show="student.status=='Present' && !student.actualOut" ng-disabled="student.clockoutDisabled">
           <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="student.clockoutDisabled"></i>

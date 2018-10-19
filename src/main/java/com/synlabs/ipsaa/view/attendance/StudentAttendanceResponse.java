@@ -3,6 +3,7 @@ package com.synlabs.ipsaa.view.attendance;
 import com.synlabs.ipsaa.entity.attendance.StudentAttendance;
 import com.synlabs.ipsaa.entity.student.Student;
 import com.synlabs.ipsaa.entity.student.StudentParent;
+import com.synlabs.ipsaa.enums.AttendanceStatus;
 import com.synlabs.ipsaa.enums.Relationship;
 import com.synlabs.ipsaa.view.common.Response;
 
@@ -46,7 +47,7 @@ public class StudentAttendanceResponse implements Response
     this.group = student.getGroup().getName();
     this.fullName = student.getProfile().getFullName();
     this.center = student.getCenter().getName();
-    this.status = attendance.getStatus().name();
+    this.status = attendance.getStatus().name() == null? AttendanceStatus.Absent.toString(): attendance.getStatus().name();
     this.actualIn = attendance.getCheckin() == null ? null : formatter.format(attendance.getCheckin());
     this.actualOut = attendance.getCheckout() == null ? null : formatter.format(attendance.getCheckout());
     this.expectedIn = student.getExpectedIn() == null ? null : formatter.format(student.getExpectedIn());
