@@ -34,6 +34,7 @@ public class StudentFeeController {
 
     @Autowired
     private StudentFeeService studentFeeService;
+
     @Autowired
     private IpsaaClubFeeSerivce ipsaaClubFeeSerivce;
 
@@ -208,13 +209,13 @@ public class StudentFeeController {
 
     //-----------------------------------------ipsaa club---------------------------------------------------------//
 
-    @GetMapping("ipsaaclub/fee")
+    @GetMapping("/ipsaaclub/fee")
     @Secured(STUDENTFEE_READ)
     public List<StudentFeeResponse> ipsaaList(@RequestParam(required = false) Long centerId) {
         return studentService.listFeeIpsaa(new StudentFeeRequest(centerId)).stream().map(StudentFeeResponse::new).collect(Collectors.toList());
     }
     @Secured(STUDENTFEE_SLIP_READ)
-    @PostMapping("ipsaaclub/feeslip/list")
+    @PostMapping("/ipsaaclub/feeslip/list")
     public List<IpsaaClubSlipResponce> listStudentIpsaaSlips(@RequestBody IpsaaClubSlipRequest request) {
         return ipsaaClubFeeSerivce.listFeeSlips(request).stream().map(IpsaaClubSlipResponce::new).collect(Collectors.toList());
     }
@@ -233,5 +234,24 @@ public class StudentFeeController {
         request.setId(id);
         return ipsaaClubFeeSerivce.generateSlip(request.getId());
     }
+    @Secured(STUDENTFEE_SLIP_WRITE)
+    @PostMapping("/ipsaaclub/slip/update")
+    // Called when slip save button is pressed
+    public StudentFeeSlipResponse updateIpsaClubSlip(@RequestBody StudentFeeSlipRequestV2 request) {
+        return new StudentFeeSlipResponse(studentFeeService.updateSlip(request));
+    }
 
+    @Secured(STUDENTFEE_RECEIPT_WRITE)
+    @PostMapping("/ipsaaclub/payfee")
+    //record payment button
+    public StudentFeeSlipResponse payIpsaaFee(@RequestBody SaveFeeSlipRequest request) {
+        return new StudentFeeSlipResponse(studentFeeService.payFee(request));
+    }
+
+    @Secured(STUDENTFEE_RECEIPT_CONFIRM)
+    @PutMapping("/ipsaaclub/payfee")
+    //Confirm payment
+    public StudentFeePaymentResponse updateIpsaaClubPayFee(@RequestBody SaveFeeSlipRequest request) {
+        return new StudentFeePaymentResponse(studentFeeService.updatePayFee(request));
+    }
 }

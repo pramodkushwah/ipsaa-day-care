@@ -44,7 +44,19 @@ public class FeeUtilsV2 {
 		gst = finalFee.multiply(gst).divide(HUNDRED, 2, BigDecimal.ROUND_CEILING);
 		return gst;
 	}
-
+	public static BigDecimal calculateGST(BigDecimal baseFee, GST type) {
+		BigDecimal finalFee = ZERO;
+		finalFee = finalFee.add(baseFee);
+		BigDecimal gst;
+		if (type == GST.IGST) {
+			gst = new BigDecimal(18);
+		} else if (type == GST.CGST)
+			gst = new BigDecimal(9);
+		else
+			gst = new BigDecimal(9);
+		gst = finalFee.multiply(gst).divide(HUNDRED, 2, BigDecimal.ROUND_CEILING);
+		return gst;
+	}
 	public static BigDecimal calculateFinalFee(StudentFee fee, boolean isGst) {
 		// fee.setTransportFee(fee.getTransportFee().multiply(THREE));
 

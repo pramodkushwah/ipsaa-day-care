@@ -1,6 +1,9 @@
 package com.synlabs.ipsaa.jpa;
 
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecordIpsaaClub;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface StudentFeePaymentRecordIpsaaClubRepository  extends JpaRepository<StudentFeePaymentRecordIpsaaClubRepository,Long> {
+@Repository
+public interface StudentFeePaymentRecordIpsaaClubRepository  extends JpaRepository<StudentFeePaymentRecordIpsaaClub,Long> {
 }

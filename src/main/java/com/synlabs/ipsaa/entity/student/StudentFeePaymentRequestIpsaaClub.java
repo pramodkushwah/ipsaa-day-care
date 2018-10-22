@@ -1,5 +1,6 @@
 package com.synlabs.ipsaa.entity.student;
 
+import com.synlabs.ipsaa.entity.common.BaseEntity;
 import com.synlabs.ipsaa.enums.FeeDuration;
 import com.synlabs.ipsaa.enums.PaymentStatus;
 
@@ -9,7 +10,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class StudentFeePaymentRequestIpsaaClub {
+@Entity
+public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
+
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     private Student student;
 

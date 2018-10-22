@@ -458,4 +458,12 @@ public class StudentAttendanceService extends BaseService {
 		});
 		return true;
 	}
+
+    public Map<String,Integer> getAttendanceFromTo(Date lastGenerationDate, Date today,Student student) {
+		Map<String,Integer> counts=new HashMap<>();
+		List<StudentAttendance> list=attendanceRepository.findByCreatedDateBetweenAndStudent(lastGenerationDate,today,student);
+		for(StudentAttendance att:list){
+
+		}
+    }
 }
