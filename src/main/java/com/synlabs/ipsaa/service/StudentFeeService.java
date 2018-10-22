@@ -380,10 +380,10 @@ public class StudentFeeService {
         if(fee==null){
             throw new NotFoundException(String.format("Student fee not found [%s]", request.getStudentId()));
         }
-        if (thisQuarterSlip.getPaymentStatus() == PaymentStatus.Paid ||thisQuarterSlip.getPaymentStatus() == PaymentStatus.PartiallyPaid)
-        {
-            throw new ValidationException("Already paid some or full amount.");
-        }
+//        if (thisQuarterSlip.getPaymentStatus() == PaymentStatus.Paid ||thisQuarterSlip.getPaymentStatus() == PaymentStatus.PartiallyPaid)
+//        {
+//            throw new ValidationException("Already paid some or full amount.");
+// }
          if(thisQuarterSlip.isExpire()){
              throw new ValidationException("Can Not Regenerate Expire Slip.");
          }
@@ -499,30 +499,45 @@ public class StudentFeeService {
         if(newBaseFee!=oldBaseFee ||
                 newFinalBaseFee!=oldFinalBaseFee){
             // base fee change handel
-            thisQuarterSlip.setAutoComments(thisQuarterSlip.getAutoComments()+" "+"change in base fee" +thisQuarterSlip.getBaseFee() +" to "+ fee.getBaseFee());
+            String autoComment=thisQuarterSlip.getAutoComments()==null?"":thisQuarterSlip.getAutoComments();
+            thisQuarterSlip.setAutoComments(autoComment+" change in base fee" +thisQuarterSlip.getBaseFee() +" to "+ fee.getBaseFee()+"\nregenerate from data"+request.getSpaceifyRegenrationDate());
             thisQuarterSlip.setBaseFee(fee.getBaseFee());
 
+            // one month final fee with discount
             thisQuarterSlip.setFinalBaseFee(thisQuarterSlip.getFinalBaseFee().divide(thisQuarterSlip.getFeeRatio(),2,BigDecimal.ROUND_CEILING));
 
+            // finalfee-one month final fee * next month ratio
             thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee()
                                             .subtract(thisQuarterSlip.getFinalBaseFee().multiply(nextRatio))
                                         );
-            thisQuarterSlip.setFinalBaseFee(fee.getFinalBaseFee());
+
+            // set current diccount
+            thisQuarterSlip.setBaseFeeDiscount(fee.getBaseFeeDiscount());
+
+            // one month base fee from fee
             BigDecimal newFee=fee.getFinalBaseFee().divide(THREE);
+            // add one month fee*next ratio in this slip final fee
             thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee().add(newFee .multiply(nextRatio)));
+
             BigDecimal gstAmmount=ZERO;
 
             // handel chnage in gst
             if (fee.getIgst() != null && fee.getIgst().intValue() != 0) {
+                thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee().subtract(thisQuarterSlip.getGstAmount()));
+                // one month fee gst
                 gstAmmount = FeeUtilsV2.calculateGST(thisQuarterSlip.getFinalBaseFee(), null, GST.IGST);
-                fee.setGstAmount(thisQuarterSlip.getGstAmount().subtract(gstAmmount.multiply(nextRatio)));
+
+                thisQuarterSlip.setGstAmount(thisQuarterSlip.getGstAmount().subtract(gstAmmount.multiply(nextRatio)));
+
+                // 3 month gst amount from student fee
                 gstAmmount = FeeUtilsV2.calculateGST(fee.getFinalBaseFee(), null, GST.IGST);
-                fee.setGstAmount(thisQuarterSlip.getGstAmount().add(gstAmmount.multiply(nextRatio)));
+                //current gst + one month gst* next ratio
+                thisQuarterSlip.setGstAmount(thisQuarterSlip.getGstAmount().add(gstAmmount.divide(THREE).multiply(nextRatio)));
+                thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee().add(thisQuarterSlip.getGstAmount()));
             } else {
                 fee.setGstAmount(ZERO);
             }
         }
-
         if(fee.getTransportFee().intValue()!=thisQuarterSlip.getTransportFee().intValue()){
         // transport fee change handel
             thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee()
@@ -531,9 +546,9 @@ public class StudentFeeService {
             thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee().add(fee.getTransportFee().multiply(nextRatio)));
             thisQuarterSlip.setTransportFee(fee.getTransportFee());
             thisQuarterSlip.setFinalTransportFee(fee.getTransportFee().multiply(thisQuarterSlip.getFeeRatio()));
-
             thisQuarterSlip.setAutoComments(thisQuarterSlip.getAutoComments()+" "+"change in transport fee" +thisQuarterSlip.getTransportFee() +" to " +fee.getTransportFee());
         }
+        thisQuarterSlip.setFinalBaseFee(fee.getFinalBaseFee());
         thisQuarterSlip.setTotalFee(thisQuarterSlip.getTotalFee().add(thisQuarterSlip.getFinalFee()));
         return  feePaymentRepository.saveAndFlush(thisQuarterSlip);
     }

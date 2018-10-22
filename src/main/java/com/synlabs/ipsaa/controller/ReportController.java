@@ -235,8 +235,8 @@ public class ReportController {
 
 		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
 				slipRequest.getCenterCode(), slipRequest.getPeriod(), slipRequest.getYear()));
-		response.setHeader("fileName", String.format("%s_Month_%s_Year_%s.xlsx", slipRequest.getCenterCode(),
-				slipRequest.getPeriod(), slipRequest.getYear()));
+		response.setHeader("fileName", String.format("%s_Quarter_%s_Year.xlsx", slipRequest.getQuarter(),
+				 slipRequest.getYear()));
 		OutputStream out = response.getOutputStream();
 		FileInputStream in = new FileInputStream(file);
 		// copy from in to out
