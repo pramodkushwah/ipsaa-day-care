@@ -4,7 +4,7 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
     $scope.show = false;
     $scope.add = false;
     $scope.SALARY_WRITE = Auth.hasPrivilege('SALARY_WRITE');
-    $scope.salaries = [];
+    $scope.salaries = []; 
 
     // pagination code start
     $scope.currentPage = 0;
@@ -90,9 +90,9 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
         professionalTax: 0.0
     };
 
-    function calculateBasic(salary) {
+    $scope.calculateBasic = function(salary) {
         var ctc = salary.ctc ? salary.ctc : 0;
-        return (ctc * 40) / 100;
+        $scope.runningSalary.basic = (ctc * 40) / 100;
     }
 
     function calculateHRA(salary) {
@@ -184,7 +184,7 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
     // }, true);
 
     $scope.onChange = function(){
-        $scope.runningSalary.basic = calculateBasic($scope.runningSalary);
+        // $scope.runningSalary.basic = calculateBasic($scope.runningSalary);
         $scope.runningSalary.hra = calculateHRA($scope.runningSalary);
         $scope.runningSalary.special = calculateSpecial($scope.runningSalary);
         $scope.runningSalary.pfr = calculatePFR($scope.runningSalary);
@@ -225,8 +225,9 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
     }
 
     $scope.fetchProfessionalTax = debounce(function(){
+        console.log($scope.runningSalary);
         const object = {
-            employeeId: $scope.runningSalary.employeeId,
+            eid: $scope.runningSalary.eid,
             grossSalary: $scope.runningSalary.grossSalary            
         }
         $http.post('/api/employee/stateTax', object).then(function(pt){
