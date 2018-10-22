@@ -290,15 +290,14 @@ public class StudentService extends BaseService {
 		JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
 		query.select(fee).from(fee)
 				.where(fee.student.program.id.eq(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID)
-						.or(fee.student.program.id.eq(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID)))
-				.where(fee.student.active.isTrue())
-				.where(fee.feeDuration.eq(FeeDuration.Quarterly))
-				.where(fee.student.corporate.isFalse());
+				.and(fee.student.active.isTrue())
+				.and(fee.feeDuration.eq(FeeDuration.Quarterly))
+				.and(fee.student.corporate.isFalse()));
+
 		List<StudentFee> fees;
 		if (request.getStudentId() != null) {
 			return query.where(fee.student.id.eq(request.getStudentId())).fetch();
 		}
-
 		if (request.getCenterId() != null) {
 			fees = query.where(fee.student.center.id.eq(request.getCenterId())).fetch();
 			return fees;

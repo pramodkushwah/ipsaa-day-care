@@ -28,6 +28,9 @@ public class IpsaaClubFeeSerivce {
     public IpsaaClubSlipResponce generateSlip(Long id) {
         StudentFeePaymentRequestIpsaaClub studentFeePaymentRequestIpsaaClub=studentFeePaymentRequestIpsaaClubRepository.findOne(id);
         if(studentFeePaymentRequestIpsaaClub!=null)
+
+            // generate code here
+
             return new IpsaaClubSlipResponce(studentFeePaymentRequestIpsaaClub);
         else{
             throw new ValidationException("slip not found");

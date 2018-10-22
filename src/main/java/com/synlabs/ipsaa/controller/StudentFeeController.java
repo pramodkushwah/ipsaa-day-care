@@ -233,4 +233,5 @@ public class StudentFeeController {
         request.setId(id);
         return ipsaaClubFeeSerivce.generateSlip(request.getId());
     }
+
 }
