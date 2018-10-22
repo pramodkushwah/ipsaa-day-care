@@ -283,7 +283,7 @@ public class StudentService extends BaseService {
             //ajustChnages();
             //adjustGst();
             //addSecurity();
-            test();
+            //test();
             //test2();
             return fees;
         }
@@ -296,6 +296,7 @@ public class StudentService extends BaseService {
 
     }
 
+    @Transactional
     private void test() {
         QStudent student = QStudent.student;
         JPAQuery<Student> query = new JPAQuery<>(entityManager);

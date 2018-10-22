@@ -47,7 +47,7 @@
               <div class="form-group">
                 <label class="control-label">*Program</label>
                 <select class="form-control" data-style="select-with-transition" ng-model="workingStudent.programId"
-                        ng-change="programChanged(workingStudent.centerId, workingStudent.programId)"
+                        ng-change="programChanged(workingStudent)"
                         title="Single Select" data-size="7"
                         ng-readonly="showstudent"
                         ng-disabled="showstudent"
@@ -196,7 +196,6 @@
                 </div>
               </div>
             </div>
-
             <div class="col-md-6">
               <div class="form-group">
                 <div class="checkbox" style="padding-top: 45px;">

@@ -197,6 +197,11 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             controller: 'CollectionFeeReportController',
             templateUrl: "views/mis/report/collectionfeereport.html"
         })
+        .state('app.hdfcgatewayfeereport', {
+            url: "/hdfcgatewayfeereport",
+            controller: 'hdfcgatewayfeereportController',
+            templateUrl: "views/mis/report/hdfcgatewayfeereport.html"
+        })
         .state('app.staffattendance', {
             url: "/staffattendance",
             controller: 'StaffAttendanceController',
