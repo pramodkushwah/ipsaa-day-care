@@ -26,8 +26,10 @@ public class SalaryUtilsV2 {
 
 	public static int ESI_LIMIT = 21000;
 
-	public static BigDecimal calculateBasic(BigDecimal ctc) {
-		return ctc.multiply(FORTY).divide(HUNDRED, 2);
+	public static BigDecimal calculateBasic(BigDecimal ctc, BigDecimal basic) {
+	    BigDecimal basicSalary = new BigDecimal(0); ///incoming basic is checked for value other than 40% of CTC.
+		return basicSalary= basic ==ctc.multiply(FORTY).divide(HUNDRED, 2) ?
+                ctc.multiply(FORTY).divide(HUNDRED, 2) : basic;
 	}
 
 	public static BigDecimal calculateHra(BigDecimal basic) {
@@ -131,7 +133,7 @@ public class SalaryUtilsV2 {
 
 		// modify by shubham calculateGrossV2 by calculateGross
 
-		salary.setBasic(SalaryUtilsV2.calculateBasic(salary.getCtc()));
+		salary.setBasic(SalaryUtilsV2.calculateBasic(salary.getCtc(),salary.getBasic()));
 		salary.setHra(SalaryUtilsV2.calculateHra(salary.getBasic()));
 		salary.setConveyance(SalaryUtilsV2.CONVEYANCE);
 		salary.setBonus(SalaryUtilsV2.BOUNS);
@@ -169,7 +171,7 @@ public class SalaryUtilsV2 {
 
 		// modify by shubham calculateGrossV2 by calculateGross
 		salary.setExtraMonthlyAllowance(salary.getExtraMonthlyAllowance());
-		salary.setBasic(SalaryUtilsV2.calculateBasic(salary.getCtc()));
+		salary.setBasic(SalaryUtilsV2.calculateBasic(salary.getCtc(),salary.getBasic()));
 		salary.setHra(SalaryUtilsV2.calculateHra(salary.getBasic()));
 		salary.setConveyance(SalaryUtilsV2.CONVEYANCE);
 		salary.setBonus(SalaryUtilsV2.BOUNS);
@@ -211,7 +213,8 @@ public class SalaryUtilsV2 {
 		// fix dived by zero issu
 		paySlip.setCtc(paySlip.getCtc().divide(oldRatio, 6, RoundingMode.CEILING).multiply(newRatio));
 
-		paySlip.setBasic(calculateBasic(paySlip.getCtc()));
+		//paySlip.setBasic(calculateBasic(paySlip.getCtc(),paySlip.getBasic()));
+        paySlip.setBasic(paySlip.getBasic().divide(oldRatio,6,RoundingMode.CEILING).multiply(newRatio));
 		paySlip.setHra(calculateHra(paySlip.getBasic()));
 		paySlip.setConveyance(CONVEYANCE.multiply(newRatio));
 		paySlip.setBonus(BOUNS.multiply(newRatio));
