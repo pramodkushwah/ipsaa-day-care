@@ -91,15 +91,20 @@ app.service('StudentFeeService', function ($http) {
     fee.gstFee = 0;//annual-fee-gst
     fee.baseFeeGst = 0;
 
-    if(typeof student!='undefined' && student.formalSchool){
+    if(fee.programId == 622614691413790 || (typeof student!='undefined' && student.formalSchool) || fee.formalSchool) {
       fee.gstFee = Number(((Number(fee.finalAnnualFee)) * 0.18).toFixed(2));//annual-fee-gst
       fee.baseFeeGst = Number((((Number(fee.finalBaseFee) * 3)) * 0.18).toFixed(2));
     }
-    else if (fee.formalSchool) {
-      fee.gstFee = Number(((Number(fee.finalAnnualFee)) * 0.18).toFixed(2));//annual-fee-gst
-      fee.baseFeeGst = Number((((Number(fee.finalBaseFee) * 3)) * 0.18).toFixed(2));
 
-    }
+    // if(typeof student!='undefined' && student.formalSchool){
+    //   fee.gstFee = Number(((Number(fee.finalAnnualFee)) * 0.18).toFixed(2));//annual-fee-gst
+    //   fee.baseFeeGst = Number((((Number(fee.finalBaseFee) * 3)) * 0.18).toFixed(2));
+    // }
+    // else if (fee.formalSchool) {
+    //   fee.gstFee = Number(((Number(fee.finalAnnualFee)) * 0.18).toFixed(2));//annual-fee-gst
+    //   fee.baseFeeGst = Number((((Number(fee.finalBaseFee) * 3)) * 0.18).toFixed(2));
+
+    // }
   }
 
   return service;

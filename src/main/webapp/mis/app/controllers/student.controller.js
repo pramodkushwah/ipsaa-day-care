@@ -605,8 +605,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
       $scope.workingStudent.programId = null;
     }
 
-    $scope.programChanged = function (centerId, programId) {
-        loadProgramFee(centerId, programId);
+    $scope.programChanged = function (student) {
+        loadProgramFee(student.centerId, student.programId);
     };
 
     $scope.corporateClicked = function (student) {
@@ -663,7 +663,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
                     $scope.workingStudent.fee = $scope.workingStudent.fee ? $scope.workingStudent.fee : {};
                     var student = $scope.workingStudent;
                     var studentFee = $scope.workingStudent.fee;
-
+                    studentFee.programId = $scope.workingStudent.programId;
                     studentFee.annualFee = programFee.annualFee;
                     studentFee.admissionFee = programFee.admissionFee;
                     studentFee.baseFee = programFee.fee;
@@ -682,6 +682,8 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
                     studentFee.finalBaseFee = programFee.fee;
                     studentFee.discountSecurityDeposit = 0;
                     studentFee.finalSecurityDeposit = programFee.deposit;
+                    console.log(studentFee);
+                    
                     StudentFeeService.calculateGstFee(studentFee, student);
                     StudentFeeService.calculateFinalFee(studentFee);
                 },
