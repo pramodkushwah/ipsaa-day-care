@@ -238,8 +238,10 @@ public class StaffReport {
 
 			cell=row.createCell(index++, Cell.CELL_TYPE_NUMERIC);
 			EmployeeSalary salary=employeeSalaryRepository.findByEmployee(employee);
+			if(salary != null)
 				cell.setCellValue(salary.getCtc().intValue());
-
+			else
+				cell.setCellValue(0);
 			return true;
 		}
 		return false;

@@ -128,9 +128,8 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
     }
 
     function calculateGross(salary) {
-        return salary.ctc - 
-                salary.bonus - 
-                salary.pfr;
+        const gross = salary.ctc - salary.bonus - salary.pfr;
+        return gross ? gross : 0 ;
     }
 
     function calculateESI(salary) {
@@ -225,10 +224,9 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
     }
 
     $scope.fetchProfessionalTax = debounce(function(){
-        console.log($scope.runningSalary);
         const object = {
             eid: $scope.runningSalary.eid,
-            grossSalary: $scope.runningSalary.grossSalary            
+            grossSalary: $scope.runningSalary.grossSalary
         }
         $http.post('/api/employee/stateTax', object).then(function(pt){
             console.log(pt.data);
@@ -241,7 +239,8 @@ app.controller('SalaryManagementController', function ($scope, $http, Auth, $fil
             }
         },function(errro){
 
-        });        
+        });
+
     },200);
 
     

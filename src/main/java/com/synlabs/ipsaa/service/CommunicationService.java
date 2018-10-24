@@ -8,6 +8,7 @@ import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.entity.student.Student;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
 import com.synlabs.ipsaa.entity.student.StudentParent;
+import com.synlabs.ipsaa.enums.AttendanceStatus;
 import com.synlabs.ipsaa.enums.EmailNotificationType;
 import com.synlabs.ipsaa.ex.UploadException;
 import com.synlabs.ipsaa.ftl.model.ApprovalModel;
@@ -137,7 +138,7 @@ public class CommunicationService
       String emailarray[] = emails.toArray(new String[emails.size()]);
       String smsarray[] = phones.toArray(new String[phones.size()]);
 
-      if (attendance.getCheckout() != null)
+      if (attendance.getCheckout() != null || attendance.getStatus()== AttendanceStatus.Absent)
       {
         if (smsarray.length > 0)
         {
