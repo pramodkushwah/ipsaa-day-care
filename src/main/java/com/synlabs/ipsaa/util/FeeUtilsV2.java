@@ -12,6 +12,7 @@ import java.util.Map;
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequestIpsaaClub;
 import com.synlabs.ipsaa.enums.GST;
 import com.synlabs.ipsaa.ex.ValidationException;
 
@@ -366,4 +367,11 @@ public class FeeUtilsV2 {
 		BigDecimal dis = baseFee.subtract(DiscountAmmount);
 		return dis.divide(baseFee, 6).multiply(HUNDRED);
 	}
+
+    public static BigDecimal calculateIpsaaClubTotalFee(StudentFeePaymentRequestIpsaaClub slip) {
+		return slip.getTotalFee()
+						.add(slip.getFinalAnnualFee())
+						.add(slip.getFinalDepositFee())
+						.add(slip.getGstAmount());
+    }
 }

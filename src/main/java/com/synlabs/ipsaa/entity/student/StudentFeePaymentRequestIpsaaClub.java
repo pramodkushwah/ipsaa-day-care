@@ -58,7 +58,7 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "request", cascade = CascadeType.ALL)
     @OrderBy("paymentDate DESC")
-    private List<StudentFeePaymentRecord> payments = new ArrayList<>();
+    private List<StudentFeePaymentRecordIpsaaClub> payments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -90,8 +90,6 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
     @Column(unique = true)
     private String tnxid;
 
-    @Column(columnDefinition = "bit(1) default 0")
-    private boolean isExpire = false;
 
     @Temporal(TemporalType.DATE)
     private Date lastGenerationDate;
@@ -101,6 +99,14 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
     @Column(columnDefinition = "bit(1) default 0")
     private boolean generateActive = false;
 
+
+    public Date getExpireDate() {
+        return expireDate;
+    }
+
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
+    }
 
     public int getNoOfFullDays() {
         return noOfFullDays;
@@ -230,11 +236,11 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
         this.year = year;
     }
 
-    public List<StudentFeePaymentRecord> getPayments() {
+    public List<StudentFeePaymentRecordIpsaaClub> getPayments() {
         return payments;
     }
 
-    public void setPayments(List<StudentFeePaymentRecord> payments) {
+    public void setPayments(List<StudentFeePaymentRecordIpsaaClub> payments) {
         this.payments = payments;
     }
 
@@ -326,14 +332,6 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
         this.tnxid = tnxid;
     }
 
-    public boolean isExpire() {
-        return isExpire;
-    }
-
-    public void setExpire(boolean expire) {
-        isExpire = expire;
-    }
-
     public boolean isReGenerateSlip() {
         return reGenerateSlip;
     }
@@ -370,7 +368,7 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
     public BigDecimal getPaidAmount()
     {
         BigDecimal paidAmount = BigDecimal.ZERO;
-        for (StudentFeePaymentRecord payment : payments)
+        for (StudentFeePaymentRecordIpsaaClub payment : payments)
         {
             if(payment.getActive())
                 if (payment.getPaymentStatus() == PaymentStatus.Paid

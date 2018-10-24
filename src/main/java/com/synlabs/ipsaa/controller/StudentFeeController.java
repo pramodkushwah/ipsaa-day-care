@@ -214,6 +214,7 @@ public class StudentFeeController {
     public List<StudentFeeResponse> ipsaaList(@RequestParam(required = false) Long centerId) {
         return studentService.listFeeIpsaa(new StudentFeeRequest(centerId)).stream().map(StudentFeeResponse::new).collect(Collectors.toList());
     }
+
     @Secured(STUDENTFEE_SLIP_READ)
     @PostMapping("/ipsaaclub/feeslip/list")
     public List<IpsaaClubSlipResponce> listStudentIpsaaSlips(@RequestBody IpsaaClubSlipRequest request) {
@@ -222,34 +223,36 @@ public class StudentFeeController {
 
     @Secured(STUDENTFEE_SLIP_WRITE)
     @PostMapping("/ipsaaclub/slip/{student_id}")
-    public IpsaaClubSlipResponce getSlip(@RequestParam("student_id")Long id) {
-        IpsaaClubSlipRequest request=new IpsaaClubSlipRequest();
+    public IpsaaClubSlipResponce getSlip(@PathVariable("student_id") Long id) {
+        IpsaaClubSlipRequest request = new IpsaaClubSlipRequest();
         request.setId(id);
         return ipsaaClubFeeSerivce.getStudnetSlip(request.getId());
-        }
+    }
+
     @Secured(STUDENTFEE_SLIP_WRITE)
     @PostMapping("/ipsaaclub/generate/{id}")
-    public IpsaaClubSlipResponce generate(@RequestParam("id")Long id) {
-        IpsaaClubSlipRequest request=new IpsaaClubSlipRequest();
+    public IpsaaClubSlipResponce generate(@PathVariable("id") Long id) {
+        IpsaaClubSlipRequest request = new IpsaaClubSlipRequest();
         request.setId(id);
         return ipsaaClubFeeSerivce.generateSlip(request.getId());
     }
+
     @Secured(STUDENTFEE_SLIP_WRITE)
     @PostMapping("/ipsaaclub/slip/update")
     // Called when slip save button is pressed
-    public StudentFeeSlipResponse updateIpsaClubSlip(@RequestBody StudentFeeSlipRequestV2 request) {
-        return new StudentFeeSlipResponse(studentFeeService.updateSlip(request));
+    public IpsaaClubSlipResponce updateIpsaClubSlip(@RequestBody StudentFeeSlipRequestV2 request) {
+        return new IpsaaClubSlipResponce(ipsaaClubFeeSerivce.updateRecord(request));
     }
 
     @Secured(STUDENTFEE_RECEIPT_WRITE)
     @PostMapping("/ipsaaclub/payfee")
     //record payment button
-    public StudentFeeSlipResponse payIpsaaFee(@RequestBody SaveFeeSlipRequest request) {
-        return new StudentFeeSlipResponse(studentFeeService.payFee(request));
+    public IpsaaClubSlipResponce payIpsaaFee(@RequestBody SaveFeeSlipRequest request) {
+        return new IpsaaClubSlipResponce(ipsaaClubFeeSerivce.payFee(request));
     }
 
     @Secured(STUDENTFEE_RECEIPT_CONFIRM)
-    @PutMapping("/ipsaaclub/payfee")
+    @PutMapping("/ipsaaclub/update")
     //Confirm payment
     public StudentFeePaymentResponse updateIpsaaClubPayFee(@RequestBody SaveFeeSlipRequest request) {
         return new StudentFeePaymentResponse(studentFeeService.updatePayFee(request));
