@@ -2,6 +2,7 @@ package com.synlabs.ipsaa.util;
 
 import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport2;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.util.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -12,14 +13,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ExcelGenerater {
-    List<Map<String, Object>> list;
+    List<Stack<Pair<String, Object>>> list;
 
-    public ExcelGenerater(List<Map<String, Object>> list) {
+    public ExcelGenerater(List<Stack<Pair<String, Object>>> list) {
         this.list = list;
     }
     public File create(String exportDir, String sheetName) {
@@ -45,27 +44,30 @@ public class ExcelGenerater {
         return file;
     }
 
-    private boolean makeList(List<Map<String, Object>> list, int i, Sheet feeCollectionReportSheet) {
+    private boolean makeList(List<Stack<Pair<String, Object>>> list, int i, Sheet feeCollectionReportSheet) {
         int rowCount=i;
-        for(Map<String ,Object > rowData:list){
+        for(Stack<Pair<String, Object>> rowData:list){
             Row row = feeCollectionReportSheet.createRow(rowCount++);
             int count = 0;
-            for (Map.Entry<String, Object> entry : rowData.entrySet()) {
-                System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+            while(!rowData.isEmpty()){
+                Pair<String,Object> data=rowData.pop();
+                //System.out.println("Key = " + data.getKey() + ", Value = " + data.getValue());
                 Cell cell = row.createCell(count++);
-                cell.setCellValue(entry.getValue()+"");
+                cell.setCellValue(data.getValue()+"");
             }
         }
         return true;
     }
 
-    private void createHeader(Map<String, Object> list, int i, Sheet feeCollectionReportSheet) {
+    private void createHeader(Stack<Pair<String, Object>> list, int i, Sheet feeCollectionReportSheet) {
         Row row = feeCollectionReportSheet.createRow(i);
+        Stack<Pair<String, Object>> l= (Stack<Pair<String, Object>>) list.clone();
         int count = 0;
-        for (Map.Entry<String, Object> entry : list.entrySet()) {
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        while (!l.isEmpty()){
+            Pair<String,Object> value=l.pop();
+            //System.out.println("Key = " + value.getKey() + ", Value = " +  value.getValue());
             Cell cell = row.createCell(count++);
-            cell.setCellValue(entry.getKey().toUpperCase());
+            cell.setCellValue(value.getKey().toUpperCase());
         }
     }
 
