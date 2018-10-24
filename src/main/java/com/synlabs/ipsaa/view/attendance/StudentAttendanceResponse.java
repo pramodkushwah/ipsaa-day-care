@@ -37,6 +37,9 @@ public class StudentAttendanceResponse implements Response
 
   private String img;
 
+  /////Avneet
+  private String centerType;
+
   private final DateFormat formatter = new SimpleDateFormat("hh:mm a");
 
   public StudentAttendanceResponse(StudentAttendance attendance)
@@ -47,6 +50,7 @@ public class StudentAttendanceResponse implements Response
     this.group = student.getGroup().getName();
     this.fullName = student.getProfile().getFullName();
     this.center = student.getCenter().getName();
+    this.centerType=student.getCenter().getCenterType().name();
     this.status = attendance.getStatus().name() == null? AttendanceStatus.Absent.toString(): attendance.getStatus().name();
     this.actualIn = attendance.getCheckin() == null ? null : formatter.format(attendance.getCheckin());
     this.actualOut = attendance.getCheckout() == null ? null : formatter.format(attendance.getCheckout());
@@ -121,4 +125,6 @@ public class StudentAttendanceResponse implements Response
   {
     return status;
   }
+
+  public String getCenterType() { return centerType; }
 }

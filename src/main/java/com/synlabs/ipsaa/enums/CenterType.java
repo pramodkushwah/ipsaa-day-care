@@ -4,7 +4,5 @@ public enum CenterType
 {
   Corporate,
   Community,
-
-  //////Avneet
   School
 }
