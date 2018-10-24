@@ -25,6 +25,7 @@ public final class IPSAAAuth
 
     public static final String STUDENTFEE_SLIP_READ  = "ROLE_STUDENTFEE_SLIP_READ";
     public static final String STUDENTFEE_SLIP_WRITE = "ROLE_STUDENTFEE_SLIP_WRITE";
+    public static final String STUDENTFEE_REGENERATE_WRITE = "ROLE_STUDENTFEE_REGENERATE_WRITE";
 
     public static final String PAYSLIP_READ  = "ROLE_PAYSLIP_READ";
     // shubham

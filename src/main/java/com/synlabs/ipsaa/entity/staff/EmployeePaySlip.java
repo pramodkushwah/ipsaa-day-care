@@ -605,7 +605,8 @@ public class EmployeePaySlip extends BaseEntity {
 		// employeeSalary =
 		// SalaryUtilsV2.calculateCTC(employeeSalary,this.otherAllowances,this.otherDeductions,this.tds);
 
-		this.basic = SalaryUtilsV2.calculateBasic(this.ctc);
+	//	this.basic = SalaryUtilsV2.calculateBasic(this.ctc,employeeSalary.getBasic());
+		this.basic= employeeSalary.getBasic().multiply(ratio);
 		this.hra = SalaryUtilsV2.calculateHra(this.basic);
 		this.conveyance = ratio.multiply(SalaryUtilsV2.CONVEYANCE);
 		this.bonus = ratio.multiply(SalaryUtilsV2.BOUNS);

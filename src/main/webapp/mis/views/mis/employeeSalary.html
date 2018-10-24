@@ -38,14 +38,14 @@
         <div class="col-md-3">
           <div class="form-group">
             <label class="control-label">Ctc*</label>
-            <input class="form-control" name="ctc" type="number" required ng-model="runningSalary.ctc" ng-readonly="show" ng-change="onChange()">
+            <input class="form-control" name="ctc" type="number" required ng-model="runningSalary.ctc" ng-readonly="show" ng-change="onChange();calculateBasic(runningSalary)">
             <span class="material-input"></span>
           </div>
         </div>
         <div class="col-md-3">
           <div class="form-group">
             <label class="control-label">Basic*</label>
-            <input class="form-control" name="basic" type="number" required ng-model="runningSalary.basic" readonly>
+            <input class="form-control" name="basic" type="number" required ng-model="runningSalary.basic" ng-change="onChange()">
             <span class="material-input"></span>
           </div>
         </div>

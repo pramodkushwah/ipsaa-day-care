@@ -1,45 +1,38 @@
 package com.synlabs.ipsaa.service;
 
-import com.querydsl.jpa.impl.JPAQuery;
 import com.synlabs.ipsaa.entity.attendance.StudentAttendance;
 import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.fee.CenterCharge;
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.fee.Charge;
+import com.synlabs.ipsaa.entity.fee.HdfcResponse;
 import com.synlabs.ipsaa.entity.programs.Program;
-import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
-import com.synlabs.ipsaa.entity.student.QStudentFee;
 import com.synlabs.ipsaa.entity.student.Student;
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
-import com.synlabs.ipsaa.enums.ApprovalStatus;
-import com.synlabs.ipsaa.enums.FeeDuration;
 import com.synlabs.ipsaa.enums.PaymentStatus;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
-import com.synlabs.ipsaa.util.BigDecimalUtils;
+import com.synlabs.ipsaa.util.ExcelGenerater;
 import com.synlabs.ipsaa.util.FeeUtils;
 import com.synlabs.ipsaa.view.center.CenterChargeRequest;
 import com.synlabs.ipsaa.view.center.CenterFeeRequest;
-import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.center.CenterProgramFeeRequest;
-import com.synlabs.ipsaa.view.center.ProgramResponse;
 import com.synlabs.ipsaa.view.fee.*;
 import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport;
 import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport2;
 import com.synlabs.ipsaa.view.report.excel.FeeReportExcel2;
+import javafx.util.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.hibernate.criterion.Order;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -91,6 +84,9 @@ public class FeeService extends BaseService
 
   @Autowired
   private StudentService studentService;
+
+  @Autowired
+  private HdfcResponseRepository hdfcResponseRepository;
 
   @Value("${ipsaa.export.directory}")
   private String exportDir;
@@ -766,6 +762,39 @@ public class FeeService extends BaseService
         e.printStackTrace();
       }
     }
+    return file;
+  }
+  public File collectionHdfcReport2(StudentFeeSlipRequest slipRequest) throws IOException
+  {
+    if (StringUtils.isEmpty(slipRequest.getPeriod()))
+    {
+      throw new ValidationException("Period is required.");
+    }
+    List<HdfcResponse> hdfc = hdfcResponseRepository.findBySlipQuarterAndSlipYear(slipRequest.getQuarter(),slipRequest.getYear());
+    List<Stack<Pair<String, Object>>> list=new ArrayList<>();
+    int count=1;
+    for(HdfcResponse res:hdfc){
+      Stack<Pair<String,Object>> row=new Stack<>();
+      row.push(new Pair("billing_name",res.getBillingName()));
+      row.push(new Pair("billing_email",res.getBillingEmail()));
+      row.push(new Pair("tracking_id",res.getTrackingId()));
+      row.push(new Pair("status_message",res.getStatusMessage()));
+      row.push(new Pair("bank_ref_no",res.getBankRefNo()));
+      row.push(new Pair("type",res.getType()));
+      row.push(new Pair("slip_id",res.getSlip().getId()));
+      row.push(new Pair("trans_date",res.getTransDate()));
+      row.push(new Pair("amount",res.getAmount()));
+      row.push(new Pair("program_name",res.getSlip().getStudent().getProgramName()));
+      row.push(new Pair("center",res.getSlip().getStudent().getCenterName()));
+      row.push(new Pair("student_name",res.getSlip().getStudent().getProfile().getFullName()));
+      row.push(new Pair("s.id",count++));
+
+      list.add(row);
+    }
+    ExcelGenerater eg=new ExcelGenerater(list);
+    File file=eg.create(exportDir,"hdfc report");
+    //File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
+
     return file;
   }
   //--------------------------------------shubham ---------------------------------------------------------------

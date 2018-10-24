@@ -117,7 +117,7 @@ public class FeeUtilsV2 {
 				.add(fee.getAdjust());
 		BigDecimal gstAmmount;
 
-		if (fee.getIgst() != null && fee.getIgst().intValue() != 0) {
+		if (fee.getGstAmount()!=null && fee.getGstAmount().intValue()>0) {
 			gstAmmount = calculateGST(fee.getFinalBaseFee(), fee.getFinalAnnualCharges(), GST.IGST);
 			fee.setGstAmount(gstAmmount);
 			totalFee = totalFee.add(gstAmmount);
@@ -144,13 +144,12 @@ public class FeeUtilsV2 {
 		if (fee.getStudent().isFormalSchool()) {
 			fee.setIgst(new BigDecimal(18));
 			fee.setFinalFee(calculateFinalFee(fee, true));
-		} else if (centerProgramFee.getProgram().getId() == IPSAA_CLUB_PROGRAM_ID
-				|| centerProgramFee.getProgram().getId() == IPSAA_CLUB_REGULAR_PROGRAM_ID) {
-			// throw new ValidationException(String.format("can not save or update ipsaa
-			// club studnet from here"));
-			// fee.setIgst(new BigDecimal(18));
-			// fee.setFinalFee(calculateFinalFee(fee, true));
-		} else {
+		} else if (centerProgramFee.getProgram().getId() == IPSAA_CLUB_PROGRAM_ID) {
+
+		}else if(centerProgramFee.getProgram().getId() == IPSAA_CLUB_REGULAR_PROGRAM_ID){
+			 fee.setIgst(new BigDecimal(18));
+			 fee.setFinalFee(calculateFinalFee(fee, true));
+		} else{
 			fee.setIgst(new BigDecimal(0));
 			fee.setFinalFee(calculateFinalFee(fee, false));
 		}
@@ -338,10 +337,9 @@ public class FeeUtilsV2 {
 		double feeMonthRatio = quarterEnd - currMonth;
 		if (15 >= currDay) {
 			feeMonthRatio = feeMonthRatio + 0.5;
-		} else {
-			if (feeMonthRatio != 0)
-				feeMonthRatio = feeMonthRatio + 1.00;
 		}
+		if(feeMonthRatio==0)
+			return THREE;
 		return new BigDecimal(feeMonthRatio);
 	}
 

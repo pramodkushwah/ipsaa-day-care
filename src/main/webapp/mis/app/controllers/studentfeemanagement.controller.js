@@ -190,6 +190,7 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
                     $scope.insertStudentFee.mode = !mode ? 'Show' : mode;
                     $scope.insertStudentFee.adjust = $scope.insertStudentFee.adjust ? $scope.insertStudentFee.adjust : 0;
                     StudentFeeService.initializeFee($scope.insertStudentFee);
+                    $scope.insertStudentFee['programId']=$scope.insertStudentFee.program.id;
                     StudentFeeService.calculateGstFee($scope.insertStudentFee);
                     StudentFeeService.calculateFinalFee($scope.insertStudentFee);
                     $scope.addstudentfee = true;
