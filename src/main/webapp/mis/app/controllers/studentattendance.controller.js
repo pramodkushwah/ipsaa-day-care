@@ -45,7 +45,7 @@ app.controller('StudentAttendanceController', function ($scope, $http) {
 
     $scope.clockout = function (student) {
         student.clockoutDisabled=true;
-        if(student.center !== 'BHARAT RAM GLOBAL SCHOOL'){
+        if(student.centerType !== 'School'){
             $http.post('/api/attendance/student/clockout/', {studentId: student.id})
                 .then(function (response) {
                     $.extend(student,response.data);
@@ -74,7 +74,7 @@ app.controller('StudentAttendanceController', function ($scope, $http) {
             $scope.students = response.data;
             $scope.studentsCopy = angular.copy(response.data);
             $scope.students = $scope.studentsCopy.filter(student => {
-                return student.center !== 'BHARAT RAM GLOBAL SCHOOL';
+                return student.centerType !== 'School';
             });
             // angular.forEach($scope.students, function (student) {
             //     if (!student.img) {
@@ -90,7 +90,7 @@ app.controller('StudentAttendanceController', function ($scope, $http) {
     $scope.bharatRamSchool = false;
     $scope.centerChange = function(center){
         scope = $scope;
-        if(center && center.name === 'BHARAT RAM GLOBAL SCHOOL'){
+        if(center && center.type === 'School'){
             scope.getPrograms(center);
             $scope.students = $scope.studentsCopy.filter(student => {
                 return student.center === center.name;
@@ -104,7 +104,7 @@ app.controller('StudentAttendanceController', function ($scope, $http) {
         } else{
             $scope.bharatRamSchool = false;
             $scope.students = $scope.studentsCopy.filter(student => {
-                return student.center !== 'BHARAT RAM GLOBAL SCHOOL';
+                return student.centerType !== 'School';
             });
         }
     }
