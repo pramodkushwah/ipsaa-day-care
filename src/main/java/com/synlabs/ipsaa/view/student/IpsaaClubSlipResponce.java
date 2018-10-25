@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 public class IpsaaClubSlipResponce implements Response {
     private long studentId;
+    private long slipId;
     private BigDecimal annualFee;
     private BigDecimal annualFeeDiscount;
     private BigDecimal finalAnnualFee;
@@ -35,7 +36,7 @@ public class IpsaaClubSlipResponce implements Response {
     private BigDecimal totalFee;
     private BigDecimal finalFee;
 
-    private List<StudentFeePaymentRecordResponce> payments = new ArrayList<>();
+    private List<IpsaaClubRecordResponce> payments = new ArrayList<>();
     private PaymentStatus paymentStatus;
     private String slipSerial;
     private String slipFileName;
@@ -52,6 +53,7 @@ public class IpsaaClubSlipResponce implements Response {
     private boolean generateActive = false;
 
     public IpsaaClubSlipResponce(StudentFeePaymentRequestIpsaaClub studentFeePaymentRequestIpsaaClub) {
+        this.setStudentId(studentFeePaymentRequestIpsaaClub.getId());
         this.annualFee=studentFeePaymentRequestIpsaaClub.getAnnualFee();
         this.annualFeeDiscount=studentFeePaymentRequestIpsaaClub.getAnnualFeeDiscount();
         this.autoComments=studentFeePaymentRequestIpsaaClub.getAutoComments();
@@ -71,7 +73,280 @@ public class IpsaaClubSlipResponce implements Response {
         this.invoiceDate=studentFeePaymentRequestIpsaaClub.getInvoiceDate();
         this.lastGenerationDate=studentFeePaymentRequestIpsaaClub.getLastGenerationDate();
         this.month=studentFeePaymentRequestIpsaaClub.getMonth();
+        this.slipId=studentFeePaymentRequestIpsaaClub.getId();
         this.payments=studentFeePaymentRequestIpsaaClub.getPayments()
-                .stream().map(StudentFeePaymentRecordResponce::new).collect(Collectors.toList());
+                .stream().map(IpsaaClubRecordResponce::new).collect(Collectors.toList());
+    }
+
+    public long getSlipId() {
+        return slipId;
+    }
+
+    public void setSlipId(long slipId) {
+        this.slipId = slipId;
+    }
+
+    public long getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(long studentId) {
+        this.studentId = mask(studentId);
+    }
+
+    public BigDecimal getAnnualFee() {
+        return annualFee;
+    }
+
+    public void setAnnualFee(BigDecimal annualFee) {
+        this.annualFee = annualFee;
+    }
+
+    public BigDecimal getAnnualFeeDiscount() {
+        return annualFeeDiscount;
+    }
+
+    public void setAnnualFeeDiscount(BigDecimal annualFeeDiscount) {
+        this.annualFeeDiscount = annualFeeDiscount;
+    }
+
+    public BigDecimal getFinalAnnualFee() {
+        return finalAnnualFee;
+    }
+
+    public void setFinalAnnualFee(BigDecimal finalAnnualFee) {
+        this.finalAnnualFee = finalAnnualFee;
+    }
+
+    public BigDecimal getBaseFeeDiscount() {
+        return baseFeeDiscount;
+    }
+
+    public void setBaseFeeDiscount(BigDecimal baseFeeDiscount) {
+        this.baseFeeDiscount = baseFeeDiscount;
+    }
+
+    public BigDecimal getFinalBaseFee() {
+        return finalBaseFee;
+    }
+
+    public void setFinalBaseFee(BigDecimal finalBaseFee) {
+        this.finalBaseFee = finalBaseFee;
+    }
+
+    public BigDecimal getBaseFee() {
+        return baseFee;
+    }
+
+    public void setBaseFee(BigDecimal baseFee) {
+        this.baseFee = baseFee;
+    }
+
+    public BigDecimal getDeposit() {
+        return deposit;
+    }
+
+    public void setDeposit(BigDecimal deposit) {
+        this.deposit = deposit;
+    }
+
+    public BigDecimal getFinalDepositFee() {
+        return finalDepositFee;
+    }
+
+    public void setFinalDepositFee(BigDecimal finalDepositFee) {
+        this.finalDepositFee = finalDepositFee;
+    }
+
+    public BigDecimal getDepositFeeDiscount() {
+        return depositFeeDiscount;
+    }
+
+    public void setDepositFeeDiscount(BigDecimal depositFeeDiscount) {
+        this.depositFeeDiscount = depositFeeDiscount;
+    }
+
+    public BigDecimal getGstAmount() {
+        return gstAmount;
+    }
+
+    public void setGstAmount(BigDecimal gstAmount) {
+        this.gstAmount = gstAmount;
+    }
+
+    public int getNoOfFullDays() {
+        return noOfFullDays;
+    }
+
+    public void setNoOfFullDays(int noOfFullDays) {
+        this.noOfFullDays = noOfFullDays;
+    }
+
+    public int getNoOfHalfDays() {
+        return noOfHalfDays;
+    }
+
+    public void setNoOfHalfDays(int noOfHalfDays) {
+        this.noOfHalfDays = noOfHalfDays;
+    }
+
+    public int getTotalNoOfDays() {
+        return totalNoOfDays;
+    }
+
+    public void setTotalNoOfDays(int totalNoOfDays) {
+        this.totalNoOfDays = totalNoOfDays;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public BigDecimal getTotalFee() {
+        return totalFee;
+    }
+
+    public void setTotalFee(BigDecimal totalFee) {
+        this.totalFee = totalFee;
+    }
+
+    public BigDecimal getFinalFee() {
+        return finalFee;
+    }
+
+    public void setFinalFee(BigDecimal finalFee) {
+        this.finalFee = finalFee;
+    }
+
+    public List<IpsaaClubRecordResponce> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<IpsaaClubRecordResponce> payments) {
+        this.payments = payments;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public String getSlipSerial() {
+        return slipSerial;
+    }
+
+    public void setSlipSerial(String slipSerial) {
+        this.slipSerial = slipSerial;
+    }
+
+    public String getSlipFileName() {
+        return slipFileName;
+    }
+
+    public void setSlipFileName(String slipFileName) {
+        this.slipFileName = slipFileName;
+    }
+
+    public String getReceiptSerial() {
+        return receiptSerial;
+    }
+
+    public void setReceiptSerial(String receiptSerial) {
+        this.receiptSerial = receiptSerial;
+    }
+
+    public String getReceiptFileName() {
+        return receiptFileName;
+    }
+
+    public void setReceiptFileName(String receiptFileName) {
+        this.receiptFileName = receiptFileName;
+    }
+
+    public Date getInvoiceDate() {
+        return invoiceDate;
+    }
+
+    public void setInvoiceDate(Date invoiceDate) {
+        this.invoiceDate = invoiceDate;
+    }
+
+    public Date getExpireDate() {
+        return expireDate;
+    }
+
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public String getAutoComments() {
+        return autoComments;
+    }
+
+    public void setAutoComments(String autoComments) {
+        this.autoComments = autoComments;
+    }
+
+    public String getTnxid() {
+        return tnxid;
+    }
+
+    public void setTnxid(String tnxid) {
+        this.tnxid = tnxid;
+    }
+
+    public Date getLastGenerationDate() {
+        return lastGenerationDate;
+    }
+
+    public void setLastGenerationDate(Date lastGenerationDate) {
+        this.lastGenerationDate = lastGenerationDate;
+    }
+
+    public boolean isReGenerateSlip() {
+        return reGenerateSlip;
+    }
+
+    public void setReGenerateSlip(boolean reGenerateSlip) {
+        this.reGenerateSlip = reGenerateSlip;
+    }
+
+    public boolean isGenerateActive() {
+        return generateActive;
+    }
+
+    public void setGenerateActive(boolean generateActive) {
+        this.generateActive = generateActive;
     }
 }

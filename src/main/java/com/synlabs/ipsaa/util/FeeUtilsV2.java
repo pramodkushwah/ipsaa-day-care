@@ -370,6 +370,7 @@ public class FeeUtilsV2 {
 
     public static BigDecimal calculateIpsaaClubTotalFee(StudentFeePaymentRequestIpsaaClub slip) {
 		return slip.getTotalFee()
+						.add(slip.getBalance())
 						.add(slip.getFinalAnnualFee())
 						.add(slip.getFinalDepositFee())
 						.add(slip.getGstAmount());

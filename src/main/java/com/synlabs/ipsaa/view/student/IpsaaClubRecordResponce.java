@@ -1,48 +1,34 @@
-package com.synlabs.ipsaa.entity.student;
+package com.synlabs.ipsaa.view.student;
 
-import com.synlabs.ipsaa.entity.common.BaseEntity;
+import com.synlabs.ipsaa.entity.student.Student;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecordIpsaaClub;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequestIpsaaClub;
 import com.synlabs.ipsaa.enums.PaymentMode;
 import com.synlabs.ipsaa.enums.PaymentStatus;
+import com.synlabs.ipsaa.view.common.Response;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.stream.Collectors;
 
-@Entity
-public class StudentFeePaymentRecordIpsaaClub extends BaseEntity {
+public class IpsaaClubRecordResponce implements Response{
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Student student;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+
+    private long student;
+    private long recordId;
     private StudentFeePaymentRequestIpsaaClub request;
-    @Temporal(TemporalType.DATE)
     private Date paymentDate;
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
     private PaymentStatus paymentStatus;
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
     private PaymentMode paymentMode;
-    @Column(length = 200)
     private String txnid;
-
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal paidAmount;
-
     private Boolean confirmed = false;
-
-    @Column(columnDefinition = "bit(1) default 1")
     private Boolean active = true;
 
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal annualFee;
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal depositFee;
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal baseFee;
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal extraCharges;
 
     private int noOfFullDays;
@@ -52,83 +38,59 @@ public class StudentFeePaymentRecordIpsaaClub extends BaseEntity {
     private int month;
     private int year;
 
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal balance;
 
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal gstAmount;
 
-    @Column(precision = 16, scale = 2, nullable = false)
     private BigDecimal totalFee;
 
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal finalFee;
 
-    @Column(unique = true, length = 20)
     private String slipSerial;
-    @Column(unique = true, length = 200)
     private String slipFileName;
-    @Column(unique = true, length = 20)
     private String receiptSerial;
-    @Column(unique = true, length = 200)
     private String receiptFileName;
 
-
-
-    @Temporal(TemporalType.DATE)
     private Date startDate;
-    @Temporal(TemporalType.DATE)
     private Date endDate;
 
-    @Column(length = 200)
     private String comments;
 
-    @Column(length = 200)
     private String autoComments;
 
-    @Column(length = 200)
     private String comment;
 
-    @Column(columnDefinition = "bit(1) default 0")
     private boolean isExpire = false;
 
-    @Override
-    public String toString()
-    {
-        return "{" +
-                "admission_number" + (student == null ? null : student.getAdmissionNumber()) +
-                "paymentDate=" + paymentDate +
-                ", paymentStatus=" + paymentStatus +
-                ", paymentMode=" + paymentMode +
-                ", txnid='" + txnid + '\'' +
-                ", paidAmount=" + paidAmount +
-                ", confirmed=" + confirmed +
-                '}';
+
+    public IpsaaClubRecordResponce(StudentFeePaymentRecordIpsaaClub record) {
+        this.autoComments=record.getAutoComments();
+        this.balance=record.getBalance();
+        this.baseFee=record.getBaseFee();
+        this.comments=record.getComments();
+        this.totalFee=record.getTotalFee();
+        this.annualFee=record.getAnnualFee();
+        //this.deposit=record.getDeposit();
+        this.finalFee=record.getFinalFee();
+        this.gstAmount=record.getGstAmount();
+        this.month=record.getMonth();
+        this.setRecordId(record.getId());
     }
 
-
-    public BigDecimal getGstAmount() {
-        return gstAmount;
+    public long getRecordId() {
+        return recordId;
     }
 
-    public void setGstAmount(BigDecimal gstAmount) {
-        this.gstAmount = gstAmount;
+    public void setRecordId(long recordId) {
+        this.recordId = mask(recordId);
     }
 
-    public boolean isExpire() {
-        return isExpire;
-    }
-
-    public void setExpire(boolean expire) {
-        isExpire = expire;
-    }
-
-    public Student getStudent() {
+    public long getStudent() {
         return student;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setStudent(long student) {
+        this.student = mask(student);
     }
 
     public StudentFeePaymentRequestIpsaaClub getRequest() {
@@ -219,6 +181,14 @@ public class StudentFeePaymentRecordIpsaaClub extends BaseEntity {
         this.baseFee = baseFee;
     }
 
+    public BigDecimal getExtraCharges() {
+        return extraCharges;
+    }
+
+    public void setExtraCharges(BigDecimal extraCharges) {
+        this.extraCharges = extraCharges;
+    }
+
     public int getNoOfFullDays() {
         return noOfFullDays;
     }
@@ -265,6 +235,14 @@ public class StudentFeePaymentRecordIpsaaClub extends BaseEntity {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public BigDecimal getGstAmount() {
+        return gstAmount;
+    }
+
+    public void setGstAmount(BigDecimal gstAmount) {
+        this.gstAmount = gstAmount;
     }
 
     public BigDecimal getTotalFee() {
@@ -355,11 +333,11 @@ public class StudentFeePaymentRecordIpsaaClub extends BaseEntity {
         this.comment = comment;
     }
 
-    public BigDecimal getExtraCharges() {
-        return extraCharges;
+    public boolean isExpire() {
+        return isExpire;
     }
 
-    public void setExtraCharges(BigDecimal extraCharges) {
-        this.extraCharges = extraCharges;
+    public void setExpire(boolean expire) {
+        isExpire = expire;
     }
 }

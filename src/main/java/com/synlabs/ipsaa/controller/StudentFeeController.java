@@ -9,10 +9,7 @@ import com.synlabs.ipsaa.service.StudentService;
 import com.synlabs.ipsaa.view.common.Request;
 import com.synlabs.ipsaa.view.common.Response;
 import com.synlabs.ipsaa.view.fee.*;
-import com.synlabs.ipsaa.view.student.IpsaaClubSlipResponce;
-import com.synlabs.ipsaa.view.student.IpsaaClubSlipRequest;
-import com.synlabs.ipsaa.view.student.PaymentHistoryResponce;
-import com.synlabs.ipsaa.view.student.StudentRequest;
+import com.synlabs.ipsaa.view.student.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -240,15 +237,15 @@ public class StudentFeeController {
     @Secured(STUDENTFEE_SLIP_WRITE)
     @PostMapping("/ipsaaclub/slip/update")
     // Called when slip save button is pressed
-    public IpsaaClubSlipResponce updateIpsaClubSlip(@RequestBody StudentFeeSlipRequestV2 request) {
-        return new IpsaaClubSlipResponce(ipsaaClubFeeSerivce.updateRecord(request));
+    public IpsaaClubRecordResponce updateIpsaClubSlip(@RequestBody StudentFeeSlipRequestV2 request) {
+        return new IpsaaClubRecordResponce(ipsaaClubFeeSerivce.updateRecord(request));
     }
 
     @Secured(STUDENTFEE_RECEIPT_WRITE)
     @PostMapping("/ipsaaclub/payfee")
     //record payment button
-    public IpsaaClubSlipResponce payIpsaaFee(@RequestBody SaveFeeSlipRequest request) {
-        return new IpsaaClubSlipResponce(ipsaaClubFeeSerivce.payFee(request));
+    public IpsaaClubRecordResponce payIpsaaFee(@RequestBody SaveFeeSlipRequest request) {
+        return new IpsaaClubRecordResponce(ipsaaClubFeeSerivce.payFee(request));
     }
 
     @Secured(STUDENTFEE_RECEIPT_CONFIRM)

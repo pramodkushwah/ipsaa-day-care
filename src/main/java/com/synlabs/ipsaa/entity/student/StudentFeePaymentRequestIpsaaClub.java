@@ -48,7 +48,7 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
     private int month;
     private int year;
 
-    @Column(precision = 16, scale = 2)
+    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal balance;
     @Column(precision = 16, scale = 2, nullable = false)
     private BigDecimal totalFee;

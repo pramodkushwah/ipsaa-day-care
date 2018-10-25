@@ -53,12 +53,10 @@ public class IpsaaClubFeeSerivce {
 
     @Transactional
     public IpsaaClubSlipResponce generateSlip(Long id) {
-        StudentFee fee = feeRepository.findByStudentId(id);
-        StudentFeePaymentRequestIpsaaClub slip = studentFeePaymentRequestIpsaaClubRepository.findByStudentId(id);
-
+        StudentFee fee = feeRepository.findOne(id);
         if (fee == null)
-            new ValidationException("fee not found");
-
+           throw  new ValidationException("fee not found");
+        StudentFeePaymentRequestIpsaaClub slip = studentFeePaymentRequestIpsaaClubRepository.findByStudentId(fee.getStudent().getId());
         if (slip == null) {
             // first fee
 
@@ -79,6 +77,11 @@ public class IpsaaClubFeeSerivce {
             slip.setFinalDepositFee(fee.getFinalDepositFee());
             slip.setBalance(ZERO);
         } else {
+
+            if((slip.getInvoiceDate().getTime()-(new Date()).getTime())/60/60/24<1)
+            {
+              throw  new ValidationException("can not generate same day from last generate date");
+            }
             // invoice date is not setting right now
             slip.setAnnualFee(BigDecimal.ZERO);
             slip.setAnnualFeeDiscount(BigDecimal.ZERO);
@@ -91,10 +94,6 @@ public class IpsaaClubFeeSerivce {
             slip.setDeposit(BigDecimal.ZERO);
             slip.setDepositFeeDiscount(BigDecimal.ZERO);
             slip.setFinalDepositFee(BigDecimal.ZERO);
-
-            // calculate balance
-            BigDecimal lastPaidAmount = slip.getPayments().get(0).getPaidAmount();
-            slip.setBalance(slip.getTotalFee().subtract(lastPaidAmount));
         }
         if (fee != null) {
             slip.setPaymentStatus(PaymentStatus.Raised);
@@ -102,7 +101,10 @@ public class IpsaaClubFeeSerivce {
             Date expirDate=new Date();
             StudentFeePaymentRecordIpsaaClub record=new StudentFeePaymentRecordIpsaaClub();
             record.setStartDate(slip.getInvoiceDate());
+
             slip = generateFeeFrom(expirDate, fee, slip); // generate fee from invoice to today
+            slip.setInvoiceDate(expirDate);               //invoice date is expire date of last slip
+
             record.setEndDate(expirDate);
 
             record.setTotalNoOfDays(slip.getTotalNoOfDays());
@@ -119,12 +121,25 @@ public class IpsaaClubFeeSerivce {
             record.setPaymentStatus(PaymentStatus.Raised);
             record.setRequest(slip);
             record.setStudent(slip.getStudent());
+
             slip.setTotalFee(FeeUtilsV2.calculateIpsaaClubTotalFee(slip));
-            record.setTotalFee(slip.getTotalFee());
+
+            // calculate balance
+            StudentFeePaymentRecordIpsaaClub lastRecord=null;
+            if(slip.getPayments()!=null && !slip.getPayments().isEmpty())
+             lastRecord= slip.getPayments().get(0);
+
+            if(lastRecord!=null && lastRecord.getPaidAmount()!=null)
+                record.setBalance(lastRecord.getTotalFee().subtract(lastRecord.getPaidAmount()));
+            else{
+                record.setBalance(ZERO);
+            }
+
+            record.setTotalFee(slip.getTotalFee().add(record.getBalance()));
+            slip.setPayments(Arrays.asList(record));
 
             studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(slip);
 
-            studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(record);
             return new IpsaaClubSlipResponce(slip);
         } else
             throw new NotFoundException("student fee not found");
@@ -135,18 +150,18 @@ public class IpsaaClubFeeSerivce {
         slip.setTotalNoOfDays(counts.get("total"));
         slip.setNoOfFullDays(counts.get("fullday"));
         slip.setNoOfHalfDays(counts.get("halfday"));
-        slip.setExpireDate(null); // set expire this slip today to generate next
-        slip.setInvoiceDate(date);// set expire this slip today to generate next
+
+
         BigDecimal halfDayFee = fee.getBaseFee().multiply(new BigDecimal(slip.getNoOfHalfDays())).multiply(new BigDecimal(0.60));
         BigDecimal fullDayFee = fee.getBaseFee().multiply(new BigDecimal(slip.getNoOfFullDays()));
 
         BigDecimal totalFee = halfDayFee.add(fullDayFee);
-        BigDecimal gst = FeeUtilsV2.calculateGST(totalFee, GST.IGST);
+
+        BigDecimal gst = FeeUtilsV2.calculateGST(totalFee,fee.getFinalAnnualCharges(), GST.IGST);
 
         slip.setGstAmount(gst);
-        totalFee = totalFee.add(gst).add(slip.getBalance());
+
         slip.setTotalFee(totalFee);
-        slip.setInvoiceDate(date);
         return slip;
     }
 
@@ -186,7 +201,7 @@ public class IpsaaClubFeeSerivce {
         record.setComments(request.getComments());
         record.setReceiptSerial(null);
         record.setReceiptFileName(null);
-        BigDecimal alreadypaid = record.getPaidAmount();
+        BigDecimal alreadypaid = record.getPaidAmount()==null?ZERO:record.getPaidAmount();
 
         if (alreadypaid.doubleValue() <= request.getPaidAmount().doubleValue()) {
             record.setPaymentStatus(PaymentStatus.Paid);
@@ -224,9 +239,7 @@ public class IpsaaClubFeeSerivce {
         }
         if(request.getExtraCharge()!=null){
             slip.setExtraCharges(request.getExtraCharge());
-
             slip.setTotalFee(slip.getTotalFee().add(slip.getExtraCharges()));
-
         }
         slip.setTotalFee(slip.getTotalFee().add(slip.getBalance()));
         return studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(slip);
