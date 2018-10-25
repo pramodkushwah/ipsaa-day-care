@@ -197,7 +197,6 @@ public class StudentFeeService {
         List<StudentFeePaymentRequest> allslips = new LinkedList<>();
         int requestQuarter = request.getQuarter();
         int requestYear = request.getYear();
-
             allslips = feePaymentRepository. findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(FeeDuration.Quarterly, requestQuarter, requestYear,request.getCenterCode());
         return allslips;
     }

@@ -12,6 +12,7 @@ import java.util.Map;
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequestIpsaaClub;
 import com.synlabs.ipsaa.enums.GST;
 import com.synlabs.ipsaa.ex.ValidationException;
 
@@ -24,8 +25,8 @@ public class FeeUtilsV2 {
 	public static final double FEE_CALCULATION_TOLERANCE = 5.0;
 	public static final double FEE_DISCOUNT_CALCULATION_TOLERANCE = 1.0;
 
-	public static final int IPSAA_CLUB_PROGRAM_ID = 26;
-	public static final int IPSAA_CLUB_REGULAR_PROGRAM_ID = 30;
+	public static final long IPSAA_CLUB_PROGRAM_ID = 26;
+	public static final long IPSAA_CLUB_REGULAR_PROGRAM_ID = 30;
 
 	public static BigDecimal calculateGST(BigDecimal baseFee, BigDecimal annualFee, GST type) {
 		BigDecimal finalFee = ZERO;
@@ -44,7 +45,19 @@ public class FeeUtilsV2 {
 		gst = finalFee.multiply(gst).divide(HUNDRED, 2, BigDecimal.ROUND_CEILING);
 		return gst;
 	}
-
+	public static BigDecimal calculateGST(BigDecimal baseFee, GST type) {
+		BigDecimal finalFee = ZERO;
+		finalFee = finalFee.add(baseFee);
+		BigDecimal gst;
+		if (type == GST.IGST) {
+			gst = new BigDecimal(18);
+		} else if (type == GST.CGST)
+			gst = new BigDecimal(9);
+		else
+			gst = new BigDecimal(9);
+		gst = finalFee.multiply(gst).divide(HUNDRED, 2, BigDecimal.ROUND_CEILING);
+		return gst;
+	}
 	public static BigDecimal calculateFinalFee(StudentFee fee, boolean isGst) {
 		// fee.setTransportFee(fee.getTransportFee().multiply(THREE));
 
@@ -352,4 +365,12 @@ public class FeeUtilsV2 {
 		BigDecimal dis = baseFee.subtract(DiscountAmmount);
 		return dis.divide(baseFee, 6).multiply(HUNDRED);
 	}
+
+    public static BigDecimal calculateIpsaaClubTotalFee(StudentFeePaymentRequestIpsaaClub slip) {
+		return slip.getTotalFee()
+						.add(slip.getBalance())
+						.add(slip.getFinalAnnualFee())
+						.add(slip.getFinalDepositFee())
+						.add(slip.getGstAmount());
+    }
 }
