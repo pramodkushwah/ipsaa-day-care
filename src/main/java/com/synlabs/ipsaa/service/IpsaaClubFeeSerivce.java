@@ -26,6 +26,7 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static com.synlabs.ipsaa.service.BaseService.mask;
 import static com.synlabs.ipsaa.util.FeeUtils.ZERO;
 
 @Service
@@ -243,5 +244,58 @@ public class IpsaaClubFeeSerivce {
         }
         slip.setTotalFee(slip.getTotalFee().add(slip.getBalance()));
         return studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(slip);
+    }
+
+    public StudentFeePaymentRecordIpsaaClub updatePayFee(SaveFeeSlipRequest request) {
+
+        if (request.getId() == null) {
+            throw new ValidationException("Receipt id is required.");
+        }
+
+        StudentFeePaymentRecordIpsaaClub receipt = studentFeePaymentRecordIpsaaClubRepository.findOne(request.getId());
+        if (receipt == null) {
+            throw new ValidationException(String.format("Cannot locate Receipt[id = %s]", mask(request.getId())));
+        }
+
+        if (receipt.getConfirmed() != null && receipt.getConfirmed() && !receipt.getActive()) {
+            throw new ValidationException("Confirmed Receipt cannot update.");
+        }
+
+        if (request.getConfirmed()){
+            receipt.setActive(true);
+            receipt.setConfirmed(request.getConfirmed());
+            logger.info(String.format("Student Fee payment confirm .%s",slip));
+        }
+        else {
+            receipt.setActive(false);
+            if(request.getComments()==null){
+                throw new ValidationException("Comment is missing");
+            }
+            receipt.setComment(request.getComments());
+            if(receipt.getPaymentMode().equals(PaymentMode.Cheque)){
+                slip.setExtraCharge(slip.getExtraCharge().add(FeeUtilsV2.CHEQUE_BOUNCE_CHARGE));
+                if(slip.getAutoComments()==null)
+                    slip.setAutoComments("200rs Cheque bounce charges added");
+                else{
+                    slip.setAutoComments(slip.getAutoComments()+",200rs Cheque bounce charges added");
+                }
+                slip.setTotalFee(FeeUtilsV2.calculateFinalFee(slip));;
+            }
+
+            paymentRecordRepository.saveAndFlush(receipt);
+
+            if (slip.getTotalFee().intValue() <= receipt.getRequest().getPaidAmount().intValue()) {
+                slip.setPaymentStatus(PaymentStatus.Paid);
+            } else if (receipt.getRequest().getPaidAmount().intValue() == 0) {
+                slip.setPaymentStatus(PaymentStatus.Raised);
+            } else {
+                slip.setPaymentStatus(PaymentStatus.PartiallyPaid);
+            }
+            logger.info(String.format("Student Fee payment rejected .%s",slip));
+        }
+        //slip.setComments(request.getComments());
+
+        feePaymentRepository.saveAndFlush(slip);
+        return receipt;
     }
 }
