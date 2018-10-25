@@ -77,6 +77,13 @@ public class EmployeeController
   {
     return paySlipService.listPayslips(month, year, employerId).stream().map(EmployeePaySlipResponse::new).collect(Collectors.toList());
   }
+  
+  @Secured(SALARY_READ)
+  @PostMapping("payslip/{id}")
+  public List<EmployeePaySlipResponse> list(@PathVariable("id") long employeeId) throws ParseException
+  {
+    return paySlipService.listPaySlip(employeeId).stream().map(EmployeePaySlipResponse::new).collect(Collectors.toList());
+  }
 
   @Secured(SALARY_WRITE)
   @PostMapping("salary/update")
