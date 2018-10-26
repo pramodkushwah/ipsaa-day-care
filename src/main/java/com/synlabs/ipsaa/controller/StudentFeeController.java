@@ -73,28 +73,7 @@ public class StudentFeeController {
     @PostMapping("/feeslip/generate-all")
     public List<StudentFeeSlipResponse> generateStudentsSlip(@RequestBody List<Long> ids) {
         return studentService.generateFinalFeeSlips(ids).stream().map(StudentFeeSlipResponse::new).collect(Collectors.toList());
-    }
 
-    @Secured(STUDENTFEE_SLIP_READ)
-    @PostMapping("/feeslips/pdf")
-    public void downloadFeeSlips(@RequestBody List<Long> ids, HttpServletResponse response) throws IOException, DocumentException {
-        StudentFeeSlipRequest request = new StudentFeeSlipRequest();
-        File file = documentService.generateFeeSlipPdf(ids, request);
-
-        response.setContentType("application/octet-stream");
-        String fileName = String.format("Slips_%s_%s.pdf", request.getCenterCode(), request.getPeriod());
-        response.setHeader("Content-disposition", "attachment; filename=" + fileName);
-        response.setHeader("fileName", fileName);
-
-        OutputStream out = response.getOutputStream();
-        FileInputStream is = new FileInputStream(file);
-
-        IOUtils.copy(is, out);
-        out.flush();
-        is.close();
-        if (!file.delete()) {
-            throw new IOException("Could not delete temporary file after processing: " + file);
-        }
     }
 
     @Secured(STUDENTFEE_RECEIPT_READ)
@@ -122,6 +101,28 @@ public class StudentFeeController {
         IOUtils.copy(is, out);
         out.flush();
         is.close();
+    }
+
+    @Secured(STUDENTFEE_SLIP_READ)
+    @PostMapping("/feeslips/pdf")
+    public void downloadFeeSlips(@RequestBody List<Long> ids, HttpServletResponse response) throws IOException, DocumentException {
+        StudentFeeSlipRequest request = new StudentFeeSlipRequest();
+        File file = documentService.generateFeeSlipPdf(ids, request);
+
+        response.setContentType("application/octet-stream");
+        String fileName = String.format("Slips_%s_%s.pdf", request.getCenterCode(), request.getPeriod());
+        response.setHeader("Content-disposition", "attachment; filename=" + fileName);
+        response.setHeader("fileName", fileName);
+
+        OutputStream out = response.getOutputStream();
+        FileInputStream is = new FileInputStream(file);
+
+        IOUtils.copy(is, out);
+        out.flush();
+        is.close();
+        if (!file.delete()) {
+            throw new IOException("Could not delete temporary file after processing: " + file);
+        }
     }
     //----------------------------------shubham-----------------------------------------
 

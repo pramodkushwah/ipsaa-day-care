@@ -207,7 +207,6 @@ public class DocumentService extends BaseService
       StudentFeePaymentRequest slip1 = feeService.getSlip(unmask(slipId));
       if (flag)
       {
-
         slip.setCenterCode(slip1.getStudent().getCenter().getCode());
         slip.setPeriod(slip1.getFeeDuration().toString());
         flag = false;
@@ -374,7 +373,6 @@ public class DocumentService extends BaseService
 
           feeSlip.setReGenerateSlip(false);
           slipRepository.saveAndFlush(feeSlip);
-
           logger.info(String.format("Generated fee slip pdf slip[serial_number=%s,id=%s]", feeSlip.getSlipSerial(), feeSlip.getId()));
         }
         catch (TemplateException | InterruptedException e)
@@ -640,6 +638,7 @@ public class DocumentService extends BaseService
       rootMap.put("from", student.getFather().getFullName());
 
       List<FeePaymentRecordView> payments = feeRequest.getPayments().stream().filter(payment->payment.getActive()).map(FeePaymentRecordView::new).collect(Collectors.toList());
+
       payments.sort(Comparator.comparing(FeePaymentRecordView::getPaymentDate));
       BigDecimal due = new BigDecimal(feeRequest.getTotalFee().toString());
       for (FeePaymentRecordView payment : payments)
