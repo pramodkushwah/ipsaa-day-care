@@ -453,6 +453,13 @@ public class StudentFeeService {
              thisQuarterSlip.setTotalFee(thisQuarterSlip.getTotalFee()
                             .add(thisQuarterSlip.getBalance()==null?ZERO:thisQuarterSlip.getBalance()));
 
+             if(thisQuarterSlip.getPaidAmount().doubleValue()==0){
+                 thisQuarterSlip.setPaymentStatus(PaymentStatus.Raised);
+             }else if(thisQuarterSlip.getPaidAmount().doubleValue()>=thisQuarterSlip.getTotalFee().doubleValue()){
+                 thisQuarterSlip.setPaymentStatus(PaymentStatus.Paid);
+             }else
+                 thisQuarterSlip.setPaymentStatus(PaymentStatus.PartiallyPaid);
+
              return  feePaymentRepository.saveAndFlush(thisQuarterSlip);
         }
         else {
@@ -500,7 +507,7 @@ public class StudentFeeService {
                 newFinalBaseFee!=oldFinalBaseFee){
             // base fee change handel
             String autoComment=thisQuarterSlip.getAutoComments()==null?"":thisQuarterSlip.getAutoComments();
-            thisQuarterSlip.setAutoComments(autoComment+" change in base fee" +thisQuarterSlip.getBaseFee() +" to "+ fee.getBaseFee()+"\nregenerate from data"+request.getSpaceifyRegenrationDate());
+            thisQuarterSlip.setAutoComments(autoComment+" change in base fee" +thisQuarterSlip.getBaseFee() +" to "+ fee.getBaseFee()+"\nregenerate from date "+request.getSpaceifyRegenrationDate());
             thisQuarterSlip.setBaseFee(fee.getBaseFee());
 
             // one month final fee with discount
@@ -537,19 +544,41 @@ public class StudentFeeService {
             } else {
                 fee.setGstAmount(ZERO);
             }
+            // formal school change
+        }else if(fee.getGstAmount().doubleValue()>0 && thisQuarterSlip.getGstAmount().doubleValue()==0){
+            String autoComment=thisQuarterSlip.getAutoComments()==null?"":thisQuarterSlip.getAutoComments();
+            thisQuarterSlip.setAutoComments(autoComment+" change in gst fee" +thisQuarterSlip.getGstAmount() +" to "+ fee.getGstAmount()+"\nregenerate from date "+request.getSpaceifyRegenrationDate());
+
+            BigDecimal gstAmmount=ZERO;
+            // one month fee gst
+            gstAmmount = fee.getGstAmount().divide(THREE);
+            gstAmmount=gstAmmount.multiply(nextRatio);
+            thisQuarterSlip.setGstAmount(gstAmmount);
+            thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee().add(thisQuarterSlip.getGstAmount()));
         }
         if(fee.getTransportFee().intValue()!=thisQuarterSlip.getTransportFee().intValue()){
         // transport fee change handel
+
+            String autoComment=thisQuarterSlip.getAutoComments()==null?"":thisQuarterSlip.getAutoComments();
+            thisQuarterSlip.setAutoComments(autoComment+" change in transport fee" +thisQuarterSlip.getTransportFee() +" to "+ fee.getTransportFee()+"\nregenerate from date "+request.getSpaceifyRegenrationDate());
+
             thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee()
                     .subtract(thisQuarterSlip.getTransportFee().multiply(nextRatio))
             );
             thisQuarterSlip.setFinalFee(thisQuarterSlip.getFinalFee().add(fee.getTransportFee().multiply(nextRatio)));
             thisQuarterSlip.setTransportFee(fee.getTransportFee());
             thisQuarterSlip.setFinalTransportFee(fee.getTransportFee().multiply(thisQuarterSlip.getFeeRatio()));
-            thisQuarterSlip.setAutoComments(thisQuarterSlip.getAutoComments()+" "+"change in transport fee" +thisQuarterSlip.getTransportFee() +" to " +fee.getTransportFee());
         }
         thisQuarterSlip.setFinalBaseFee(fee.getFinalBaseFee());
         thisQuarterSlip.setTotalFee(thisQuarterSlip.getTotalFee().add(thisQuarterSlip.getFinalFee()));
+
+        if(thisQuarterSlip.getPaidAmount().doubleValue()==0){
+            thisQuarterSlip.setPaymentStatus(PaymentStatus.Raised);
+        }else if(thisQuarterSlip.getPaidAmount().doubleValue()>=thisQuarterSlip.getTotalFee().doubleValue()){
+            thisQuarterSlip.setPaymentStatus(PaymentStatus.Paid);
+        }else
+            thisQuarterSlip.setPaymentStatus(PaymentStatus.PartiallyPaid);
+
         return  feePaymentRepository.saveAndFlush(thisQuarterSlip);
     }
 

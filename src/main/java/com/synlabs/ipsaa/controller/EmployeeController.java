@@ -63,6 +63,15 @@ public class EmployeeController
   {
     return employeeService.list().stream().map(EmployeeSalaryResponse::new).collect(Collectors.toList());
   }
+  @Secured(SALARY_READ)
+  @GetMapping("{eid}/salary")
+  public EmployeeSalaryResponse getOne(@PathVariable("eid") String eid)
+  {
+    EmployeeSalaryRequest req=new EmployeeSalaryRequest();
+    req.setEid(eid);
+    return new EmployeeSalaryResponse(employeeService.getSalary(req));
+
+    }
 
   @Secured(SALARY_READ)
   @PostMapping("salary")
