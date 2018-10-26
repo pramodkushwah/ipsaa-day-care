@@ -771,23 +771,26 @@ public class FeeService extends BaseService
       throw new ValidationException("Period is required.");
     }
     List<HdfcResponse> hdfc = hdfcResponseRepository.findBySlipQuarterAndSlipYear(slipRequest.getQuarter(),slipRequest.getYear());
-    List<Stack<Pair<String, Object>>> list=new ArrayList<>();
+    List<LinkedHashMap<String,Object>> list=new ArrayList<>();
+
     int count=1;
     for(HdfcResponse res:hdfc){
-      Stack<Pair<String,Object>> row=new Stack<>();
-      row.push(new Pair("billing_name",res.getBillingName()));
-      row.push(new Pair("billing_email",res.getBillingEmail()));
-      row.push(new Pair("tracking_id",res.getTrackingId()));
-      row.push(new Pair("status_message",res.getStatusMessage()));
-      row.push(new Pair("bank_ref_no",res.getBankRefNo()));
-      row.push(new Pair("type",res.getType()));
-      row.push(new Pair("slip_id",res.getSlip().getId()));
-      row.push(new Pair("trans_date",res.getTransDate()));
-      row.push(new Pair("amount",res.getAmount()));
-      row.push(new Pair("program_name",res.getSlip().getStudent().getProgramName()));
-      row.push(new Pair("center",res.getSlip().getStudent().getCenterName()));
-      row.push(new Pair("student_name",res.getSlip().getStudent().getProfile().getFullName()));
-      row.push(new Pair("s.id",count++));
+      LinkedHashMap<String,Object> row=new LinkedHashMap<>();
+      row.put("s.id",count++);
+      row.put("student_name",res.getSlip().getStudent().getProfile().getFullName());
+      row.put("center",res.getSlip().getStudent().getCenterName());
+
+      row.put("program_name",res.getSlip().getStudent().getProgramName());
+
+      row.put("amount",res.getAmount());
+      row.put("trans_date",res.getTransDate());
+      row.put("slip_id",res.getSlip().getId());
+      row.put("type",res.getType());
+      row.put("bank_ref_no",res.getBankRefNo());
+      row.put("status_message",res.getStatusMessage());
+      row.put("tracking_id",res.getTrackingId());
+      row.put("billing_email",res.getBillingEmail());
+      row.put("billing_name",res.getBillingName());
 
       list.add(row);
     }
