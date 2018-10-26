@@ -458,6 +458,73 @@ public class DocumentService extends BaseService
 
     return rootMap;
   }
+  private Map<String, Object> fillSlipTemplate(StudentFeePaymentRecordIpsaaClub slip, StudentFee studentFee, Map<String, Object> rootMap)
+  {
+    String serial = slip.getSlipSerial();
+    if (StringUtils.isEmpty(serial))
+    {
+      serial = generateSerial(slip.getStudent().getCenter().getCode(), "SLIP");
+      slip.setSlipSerial(serial);
+      studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(slip);
+    }
+    if(!slip.getStudent().getCenter().getAddress().getCity().equals("Gurgaon")){
+      //slip.setSgst(new BigDecimal(9));
+      //slip.setCgst(new BigDecimal(9));
+      //slip.setIgst(null);
+    }else{
+      //slip.setSgst(null);
+      //slip.setCgst(null);
+      //slip.setIgst(new BigDecimal(18));
+    }
+    rootMap = rootMap == null ? new HashMap<>() : rootMap;
+    rootMap.put("student", slip.getStudent());
+    rootMap.put("slip", slip);
+    rootMap.put("date", new SimpleDateFormat("dd-MM-yyyy").format(slip.getStartDate()));
+    rootMap.put("month", FeeUtils.getMonth(slip));
+    rootMap.put("transportFee", calculateTransportFee(studentFee));
+    rootMap.put("annualCharge", slip.getAnnualFee());
+    rootMap.put("security", slip.getDepositFee());
+    rootMap.put("isAnnualFee", slip.getAnnualFee() != null);
+    rootMap.put("isDeposit", slip.getDepositFee() != null);
+    BigDecimal programFee = slip.getBaseFee();
+    rootMap.put("programFee", programFee);
+
+    if (slip.getBalance() != null && slip.getBalance().intValue() != 0)
+    {
+      rootMap.put("balance", slip.getBalance());
+    }
+
+    BigDecimal subTotal = programFee;
+    if (slip.getDepositFee() != null)
+    {
+      subTotal = subTotal.add(slip.getDepositFee());
+    }
+    if (slip.getAnnualFee() != null)
+    {
+      subTotal = subTotal.add(slip.getAnnualFee());
+    }
+    rootMap.put("subTotal", subTotal);
+//    if (slip.getSgst() != null && !slip.getSgst().equals(ZERO))
+//    {
+//      rootMap.put("sgst", slip.getSgst());
+//      rootMap.put("sgstAmount", FeeUtils.calculateGST(slip, GST.SGST));
+//    }
+//    if (slip.getCgst() != null && !slip.getCgst().equals(ZERO))
+//    {
+//      rootMap.put("cgst", slip.getCgst());
+//      rootMap.put("cgstAmount", FeeUtils.calculateGST(slip, GST.CGST));
+//    }
+//    if (slip.getIgst() != null && !slip.getIgst().equals(ZERO))         /////Added else because igst can't be null or misssing in template.
+//    {
+//      rootMap.put("igst", slip.getIgst());
+//      rootMap.put("igstAmount", FeeUtils.calculateGST(slip, GST.IGST));
+//    }else{        //set if igst is zero.
+//      rootMap.put("igst",0.0);
+//      rootMap.put("igstAmount", FeeUtils.calculateGST(slip,GST.IGST));
+//    }
+
+    return rootMap;
+  }
 
   public void generateFeeSlipPdf(StudentFeePaymentRequest feeRequest)
   {
@@ -519,7 +586,6 @@ public class DocumentService extends BaseService
     request.setReceiptSerial(record.getReceiptSerial());
     InputStream is = fileStore.getStream("RECEIPT", fileName);
     return is;
-
   }
 
   public InputStream downloadFeeReceiptPdf(SaveFeeSlipRequest request) throws IOException
@@ -613,52 +679,45 @@ public class DocumentService extends BaseService
     }
   }
 
-  public String generateFeeReceiptPdf(StudentFeePaymentRecordIpsaaClub feeRequest)
+  public String generateFeeReceiptPdf(StudentFeePaymentRecordIpsaaClub record)
   {
     try
     {
       Template template = configuration.getTemplate("slip/receipt.ftl");
       Map<String, Object> rootMap = new HashMap<>();
-      if (feeRequest.getExtraCharges() == null)
+      if (record.getExtraCharges() == null)
       {
-        feeRequest.setExtraCharges(new BigDecimal(0));
+        record.setExtraCharges(new BigDecimal(0));
       }
 
-      String serial = feeRequest.getReceiptSerial();
-      Student student = feeRequest.getStudent();
+      String serial = record.getReceiptSerial();
+      Student student = record.getStudent();
       if (StringUtils.isEmpty(serial))
       {
         serial = generateSerial(student.getCenter().getCode(), "RECEIPT");
       }
-      feeRequest.setReceiptSerial(serial);
+      record.setReceiptSerial(serial);
       StudentFee studentFee = studentFeeRepository.findByStudent(student);
       String filename = UUID.randomUUID().toString() + ".pdf";
 
-      fillSlipTemplate(feeRequest, studentFee, rootMap);
+      fillSlipTemplate(record, studentFee, rootMap);
       rootMap.put("from", student.getFather().getFullName());
 
-      List<FeePaymentRecordView> payments = feeRequest.getPayments().stream().filter(payment->payment.getActive()).map(FeePaymentRecordView::new).collect(Collectors.toList());
+      BigDecimal due = new BigDecimal(record.getTotalFee().toString());
 
-      payments.sort(Comparator.comparing(FeePaymentRecordView::getPaymentDate));
-      BigDecimal due = new BigDecimal(feeRequest.getTotalFee().toString());
-      for (FeePaymentRecordView payment : payments)
-      {
-        due = due.subtract(payment.getPaidAmount());
-        payment.setDueAmount(due);
-      }
-      payments.sort(Comparator.comparing(FeePaymentRecordView::getPaymentDate).reversed());
-      rootMap.put("payments", payments);
-      rootMap.put("totalAmount", feeRequest.getTotalFee());
+        due = due.subtract(record.getPaidAmount());
+      //rootMap.put("payments", payments);
+      rootMap.put("totalAmount", record.getTotalFee());
       rootMap.put("dueAmount", due);
-      rootMap.put("paidAmount", feeRequest.getTotalFee().subtract(due));
+      rootMap.put("paidAmount", record.getTotalFee().subtract(due));
 
       Writer out = new StringWriter();
       template.process(rootMap, out);
       String html = out.toString();
       generatePdf(html, "RECEIPT", filename, true, 2);
-      feeRequest.setReceiptSerial(serial);
-      feeRequest.setReceiptFileName(filename);
-      slipRepository.saveAndFlush(feeRequest);
+      record.setReceiptSerial(serial);
+      record.setReceiptFileName(filename);
+      studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(record);
       return filename;
     }
     catch (Exception ex)
@@ -667,7 +726,6 @@ public class DocumentService extends BaseService
       return null;
     }
   }
-
   private void generatePdf(String html, String category, String fileName, boolean landscape, int margin) throws IOException, InterruptedException
   {
     Pdf pdf = addParamsToPdf(null);
