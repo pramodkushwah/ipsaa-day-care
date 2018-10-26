@@ -251,7 +251,26 @@ public class StudentFeeController {
     @Secured(STUDENTFEE_RECEIPT_CONFIRM)
     @PutMapping("/ipsaaclub/update")
     //Confirm payment
-    public StudentFeePaymentResponse updateIpsaaClubPayFee(@RequestBody SaveFeeSlipRequest request) {
-        return new StudentFeePaymentResponse(ipsaaClubFeeSerivce.updatePayFee(request));
+    public IpsaaClubRecordResponce updateIpsaaClubPayFee(@RequestBody SaveFeeSlipRequest request) {
+        return new IpsaaClubRecordResponce(ipsaaClubFeeSerivce.updatePayFee(request));
+    }
+    @Secured(STUDENTFEE_RECEIPT_WRITE)
+    @GetMapping("/download/ipssaclub/receipt/{recordId}")
+    public void downloadReceiptIpssa(@PathVariable("recordId") Long recordId, HttpServletResponse response) throws IOException {
+
+        IpsaaClubSlipRequest request = new IpsaaClubSlipRequest();
+        request.setId(recordId);
+        InputStream is = documentService.downloadFeeReceiptPdf(request);
+        response.setContentType("application/octet-stream");
+        String fileName = request.getReceiptSerial();
+
+        response.setHeader("Content-disposition", String.format("attachment; filename=%s.pdf", fileName));
+        response.setHeader("fileName", String.format("%s.pdf", fileName));
+        OutputStream out = response.getOutputStream();
+
+//    System.out.println(in);
+        IOUtils.copy(is, out);
+        out.flush();
+        is.close();
     }
 }

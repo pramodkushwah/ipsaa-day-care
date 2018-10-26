@@ -11,9 +11,7 @@ import com.synlabs.ipsaa.entity.common.SerialNumberSequence;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
-import com.synlabs.ipsaa.entity.student.Student;
-import com.synlabs.ipsaa.entity.student.StudentFee;
-import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.*;
 import com.synlabs.ipsaa.enums.GST;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
@@ -24,6 +22,7 @@ import com.synlabs.ipsaa.view.fee.FeePaymentRecordView;
 import com.synlabs.ipsaa.view.fee.SaveFeeSlipRequest;
 import com.synlabs.ipsaa.view.fee.StudentFeeSlipRequest;
 import com.synlabs.ipsaa.view.staff.EmployeePaySlipResponse;
+import com.synlabs.ipsaa.view.student.IpsaaClubSlipRequest;
 import com.synlabs.ipsaa.view.student.StudentResponse;
 import freemarker.template.*;
 import org.joda.time.LocalDate;
@@ -58,6 +57,8 @@ public class DocumentService extends BaseService
 
   @Autowired
   private StudentFeePaymentRepository slipRepository;
+  @Autowired
+  StudentFeePaymentRecordIpsaaClubRepository studentFeePaymentRecordIpsaaClubRepository;
 
   @Autowired
   private StudentFeeRepository studentFeeRepository;
@@ -499,6 +500,29 @@ public class DocumentService extends BaseService
       logger.error("Error generating slip pdf!", ex);
     }
   }
+  public InputStream downloadFeeReceiptPdf(IpsaaClubSlipRequest request)  throws IOException{
+    if (request.getId() == null)
+    {
+      throw new ValidationException("Receipt id is required.");
+    }
+
+    //StudentFeePaymentRequest slip = slipRepository.findOne(request.getId());
+    StudentFeePaymentRecordIpsaaClub record = studentFeePaymentRecordIpsaaClubRepository.findOne(request.getId());
+    if (record == null)
+    {
+      throw new ValidationException("Cannot locate record.");
+    }
+
+    String fileName = generateFeeReceiptPdf(record);
+    if (fileName == null)
+    {
+      throw new ValidationException("Unable to generate file.");
+    }
+    request.setReceiptSerial(record.getReceiptSerial());
+    InputStream is = fileStore.getStream("RECEIPT", fileName);
+    return is;
+
+  }
 
   public InputStream downloadFeeReceiptPdf(SaveFeeSlipRequest request) throws IOException
   {
@@ -523,6 +547,7 @@ public class DocumentService extends BaseService
     return is;
   }
 
+
   public String generateFeeReceiptPdf(StudentFeePaymentRequest feeRequest)
   {
     try
@@ -545,6 +570,60 @@ public class DocumentService extends BaseService
       }
       if(feeRequest.getStationary()==null){
         feeRequest.setStationary(ZERO);
+      }
+
+      String serial = feeRequest.getReceiptSerial();
+      Student student = feeRequest.getStudent();
+      if (StringUtils.isEmpty(serial))
+      {
+        serial = generateSerial(student.getCenter().getCode(), "RECEIPT");
+      }
+      feeRequest.setReceiptSerial(serial);
+      StudentFee studentFee = studentFeeRepository.findByStudent(student);
+      String filename = UUID.randomUUID().toString() + ".pdf";
+
+      fillSlipTemplate(feeRequest, studentFee, rootMap);
+      rootMap.put("from", student.getFather().getFullName());
+
+      List<FeePaymentRecordView> payments = feeRequest.getPayments().stream().filter(payment->payment.getActive()).map(FeePaymentRecordView::new).collect(Collectors.toList());
+      payments.sort(Comparator.comparing(FeePaymentRecordView::getPaymentDate));
+      BigDecimal due = new BigDecimal(feeRequest.getTotalFee().toString());
+      for (FeePaymentRecordView payment : payments)
+      {
+        due = due.subtract(payment.getPaidAmount());
+        payment.setDueAmount(due);
+      }
+      payments.sort(Comparator.comparing(FeePaymentRecordView::getPaymentDate).reversed());
+      rootMap.put("payments", payments);
+      rootMap.put("totalAmount", feeRequest.getTotalFee());
+      rootMap.put("dueAmount", due);
+      rootMap.put("paidAmount", feeRequest.getTotalFee().subtract(due));
+
+      Writer out = new StringWriter();
+      template.process(rootMap, out);
+      String html = out.toString();
+      generatePdf(html, "RECEIPT", filename, true, 2);
+      feeRequest.setReceiptSerial(serial);
+      feeRequest.setReceiptFileName(filename);
+      slipRepository.saveAndFlush(feeRequest);
+      return filename;
+    }
+    catch (Exception ex)
+    {
+      logger.error("Error generating receipt pdf!", ex);
+      return null;
+    }
+  }
+
+  public String generateFeeReceiptPdf(StudentFeePaymentRecordIpsaaClub feeRequest)
+  {
+    try
+    {
+      Template template = configuration.getTemplate("slip/receipt.ftl");
+      Map<String, Object> rootMap = new HashMap<>();
+      if (feeRequest.getExtraCharges() == null)
+      {
+        feeRequest.setExtraCharges(new BigDecimal(0));
       }
 
       String serial = feeRequest.getReceiptSerial();
@@ -656,6 +735,8 @@ public class DocumentService extends BaseService
     }
     return transportFee;
   }
+
+
 
 //  private BigDecimal calculateProgramFee(StudentFee studentFee)
 //  {

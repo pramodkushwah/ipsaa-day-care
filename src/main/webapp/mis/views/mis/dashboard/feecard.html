@@ -4,8 +4,8 @@
       <i class="material-icons">chrome_reader_mode</i>
     </div>
     <div class="card-content">
-      <p class="category">Monthly Fee</p>
-      <h3 class="card-title">{{feeStats.monthly.expectedFee.monthly ? feeStats.monthly.expectedFee.monthly : 0 | number}}</h3>
+      <p class="category">Ipsaa Club Fee</p>
+      <h3 class="card-title">{{feeStats.monthly.expectedFee.ipssaFee ? feeStats.monthly.expectedFee.monthly : 0 | number}}</h3>
       <div class="row">
         <div class="col-md-6">
           <div class="form-group" style="margin-top: 0px">
@@ -25,7 +25,7 @@
     </div>
     <div class="card-footer" ng-click="showFeePanel('Monthly')">
       <div class="stats">
-        Collected : {{feeStats.monthly.collectedFee.monthly?feeStats.monthly.collectedFee.monthly:0 | number}}
+        Collected : {{feeStats.monthly.collectedFee.monthly?feeStats.monthly.collectedFee.ipssaFee:0 | number}}
       </div>
     </div>
   </div>

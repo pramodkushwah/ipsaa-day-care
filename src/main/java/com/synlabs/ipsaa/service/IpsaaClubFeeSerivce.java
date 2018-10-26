@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 import static com.synlabs.ipsaa.service.BaseService.mask;
@@ -107,6 +109,9 @@ public class IpsaaClubFeeSerivce {
             slip.setInvoiceDate(expirDate);               //invoice date is expire date of last slip
 
             record.setEndDate(expirDate);
+
+            record.setMonth(LocalDate.now().getMonthValue());
+            record.setMonth(LocalDate.now().getYear());
 
             record.setTotalNoOfDays(slip.getTotalNoOfDays());
             record.setNoOfHalfDays(slip.getNoOfHalfDays());
@@ -220,32 +225,34 @@ public class IpsaaClubFeeSerivce {
         //documentService.generateFeeReceiptPdf(record);
         return record;
     }
+
+    // use to confirm or reject payment
     public StudentFeePaymentRecordIpsaaClub updateRecord(StudentFeeSlipRequestV2 request) {
-        StudentFeePaymentRecordIpsaaClub slip = studentFeePaymentRecordIpsaaClubRepository.findOne(request.getId());
-        if (slip == null)
+        StudentFeePaymentRecordIpsaaClub record = studentFeePaymentRecordIpsaaClubRepository.findOne(request.getId());
+        if (record == null)
         {
-            throw new NotFoundException("Missing slip");
+            throw new NotFoundException("Missing record");
         }
 
-        if (slip.getPaymentStatus() == PaymentStatus.Paid)
+        if (record.getPaymentStatus() == PaymentStatus.Paid)
         {
             throw new ValidationException("Already paid.");
         }
-        if(slip.isExpire()){
-            throw new ValidationException("You can't update expire pay slip.");
+        if(record.isExpire()){
+            throw new ValidationException("You can't update expire pay record.");
         }
-        slip.setComments(request.getComments());
+        record.setComments(request.getComments());
         if(request.getBalance()!=null){
-            slip.setBalance(request.getBalance());
+            record.setBalance(request.getBalance());
         }
         if(request.getExtraCharge()!=null){
-            slip.setExtraCharges(request.getExtraCharge());
-            slip.setTotalFee(slip.getTotalFee().add(slip.getExtraCharges()));
+            record.setExtraCharges(request.getExtraCharge());
+            record.setTotalFee(record.getTotalFee().add(record.getExtraCharges()));
         }
-        slip.setTotalFee(slip.getTotalFee().add(slip.getBalance()));
-        return studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(slip);
+        record.setTotalFee(record.getTotalFee().add(record.getBalance()));
+        return studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(record);
     }
-
+    // use to confirm or reject payment
     public StudentFeePaymentRecordIpsaaClub updatePayFee(SaveFeeSlipRequest request) {
 
         if (request.getId() == null) {
@@ -264,7 +271,7 @@ public class IpsaaClubFeeSerivce {
         if (request.getConfirmed()){
             receipt.setActive(true);
             receipt.setConfirmed(request.getConfirmed());
-            logger.info(String.format("Student Fee payment confirm .%s",slip));
+            logger.info(String.format("Student Fee payment confirm .%s",receipt.getId()));
         }
         else {
             receipt.setActive(false);
@@ -273,29 +280,27 @@ public class IpsaaClubFeeSerivce {
             }
             receipt.setComment(request.getComments());
             if(receipt.getPaymentMode().equals(PaymentMode.Cheque)){
-                slip.setExtraCharge(slip.getExtraCharge().add(FeeUtilsV2.CHEQUE_BOUNCE_CHARGE));
-                if(slip.getAutoComments()==null)
-                    slip.setAutoComments("200rs Cheque bounce charges added");
+                receipt.setTotalFee(receipt.getTotalFee().subtract(receipt.getExtraCharges()));
+                receipt.setExtraCharges(receipt.getExtraCharges().add(FeeUtilsV2.CHEQUE_BOUNCE_CHARGE));
+                if(receipt.getAutoComments()==null)
+                    receipt.setAutoComments("200rs Cheque bounce charges added");
                 else{
-                    slip.setAutoComments(slip.getAutoComments()+",200rs Cheque bounce charges added");
+                    receipt.setAutoComments(receipt.getAutoComments()+",200rs Cheque bounce charges added");
                 }
-                slip.setTotalFee(FeeUtilsV2.calculateFinalFee(slip));;
+                receipt.setTotalFee(receipt.getTotalFee().add(receipt.getExtraCharges()));;
             }
-
-            paymentRecordRepository.saveAndFlush(receipt);
-
-            if (slip.getTotalFee().intValue() <= receipt.getRequest().getPaidAmount().intValue()) {
-                slip.setPaymentStatus(PaymentStatus.Paid);
+            if (receipt.getTotalFee().intValue() <= receipt.getRequest().getPaidAmount().intValue()) {
+                receipt.setPaymentStatus(PaymentStatus.Paid);
             } else if (receipt.getRequest().getPaidAmount().intValue() == 0) {
-                slip.setPaymentStatus(PaymentStatus.Raised);
+                receipt.setPaymentStatus(PaymentStatus.Raised);
             } else {
-                slip.setPaymentStatus(PaymentStatus.PartiallyPaid);
+                receipt.setPaymentStatus(PaymentStatus.PartiallyPaid);
             }
-            logger.info(String.format("Student Fee payment rejected .%s",slip));
+            logger.info(String.format("Student Fee payment rejected .%s",receipt.getId()));
         }
         //slip.setComments(request.getComments());
 
-        feePaymentRepository.saveAndFlush(slip);
+        studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(receipt);
         return receipt;
     }
 }

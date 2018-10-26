@@ -7,10 +7,13 @@ public class FeeStatsResponse
 {
   private int yearly;
   private int year;
-  private int monthly;
+//  private int monthly;
   private int month;
+  private int ipssaFee;
+
   private int quarterly;
   private int quarter;
+
   private int total;
 
   public int getYearly()
@@ -33,14 +36,12 @@ public class FeeStatsResponse
     this.year = year;
   }
 
-  public int getMonthly()
-  {
-    return monthly;
+  public int getIpssaFee() {
+    return ipssaFee;
   }
 
-  public void setMonthly(int monthly)
-  {
-    this.monthly = monthly;
+  public void setIpssaFee(int ipssaFee) {
+    this.ipssaFee = ipssaFee;
   }
 
   public int getMonth()
