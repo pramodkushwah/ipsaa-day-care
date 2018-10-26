@@ -335,9 +335,9 @@ app.controller('StaffLeaveController', function ($scope, $http, $rootScope, Auth
             showTodayButton: true
         };
 
-        if (!$scope.hrAdmin) {
-            conf.minDate = date.setDate(date.getDate() + 1)
-        }
+        // if (!$scope.hrAdmin) {
+        //     conf.minDate = date.setDate(date.getDate() + 1)
+        // }
         datepicker.datetimepicker(conf);
 
         datepicker.on('dp.show', function (e) {
