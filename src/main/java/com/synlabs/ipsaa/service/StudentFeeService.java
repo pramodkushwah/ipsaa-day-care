@@ -453,6 +453,13 @@ public class StudentFeeService {
              thisQuarterSlip.setTotalFee(thisQuarterSlip.getTotalFee()
                             .add(thisQuarterSlip.getBalance()==null?ZERO:thisQuarterSlip.getBalance()));
 
+             if(thisQuarterSlip.getPaidAmount().doubleValue()==0){
+                 thisQuarterSlip.setPaymentStatus(PaymentStatus.Raised);
+             }else if(thisQuarterSlip.getPaidAmount().doubleValue()>=thisQuarterSlip.getTotalFee().doubleValue()){
+                 thisQuarterSlip.setPaymentStatus(PaymentStatus.Paid);
+             }else
+                 thisQuarterSlip.setPaymentStatus(PaymentStatus.PartiallyPaid);
+
              return  feePaymentRepository.saveAndFlush(thisQuarterSlip);
         }
         else {
