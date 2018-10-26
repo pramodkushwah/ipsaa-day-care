@@ -97,6 +97,12 @@ public class PaySlipService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PaySlipService.class);
 
+	public List<EmployeePaySlip> listPaySlip(long employeeId){
+		return employeePaySlipRepository.findByEmployeeId(unmask(employeeId));
+	}
+
+
+
 	public List<EmployeePaySlip> listPayslips(Integer month, Integer year, String employerId) throws ParseException {
 		if (year == null) {
 			throw new ValidationException("Year is required.");
