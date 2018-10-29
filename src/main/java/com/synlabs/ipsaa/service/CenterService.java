@@ -497,5 +497,13 @@ public class CenterService extends BaseService
     stateRepository.delete(request.getId());
   }
 
+   public List<Center> getCenterByState(Long stateId){
+
+    State state=stateRepository.findOne(unmask(stateId));
+    List<Center> centers= getUserCenters();
+    List<Center> centerList= centers.stream().filter(center -> center.getAddress().getState().equals(state.getName())).collect(Collectors.toList());
+
+    return  centerList;
+  }
 
 }
