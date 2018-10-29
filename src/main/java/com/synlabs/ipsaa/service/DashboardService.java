@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import com.synlabs.ipsaa.entity.student.*;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,14 +38,6 @@ import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.entity.staff.QEmployee;
 import com.synlabs.ipsaa.entity.staff.QEmployeeSalary;
-import com.synlabs.ipsaa.entity.student.QStudent;
-import com.synlabs.ipsaa.entity.student.QStudentFee;
-import com.synlabs.ipsaa.entity.student.QStudentFeePaymentRecord;
-import com.synlabs.ipsaa.entity.student.QStudentFeePaymentRequest;
-import com.synlabs.ipsaa.entity.student.QStudentParent;
-import com.synlabs.ipsaa.entity.student.Student;
-import com.synlabs.ipsaa.entity.student.StudentFee;
-import com.synlabs.ipsaa.entity.student.StudentParent;
 import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.enums.AttendanceStatus;
 import com.synlabs.ipsaa.enums.CallDisposition;
@@ -359,25 +352,25 @@ public class DashboardService extends BaseService
     feeStatsResponse.setMonth(month);
 
     QStudentFeePaymentRequest slip = QStudentFeePaymentRequest.studentFeePaymentRequest;
+    QStudentFeePaymentRecordIpsaaClub records=QStudentFeePaymentRecordIpsaaClub.studentFeePaymentRecordIpsaaClub;
     int total = 0;
 
-    // 3. add monthly fee for this month
-//    if (feeDuration == null || feeDuration == FeeDuration.Monthly)
-//    {
-//      JPAQuery<BigDecimal> monthlyquery = new JPAQuery<>(entityManager);
-//      monthlyquery.select(slip.totalFee.sum()).from(slip)
-//                  .where(slip.student.active.isTrue())
-//                  .where(slip.student.corporate.isFalse())
-//                  //.where(slip.student.approvalStatus.eq(ApprovalStatus.Approved))
-//                  //.where(slip.feeDuration.eq(FeeDuration.Monthly))
-//                  .where(slip.year.eq(year))
-//                  .where(slip.month.eq(month))
-//                  .where(slip.student.center.in(centers));
-//
-//      BigDecimal monthly = monthlyquery.fetchFirst();
-//      total += monthly == null ? 0 : monthly.intValue();
-//      feeStatsResponse.setMonthly(monthly == null ? 0 : monthly.intValue());
-//    }
+    // 3. add monthly fee for this month removed
+    if (feeDuration == null || feeDuration == FeeDuration.Monthly)
+    {
+      JPAQuery<BigDecimal> ipssaQuery = new JPAQuery<>(entityManager);
+      ipssaQuery.select(records.totalFee.sum())
+              .from(records)
+                  .where(records.student.active.isTrue())
+                  .where(records.paymentStatus.eq(PaymentStatus.Raised))
+                  .where(records.student.corporate.isFalse())
+                  .where(records.year.eq(year))
+                  .where(records.month.eq(month))
+                  .where(records.student.center.in(centers));
+      BigDecimal totalSum = ipssaQuery.fetchFirst();
+      total += totalSum == null ? 0 : totalSum.intValue();
+      feeStatsResponse.setIpssaFee(totalSum == null ? 0 : totalSum.intValue());
+    }
 
     //if start of quarter
     // 2. add quarterly fee for quarter in quarter start
@@ -431,25 +424,26 @@ public class DashboardService extends BaseService
     Integer quarter = feeDuration == null ? (month / 3) + 1 : request.getQuarter() == null ? (month / 3) + 1 : request.getQuarter();
     int total = 0;
 
-    JPAQuery<BigDecimal> monthlyq = new JPAQuery<>(entityManager);
+    JPAQuery<BigDecimal> ipsaaClubq = new JPAQuery<>(entityManager);
     QStudentFeePaymentRecord payment = QStudentFeePaymentRecord.studentFeePaymentRecord;
+    QStudentFeePaymentRecordIpsaaClub records=QStudentFeePaymentRecordIpsaaClub.studentFeePaymentRecordIpsaaClub;
+
 
     if (feeDuration == null || feeDuration == FeeDuration.Monthly)
     {
-      monthlyq.select(payment.paidAmount.sum()).from(payment)
-              .where(payment.student.active.isTrue())
-              .where(payment.student.corporate.isFalse())
-              .where(payment.student.approvalStatus.eq(ApprovalStatus.Approved))
-              .where(payment.request.feeDuration.eq(FeeDuration.Monthly))
-              .where(payment.request.year.eq(year))
-              .where(payment.request.month.eq(month))
-              .where(payment.paymentStatus.eq(PaymentStatus.Paid))
-              .where(payment.student.center.in(centers));
+      ipsaaClubq.select(records.paidAmount.sum()).from(records)
+              .where(records.student.active.isTrue())
+              .where(records.active.isTrue())
+              .where(records.student.corporate.isFalse())
+              //.where(records.isExpire.isFalse())
+              .where(records.request.year.eq(year))
+              .where(records.request.month.eq(month))
+              .where(records.paymentStatus.eq(PaymentStatus.Paid).or(records.paymentStatus.eq(PaymentStatus.PartiallyPaid)))
+              .where(records.student.center.in(centers));
 
-      BigDecimal monthly = monthlyq.fetchFirst();
+      BigDecimal monthly = ipsaaClubq.fetchFirst();
       total += monthly == null ? 0 : monthly.intValue();
-      feeStatsResponse.setMonth(month);
-      feeStatsResponse.setMonthly(monthly == null ? 0 : monthly.intValue());
+      feeStatsResponse.setIpssaFee(monthly==null?0:monthly.intValue());
     }
     //if start of quarter
     // 2. add quarterly fee for quarter in quarter start

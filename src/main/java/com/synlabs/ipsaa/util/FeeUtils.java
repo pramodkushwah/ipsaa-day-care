@@ -1,6 +1,8 @@
 package com.synlabs.ipsaa.util;
 
 import com.synlabs.ipsaa.entity.student.StudentFee;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecord;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecordIpsaaClub;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
 import com.synlabs.ipsaa.enums.FeeDuration;
 import com.synlabs.ipsaa.enums.GST;
@@ -60,6 +62,12 @@ public class FeeUtils
             return "Oct, " + year + " to Dec, " + year;
         }
     }
+    return "";
+  }
+  public static String getMonth(StudentFeePaymentRecordIpsaaClub studentFeePaymentRequest)
+  {
+    // date yet to be added according to no of dayes
+    int year = studentFeePaymentRequest.getYear();
     return "";
   }
 

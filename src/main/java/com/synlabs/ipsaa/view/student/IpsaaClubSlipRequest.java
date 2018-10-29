@@ -5,6 +5,15 @@ import com.synlabs.ipsaa.view.common.Request;
 public class IpsaaClubSlipRequest implements Request {
     private Long   id;
     private String centerCode;
+    private String      receiptSerial;
+
+    public String getReceiptSerial() {
+        return receiptSerial;
+    }
+
+    public void setReceiptSerial(String receiptSerial) {
+        this.receiptSerial = receiptSerial;
+    }
 
     public Long getId() {
         return unmask(id);
