@@ -61,5 +61,11 @@ public class CityController
     centerService.deleteCity(request);
   }
 
+  @GetMapping("state/{stateId}")
+  @Secured(CENTER_READ)
+  public List<CityResponse> getByState(@PathVariable("stateId") Long stateId){
+    return centerService.getCityByState(stateId).stream().map(CityResponse::new).collect(Collectors.toList());
+  }
+
 
 }
