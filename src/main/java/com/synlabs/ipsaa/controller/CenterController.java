@@ -75,4 +75,9 @@ public class CenterController
   {
     centerService.deleteCenter(new CenterRequest(centerId));
   }
+
+  @GetMapping(path= "{stateId}")
+  public List<CenterResponse> getCentersByState(@PathVariable(name = "stateId")  Long stateId){
+     return centerService.getCenterByState(stateId).stream().map(CenterResponse::new).collect(Collectors.toList());
+  }
 }

@@ -11,6 +11,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 import static java.math.BigDecimal.ZERO;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -607,11 +608,19 @@ public class EmployeePaySlip extends BaseEntity {
 
 	//	this.basic = SalaryUtilsV2.calculateBasic(this.ctc,employeeSalary.getBasic());
 		this.basic= employeeSalary.getBasic().multiply(ratio);
-		this.hra = SalaryUtilsV2.calculateHra(this.basic);
+
+		if(employeeSalary.getSpecial().signum() <= 0)
+			this.hra = employeeSalary.getHra().multiply(ratio).add(employeeSalary.getSpecial());  // in case of -ve specials
+		else
+			this.hra= SalaryUtilsV2.calculateHra(this.basic);
+
 		this.conveyance = ratio.multiply(SalaryUtilsV2.CONVEYANCE);
 		this.bonus = ratio.multiply(SalaryUtilsV2.BOUNS);
-		this.special = SalaryUtilsV2.calculateSpecial(this.ctc, this.basic, this.hra, this.conveyance, this.bonus);
+		this.special = SalaryUtilsV2.calculateSpecial(this.ctc, this.basic, this.hra, this.conveyance, this.bonus)
+				.setScale(6,RoundingMode.CEILING);  //to get zero instead of OE-8
+
 		this.extraMonthlyAllowance=employeeSalary.getExtraMonthlyAllowance();
+
 		if (extraMonthlyAllowance != null)
 			this.extraMonthlyAllowance = ratio.multiply(this.extraMonthlyAllowance);
 

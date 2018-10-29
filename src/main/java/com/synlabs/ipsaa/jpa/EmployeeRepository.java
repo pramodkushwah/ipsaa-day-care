@@ -60,4 +60,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, Repos
 
   //Avneet
   List<Employee> findByActiveTrueAndCostCenterInOrderByIdAsc(List<Center> centers);
+
+  List<Employee> findByEidIn(List<String> eids);
 }
