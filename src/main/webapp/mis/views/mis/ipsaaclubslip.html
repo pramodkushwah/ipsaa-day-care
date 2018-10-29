@@ -1,0 +1,114 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="form-group">
+      <label class="control-label">Center:</label>
+      <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="getGeneratedFeeSlips()">
+        <option value="">Select Center</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-7">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">assignment</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Student Fee</h4>
+        <div class="table-responsive">
+          <table class="table table-condensed table-striped table-hover" ng-show="selectedCenter">
+            <thead class="text-primary">
+              <tr>
+                <th>Name</th>
+                <th>Center</th>
+                <th>Invoice Date</th>
+                <th>Final Base Fee</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="studentfee in generatedFeeSlips | filter: searchFee" ng-click="loadStudentFee(studentfee)">
+                <td>{{studentfee.studentId}}</td>
+                <td>{{studentfee.center.code}}</td>
+                <td>{{studentfee.invoiceDate}}</td>
+                <td>{{studentfee.finalBaseFee}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-5" ng-show="selectedStudentFee">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">chrome_reader_mode</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">{{selectedStudentFee.studentId}} Student Fee</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Invoice Date</label>
+              <div class="form-control">{{selectedStudentFee.invoiceDate}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Base Fee</label>
+              <div class="form-control">{{selectedStudentFee.baseFee}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Annual Fee</label>
+              <div class="form-control">{{selectedStudentFee.annualFee}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Security Fee</label>
+              <div class="form-control">{{selectedStudentFee.securityFee}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="clearfix">
+          <button type="button" class="btn btn-rose">Generate New</button>
+        </div>
+      </div>
+      <div class="card" ng-show="selectedStudentFee.payments.length">
+        <div class="card-content">
+          <h4 class="card-title">{{selectedStudentFee.studentId}} Student Fee Records</h4>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>No of Days</th>
+                <th>Amount</th>
+                <th ng-show="STUDENTFEE_WRITE">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="payment in selectedStudentFee.payments">
+                <td>{{payment.startDate}}</td>
+                <td>{{payment.endDate}}</td>
+                <td>{{payment.totalNoOfDays}}</td>
+                <td>{{payment.amount}}</td>
+                <td ng-show="STUDENTFEE_WRITE">
+                  <div class="buttons">
+                    <button type="button" class="btn btn-primary btn-xs" >Pay</button>
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="downloadSlip(payment)">
+                      <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="downloadPdfDisable"></i>Download
+                    </button>
+                  </div>
+                  </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

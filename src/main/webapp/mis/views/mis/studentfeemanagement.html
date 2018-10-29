@@ -63,7 +63,6 @@
 
 
   <div class="col-md-5" ng-show="addstudentfee&&selectedCenter">
-
     <div class="card">
       <div class="card-header card-header-icon" data-background-color="rose">
         <i class="material-icons">chrome_reader_mode</i>
@@ -132,7 +131,7 @@
               </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row" ng-hide="isIpsaaclub">
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label" ng-readonly="true">Admission Charges</label>
@@ -207,7 +206,8 @@
                   ng-change="calculateDiscount('securityDeposit', 'finalSecurityDeposit', 'discountSecurityDeposit')">
               </div>
             </div>
-
+          </div>
+          <div class="row" ng-hide="isIpsaaclub">
             <div class="col-md-6">
               <div class="form-group">
                 <label class="control-label" ng-readonly="true">Monthly Transport Fees</label>
@@ -237,7 +237,7 @@
             </div>
           </div>
 
-          <div class="row">
+          <div class="row" ng-hide="isIpsaaclub">
             <div class="col-md-6">
               <div class="form-group">
                 <label class="control-label">Annual-Fee-GST &nbsp;
@@ -279,7 +279,7 @@
             </div>
           </div>
 
-          <div class="tab-pane active" id="controls" ng-hide="insertStudentFee.mode=='Show'">
+          <div class="tab-pane active" id="controls" ng-hide="isIpsaaclub || insertStudentFee.mode=='Show'">
             <div class="form-footer text-right">
               <button class="btn btn-rose btn-fill" ng-click="saveStudentFee(insertStudentFee)" ng-disabled="StudentFeeForm.$invalid || disableSave">
                 <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableSave"></i>
@@ -288,6 +288,16 @@
               <button class="btn btn-default" ng-click="cancelStudentFee()">Cancel</button>
             </div>
           </div>
+          <div class="tab-pane active" id="controls" ng-show="isIpsaaclub">
+            <div class="form-footer text-right">
+              <button class="btn btn-rose btn-fill" ng-click="generateStudentFee(insertStudentFee)" ng-disabled="StudentFeeForm.$invalid || disableGenerate">
+                <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableGenerate"></i>
+                Generate
+              </button>
+              <button class="btn btn-default" ng-click="cancelStudentFee()">Cancel</button>
+            </div>
+          </div>
+
         </form>
       </div>
     </div>
