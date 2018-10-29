@@ -240,10 +240,10 @@ public class StaffLeaveService extends BaseService
     }
     request.validateRequest();
 
-    if (!isHRAdmin(getUser()) && request.getFromDate().before(LocalDate.now().plusDays(1).toDate()))
-    {
-      throw new ValidationException("Option available on dates after today");
-    }
+//    if (!isHRAdmin(getUser()) && request.getFromDate().before(LocalDate.now().plusDays(1).toDate()))
+//    {
+//      throw new ValidationException("Option available on dates after today");
+//    }
 
     Employee currentEmployee = getEmployee();
     if (currentEmployee == null)
