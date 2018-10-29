@@ -255,6 +255,7 @@ public class StudentFeeController {
     public IpsaaClubRecordResponce updateIpsaaClubPayFee(@RequestBody SaveFeeSlipRequest request) {
         return new IpsaaClubRecordResponce(ipsaaClubFeeSerivce.updatePayFee(request));
     }
+
     @Secured(STUDENTFEE_RECEIPT_WRITE)
     @GetMapping("/download/ipssaclub/receipt/{recordId}")
     public void downloadReceiptIpssa(@PathVariable("recordId") Long recordId, HttpServletResponse response) throws IOException {
@@ -273,5 +274,27 @@ public class StudentFeeController {
         IOUtils.copy(is, out);
         out.flush();
         is.close();
+    }
+
+    @Secured(STUDENTFEE_SLIP_READ)
+    @PostMapping("/ipsaaclub/feeslips/pdf")
+    public void downloadIpsaaClubFeeSlips(@RequestBody List<Long> ids, HttpServletResponse response) throws IOException, DocumentException {
+        StudentFeeSlipRequest request = new StudentFeeSlipRequest();
+        File file = documentService.generateFeeSlipPdf(ids, request);
+
+        response.setContentType("application/octet-stream");
+        String fileName = String.format("Slips_%s_%s.pdf", request.getCenterCode(), request.getPeriod());
+        response.setHeader("Content-disposition", "attachment; filename=" + fileName);
+        response.setHeader("fileName", fileName);
+
+        OutputStream out = response.getOutputStream();
+        FileInputStream is = new FileInputStream(file);
+
+        IOUtils.copy(is, out);
+        out.flush();
+        is.close();
+        if (!file.delete()) {
+            throw new IOException("Could not delete temporary file after processing: " + file);
+        }
     }
 }

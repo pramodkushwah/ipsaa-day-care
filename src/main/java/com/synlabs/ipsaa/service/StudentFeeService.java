@@ -46,7 +46,7 @@ import static java.math.BigDecimal.ZERO;
 
 
 @Service
-public class StudentFeeService {
+public class StudentFeeService extends BaseService{
 
     private static final Logger logger = LoggerFactory.getLogger(StudentFeeService.class);
     @Autowired
@@ -71,6 +71,9 @@ public class StudentFeeService {
 
     @Autowired
     private StudentFeePaymentRecordRepository paymentRecordRepository;
+
+    @Autowired
+    private StudentFeePaymentRecordIpsaaClubRepository paymentIpssaRecordRepository;
 
     @Autowired
     private StudentFeePaymentRepository feePaymentRepository;
@@ -757,7 +760,24 @@ public class StudentFeeService {
         slip.setTotalFee(slip.getTotalFee().add(slip.getBalance()));
         return feePaymentRepository.saveAndFlush(slip);
     }
+    public StudentFeePaymentRecordIpsaaClub getSlip(Long id)
+    {
+        StudentFeePaymentRecordIpsaaClub record = paymentIpssaRecordRepository.findOne(id);
+        if (id == null)
+        {
+            throw new ValidationException("Slip id is required.");
+        }
+        if (record == null)
+        {
+            throw new ValidationException(String.format("Cannot locate record [id = %s ]", mask(id)));
+        }
 
+        if (!hasCenter(record.getStudent().getCenter().getCode()))
+        {
+            throw new ValidationException(String.format("Unauthorized access to center[code=%s]", record.getStudent().getCenter().getCode()));
+        }
+        return record;
+    }
     @Transactional
     public StudentFeePaymentRequest payFee(SaveFeeSlipRequest request)
     {

@@ -72,6 +72,9 @@ public class DocumentService extends BaseService
   @Autowired
   private FeeService feeService;
 
+  @Autowired
+  private StudentFeeService studentfeeService;
+
   private static final Logger logger = LoggerFactory.getLogger(DocumentService.class);
 
   @Value("${ipsaa.image.appt_letter_image_url}")
@@ -200,26 +203,26 @@ public class DocumentService extends BaseService
   public File generateFeeSlipPdf(List<Long> slipIds, StudentFeeSlipRequest slip) throws IOException, DocumentException
   {
 //    List<StudentFeePaymentRequest> feeSlips = studentService.generateFeeSlips(request);
-    List<StudentFeePaymentRequest> feeSlips = new ArrayList<>();
+    List<StudentFeePaymentRecordIpsaaClub> feeRecord = new ArrayList<>();
     boolean flag = true;
     for (Long slipId : slipIds)
     {
-      StudentFeePaymentRequest slip1 = feeService.getSlip(unmask(slipId));
+      StudentFeePaymentRecordIpsaaClub slip1 = studentfeeService.getSlip(unmask(slipId));
       if (flag)
       {
         slip.setCenterCode(slip1.getStudent().getCenter().getCode());
-        slip.setPeriod(slip1.getFeeDuration().toString());
+        //slip.setPeriod(slip1.getFeeDuration().toString());
         flag = false;
       }
-      feeSlips.add(slip1);
+      feeRecord.add(slip1);
     }
 
-    Collections.sort(feeSlips, (slip1, slip2) -> {
+    Collections.sort(feeRecord, (slip1, slip2) -> {
       return slip1.getStudent().getName()
                   .compareTo(slip2.getStudent().getName());
     });
 
-    List<String> slipPdfNames = generateSlipPdf(feeSlips);
+    List<String> slipPdfNames = generateIpsaaClubSlipPdf(feeRecord);
 
     String fileName = UUID.randomUUID() + ".pdf";
     File mergedPdfFile = new File(tempDirPath + "/" + fileName);
@@ -373,6 +376,50 @@ public class DocumentService extends BaseService
 
           feeSlip.setReGenerateSlip(false);
           slipRepository.saveAndFlush(feeSlip);
+          logger.info(String.format("Generated fee slip pdf slip[serial_number=%s,id=%s]", feeSlip.getSlipSerial(), feeSlip.getId()));
+        }
+        catch (TemplateException | InterruptedException e)
+        {
+          e.printStackTrace();
+          logger.warn(String.format("Error generating slip pdf [serial_number=%s,id=%s]", feeSlip.getSlipSerial(), feeSlip.getId()));
+        }
+      }
+      slipNames.add(feeSlip.getSlipFileName());
+    }
+    return slipNames;
+  }
+  private List<String> generateIpsaaClubSlipPdf(List<StudentFeePaymentRecordIpsaaClub> feeSlips) throws IOException
+  {
+    Template template = configuration.getTemplate("slip/slip.ftl");
+
+    List<String> slipNames = new ArrayList<>();
+    for (StudentFeePaymentRecordIpsaaClub feeSlip : feeSlips)
+    {
+      if (StringUtils.isEmpty(feeSlip.getSlipFileName()) ||
+              !fileStore.isExist("SLIP", feeSlip.getSlipFileName()))
+      {
+        try
+        {
+          StudentFee fee = studentFeeRepository.findByStudent(feeSlip.getStudent());
+          Map<String, Object> rootMap = fillSlipTemplate(feeSlip, fee, null);
+          Writer out = new StringWriter();
+          template.process(rootMap, out);
+          String html = out.toString();
+
+          String fileName = UUID.randomUUID() + ".pdf";
+          System.out.println(fileName);
+          feeSlip.setSlipFileName(fileName);
+          Map<String, String> params = new HashMap<>();
+          params.put("-O", "landscape");
+          Pdf slip = addParamsToPdf(null);
+          addParamsToPdf(slip, params);
+          addPdfMarginParam(slip, 2);
+
+          slip.addPageFromString(html);
+          fileStore.store("SLIP", fileName, slip.getPDF());
+
+          //feeSlip.setReGenerateSlip(false);
+          studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(feeSlip);
           logger.info(String.format("Generated fee slip pdf slip[serial_number=%s,id=%s]", feeSlip.getSlipSerial(), feeSlip.getId()));
         }
         catch (TemplateException | InterruptedException e)
