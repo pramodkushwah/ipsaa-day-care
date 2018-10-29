@@ -46,16 +46,23 @@ public class StateController {
     }
 
     @GetMapping("{cityId}")
-    @Secured(CENTER_WRITE)
+    @Secured(CENTER_READ)
     public StateResponse getState(@PathVariable("cityId")Long id) {
         return new StateResponse(centerService.getState(id));
     }
 
     @DeleteMapping("{stateId}")
-    @Secured(CENTER_WRITE)
+    @Secured({CENTER_WRITE})
     public void delete(@PathVariable("stateId") Long id){
         StateRequest request=new StateRequest();
         request.setId(id);
         centerService.deleteState(request);
+    }
+
+
+    @GetMapping("zone/{zoneId}")
+    @Secured({CENTER_WRITE,CENTER_READ})
+    public List<StateResponse> getByZone(@PathVariable("zoneId") Long zoneId){
+        return centerService.getStateByZone(zoneId).stream().map(StateResponse::new).collect(Collectors.toList());
     }
 }

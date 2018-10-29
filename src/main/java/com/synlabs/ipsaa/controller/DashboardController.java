@@ -120,4 +120,25 @@ public class DashboardController
   {
     return dashboardService.getRecruitmentHeadCountList(request);
   }
+
+
+//  ////////Avneet
+//
+//  @PostMapping("dash/presentStaff")
+//  @Secured(DASHBOARD_STATS)
+//  public List<StaffNewJoinings> presentStaff(@RequestBody DashboardRequest request){
+//    return dashboardService.presentStaff(request);
+//  }
+//
+//  @PostMapping("dash/absentStaff")
+//  @Secured(DASHBOARD_STATS)
+//  public List<StaffNewJoinings> absentStaff(@RequestBody DashboardRequest request){
+//
+//  }
+//
+//  @PostMapping("dash/onLeaveStaff")
+//  @Secured(DASHBOARD_STATS)
+//  public List<StaffNewJoinings> onLeaveStaff(@RequestBody DashboardRequest request){
+//
+//  }
 }

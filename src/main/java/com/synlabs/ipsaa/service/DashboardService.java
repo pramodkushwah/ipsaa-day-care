@@ -952,4 +952,12 @@ public class DashboardService extends BaseService
 
     return  query.fetch().stream().map(DashStudentResponse::new).collect(Collectors.toList());
   }
+
+//  public List<StaffNewJoinings> presentStaff(DashboardRequest request){
+//
+//    List<Center> centers= getCenters(request);
+//    List<EmployeeAttendance> attendance;
+//
+//  }
+
 }
