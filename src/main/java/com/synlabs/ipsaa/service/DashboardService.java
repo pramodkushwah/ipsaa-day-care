@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import com.synlabs.ipsaa.util.FeeUtilsV2;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -389,6 +390,7 @@ public class DashboardService extends BaseService
                     .where(slip.student.corporate.isFalse())
                    // .where(slip.student.approvalStatus.eq(ApprovalStatus.Approved))
                     .where(slip.feeDuration.eq(FeeDuration.Quarterly))
+                    .where(slip.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
                     .where(slip.year.eq(year))
                     .where(slip.quarter.eq(quarter))
                     .where(slip.student.center.in(centers));
@@ -460,6 +462,7 @@ public class DashboardService extends BaseService
       quarterlyq.select(payment.paidAmount.sum()).from(payment)
                 .where(payment.student.active.isTrue())
                 .where(payment.student.corporate.isFalse())
+                .where(payment.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
                 .where(payment.student.approvalStatus.eq(ApprovalStatus.Approved))
                 .where(payment.request.feeDuration.eq(FeeDuration.Quarterly))
                 .where(payment.request.year.eq(year))
