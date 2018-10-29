@@ -1,7 +1,6 @@
 package com.synlabs.ipsaa.util;
 
-import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport2;
-import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.util.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -12,14 +11,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ExcelGenerater {
-    List<Map<String, Object>> list;
+    List<LinkedHashMap<String,Object>> list=new ArrayList<>();
 
-    public ExcelGenerater(List<Map<String, Object>> list) {
+    public ExcelGenerater(List<LinkedHashMap<String,Object>>  list) {
         this.list = list;
     }
     public File create(String exportDir, String sheetName) {
@@ -45,28 +42,29 @@ public class ExcelGenerater {
         return file;
     }
 
-    private boolean makeList(List<Map<String, Object>> list, int i, Sheet feeCollectionReportSheet) {
+    private boolean makeList(List<LinkedHashMap<String,Object>> list, int i, Sheet feeCollectionReportSheet) {
         int rowCount=i;
-        for(Map<String ,Object > rowData:list){
-            Row row = feeCollectionReportSheet.createRow(rowCount++);
-            int count = 0;
-            for (Map.Entry<String, Object> entry : rowData.entrySet()) {
-                System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-                Cell cell = row.createCell(count++);
-                cell.setCellValue(entry.getValue()+"");
-            }
-        }
+
+                for(LinkedHashMap<String,Object> col:list){
+                    Row row = feeCollectionReportSheet.createRow(rowCount++);
+                    int count = 0;
+                    for (Map.Entry<String, Object> entry : col.entrySet()){
+
+                        Cell cell = row.createCell(count++);
+                        cell.setCellValue(entry.getValue()+"");
+                    }
+                }
         return true;
     }
 
-    private void createHeader(Map<String, Object> list, int i, Sheet feeCollectionReportSheet) {
+    private void createHeader(LinkedHashMap<String,Object> list, int i, Sheet feeCollectionReportSheet) {
         Row row = feeCollectionReportSheet.createRow(i);
         int count = 0;
-        for (Map.Entry<String, Object> entry : list.entrySet()) {
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-            Cell cell = row.createCell(count++);
-            cell.setCellValue(entry.getKey().toUpperCase());
-        }
+
+            for (Map.Entry<String, Object> entry : list.entrySet()){
+                Cell cell = row.createCell(count++);
+                cell.setCellValue(entry.getKey().toUpperCase());
+            }
     }
 
     protected void createStyle(SXSSFWorkbook workbook) {

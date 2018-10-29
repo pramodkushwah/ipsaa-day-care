@@ -1,6 +1,5 @@
 package com.synlabs.ipsaa.service;
 
-import com.querydsl.jpa.impl.JPAQuery;
 import com.synlabs.ipsaa.entity.attendance.StudentAttendance;
 import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.fee.CenterCharge;
@@ -8,40 +7,32 @@ import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.fee.Charge;
 import com.synlabs.ipsaa.entity.fee.HdfcResponse;
 import com.synlabs.ipsaa.entity.programs.Program;
-import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
-import com.synlabs.ipsaa.entity.student.QStudentFee;
 import com.synlabs.ipsaa.entity.student.Student;
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
-import com.synlabs.ipsaa.enums.ApprovalStatus;
-import com.synlabs.ipsaa.enums.FeeDuration;
 import com.synlabs.ipsaa.enums.PaymentStatus;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
-import com.synlabs.ipsaa.util.BigDecimalUtils;
 import com.synlabs.ipsaa.util.ExcelGenerater;
 import com.synlabs.ipsaa.util.FeeUtils;
 import com.synlabs.ipsaa.view.center.CenterChargeRequest;
 import com.synlabs.ipsaa.view.center.CenterFeeRequest;
-import com.synlabs.ipsaa.view.center.CenterRequest;
 import com.synlabs.ipsaa.view.center.CenterProgramFeeRequest;
-import com.synlabs.ipsaa.view.center.ProgramResponse;
 import com.synlabs.ipsaa.view.fee.*;
 import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport;
 import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport2;
 import com.synlabs.ipsaa.view.report.excel.FeeReportExcel2;
+import javafx.util.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.hibernate.criterion.Order;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -780,23 +771,27 @@ public class FeeService extends BaseService
       throw new ValidationException("Period is required.");
     }
     List<HdfcResponse> hdfc = hdfcResponseRepository.findBySlipQuarterAndSlipYear(slipRequest.getQuarter(),slipRequest.getYear());
-    List<Map<String,Object>> list=new ArrayList<>();
-    int count=0;
+    List<LinkedHashMap<String,Object>> list=new ArrayList<>();
+
+    int count=1;
     for(HdfcResponse res:hdfc){
-      Map<String,Object> row=new HashMap<>();
+      LinkedHashMap<String,Object> row=new LinkedHashMap<>();
       row.put("s.id",count++);
       row.put("student_name",res.getSlip().getStudent().getProfile().getFullName());
       row.put("center",res.getSlip().getStudent().getCenterName());
+
       row.put("program_name",res.getSlip().getStudent().getProgramName());
+
       row.put("amount",res.getAmount());
       row.put("trans_date",res.getTransDate());
       row.put("slip_id",res.getSlip().getId());
       row.put("type",res.getType());
-      row.put("status_message",res.getStatusMessage());
       row.put("bank_ref_no",res.getBankRefNo());
+      row.put("status_message",res.getStatusMessage());
       row.put("tracking_id",res.getTrackingId());
       row.put("billing_email",res.getBillingEmail());
       row.put("billing_name",res.getBillingName());
+
       list.add(row);
     }
     ExcelGenerater eg=new ExcelGenerater(list);
