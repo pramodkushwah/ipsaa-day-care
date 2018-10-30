@@ -1,16 +1,48 @@
 <div class="row">
   <div class="col-md-2">
-    <div class="form-group" role="group">
-      <label class="control-label">Search</label>
-      <input type="search" class="form-control" id="search" placeholder="Search..." ng-model="searchHoliday" ng-change="resetPagination()">
+    <div class="form-group">
+      <label class="control-label">Zone</label>
+      <select class="form-control" ng-model="selectedZone" ng-change="getStates(selectedZone)"
+        ng-options="zone as zone.name for zone in zones">
+      </select>
     </div>
   </div>
   <div class="col-md-2">
     <div class="form-group">
+      <label class="control-label">State</label>
+      <select class="form-control" ng-model="selectedState" ng-change="getCities(selectedState)"
+        ng-options="state as state.name for state in states">
+      </select>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="control-label">City</label>
+      <select class="form-control" ng-model="selectedCity" ng-change="filterCenterByCity(selectedCity)"
+        ng-options="city as city.name for city in cities">
+      </select>
+    </div>
+  </div>  
+  <div class="col-md-3">
+    <div class="form-group">
       <label class="control-label">Center</label>
-      <select class="form-control" ng-model="selectedCenter" ng-change="resetPagination()"
+      <select class="form-control" ng-model="selectedCenter"
               ng-options="center as center.name for center in centerList">
       </select>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="form-group">
+      <br>
+      <button type="button" class="btn btn-info" id="add" ng-click="addHoliday()">Add</button>
+    </div>
+  </div>
+</div>
+<!-- <div class="row">
+  <div class="col-md-2">
+    <div class="form-group" role="group">
+      <label class="control-label">Search</label>
+      <input type="search" class="form-control" id="search" placeholder="Search..." ng-model="searchHoliday" ng-change="resetPagination()">
     </div>
   </div>
 
@@ -37,7 +69,8 @@
       <button type="button" class="btn btn-info" id="add" ng-click="addHoliday()">Add</button>
     </div>
   </div>
-</div>
+</div> -->
+
 <div class="row">
   <div class="col-md-6 col-lg-6 col-sm-12">
     <div class="card">

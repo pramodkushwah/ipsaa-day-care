@@ -94,11 +94,11 @@ public class HolidayService extends BaseService
       centers = userService.getUserCenters();
     }
 
-    Holiday holiday;
-    holiday=holidayRepository.findByHolidayDateAndName(holidayRequest.getHolidayDate(),holidayRequest.getName());
-    System.out.println(holiday);
-    if(holiday == null)
-      holiday = new Holiday();
+   // Holiday holiday;
+//    holiday=holidayRepository.findByHolidayDateAndName(holidayRequest.getHolidayDate(),holidayRequest.getName());
+//    System.out.println(holiday);
+//    if(holiday == null)
+      Holiday holiday = new Holiday();
 
     holiday.setId(holidayRequest.getId());
     holiday.setCenters(centers);
