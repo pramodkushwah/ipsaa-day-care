@@ -48,6 +48,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static com.synlabs.ipsaa.util.StringUtil.in;
@@ -930,4 +931,46 @@ public class StaffService extends BaseService
     }
     workbook.close();
   }
+
+  /////////////////////Avneet- one time thing
+  ///Update Designation
+//
+//  public static final String SAMPLE_PATH="C:\\Users\\avnib\\Desktop\\ipsaa\\DesignationUpdate.xlsx";
+//
+//  @Transactional
+//  public void updateDesignation() throws IOException,InvalidFormatException{
+//
+//    Workbook workbook= WorkbookFactory.create(new File(SAMPLE_PATH));
+//    Sheet sheet= workbook.getSheetAt(0);
+//    Map<String,List<String>> map= new HashMap<>();
+//    //List<String> eids=new ArrayList<>();
+//
+//    for(int i=1;i<= sheet.getPhysicalNumberOfRows();i++) {
+//
+//        Row row = sheet.getRow(i);
+//
+//        if (row != null) {
+//            String eid = row.getCell(0).getStringCellValue();
+//            String designation = row.getCell(3).getStringCellValue();
+//
+//            System.out.println(i + " " + eid + " " + designation);
+//            map.computeIfAbsent(designation, e -> new ArrayList<>()).add(eid);
+//            //eids.add(eid);
+//        }
+//    }
+//
+//    map.forEach(new BiConsumer<String, List<String>>() {
+//            @Override
+//            public void accept(String employeeDesignation, List<String> eids) {
+//                entityManager.createQuery("update Employee set designation =:designation where eid IN :eids")
+//                        .setParameter("designation", employeeDesignation)
+//                        .setParameter("eids", eids)
+//                .executeUpdate();
+//                System.out.println("Done for this Designation:  "+employeeDesignation);
+//            }
+//    });
+//    System.out.println(map.entrySet());
+//    workbook.close();
+//
+//  }
 }
