@@ -1,5 +1,6 @@
 package com.synlabs.ipsaa.controller;
 
+import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.service.DashboardService;
 import com.synlabs.ipsaa.view.common.DashboardRequest;
 import com.synlabs.ipsaa.view.common.StatsResponse;
@@ -122,23 +123,23 @@ public class DashboardController
   }
 
 
-//  ////////Avneet
-//
-//  @PostMapping("dash/presentStaff")
-//  @Secured(DASHBOARD_STATS)
-//  public List<StaffNewJoinings> presentStaff(@RequestBody DashboardRequest request){
-//    return dashboardService.presentStaff(request);
-//  }
-//
-//  @PostMapping("dash/absentStaff")
-//  @Secured(DASHBOARD_STATS)
-//  public List<StaffNewJoinings> absentStaff(@RequestBody DashboardRequest request){
-//
-//  }
-//
-//  @PostMapping("dash/onLeaveStaff")
-//  @Secured(DASHBOARD_STATS)
-//  public List<StaffNewJoinings> onLeaveStaff(@RequestBody DashboardRequest request){
-//
-//  }
+  ////////Avneet
+
+  @PostMapping("dash/presentStaff")
+  @Secured(DASHBOARD_STATS)
+  public List<StaffNewJoinings> presentStaff(@RequestBody DashboardRequest request){
+    return dashboardService.presentStaff(request);
+  }
+
+  @PostMapping("dash/absentStaff")
+  @Secured(DASHBOARD_STATS)
+  public List<StaffNewJoinings> absentStaff(@RequestBody DashboardRequest request){
+    return dashboardService.absentStaff(request);
+  }
+
+  @PostMapping("dash/onLeaveStaff")
+  @Secured(DASHBOARD_STATS)
+  public List<StaffNewJoinings> onLeaveStaff(@RequestBody DashboardRequest request){
+    return dashboardService.onLeaveStaff(request);
+  }
 }

@@ -15,6 +15,9 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import com.synlabs.ipsaa.entity.staff.*;
+import com.synlabs.ipsaa.enums.*;
+import com.synlabs.ipsaa.jpa.EmployeeRepository;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,10 +36,6 @@ import com.synlabs.ipsaa.entity.common.Role;
 import com.synlabs.ipsaa.entity.common.User;
 import com.synlabs.ipsaa.entity.inquiry.InquiryEventLog;
 import com.synlabs.ipsaa.entity.inquiry.QInquiryEventLog;
-import com.synlabs.ipsaa.entity.staff.Employee;
-import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
-import com.synlabs.ipsaa.entity.staff.QEmployee;
-import com.synlabs.ipsaa.entity.staff.QEmployeeSalary;
 import com.synlabs.ipsaa.entity.student.QStudent;
 import com.synlabs.ipsaa.entity.student.QStudentFee;
 import com.synlabs.ipsaa.entity.student.QStudentFeePaymentRecord;
@@ -45,11 +44,6 @@ import com.synlabs.ipsaa.entity.student.QStudentParent;
 import com.synlabs.ipsaa.entity.student.Student;
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentParent;
-import com.synlabs.ipsaa.enums.ApprovalStatus;
-import com.synlabs.ipsaa.enums.AttendanceStatus;
-import com.synlabs.ipsaa.enums.CallDisposition;
-import com.synlabs.ipsaa.enums.FeeDuration;
-import com.synlabs.ipsaa.enums.PaymentStatus;
 import com.synlabs.ipsaa.jpa.InquiryEventLogRepository;
 import com.synlabs.ipsaa.jpa.InquiryRepository;
 import com.synlabs.ipsaa.view.common.DashboardRequest;
@@ -79,6 +73,9 @@ public class DashboardService extends BaseService
 
   @Autowired
   private InquiryEventLogRepository eventLogRepository;
+
+  @Autowired
+  EmployeeRepository employeeRepository;
 
   public StatsResponse getFeeStats(DashboardRequest request)
   {
@@ -953,11 +950,69 @@ public class DashboardService extends BaseService
     return  query.fetch().stream().map(DashStudentResponse::new).collect(Collectors.toList());
   }
 
-//  public List<StaffNewJoinings> presentStaff(DashboardRequest request){
-//
-//    List<Center> centers= getCenters(request);
-//    List<EmployeeAttendance> attendance;
-//
-//  }
+  public List<StaffNewJoinings> presentStaff(DashboardRequest request){
+
+    List<Center> centers= getCenters(request);
+
+    JPAQuery<EmployeeAttendance> query = new JPAQuery<>(entityManager);
+    QEmployeeAttendance attendance=QEmployeeAttendance.employeeAttendance;
+   // QEmployee employee=QEmployee.employee;
+
+    query.select(attendance).from(attendance)
+            .where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
+            .where(attendance.status.eq(AttendanceStatus.Present))
+            .where(attendance.checkout.isNull())
+            .where(attendance.center.in(centers));
+
+   List<EmployeeAttendance> attendances= query.fetch();
+
+   List<Employee> employees= attendances.stream().map(a->a.getEmployee()).collect(Collectors.toList());
+   return employees.stream().map(StaffNewJoinings::new).collect(Collectors.toList());
+
+
+  }
+
+  public List<StaffNewJoinings> absentStaff(DashboardRequest request){
+
+    List<Center> centers= getCenters(request);
+
+    JPAQuery<EmployeeAttendance> query = new JPAQuery<>(entityManager);
+    QEmployeeAttendance attendance=QEmployeeAttendance.employeeAttendance;
+    // QEmployee employee=QEmployee.employee;
+
+    List<Employee> employees=query.select(attendance.employee).from(attendance)
+            .where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
+            .where(attendance.status.eq(AttendanceStatus.Present))
+            .where(attendance.checkout.isNull())
+            .where(attendance.center.in(centers))
+            .orderBy(attendance.employee.id.asc())
+            .fetch();
+
+    List<Employee> employeeList= employeeRepository.findByActiveTrueAndCostCenterInOrderByIdAsc(centers);
+
+    List<Employee> absentEmployees= employeeList.stream()
+            .filter(e-> !employees.contains(e)).collect(Collectors.toList());
+
+    return absentEmployees.stream().map(StaffNewJoinings::new).collect(Collectors.toList());
+
+
+  }
+
+  public List<StaffNewJoinings> onLeaveStaff(DashboardRequest request){
+    List<Center> centers= getCenters(request);
+
+    JPAQuery<EmployeeLeave> query = new JPAQuery<>(entityManager);
+    QEmployeeLeave leaves=QEmployeeLeave.employeeLeave;
+
+    query.select(leaves.employee).from(leaves)
+            .where(leaves.date.eq(LocalDate.now().toDate()))
+            .where(leaves.leaveStatus.eq(LeaveStatus.Approved))
+            .where(leaves.halfLeave.isTrue());
+
+    //return query.fetch().stream().filter(l->l.getEmployee()).map(StaffNewJoinings::new).collect(Collectors.toList());
+    return null;
+  }
+
+
 
 }

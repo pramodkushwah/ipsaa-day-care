@@ -62,4 +62,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, Repos
   List<Employee> findByActiveTrueAndCostCenterInOrderByIdAsc(List<Center> centers);
 
   List<Employee> findByEidIn(List<String> eids);
+
 }
