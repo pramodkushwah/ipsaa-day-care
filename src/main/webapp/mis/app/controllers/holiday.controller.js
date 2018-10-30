@@ -97,22 +97,22 @@ app.controller('HolidayController', function ($scope, $http, $rootScope, $filter
 
     function filterCenterByZone(id){
         $scope.centerList = $scope.centerListCopy;
-        $scope.centerList = $scope.centerListCopy.filter(elemet => {
-            return (elemet.zone.id == id || element.name == 'All');
+        $scope.centerList = $scope.centerListCopy.filter(element => {
+            return (element.zone.id == id || element.name == 'All');
         });
         $scope.selectedState = '';
     }
 
     function filterCenterByState(name){
-        $scope.centerList = $scope.centerListCopy.filter(elemet => {
-            return (elemet.address.state == name || element.name == 'All');
+        $scope.centerList = $scope.centerListCopy.filter(element => {
+            return (element.address.state == name || element.name == 'All');
         });
         $scope.selectedCity = '';
     }
 
     $scope.filterCenterByCity = function(city){
-        $scope.centerList = $scope.centerListCopy.filter(elemet => {
-            return (elemet.address.city == city.name || element.name == 'All');
+        $scope.centerList = $scope.centerListCopy.filter(element => {
+            return (element.address.city == city.name || element.name == 'All');
         });
         $scope.selectedCenter = '';
     }
