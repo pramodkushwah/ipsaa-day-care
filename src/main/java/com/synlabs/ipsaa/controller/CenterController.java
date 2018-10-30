@@ -61,13 +61,13 @@ public class CenterController {
 
 	@Secured(CENTER_WRITE)
 	@PutMapping
-	public CenterResponse updateCenter(@RequestBody @Validated CenterRequest request, BindingResult result) {
+	public CenterResponseV2 updateCenter(@RequestBody @Validated CenterRequest request, BindingResult result) {
 		if (result.hasErrors()) {
 			throw new ValidationException(result.toString());
 		}
 
 		Center center = centerService.updateCenter(request);
-		return new CenterResponse(center);
+		return new CenterResponseV2(center);
 	}
 
 	@Secured(CENTER_DELETE)
