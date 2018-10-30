@@ -1030,7 +1030,8 @@ public class DashboardService extends BaseService
     List<Employee> onLeaveEmployees = query.select(leaves.employee).from(leaves)
             .where(leaves.date.eq(LocalDate.now().toDate()))
             .where(leaves.leaveStatus.eq(LeaveStatus.Approved).or(leaves.leaveStatus.eq(LeaveStatus.Applied)))
-            .where(leaves.halfLeave.isTrue()).fetch();
+            .where(leaves.halfLeave.isTrue())
+            .where(leaves.employee.costCenter.in(centers)).fetch();
 
    //List<Employee> employees=query.fetch();
     return onLeaveEmployees.stream().map(StaffNewJoinings::new).collect(Collectors.toList());
