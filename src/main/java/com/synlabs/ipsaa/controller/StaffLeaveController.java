@@ -80,4 +80,9 @@ public class StaffLeaveController
   {
     leaveService.syncLeaveSummary(month, year, centerCode, employeeActive);
   }
+
+  @GetMapping("{month}")
+  public List<EmployeeLeaveSummaryResponse> leavesBymonth(@PathVariable ("month") int month){
+    return leaveService.getLeavesByMonth(month);
+  }
 }
