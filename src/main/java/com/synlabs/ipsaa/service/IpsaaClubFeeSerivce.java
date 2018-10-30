@@ -50,105 +50,140 @@ public class IpsaaClubFeeSerivce {
 
     public List<StudentFeePaymentRequestIpsaaClub> listFeeSlips(IpsaaClubSlipRequest request) {
         List<StudentFeePaymentRequestIpsaaClub> allslips = new LinkedList<>();
-        allslips = studentFeePaymentRequestIpsaaClubRepository.findAll();
+        allslips = studentFeePaymentRequestIpsaaClubRepository.findByMonthAndYearOrderByCreatedDateDesc(10,2018);
         return allslips;
     }
 
     @Transactional
     public IpsaaClubSlipResponce generateSlip(Long id) {
-        StudentFee fee = feeRepository.findOne(id);
+        StudentFee fee = feeRepository.findByStudentId(id);
         if (fee == null)
            throw  new ValidationException("fee not found");
-        StudentFeePaymentRequestIpsaaClub slip = studentFeePaymentRequestIpsaaClubRepository.findByStudentId(fee.getStudent().getId());
-        if (slip == null) {
+
+        List<StudentFeePaymentRequestIpsaaClub> slips = studentFeePaymentRequestIpsaaClubRepository.findByStudentIdOrderByCreatedDateDesc(fee.getStudent().getId());
+        StudentFeePaymentRequestIpsaaClub latestSlip;
+
+        if (slips == null || slips.isEmpty()) {
             // first fee
-
-            slip = new StudentFeePaymentRequestIpsaaClub();
-            slip.setInvoiceDate(new Date()); // for first slip start date
-            slip.setStudent(fee.getStudent());
-
-            slip.setAnnualFee(fee.getAnnualCharges());
-            slip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount());
-            slip.setFinalAnnualFee(fee.getFinalAnnualCharges());
-
-            slip.setBaseFee(ZERO);
-            slip.setFinalBaseFee(ZERO);
-            slip.setBaseFeeDiscount(ZERO);
-
-            slip.setDeposit(fee.getDepositFee());
-            slip.setDepositFeeDiscount(fee.getDepositFeeDiscount());
-            slip.setFinalDepositFee(fee.getFinalDepositFee());
-            slip.setBalance(ZERO);
+           StudentFeePaymentRequestIpsaaClub firstSlip= generateFirstSlip(fee);
+            return new IpsaaClubSlipResponce(firstSlip);
         } else {
-
-            if((slip.getInvoiceDate().getTime()-(new Date()).getTime())/60/60/24<1)
-            {
-              throw  new ValidationException("can not generate same day from last generate date");
-            }
-            // invoice date is not setting right now
-            slip.setAnnualFee(BigDecimal.ZERO);
-            slip.setAnnualFeeDiscount(BigDecimal.ZERO);
-            slip.setFinalAnnualFee(BigDecimal.ZERO);
-
-            slip.setBaseFee(fee.getBaseFee());
-            slip.setFinalBaseFee(fee.getFinalBaseFee());
-            slip.setBaseFeeDiscount(fee.getBaseFeeDiscount());
-
-            slip.setDeposit(BigDecimal.ZERO);
-            slip.setDepositFeeDiscount(BigDecimal.ZERO);
-            slip.setFinalDepositFee(BigDecimal.ZERO);
+            // new slip
+            latestSlip=slips.get(0);
+            StudentFeePaymentRequestIpsaaClub newSlip=generateNewSlip(latestSlip,fee);
+            return new IpsaaClubSlipResponce(newSlip);
         }
+    }
+    private StudentFeePaymentRequestIpsaaClub generateNewSlip(StudentFeePaymentRequestIpsaaClub latestSlip, StudentFee fee) {
+        if((latestSlip.getInvoiceDate().getTime()-(new Date()).getTime())/60/60/24<1)
+        {
+            throw  new ValidationException("can not generate same day from last generate date");
+        }
+
         if (fee != null) {
-            slip.setPaymentStatus(PaymentStatus.Raised);
-
             Date expirDate=new Date();
-            StudentFeePaymentRecordIpsaaClub record=new StudentFeePaymentRecordIpsaaClub();
-            record.setStartDate(slip.getInvoiceDate());
 
-            slip = generateFeeFrom(expirDate, fee, slip); // generate fee from invoice to today
-            slip.setInvoiceDate(expirDate);               //invoice date is expire date of last slip
+            latestSlip = generateFeeFrom(expirDate, fee, latestSlip); // generate fee from invoice to today
 
-            record.setEndDate(expirDate);
+            latestSlip.setExpireDate(expirDate);                     //invoice date is expire date of last latestSlip
+            latestSlip.setGstAmount(FeeUtilsV2.calculateGST(latestSlip.getTotalDaysFee(),latestSlip.getFinalAnnualFee(),GST.IGST));
+            latestSlip.setFinalFee(FeeUtilsV2.calculateIpsaaClubFinalFee(latestSlip));
 
-            record.setMonth(LocalDate.now().getMonthValue());
-            record.setMonth(LocalDate.now().getYear());
+            // check old payments is confrim or not
+            boolean isConfirm=true;
+            if(latestSlip.getLastSlip()!=null)
+                isConfirm=this.isConfrom(latestSlip.getLastSlip().getPayments());
 
-            record.setTotalNoOfDays(slip.getTotalNoOfDays());
-            record.setNoOfHalfDays(slip.getNoOfHalfDays());
-            record.setNoOfFullDays(slip.getNoOfFullDays());
-
-            record.setAnnualFee(slip.getFinalAnnualFee());
-            record.setDepositFee(slip.getFinalDepositFee());
-            record.setBaseFee(slip.getFinalBaseFee());
-            record.setGstAmount(slip.getGstAmount());
-
-            record.setBalance(slip.getBalance());
-
-            record.setPaymentStatus(PaymentStatus.Raised);
-            record.setRequest(slip);
-            record.setStudent(slip.getStudent());
-
-            slip.setTotalFee(FeeUtilsV2.calculateIpsaaClubTotalFee(slip));
-
-            // calculate balance
-            StudentFeePaymentRecordIpsaaClub lastRecord=null;
-            if(slip.getPayments()!=null && !slip.getPayments().isEmpty())
-             lastRecord= slip.getPayments().get(0);
-
-            if(lastRecord!=null && lastRecord.getPaidAmount()!=null)
-                record.setBalance(lastRecord.getTotalFee().subtract(lastRecord.getPaidAmount()));
-            else{
-                record.setBalance(ZERO);
+            if(!isConfirm){
+                throw new ValidationException("your old slip payment is not confirm");
+            }else{
+                BigDecimal balance=latestSlip.getTotalFee().subtract(latestSlip.getPaidAmount());
+                latestSlip.setBalance(balance);
             }
 
-            record.setTotalFee(slip.getTotalFee().add(record.getBalance()));
-            slip.setPayments(Arrays.asList(record));
+            latestSlip.setTotalDaysFee(latestSlip.getFinalFee().add(latestSlip.getBalance()));
+            studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(latestSlip);
 
-            studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(slip);
-
-            return new IpsaaClubSlipResponce(slip);
+            return startNewSession(latestSlip,fee);
         } else
             throw new NotFoundException("student fee not found");
+    }
+
+    private StudentFeePaymentRequestIpsaaClub startNewSession(StudentFeePaymentRequestIpsaaClub lastSlip, StudentFee fee) {
+        StudentFeePaymentRequestIpsaaClub newSlip= new StudentFeePaymentRequestIpsaaClub();
+        newSlip.setInvoiceDate(new Date()); // for first newSlips start date
+        newSlip.setStudent(fee.getStudent());
+
+        newSlip.setAnnualFee(ZERO);
+        newSlip.setAnnualFeeDiscount(ZERO);
+        newSlip.setFinalAnnualFee(ZERO);
+
+        newSlip.setLastSlip(lastSlip);
+        newSlip.setBaseFee(ZERO);
+        newSlip.setFinalBaseFee(ZERO);
+        newSlip.setBaseFeeDiscount(ZERO);
+
+        newSlip.setDeposit(ZERO);
+        newSlip.setDepositFeeDiscount(ZERO);
+        newSlip.setFinalDepositFee(ZERO);
+
+        newSlip.setMonth(LocalDate.now().getMonth().getValue());
+        newSlip.setYear(LocalDate.now().getYear());
+
+
+        newSlip.setBalance(ZERO);
+        newSlip.setTotalDaysFee(ZERO);
+
+        newSlip.setFinalFee(FeeUtilsV2.calculateIpsaaClubFinalFee(newSlip));
+        newSlip.setTotalFee(newSlip.getFinalFee().add(newSlip.getBalance()));
+        newSlip.setPaymentStatus(PaymentStatus.Raised);
+        return studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(newSlip);
+
+    }
+
+    private StudentFeePaymentRequestIpsaaClub generateFirstSlip(StudentFee fee) {
+
+        StudentFeePaymentRequestIpsaaClub newSlip= new StudentFeePaymentRequestIpsaaClub();
+        newSlip.setInvoiceDate(new Date()); // for first newSlips start date
+        newSlip.setStudent(fee.getStudent());
+
+        newSlip.setAnnualFee(fee.getAnnualCharges());
+        newSlip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount());
+        newSlip.setFinalAnnualFee(fee.getFinalAnnualCharges());
+
+        newSlip.setBaseFee(ZERO);
+        newSlip.setFinalBaseFee(ZERO);
+        newSlip.setBaseFeeDiscount(ZERO);
+
+        newSlip.setDeposit(fee.getDepositFee());
+        newSlip.setDepositFeeDiscount(fee.getDepositFeeDiscount());
+        newSlip.setFinalDepositFee(fee.getFinalDepositFee());
+
+        newSlip.setMonth(LocalDate.now().getMonth().getValue());
+        newSlip.setYear(LocalDate.now().getYear());
+
+        newSlip.setBalance(ZERO);
+        newSlip.setTotalDaysFee(ZERO);
+
+        newSlip.setGstAmount(FeeUtilsV2.calculateGST(newSlip.getTotalDaysFee(),newSlip.getFinalAnnualFee(),GST.IGST));
+
+        newSlip.setFinalFee(FeeUtilsV2.calculateIpsaaClubFinalFee(newSlip));
+        newSlip.setTotalFee(newSlip.getFinalFee().add(newSlip.getBalance()));
+
+        newSlip.setPaymentStatus(PaymentStatus.Raised);
+
+        return studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(newSlip);
+    }
+
+    private boolean isConfrom(List<StudentFeePaymentRecordIpsaaClub> payments) {
+        for(StudentFeePaymentRecordIpsaaClub payment:payments){
+            if(payment.getActive()){
+                if(!payment.getConfirmed()){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private StudentFeePaymentRequestIpsaaClub generateFeeFrom(Date date, StudentFee fee, StudentFeePaymentRequestIpsaaClub slip) {
@@ -162,12 +197,7 @@ public class IpsaaClubFeeSerivce {
         BigDecimal fullDayFee = fee.getBaseFee().multiply(new BigDecimal(slip.getNoOfFullDays()));
 
         BigDecimal totalFee = halfDayFee.add(fullDayFee);
-
-        BigDecimal gst = FeeUtilsV2.calculateGST(totalFee,fee.getFinalAnnualCharges(), GST.IGST);
-
-        slip.setGstAmount(gst);
-
-        slip.setTotalFee(totalFee);
+        slip.setTotalDaysFee(totalFee);
         return slip;
     }
 
@@ -175,10 +205,10 @@ public class IpsaaClubFeeSerivce {
         return studentAttendanceService.getAttendanceFromTo(lastGenerationDate, today, student);
     }
 
-    public IpsaaClubSlipResponce getStudnetSlip(Long id) {
-        StudentFeePaymentRequestIpsaaClub studentFeePaymentRequestIpsaaClub = studentFeePaymentRequestIpsaaClubRepository.findByStudentId(id);
+    public IpsaaClubSlipResponce getStudentSlip(Long id) {
+        List<StudentFeePaymentRequestIpsaaClub> studentFeePaymentRequestIpsaaClub = studentFeePaymentRequestIpsaaClubRepository.findByStudentIdOrderByCreatedDateDesc(id);
         if (studentFeePaymentRequestIpsaaClub != null)
-            return new IpsaaClubSlipResponce(studentFeePaymentRequestIpsaaClub);
+            return new IpsaaClubSlipResponce(studentFeePaymentRequestIpsaaClub.get(0));
         else {
             throw new ValidationException("slip not found");
         }
@@ -200,20 +230,21 @@ public class IpsaaClubFeeSerivce {
                 throw new ValidationException(" Reference number is missing.");
             }
         }
-        StudentFeePaymentRecordIpsaaClub record = studentFeePaymentRecordIpsaaClubRepository.findOne(request.getId());
-        if (record == null) {
-            throw new NotFoundException("Missing record");
+        StudentFeePaymentRequestIpsaaClub slip = studentFeePaymentRequestIpsaaClubRepository.findOne(request.getId());
+        if (slip == null) {
+            throw new NotFoundException("Missing slip");
         }
-        record.setComments(request.getComments());
-        record.setReceiptSerial(null);
-        record.setReceiptFileName(null);
-        BigDecimal alreadypaid = record.getPaidAmount()==null?ZERO:record.getPaidAmount();
+        slip.setComments(request.getComments());
+        slip.setReceiptSerial(null);
+        slip.setReceiptFileName(null);
+        BigDecimal alreadypaid = slip.getPaidAmount()==null?ZERO:slip.getPaidAmount();
 
         if (alreadypaid.doubleValue() <= request.getPaidAmount().doubleValue()) {
-            record.setPaymentStatus(PaymentStatus.Paid);
+            slip.setPaymentStatus(PaymentStatus.Paid);
         } else {
-            record.setPaymentStatus(PaymentStatus.PartiallyPaid);
+            slip.setPaymentStatus(PaymentStatus.PartiallyPaid);
         }
+        StudentFeePaymentRecordIpsaaClub record=new StudentFeePaymentRecordIpsaaClub();
         record.setActive(true);
         record.setPaidAmount(request.getPaidAmount());
         record.setPaymentMode(request.getPaymentMode());
@@ -221,36 +252,36 @@ public class IpsaaClubFeeSerivce {
         record.setConfirmed(request.getConfirmed());
         record.setPaymentDate(request.getPaymentDate() == null ? new Date() : request.getPaymentDate());
         studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(record);
-        logger.info(String.format("Student Fee payment recoded successfully.%s", record));
+        logger.info(String.format("Student Fee payment recoded successfully.%s", slip));
         //documentService.generateFeeReceiptPdf(record);
         return record;
     }
 
     // use to confirm or reject payment
-    public StudentFeePaymentRecordIpsaaClub updateRecord(StudentFeeSlipRequestV2 request) {
-        StudentFeePaymentRecordIpsaaClub record = studentFeePaymentRecordIpsaaClubRepository.findOne(request.getId());
-        if (record == null)
+    public StudentFeePaymentRequestIpsaaClub updateSlip(StudentFeeSlipRequestV2 request) {
+        StudentFeePaymentRequestIpsaaClub slip = studentFeePaymentRequestIpsaaClubRepository.findOne(request.getId());
+        if (slip == null)
         {
-            throw new NotFoundException("Missing record");
+            throw new NotFoundException("Missing slip");
         }
 
-        if (record.getPaymentStatus() == PaymentStatus.Paid)
+        if (slip.getPaymentStatus() == PaymentStatus.Paid)
         {
             throw new ValidationException("Already paid.");
         }
-        if(record.isExpire()){
-            throw new ValidationException("You can't update expire pay record.");
+        if(slip.isExpire()){
+            throw new ValidationException("You can't update expire pay slip.");
         }
-        record.setComments(request.getComments());
+        slip.setComments(request.getComments());
         if(request.getBalance()!=null){
-            record.setBalance(request.getBalance());
+            slip.setBalance(request.getBalance());
         }
         if(request.getExtraCharge()!=null){
-            record.setExtraCharges(request.getExtraCharge());
-            record.setTotalFee(record.getTotalFee().add(record.getExtraCharges()));
+            slip.setTotalFee(slip.getTotalFee().subtract(slip.getExtraCharge()==null?ZERO:slip.getExtraCharge()));
+            slip.setExtraCharge(request.getExtraCharge());
+            slip.setTotalFee(slip.getTotalFee().add(slip.getExtraCharge()));
         }
-        record.setTotalFee(record.getTotalFee().add(record.getBalance()));
-        return studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(record);
+        return studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(slip);
     }
     // use to confirm or reject payment
     public StudentFeePaymentRecordIpsaaClub updatePayFee(SaveFeeSlipRequest request) {
@@ -260,6 +291,7 @@ public class IpsaaClubFeeSerivce {
         }
 
         StudentFeePaymentRecordIpsaaClub receipt = studentFeePaymentRecordIpsaaClubRepository.findOne(request.getId());
+        StudentFeePaymentRequestIpsaaClub slip =receipt.getRequest();
         if (receipt == null) {
             throw new ValidationException(String.format("Cannot locate Receipt[id = %s]", mask(request.getId())));
         }
@@ -280,26 +312,26 @@ public class IpsaaClubFeeSerivce {
             }
             receipt.setComment(request.getComments());
             if(receipt.getPaymentMode().equals(PaymentMode.Cheque)){
-                receipt.setTotalFee(receipt.getTotalFee().subtract(receipt.getExtraCharges()));
-                receipt.setExtraCharges(receipt.getExtraCharges().add(FeeUtilsV2.CHEQUE_BOUNCE_CHARGE));
-                if(receipt.getAutoComments()==null)
-                    receipt.setAutoComments("200rs Cheque bounce charges added");
+                slip.setTotalFee(slip.getTotalFee().subtract(slip.getExtraCharge()));
+                slip.setExtraCharge(slip.getExtraCharge().add(FeeUtilsV2.CHEQUE_BOUNCE_CHARGE));
+                if(slip.getAutoComments()==null)
+                    slip.setAutoComments("200rs Cheque bounce charges added");
                 else{
-                    receipt.setAutoComments(receipt.getAutoComments()+",200rs Cheque bounce charges added");
+                    slip.setAutoComments(slip.getAutoComments()+",200rs Cheque bounce charges added");
                 }
-                receipt.setTotalFee(receipt.getTotalFee().add(receipt.getExtraCharges()));;
+                slip.setTotalFee(slip.getTotalFee().add(slip.getExtraCharge()));
             }
-            if (receipt.getTotalFee().intValue() <= receipt.getRequest().getPaidAmount().intValue()) {
+
+            if (slip.getTotalFee().intValue() <= receipt.getRequest().getPaidAmount().intValue()) {
                 receipt.setPaymentStatus(PaymentStatus.Paid);
             } else if (receipt.getRequest().getPaidAmount().intValue() == 0) {
                 receipt.setPaymentStatus(PaymentStatus.Raised);
             } else {
                 receipt.setPaymentStatus(PaymentStatus.PartiallyPaid);
             }
+
             logger.info(String.format("Student Fee payment rejected .%s",receipt.getId()));
         }
-        //slip.setComments(request.getComments());
-
         studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(receipt);
         return receipt;
     }

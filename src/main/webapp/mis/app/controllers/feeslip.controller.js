@@ -319,6 +319,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
                     error(response.data.error);
                 }
             );
+
         }
     };
 

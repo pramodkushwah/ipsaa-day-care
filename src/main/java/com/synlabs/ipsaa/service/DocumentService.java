@@ -58,7 +58,7 @@ public class DocumentService extends BaseService
   @Autowired
   private StudentFeePaymentRepository slipRepository;
   @Autowired
-  StudentFeePaymentRecordIpsaaClubRepository studentFeePaymentRecordIpsaaClubRepository;
+  StudentFeePaymentRequestIpsaaClubRepository ipsaaClubRequestRepository;
 
   @Autowired
   private StudentFeeRepository studentFeeRepository;
@@ -203,26 +203,26 @@ public class DocumentService extends BaseService
   public File generateFeeSlipPdf(List<Long> slipIds, StudentFeeSlipRequest slip) throws IOException, DocumentException
   {
 //    List<StudentFeePaymentRequest> feeSlips = studentService.generateFeeSlips(request);
-    List<StudentFeePaymentRecordIpsaaClub> feeRecord = new ArrayList<>();
+    List<StudentFeePaymentRequestIpsaaClub> feeSlip = new ArrayList<>();
     boolean flag = true;
     for (Long slipId : slipIds)
     {
-      StudentFeePaymentRecordIpsaaClub slip1 = studentfeeService.getSlip(unmask(slipId));
+      StudentFeePaymentRequestIpsaaClub slip1 = studentfeeService.getSlip(unmask(slipId));
       if (flag)
       {
         slip.setCenterCode(slip1.getStudent().getCenter().getCode());
         //slip.setPeriod(slip1.getFeeDuration().toString());
         flag = false;
       }
-      feeRecord.add(slip1);
+      feeSlip.add(slip1);
     }
 
-    Collections.sort(feeRecord, (slip1, slip2) -> {
+    Collections.sort(feeSlip, (slip1, slip2) -> {
       return slip1.getStudent().getName()
                   .compareTo(slip2.getStudent().getName());
     });
 
-    List<String> slipPdfNames = generateIpsaaClubSlipPdf(feeRecord);
+    List<String> slipPdfNames = generateIpsaaClubSlipPdf(feeSlip);
 
     String fileName = UUID.randomUUID() + ".pdf";
     File mergedPdfFile = new File(tempDirPath + "/" + fileName);
@@ -388,14 +388,15 @@ public class DocumentService extends BaseService
     }
     return slipNames;
   }
-  private List<String> generateIpsaaClubSlipPdf(List<StudentFeePaymentRecordIpsaaClub> feeSlips) throws IOException
+  private List<String> generateIpsaaClubSlipPdf(List<StudentFeePaymentRequestIpsaaClub> feeSlips) throws IOException
   {
     Template template = configuration.getTemplate("slip/slip.ftl");
 
     List<String> slipNames = new ArrayList<>();
-    for (StudentFeePaymentRecordIpsaaClub feeSlip : feeSlips)
+    for (StudentFeePaymentRequestIpsaaClub feeSlip : feeSlips)
     {
-      if (StringUtils.isEmpty(feeSlip.getSlipFileName()) ||
+      if (feeSlip.isReGenerateSlip() ||
+              StringUtils.isEmpty(feeSlip.getSlipFileName()) ||
               !fileStore.isExist("SLIP", feeSlip.getSlipFileName()))
       {
         try
@@ -418,8 +419,8 @@ public class DocumentService extends BaseService
           slip.addPageFromString(html);
           fileStore.store("SLIP", fileName, slip.getPDF());
 
-          //feeSlip.setReGenerateSlip(false);
-          studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(feeSlip);
+          feeSlip.setReGenerateSlip(false);
+          ipsaaClubRequestRepository.saveAndFlush(feeSlip);
           logger.info(String.format("Generated fee slip pdf slip[serial_number=%s,id=%s]", feeSlip.getSlipSerial(), feeSlip.getId()));
         }
         catch (TemplateException | InterruptedException e)
@@ -430,8 +431,7 @@ public class DocumentService extends BaseService
       }
       slipNames.add(feeSlip.getSlipFileName());
     }
-    return slipNames;
-  }
+    return slipNames;  }
 
   private Map<String, Object> fillSlipTemplate(StudentFeePaymentRequest slip, StudentFee studentFee, Map<String, Object> rootMap)
   {
@@ -505,34 +505,34 @@ public class DocumentService extends BaseService
 
     return rootMap;
   }
-  private Map<String, Object> fillSlipTemplate(StudentFeePaymentRecordIpsaaClub slip, StudentFee studentFee, Map<String, Object> rootMap)
+  private Map<String, Object> fillSlipTemplate(StudentFeePaymentRequestIpsaaClub slip, StudentFee studentFee, Map<String, Object> rootMap)
   {
     String serial = slip.getSlipSerial();
     if (StringUtils.isEmpty(serial))
     {
       serial = generateSerial(slip.getStudent().getCenter().getCode(), "SLIP");
       slip.setSlipSerial(serial);
-      studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(slip);
+      ipsaaClubRequestRepository.saveAndFlush(slip);
     }
-    if(!slip.getStudent().getCenter().getAddress().getCity().equals("Gurgaon")){
-      //slip.setSgst(new BigDecimal(9));
-      //slip.setCgst(new BigDecimal(9));
-      //slip.setIgst(null);
-    }else{
-      //slip.setSgst(null);
-      //slip.setCgst(null);
-      //slip.setIgst(new BigDecimal(18));
-    }
+//    if(!slip.getStudent().getCenter().getAddress().getCity().equals("Gurgaon")){
+//      slip.setSgst(new BigDecimal(9));
+//      slip.setCgst(new BigDecimal(9));
+//      slip.setIgst(null);
+//    }else{
+//      slip.setSgst(null);
+//      slip.setCgst(null);
+//      slip.setIgst(new BigDecimal(18));
+//    }
     rootMap = rootMap == null ? new HashMap<>() : rootMap;
     rootMap.put("student", slip.getStudent());
     rootMap.put("slip", slip);
-    rootMap.put("date", new SimpleDateFormat("dd-MM-yyyy").format(slip.getStartDate()));
+    rootMap.put("date", new SimpleDateFormat("dd-MM-yyyy").format(slip.getInvoiceDate()));
     rootMap.put("month", FeeUtils.getMonth(slip));
     rootMap.put("transportFee", calculateTransportFee(studentFee));
     rootMap.put("annualCharge", slip.getAnnualFee());
-    rootMap.put("security", slip.getDepositFee());
+    rootMap.put("security", slip.getDeposit());
     rootMap.put("isAnnualFee", slip.getAnnualFee() != null);
-    rootMap.put("isDeposit", slip.getDepositFee() != null);
+    rootMap.put("isDeposit", slip.getDeposit() != null);
     BigDecimal programFee = slip.getBaseFee();
     rootMap.put("programFee", programFee);
 
@@ -541,10 +541,15 @@ public class DocumentService extends BaseService
       rootMap.put("balance", slip.getBalance());
     }
 
+//    if (slip.getAdjust() != null && slip.getAdjust().intValue() != 0)
+//    {
+//      rootMap.put("adjust", slip.getAdjust());
+//    }
+
     BigDecimal subTotal = programFee;
-    if (slip.getDepositFee() != null)
+    if (slip.getDeposit() != null)
     {
-      subTotal = subTotal.add(slip.getDepositFee());
+      subTotal = subTotal.add(slip.getDeposit());
     }
     if (slip.getAnnualFee() != null)
     {
@@ -613,26 +618,7 @@ public class DocumentService extends BaseService
     }
   }
   public InputStream downloadFeeReceiptPdf(IpsaaClubSlipRequest request)  throws IOException{
-    if (request.getId() == null)
-    {
-      throw new ValidationException("Receipt id is required.");
-    }
-
-    //StudentFeePaymentRequest slip = slipRepository.findOne(request.getId());
-    StudentFeePaymentRecordIpsaaClub record = studentFeePaymentRecordIpsaaClubRepository.findOne(request.getId());
-    if (record == null)
-    {
-      throw new ValidationException("Cannot locate record.");
-    }
-
-    String fileName = generateFeeReceiptPdf(record);
-    if (fileName == null)
-    {
-      throw new ValidationException("Unable to generate file.");
-    }
-    request.setReceiptSerial(record.getReceiptSerial());
-    InputStream is = fileStore.getStream("RECEIPT", fileName);
-    return is;
+    return null;
   }
 
   public InputStream downloadFeeReceiptPdf(SaveFeeSlipRequest request) throws IOException
@@ -726,53 +712,7 @@ public class DocumentService extends BaseService
     }
   }
 
-  public String generateFeeReceiptPdf(StudentFeePaymentRecordIpsaaClub record)
-  {
-    try
-    {
-      Template template = configuration.getTemplate("slip/receipt.ftl");
-      Map<String, Object> rootMap = new HashMap<>();
-      if (record.getExtraCharges() == null)
-      {
-        record.setExtraCharges(new BigDecimal(0));
-      }
 
-      String serial = record.getReceiptSerial();
-      Student student = record.getStudent();
-      if (StringUtils.isEmpty(serial))
-      {
-        serial = generateSerial(student.getCenter().getCode(), "RECEIPT");
-      }
-      record.setReceiptSerial(serial);
-      StudentFee studentFee = studentFeeRepository.findByStudent(student);
-      String filename = UUID.randomUUID().toString() + ".pdf";
-
-      fillSlipTemplate(record, studentFee, rootMap);
-      rootMap.put("from", student.getFather().getFullName());
-
-      BigDecimal due = new BigDecimal(record.getTotalFee().toString());
-
-        due = due.subtract(record.getPaidAmount());
-      //rootMap.put("payments", payments);
-      rootMap.put("totalAmount", record.getTotalFee());
-      rootMap.put("dueAmount", due);
-      rootMap.put("paidAmount", record.getTotalFee().subtract(due));
-
-      Writer out = new StringWriter();
-      template.process(rootMap, out);
-      String html = out.toString();
-      generatePdf(html, "RECEIPT", filename, true, 2);
-      record.setReceiptSerial(serial);
-      record.setReceiptFileName(filename);
-      studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(record);
-      return filename;
-    }
-    catch (Exception ex)
-    {
-      logger.error("Error generating receipt pdf!", ex);
-      return null;
-    }
-  }
   private void generatePdf(String html, String category, String fileName, boolean landscape, int margin) throws IOException, InterruptedException
   {
     Pdf pdf = addParamsToPdf(null);

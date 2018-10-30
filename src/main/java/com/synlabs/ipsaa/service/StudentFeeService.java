@@ -73,7 +73,7 @@ public class StudentFeeService extends BaseService{
     private StudentFeePaymentRecordRepository paymentRecordRepository;
 
     @Autowired
-    private StudentFeePaymentRecordIpsaaClubRepository paymentIpssaRecordRepository;
+    private StudentFeePaymentRequestIpsaaClubRepository paymentIpsaaRequestRepository;
 
     @Autowired
     private StudentFeePaymentRepository feePaymentRepository;
@@ -773,23 +773,23 @@ public class StudentFeeService extends BaseService{
         slip.setTotalFee(slip.getTotalFee().add(slip.getBalance()));
         return feePaymentRepository.saveAndFlush(slip);
     }
-    public StudentFeePaymentRecordIpsaaClub getSlip(Long id)
+    public StudentFeePaymentRequestIpsaaClub getSlip(Long id)
     {
-        StudentFeePaymentRecordIpsaaClub record = paymentIpssaRecordRepository.findOne(id);
+        StudentFeePaymentRequestIpsaaClub slip = paymentIpsaaRequestRepository.findOne(id);
         if (id == null)
         {
             throw new ValidationException("Slip id is required.");
         }
-        if (record == null)
+        if (slip == null)
         {
-            throw new ValidationException(String.format("Cannot locate record [id = %s ]", mask(id)));
+            throw new ValidationException(String.format("Cannot locate slip [id = %s ]", mask(id)));
         }
 
-        if (!hasCenter(record.getStudent().getCenter().getCode()))
+        if (!hasCenter(slip.getStudent().getCenter().getCode()))
         {
-            throw new ValidationException(String.format("Unauthorized access to center[code=%s]", record.getStudent().getCenter().getCode()));
+            throw new ValidationException(String.format("Unauthorized access to center[code=%s]", slip.getStudent().getCenter().getCode()));
         }
-        return record;
+        return slip;
     }
     @Transactional
     public StudentFeePaymentRequest payFee(SaveFeeSlipRequest request)

@@ -15,8 +15,10 @@ public class StudentFeePaymentRecordIpsaaClub extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Student student;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private StudentFeePaymentRequestIpsaaClub request;
+
     @Temporal(TemporalType.DATE)
     private Date paymentDate;
     @Enumerated(EnumType.STRING)
@@ -35,62 +37,8 @@ public class StudentFeePaymentRecordIpsaaClub extends BaseEntity {
 
     @Column(columnDefinition = "bit(1) default 1")
     private Boolean active = true;
-
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
-    private BigDecimal annualFee;
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
-    private BigDecimal depositFee;
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
-    private BigDecimal baseFee;
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
-    private BigDecimal extraCharges;
-
-    private int noOfFullDays;
-    private int noOfHalfDays;
-    private int totalNoOfDays;
-
-    private int month;
-    private int year;
-
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
-    private BigDecimal balance;
-
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
-    private BigDecimal gstAmount;
-
-    @Column(precision = 16, scale = 2, nullable = false)
-    private BigDecimal totalFee;
-
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
-    private BigDecimal finalFee;
-
-    @Column(unique = true, length = 20)
-    private String slipSerial;
-    @Column(unique = true, length = 200)
-    private String slipFileName;
-    @Column(unique = true, length = 20)
-    private String receiptSerial;
-    @Column(unique = true, length = 200)
-    private String receiptFileName;
-
-
-
-    @Temporal(TemporalType.DATE)
-    private Date startDate;
-    @Temporal(TemporalType.DATE)
-    private Date endDate;
-
-    @Column(length = 200)
-    private String comments;
-
-    @Column(length = 200)
-    private String autoComments;
-
     @Column(length = 200)
     private String comment;
-
-    @Column(columnDefinition = "bit(1) default 0")
-    private boolean isExpire = false;
 
     @Override
     public String toString()
@@ -104,23 +52,6 @@ public class StudentFeePaymentRecordIpsaaClub extends BaseEntity {
                 ", paidAmount=" + paidAmount +
                 ", confirmed=" + confirmed +
                 '}';
-    }
-
-
-    public BigDecimal getGstAmount() {
-        return gstAmount;
-    }
-
-    public void setGstAmount(BigDecimal gstAmount) {
-        this.gstAmount = gstAmount;
-    }
-
-    public boolean isExpire() {
-        return isExpire;
-    }
-
-    public void setExpire(boolean expire) {
-        isExpire = expire;
     }
 
     public Student getStudent() {
@@ -195,157 +126,6 @@ public class StudentFeePaymentRecordIpsaaClub extends BaseEntity {
         this.active = active;
     }
 
-    public BigDecimal getAnnualFee() {
-        return annualFee;
-    }
-
-    public void setAnnualFee(BigDecimal annualFee) {
-        this.annualFee = annualFee;
-    }
-
-    public BigDecimal getDepositFee() {
-        return depositFee;
-    }
-
-    public void setDepositFee(BigDecimal depositFee) {
-        this.depositFee = depositFee;
-    }
-
-    public BigDecimal getBaseFee() {
-        return baseFee;
-    }
-
-    public void setBaseFee(BigDecimal baseFee) {
-        this.baseFee = baseFee;
-    }
-
-    public int getNoOfFullDays() {
-        return noOfFullDays;
-    }
-
-    public void setNoOfFullDays(int noOfFullDays) {
-        this.noOfFullDays = noOfFullDays;
-    }
-
-    public int getNoOfHalfDays() {
-        return noOfHalfDays;
-    }
-
-    public void setNoOfHalfDays(int noOfHalfDays) {
-        this.noOfHalfDays = noOfHalfDays;
-    }
-
-    public int getTotalNoOfDays() {
-        return totalNoOfDays;
-    }
-
-    public void setTotalNoOfDays(int totalNoOfDays) {
-        this.totalNoOfDays = totalNoOfDays;
-    }
-
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
-
-    public BigDecimal getTotalFee() {
-        return totalFee;
-    }
-
-    public void setTotalFee(BigDecimal totalFee) {
-        this.totalFee = totalFee;
-    }
-
-    public BigDecimal getFinalFee() {
-        return finalFee;
-    }
-
-    public void setFinalFee(BigDecimal finalFee) {
-        this.finalFee = finalFee;
-    }
-
-    public String getSlipSerial() {
-        return slipSerial;
-    }
-
-    public void setSlipSerial(String slipSerial) {
-        this.slipSerial = slipSerial;
-    }
-
-    public String getSlipFileName() {
-        return slipFileName;
-    }
-
-    public void setSlipFileName(String slipFileName) {
-        this.slipFileName = slipFileName;
-    }
-
-    public String getReceiptSerial() {
-        return receiptSerial;
-    }
-
-    public void setReceiptSerial(String receiptSerial) {
-        this.receiptSerial = receiptSerial;
-    }
-
-    public String getReceiptFileName() {
-        return receiptFileName;
-    }
-
-    public void setReceiptFileName(String receiptFileName) {
-        this.receiptFileName = receiptFileName;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public String getAutoComments() {
-        return autoComments;
-    }
-
-    public void setAutoComments(String autoComments) {
-        this.autoComments = autoComments;
-    }
 
     public String getComment() {
         return comment;
@@ -353,13 +133,5 @@ public class StudentFeePaymentRecordIpsaaClub extends BaseEntity {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public BigDecimal getExtraCharges() {
-        return extraCharges;
-    }
-
-    public void setExtraCharges(BigDecimal extraCharges) {
-        this.extraCharges = extraCharges;
     }
 }

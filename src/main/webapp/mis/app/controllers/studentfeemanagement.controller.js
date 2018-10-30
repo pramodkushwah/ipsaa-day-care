@@ -245,7 +245,7 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
     };
 
     $scope.generateStudentFee = function(insertStudentFee) {
-        $http.post('/api/student/ipsaaclub/generate/' + insertStudentFee.id, {}).then(function (response){
+        $http.post('/api/student/ipsaaclub/generate/' + insertStudentFee.studentId, {}).then(function (response){
             ok('Student Fee generated');
         },function(error){
             error('Somthing went wrong');

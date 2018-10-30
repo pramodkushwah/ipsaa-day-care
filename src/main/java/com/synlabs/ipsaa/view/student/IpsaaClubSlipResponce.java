@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class IpsaaClubSlipResponce implements Response {
     private long studentId;
-    private long slipId;
+    private long id;
     private BigDecimal annualFee;
     private BigDecimal annualFeeDiscount;
     private BigDecimal finalAnnualFee;
@@ -35,6 +35,7 @@ public class IpsaaClubSlipResponce implements Response {
     private BigDecimal balance;
     private BigDecimal totalFee;
     private BigDecimal finalFee;
+    private String name;
 
     private List<IpsaaClubRecordResponce> payments = new ArrayList<>();
     private PaymentStatus paymentStatus;
@@ -53,7 +54,8 @@ public class IpsaaClubSlipResponce implements Response {
     private boolean generateActive = false;
 
     public IpsaaClubSlipResponce(StudentFeePaymentRequestIpsaaClub studentFeePaymentRequestIpsaaClub) {
-        this.setStudentId(studentFeePaymentRequestIpsaaClub.getId());
+        this.setStudentId(studentFeePaymentRequestIpsaaClub.getStudent().getId());
+        this.name=studentFeePaymentRequestIpsaaClub.getStudent().getName();
         this.annualFee=studentFeePaymentRequestIpsaaClub.getAnnualFee();
         this.annualFeeDiscount=studentFeePaymentRequestIpsaaClub.getAnnualFeeDiscount();
         this.autoComments=studentFeePaymentRequestIpsaaClub.getAutoComments();
@@ -73,17 +75,26 @@ public class IpsaaClubSlipResponce implements Response {
         this.invoiceDate=studentFeePaymentRequestIpsaaClub.getInvoiceDate();
         this.lastGenerationDate=studentFeePaymentRequestIpsaaClub.getLastGenerationDate();
         this.month=studentFeePaymentRequestIpsaaClub.getMonth();
-        this.slipId=studentFeePaymentRequestIpsaaClub.getId();
+        this.id=mask(studentFeePaymentRequestIpsaaClub.getId());
+        this.totalFee=studentFeePaymentRequestIpsaaClub.getTotalFee();
         this.payments=studentFeePaymentRequestIpsaaClub.getPayments()
                 .stream().map(IpsaaClubRecordResponce::new).collect(Collectors.toList());
     }
 
-    public long getSlipId() {
-        return slipId;
+    public String getName() {
+        return name;
     }
 
-    public void setSlipId(long slipId) {
-        this.slipId = slipId;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getStudentId() {

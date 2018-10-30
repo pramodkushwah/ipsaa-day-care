@@ -224,7 +224,7 @@ public class StudentFeeController {
     public IpsaaClubSlipResponce getSlip(@PathVariable("student_id") Long id) {
         IpsaaClubSlipRequest request = new IpsaaClubSlipRequest();
         request.setId(id);
-        return ipsaaClubFeeSerivce.getStudnetSlip(request.getId());
+        return ipsaaClubFeeSerivce.getStudentSlip(request.getId());
     }
 
     @Secured(STUDENTFEE_SLIP_WRITE)
@@ -238,8 +238,8 @@ public class StudentFeeController {
     @Secured(STUDENTFEE_SLIP_WRITE)
     @PostMapping("/ipsaaclub/slip/update")
     // Called when slip save button is pressed
-    public IpsaaClubRecordResponce updateIpsaClubSlip(@RequestBody StudentFeeSlipRequestV2 request) {
-        return new IpsaaClubRecordResponce(ipsaaClubFeeSerivce.updateRecord(request));
+    public IpsaaClubSlipResponce updateIpsaClubSlip(@RequestBody StudentFeeSlipRequestV2 request) {
+        return new IpsaaClubSlipResponce(ipsaaClubFeeSerivce.updateSlip(request));
     }
 
     @Secured(STUDENTFEE_RECEIPT_WRITE)

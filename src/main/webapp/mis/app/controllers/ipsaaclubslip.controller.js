@@ -15,14 +15,19 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
     }
   }
 
-  $scope.loadStudentFee = function(studentFee){
+
+ $scope.loadStudentFee = function(studentFee){
     $scope.selectedStudentFee = studentFee;
   }
 
-  $scope.downloadSlip = function (payment) {
-    console.log(payment);
+  $scope.showPayNow = function(studentFee){
+    $scope.paynow = studentFee;
+  }
+
+  $scope.downloadSlip = function (slip) {
+    console.log(slip);
         $scope.downloadPdfDisable = true;
-        $http.post('/api/student/ipsaaclub/feeslips/pdf', {'ids':[payment.recordId]}, {responseType: 'arraybuffer'}).then(
+        $http.post('/api/student/ipsaaclub/feeslips/pdf', [slip.id], {responseType: 'arraybuffer'}).then(
             function (response) {
                 $scope.downloadPdfDisable = false;
                 var blob = new Blob([response.data], {
@@ -35,6 +40,40 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
             }
         );
 };
+ $scope.saveSlip = function(slip){
+    if($scope.selectedCenter) {
+      $http.post('/api/student/ipsaaclub/slip/update', {
+
+      extraCharge: $scope.selected.extraCharge,
+      id:slip.id
+      }).then(function(response){
+        $scope.generatedFeeSlips = response.data;
+      })
+    }
+  }
+  $scope.downloadRecipt = function (payment) {
+    console.log(payment);
+        $scope.downloadPdfDisable = true;
+        $http.get('/api/student/download/ipssaclub/receipt/' + payment.recordId, {}).then(
+            function (response) {
+                $scope.downloadPdfDisable = false;
+                var blob = new Blob([response.data], {
+                    type: 'application/octet-stream'
+                });
+                saveAs(blob, response.headers("fileName"));
+            }, function (response) {
+                $scope.downloadPdfDisable = false;
+                error(response.data.error);
+            }
+        );
+};
+    $scope.payFee = function(insertStudentFee) {
+        $http.post('/api/student/ipsaaclub/generate/' + insertStudentFee.studentId, {}).then(function (response){
+            ok('Student Fee generated');
+        },function(error){
+            error('Somthing went wrong');
+        })
+    }
 
   function error(message) {
     swal({

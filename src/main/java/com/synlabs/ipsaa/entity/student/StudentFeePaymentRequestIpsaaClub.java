@@ -13,8 +13,7 @@ import java.util.List;
 @Entity
 public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    private Student student;
+
 
     @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal annualFee;
@@ -37,33 +36,32 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
     @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal depositFeeDiscount;
 
+    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
+    private BigDecimal totalDaysFee;
 
     @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal gstAmount;
 
-    private int noOfFullDays;
-    private int noOfHalfDays;
-    private int totalNoOfDays;
+    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
+    private BigDecimal extraCharge;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Student student;
+
+
 
     private int month;
     private int year;
-
-    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
-    private BigDecimal balance;
-    @Column(precision = 16, scale = 2, nullable = false)
-    private BigDecimal totalFee;
-    @Column(precision = 16, scale = 2)
-    private BigDecimal finalFee;
-
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "request", cascade = CascadeType.ALL)
     @OrderBy("paymentDate DESC")
     private List<StudentFeePaymentRecordIpsaaClub> payments = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private PaymentStatus paymentStatus;
+    private StudentFeePaymentRequestIpsaaClub lastSlip;
 
+    private int noOfFullDays;
+    private int noOfHalfDays;
+    private int totalNoOfDays;
 
     @Column(unique = true, length = 20)
     private String slipSerial;
@@ -75,6 +73,19 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
     private String receiptFileName;
 
 
+
+    @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
+    private BigDecimal balance;
+    @Column(precision = 16, scale = 2, nullable = false)
+    private BigDecimal totalFee;
+    @Column(precision = 16, scale = 2)
+    private BigDecimal finalFee;
+
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private PaymentStatus paymentStatus;
 
     @Temporal(TemporalType.DATE)
     private Date invoiceDate;
@@ -99,6 +110,41 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
     @Column(columnDefinition = "bit(1) default 0")
     private boolean generateActive = false;
 
+    @Column(columnDefinition = "bit(1) default 0")
+    private boolean isExpire=false;
+
+    public boolean isExpire() {
+        return isExpire;
+    }
+
+    public void setExpire(boolean expire) {
+        isExpire = expire;
+    }
+
+    public StudentFeePaymentRequestIpsaaClub getLastSlip() {
+        return lastSlip;
+    }
+
+    public BigDecimal getExtraCharge() {
+        return extraCharge;
+    }
+
+    public void setExtraCharge(BigDecimal extraCharge) {
+        this.extraCharge = extraCharge;
+    }
+
+    public BigDecimal getTotalDaysFee() {
+        return totalDaysFee;
+    }
+
+    public void setTotalDaysFee(BigDecimal totalDaysFee) {
+        this.totalDaysFee = totalDaysFee;
+    }
+
+
+    public void setLastSlip(StudentFeePaymentRequestIpsaaClub lastSlip) {
+        this.lastSlip = lastSlip;
+    }
 
     public Date getExpireDate() {
         return expireDate;
