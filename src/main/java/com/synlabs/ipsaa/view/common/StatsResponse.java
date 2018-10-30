@@ -22,6 +22,9 @@ public class StatsResponse implements Response
   private double utilisation;
   private int    staffCost;
 
+  private int staffAbsent;
+  private int staffOnLeave;
+
   public int getCorporateStudents()
   {
     return corporateStudents;
@@ -218,4 +221,15 @@ public void setStaffPresent(int staffPresent) {
   public void setNewJoinings(int newJoinings) {
     this.newJoinings = newJoinings;
   }
+
+
+  //////////////Avneet
+
+  public int getStaffAbsent() { return staffAbsent; }
+
+  public void setStaffAbsent(int staffAbsent) { this.staffAbsent = staffAbsent; }
+
+  public int getStaffOnLeave() { return staffOnLeave; }
+
+  public void setStaffOnLeave(int staffOnLeave) { this.staffOnLeave = staffOnLeave; }
 }

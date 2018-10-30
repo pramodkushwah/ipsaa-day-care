@@ -320,6 +320,23 @@ public class DashboardService extends BaseService
     return (int) query.fetchCount();
   }
 
+  private int countOnLeaveStaff(List<Center> centers){
+
+    JPAQuery<EmployeeLeave> leaveQuery= new JPAQuery<>(entityManager);
+    QEmployeeLeave employeeLeave=QEmployeeLeave.employeeLeave;
+    leaveQuery.select(employeeLeave.employee).from(employeeLeave)
+            .where(employeeLeave.date.eq(LocalDate.now().toDate()))
+            .where(employeeLeave.leaveStatus.eq(LeaveStatus.Approved)
+                    .or(employeeLeave.leaveStatus.eq(LeaveStatus.Applied)));
+
+    return (int) leaveQuery.fetchCount();
+  }
+
+  private int countAbsentStaff(List<Center> centers){
+    return Math.abs(countStaff(centers)-(countPresentStaff(centers) + countOnLeaveStaff(centers)));
+  }
+
+
   private int staffCost(List<Center> centers)
   {
     LocalDate today = LocalDate.now();
@@ -918,6 +935,12 @@ public class DashboardService extends BaseService
           int presentStaff = countPresentStaff(centers);
           response.setStaffPresent(presentStaff);
 
+          int onLeaveStaff = countOnLeaveStaff(centers);
+          response.setStaffOnLeave(onLeaveStaff);
+
+          int absentStaff = countAbsentStaff(centers);
+          response.setStaffAbsent(absentStaff);
+
           int newJoinnigs=countNewJoinigs(centers);
           response.setNewJoinings(newJoinnigs);
 
@@ -1004,13 +1027,14 @@ public class DashboardService extends BaseService
     JPAQuery<EmployeeLeave> query = new JPAQuery<>(entityManager);
     QEmployeeLeave leaves=QEmployeeLeave.employeeLeave;
 
-    query.select(leaves.employee).from(leaves)
+    List<Employee> onLeaveEmployees = query.select(leaves.employee).from(leaves)
             .where(leaves.date.eq(LocalDate.now().toDate()))
-            .where(leaves.leaveStatus.eq(LeaveStatus.Approved))
-            .where(leaves.halfLeave.isTrue());
+            .where(leaves.leaveStatus.eq(LeaveStatus.Approved).or(leaves.leaveStatus.eq(LeaveStatus.Applied)))
+            .where(leaves.halfLeave.isTrue()).fetch();
 
-    //return query.fetch().stream().filter(l->l.getEmployee()).map(StaffNewJoinings::new).collect(Collectors.toList());
-    return null;
+   //List<Employee> employees=query.fetch();
+    return onLeaveEmployees.stream().map(StaffNewJoinings::new).collect(Collectors.toList());
+
   }
 
 
