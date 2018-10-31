@@ -100,7 +100,7 @@
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Extra Charge</label>
-              <input class="form-control" type="Number" ng-model="selected.extraCharge" >
+              <input class="form-control" type="number" ng-model="selectedStudentFee.extraCharge" ng-change="addExtraCharges()">
             </div>
           </div>
           <div class="col-md-6">
@@ -111,180 +111,142 @@
           </div>
         </div>
       </div>
-        <div class="clearfix">
-          <button type="button" class="btn btn-rose" ng-click="showPayNow(selectedStudentFee)">Pay Now</button>
-          <button type="button" class="btn btn-rose" ng-click="downloadSlip(selectedStudentFee)">Download Slip</button>
-          <button type="button" class="btn btn-rose" ng-click="saveSlip(selectedStudentFee)">Save</button>
-        </div>
-      </div>
-      <div class="card" ng-show="selectedStudentFee.payments.length">
-        <div class="card-content">
-          <h4 class="card-title">Student Fee Records</h4>
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>No of Days</th>
-                <th>Amount</th>
-                <th ng-show="STUDENTFEE_WRITE">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="payment in selectedStudentFee.payments">
-                <td>{{payment.startDate}}</td>
-                <td>{{payment.endDate}}</td>
-                <td>{{payment.totalNoOfDays}}</td>
-                <td>{{payment.totalFee}}</td>
-                <td ng-show="STUDENTFEE_WRITE">
-                  <div class="buttons">
-                    <button type="button" class="btn btn-primary btn-xs" >Pay</button>
-                    <button type="button" class="btn btn-primary btn-xs" ng-click="downloadRecipt(payment)">
-                      <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="downloadPdfDisable"></i>Download
-                    </button>
-                  </div>
-                  </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="clearfix">
+        <button type="button" class="btn btn-rose" ng-click="saveSlip(selectedStudentFee)">Save</button>
+        <button type="button" class="btn btn-rose" ng-click="showPayNow(selectedStudentFee)" data-toggle="modal" data-target="#myModal">Pay Now</button>
+        <button type="button" class="btn btn-rose" ng-click="downloadSlip(selectedStudentFee)">Download Slip</button>
       </div>
     </div>
-
-
-
-
-  <div class="card">
-    <div class="card-header card-header-icon" data-background-color="rose">
-      <i class="material-icons">chrome_reader_mode</i>
-    </div>
-    <div class="card-content">
-      <h4 class="card-title">Fee Slip - {{selected.fullName}}</h4>
-      <span class="label label-info">{{selected.center}}</span>
-      <span class="label label-info">{{selected.program}}</span>
-      <span class="label label-info">{{selected.group}}</span>
-
-      <div class="row">
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="control-label">Total Amount</label>
-            <input class="form-control" type="text" readonly ng-model="selected.totalFee">
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="control-label">Payable Amount</label>
-            <input class="form-control" type="number" ng-model="selected.payableAmount" readonly>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="control-label">Paid Amount</label>
-            <input class="form-control" type="number" ng-model="selected.paidAmount">
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="control-label">Payment mode</label>
-            <select class="form-control"
-                    ng-model="selected.paymentMode"
-                    ng-disabled="selected.status=='Paid'">
-              <option value="Cash">CASH</option>
-              <option value="Cheque">CHEQUE</option>
-              <option value="NEFT">NEFT</option>
-              <option value="Hdfc" disabled>HDFC</option>
-              <option value="Card" >CARD</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label class="control-label">Payment Date (YYYY-MM-DD)</label>
-            <input class="form-control" type="text" required ng-model="selected.paymentDate" ng-readonly="selected.status=='Paid'" value="{{currentDate}}">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label class="control-label">Reference</label>
-            <input class="form-control" type="text" required ng-model="selected.txnid" ng-readonly="selected.status=='Paid'">
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="form-group">
-            <label class="control-label">Comments*</label>
-            <textarea class="form-control" type="text" required ng-model="selected.comments" ng-readonly="selected.status=='Paid'"></textarea>
-          </div>
-        </div>
-      </div>
-
-      <div class="tab-pane active" id="controls">
-        <div class="category form-category">
-          *Required Fields
-        </div>
-        <div class="form-footer text-right">
-          <button class="btn btn-rose btn-fill" ng-click="payStudentFee()" ng-disabled="selected.status=='Paid'||disabledRecordPayment">
-            <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disabledRecordPayment"></i>
-            Record Payment
-          </button>
-
-          <button class="btn btn-rose btn-fill" ng-click="downloadReceipt(selected)" ng-disabled="selected.status=='Raised'|| disabledReceiptDownload">
-            <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disabledReceiptDownload"></i>
-            Download Receipt
-          </button>
-
-          <button class="btn btn-default" ng-click="cancelStudentSlip()">Cancel</button>
-        </div>
-      </div>
-      <div class="tab-pane active">
-        <div class="table-responsive">
-          <table class="table table-condensed">
-            <thead>
+    <div class="card" ng-show="selectedStudentFee.payments.length">
+      <div class="card-content">
+        <h4 class="card-title">Student Fee Records</h4>
+        <table class="table table-hover">
+          <thead>
             <tr>
-              <th>TxnId</th>
-              <th>Mode</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>No of Days</th>
               <th>Amount</th>
-              <th>Date</th>
-              <th>Action</th>
+              <th ng-show="STUDENTFEE_WRITE">Action</th>
             </tr>
-            <tr ng-repeat="payment in selected.payments">
-              <td>{{payment.txnid}}</td>
-              <td>{{payment.paymentMode}}</td>
-              <td>{{payment.paidAmount}}</td>
-              <td>{{payment.paymentDate}}</td>
-              <td ng-show="STUDENTFEE_RECEIPT_CONFIRM">
-                <button class="btn btn-sm"
-                        ng-class="payment.confirmed?'btn-success':'btn-rose'"
-                        ng-click="payment.confirmed?null:confirm(payment)"
-                        ng-disabled="payment.disabled" ng-show="payment.active&&!payment.confirmed">
-                  <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="payment.disabled"></i>Confirm
-                </button>
-                <span ng-show="payment.confirmed">Confirmed</span>
-
-                <button class="btn btn-sm" ng-hide="payment.confirmed || !payment.active" ng-click="showCommentField(payment)">Reject</button>
-                <span ng-hide="payment.active">Rejected &nbsp;
-                    <a href="#" data-toggle="tooltip" title="{{payment.comment}}">
-                      <i class="fa fa-info"></i>
-                    </a>
-                  </span>
-              </td>
-              <td ng-hide="STUDENTFEE_RECEIPT_CONFIRM">
-                <span ng-hide="payment.confirmed || payment.active">Rejected</span>
-                <span ng-show="payment.confirmed && payment.active">Confirmed</span>
-                <span ng-show="payment.active&&!payment.confirmed">Pending</span>
+          </thead>
+          <tbody>
+            <tr ng-repeat="payment in selectedStudentFee.payments">
+              <td>{{payment.startDate}}</td>
+              <td>{{payment.endDate}}</td>
+              <td>{{payment.totalNoOfDays}}</td>
+              <td>{{payment.totalFee}}</td>
+              <td ng-show="STUDENTFEE_WRITE">
+                <div class="buttons">
+                  <button type="button" class="btn btn-primary btn-xs">Confirm</button>
+                  <button type="button" class="btn btn-primary btn-xs">Reject</button>
+                </div>
               </td>
             </tr>
-            </thead>
-          </table>
-        </div>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
 
+
+
+
+
+
+</div>
+
+<!-- Modal -->
+<div class="modal" id="myModal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="card-title">Fee Slip - {{selected.fullName}}</h4>
+        <span class="label label-info">{{selected.center}}</span>
+        <span class="label label-info">{{selected.program}}</span>
+        <span class="label label-info">{{selected.group}}</span>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Total Amount</label>
+              <input class="form-control" type="text" readonly ng-model="selected.totalFee">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Payable Amount</label>
+              <input class="form-control" type="number" ng-model="selected.payableAmount" readonly>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Paid Amount</label>
+              <input class="form-control" type="number" ng-model="selected.paidAmount">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Payment mode</label>
+              <select class="form-control" ng-model="selected.paymentMode" ng-disabled="selected.status=='Paid'">
+                <option value="Cash">CASH</option>
+                <option value="Cheque">CHEQUE</option>
+                <option value="NEFT">NEFT</option>
+                <option value="Hdfc" disabled>HDFC</option>
+                <option value="Card">CARD</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Payment Date (YYYY-MM-DD)</label>
+              <input class="form-control" type="text" required ng-model="selected.paymentDate" ng-readonly="selected.status=='Paid'" value="{{currentDate}}">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Reference</label>
+              <input class="form-control" type="text" required ng-model="selected.txnid" ng-readonly="selected.status=='Paid'">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Comments*</label>
+              <textarea class="form-control" type="text" required ng-model="selected.comments" ng-readonly="selected.status=='Paid'"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane active" id="controls">
+          <div class="category form-category">
+            *Required Fields
+          </div>
+          <div class="form-footer text-right">
+            <button class="btn btn-rose btn-fill" ng-click="payStudentFee()" ng-disabled="selected.status=='Paid'||disabledRecordPayment">
+              <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disabledRecordPayment"></i>
+              Record Payment
+            </button>
+
+            <button class="btn btn-rose btn-fill" ng-click="downloadReceipt(selected)" ng-disabled="selected.status=='Raised'|| disabledReceiptDownload">
+              <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disabledReceiptDownload"></i>
+              Download Receipt
+            </button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelStudentSlip()">Cancel</button>
+            <!-- <button class="btn btn-default" ng-click="cancelStudentSlip()">Cancel</button> -->
+          </div>
+        </div>
+      </div>
+      <!-- <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div> -->
+    </div>
   </div>
 </div>

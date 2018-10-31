@@ -52,34 +52,34 @@
         <div class="table-responsive">
           <table class="table table-condensed table-striped table-hover">
             <thead class="text-primary">
-            <tr>
-              <th>Sr. No.</th>
-              <th>Student</th>
-              <th>Program/Group</th>
-              <th>Period</th>
-              <th>Fee</th>
-              <th>Status</th>
-              <!--<th>Mode</th>-->
-              <!--<th>Inv. Date</th>-->
-              <!--<th>Pay Date</th>-->
-            </tr>
+              <tr>
+                <th>Sr. No.</th>
+                <th>Student</th>
+                <th>Program/Group</th>
+                <th>Period</th>
+                <th>Fee</th>
+                <th>Status</th>
+                <!--<th>Mode</th>-->
+                <!--<th>Inv. Date</th>-->
+                <!--<th>Pay Date</th>-->
+              </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="studentfee in studentfeelist | filter :search" ng-click="showDetails(studentfee)">
-              <td>{{ $index + 1 }}</td>
-              <td>{{studentfee.fullName}}</td>
-              <td>
-                <span class="label label-info">{{studentfee.center}}</span>
-                <span class="label label-info">{{studentfee.program}}</span>
-                <span class="label label-info">{{studentfee.group}}</span>
-              </td>
-              <td>{{studentfee.feeDuration}}</td>
-              <td>{{studentfee.totalFee}}</td>
-              <td>{{studentfee.status}}</td>
-              <!--<td>{{studentfee.paymentMode}}</td>-->
-              <!--<td>{{studentfee.invoiceDate}}</td>-->
-              <!--<td>{{studentfee.paymentDate}}</td>-->
-            </tr>
+              <tr ng-repeat="studentfee in studentfeelist | filter :search" ng-click="showDetails(studentfee)">
+                <td>{{ $index + 1 }}</td>
+                <td>{{studentfee.fullName}}</td>
+                <td>
+                  <span class="label label-info">{{studentfee.center}}</span>
+                  <span class="label label-info">{{studentfee.program}}</span>
+                  <span class="label label-info">{{studentfee.group}}</span>
+                </td>
+                <td>{{studentfee.feeDuration}}</td>
+                <td>{{studentfee.totalFee}}</td>
+                <td>{{studentfee.status}}</td>
+                <!--<td>{{studentfee.paymentMode}}</td>-->
+                <!--<td>{{studentfee.invoiceDate}}</td>-->
+                <!--<td>{{studentfee.paymentDate}}</td>-->
+              </tr>
             </tbody>
           </table>
         </div>
@@ -99,7 +99,7 @@
         <span class="label label-info">{{selected.group}}</span>
         <a class="pointer right" ng-click="toggleHide()">
           View Fees Details
-          
+
           <i class="fa fa-bars" aria-hidden="true" ng-show="!showFeeDetails"></i>
           <i class="fa fa-times" aria-hidden="true" ng-show="showFeeDetails"></i>
         </a>
@@ -114,40 +114,52 @@
 
             </tr>
             <tr ng-repeat="feeType in feeTypes">
-              <td><strong>{{feeType.type}}</strong></td>
+              <td>
+                <strong>{{feeType.type}}</strong>
+              </td>
               <td>{{selected[feeType['final']]}}</td>
               <td>{{selected[feeType['paid']]}}</td>
               <td>{{selected[feeType['final']]-selected[feeType['paid']]}}</td>
             </tr>
-            <tr >
-              <td><strong>Late Payment</strong></td>
+            <tr>
+              <td>
+                <strong>Late Payment</strong>
+              </td>
               <td>{{selected.latePaymentCharge}}</td>
 
               <td colspan="1" rowspan="6">{{selected.totalOtherPaidAmount}}</td>
-              <td  rowspan="6">{{(selected.latePaymentCharge+selected.extraCharge+selected.gstAmount+selected.balance+selected.adjust)-selected.totalOtherPaidAmount}}</td>
-            
+              <td rowspan="6">{{(selected.latePaymentCharge+selected.extraCharge+selected.gstAmount+selected.balance+selected.adjust)-selected.totalOtherPaidAmount}}</td>
+
             </tr>
 
             <tr>
-              <td><strong>Extra</strong></td>
+              <td>
+                <strong>Extra</strong>
+              </td>
               <td>{{selected.extraCharge}}</td>
               <!-- <td colspan="2"></td>    -->
-             </tr>
-             <tr>
-                <td><strong>GST</strong></td>
-                <td>{{selected.gstAmount}}</td>
-                <!-- <td colspan="2"></td>    -->
-               </tr>
-               <tr>
-                  <td><strong>Balance</strong></td>
-                  <td>{{selected.balance}}</td>
-                  <!-- <td colspan="2"></td>    -->
-                 </tr>
-                 <tr>
-                    <td><strong>Adjust</strong></td>
-                    <td>{{selected.adjust}}</td>
-                    <!-- <td colspan="2"></td>    -->
-                   </tr>
+            </tr>
+            <tr>
+              <td>
+                <strong>GST</strong>
+              </td>
+              <td>{{selected.gstAmount}}</td>
+              <!-- <td colspan="2"></td>    -->
+            </tr>
+            <tr>
+              <td>
+                <strong>Balance</strong>
+              </td>
+              <td>{{selected.balance}}</td>
+              <!-- <td colspan="2"></td>    -->
+            </tr>
+            <tr>
+              <td>
+                <strong>Adjust</strong>
+              </td>
+              <td>{{selected.adjust}}</td>
+              <!-- <td colspan="2"></td>    -->
+            </tr>
           </table>
 
         </div>
@@ -173,14 +185,12 @@
           <div class="col-md-3">
             <div class="form-group">
               <label class="control-label">Payment mode</label>
-              <select class="form-control"
-                      ng-model="selected.paymentMode"
-                      ng-disabled="selected.status=='Paid'">
+              <select class="form-control" ng-model="selected.paymentMode" ng-disabled="selected.status=='Paid'">
                 <option value="Cash">CASH</option>
                 <option value="Cheque">CHEQUE</option>
                 <option value="NEFT">NEFT</option>
                 <option value="Hdfc" disabled>HDFC</option>
-                <option value="Card" >CARD</option>
+                <option value="Card">CARD</option>
               </select>
             </div>
           </div>
@@ -231,40 +241,38 @@
           <div class="table-responsive">
             <table class="table table-condensed">
               <thead>
-              <tr>
-                <th>TxnId</th>
-                <th>Mode</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Action</th>
-              </tr>
-              <tr ng-repeat="payment in selected.payments">
-                <td>{{payment.txnid}}</td>
-                <td>{{payment.paymentMode}}</td>
-                <td>{{payment.paidAmount}}</td>
-                <td>{{payment.paymentDate}}</td>
-                <td ng-show="STUDENTFEE_RECEIPT_CONFIRM">
-                  <button class="btn btn-sm"
-                          ng-class="payment.confirmed?'btn-success':'btn-rose'"
-                          ng-click="payment.confirmed?null:confirm(payment)"
-                          ng-disabled="payment.disabled" ng-show="payment.active&&!payment.confirmed">
-                    <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="payment.disabled"></i>Confirm
-                  </button>
-                  <span ng-show="payment.confirmed">Confirmed</span>
+                <tr>
+                  <th>TxnId</th>
+                  <th>Mode</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+                <tr ng-repeat="payment in selected.payments">
+                  <td>{{payment.txnid}}</td>
+                  <td>{{payment.paymentMode}}</td>
+                  <td>{{payment.paidAmount}}</td>
+                  <td>{{payment.paymentDate}}</td>
+                  <td ng-show="STUDENTFEE_RECEIPT_CONFIRM">
+                    <button class="btn btn-sm" ng-class="payment.confirmed?'btn-success':'btn-rose'" ng-click="payment.confirmed?null:confirm(payment)"
+                      ng-disabled="payment.disabled" ng-show="payment.active&&!payment.confirmed">
+                      <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="payment.disabled"></i>Confirm
+                    </button>
+                    <span ng-show="payment.confirmed">Confirmed</span>
 
-                  <button class="btn btn-sm" ng-hide="payment.confirmed || !payment.active" ng-click="showCommentField(payment)">Reject</button>
-                  <span ng-hide="payment.active">Rejected &nbsp;
-                    <a href="#" data-toggle="tooltip" title="{{payment.comment}}">
-                      <i class="fa fa-info"></i>
-                    </a>
-                  </span>
-                </td>
-                <td ng-hide="STUDENTFEE_RECEIPT_CONFIRM">
-                  <span ng-hide="payment.confirmed || payment.active">Rejected</span>
-                  <span ng-show="payment.confirmed && payment.active">Confirmed</span>
-                  <span ng-show="payment.active&&!payment.confirmed">Pending</span>
-                </td>
-              </tr>
+                    <button class="btn btn-sm" ng-hide="payment.confirmed || !payment.active" ng-click="showCommentField(payment)">Reject</button>
+                    <span ng-hide="payment.active">Rejected &nbsp;
+                      <a href="#" data-toggle="tooltip" title="{{payment.comment}}">
+                        <i class="fa fa-info"></i>
+                      </a>
+                    </span>
+                  </td>
+                  <td ng-hide="STUDENTFEE_RECEIPT_CONFIRM">
+                    <span ng-hide="payment.confirmed || payment.active">Rejected</span>
+                    <span ng-show="payment.confirmed && payment.active">Confirmed</span>
+                    <span ng-show="payment.active&&!payment.confirmed">Pending</span>
+                  </td>
+                </tr>
               </thead>
             </table>
           </div>
