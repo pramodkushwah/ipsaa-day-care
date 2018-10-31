@@ -138,7 +138,7 @@ public class CommunicationService
       String emailarray[] = emails.toArray(new String[emails.size()]);
       String smsarray[] = phones.toArray(new String[phones.size()]);
 
-      if (attendance.getCheckout() != null || attendance.getStatus()== AttendanceStatus.Absent)
+      if (attendance.getCheckout() != null) //for now || attendance.getStatus()== AttendanceStatus.Absent)
       {
         if (smsarray.length > 0)
         {

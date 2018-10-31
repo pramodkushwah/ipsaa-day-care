@@ -296,8 +296,9 @@ public class DashboardService extends BaseService {
 		JPAQuery<EmployeeLeave> leaveQuery = new JPAQuery<>(entityManager);
 		QEmployeeLeave employeeLeave = QEmployeeLeave.employeeLeave;
 		leaveQuery.select(employeeLeave.employee).from(employeeLeave)
-				.where(employeeLeave.date.eq(LocalDate.now().toDate())).where(employeeLeave.leaveStatus
-						.eq(LeaveStatus.Approved).or(employeeLeave.leaveStatus.eq(LeaveStatus.Applied)));
+				.where(employeeLeave.date.eq(LocalDate.now().toDate()))
+				.where(employeeLeave.leaveStatus.in(LeaveStatus.Approved,LeaveStatus.Applied))
+				.where(employeeLeave.employee.costCenter.in(centers));
 
 		return (int) leaveQuery.fetchCount();
 	}
@@ -850,7 +851,7 @@ public class DashboardService extends BaseService {
 		return query.fetch().stream().map(DashStudentResponse::new).collect(Collectors.toList());
 	}
 
-	public List<StaffNewJoinings> presentStaff(DashboardRequest request) {
+	public List<Employee> presentStaff(DashboardRequest request) {
 
 		List<Center> centers = getCenters(request);
 
@@ -865,45 +866,50 @@ public class DashboardService extends BaseService {
 		List<EmployeeAttendance> attendances = query.fetch();
 
 		List<Employee> employees = attendances.stream().map(a -> a.getEmployee()).collect(Collectors.toList());
-		return employees.stream().map(StaffNewJoinings::new).collect(Collectors.toList());
+		return employees;
 
 	}
 
-	public List<StaffNewJoinings> absentStaff(DashboardRequest request) {
+	public List<Employee> absentStaff(DashboardRequest request) {
 
 		List<Center> centers = getCenters(request);
-
-		JPAQuery<EmployeeAttendance> query = new JPAQuery<>(entityManager);
-		QEmployeeAttendance attendance = QEmployeeAttendance.employeeAttendance;
-		// QEmployee employee=QEmployee.employee;
-
-		List<Employee> employees = query.select(attendance.employee).from(attendance)
-				.where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
-				.where(attendance.status.eq(AttendanceStatus.Present)).where(attendance.checkout.isNull())
-				.where(attendance.center.in(centers)).orderBy(attendance.employee.id.asc()).fetch();
+//
+//		JPAQuery<EmployeeAttendance> query = new JPAQuery<>(entityManager);
+//		QEmployeeAttendance attendance = QEmployeeAttendance.employeeAttendance;
+//		// QEmployee employee=QEmployee.employee;
+//
+//		List<EmployeeAttendance> employees = query.select(attendance).from(attendance)
+//				.where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
+//				.where(attendance.status.eq(AttendanceStatus.Present)).where(attendance.checkout.isNull())
+//				.where(attendance.center.in(centers)).orderBy(attendance.employee.id.asc()).fetch();
 
 		List<Employee> employeeList = employeeRepository.findByActiveTrueAndCostCenterInOrderByIdAsc(centers);
 
-		List<Employee> absentEmployees = employeeList.stream().filter(e -> !employees.contains(e))
+		List<Employee> presentEmployees= presentStaff(request);
+		List<Employee> onLeaveEmployees= onLeaveStaff(request);
+
+		List<Employee> absentEmployees = employeeList.stream()
+				.filter(e -> (!presentEmployees.contains(e) && !onLeaveEmployees.contains(e)))
 				.collect(Collectors.toList());
 
-		return absentEmployees.stream().map(StaffNewJoinings::new).collect(Collectors.toList());
+		return absentEmployees;
 
 	}
 
-	public List<StaffNewJoinings> onLeaveStaff(DashboardRequest request) {
+	public List<Employee> onLeaveStaff(DashboardRequest request) {
 		List<Center> centers = getCenters(request);
 
 		JPAQuery<EmployeeLeave> query = new JPAQuery<>(entityManager);
 		QEmployeeLeave leaves = QEmployeeLeave.employeeLeave;
 
-		List<Employee> onLeaveEmployees = query.select(leaves.employee).from(leaves)
+		List<EmployeeLeave> onLeaveEmployees = query.select(leaves).from(leaves)
 				.where(leaves.date.eq(LocalDate.now().toDate()))
-				.where(leaves.leaveStatus.eq(LeaveStatus.Approved).or(leaves.leaveStatus.eq(LeaveStatus.Applied)))
-				.where(leaves.halfLeave.isTrue()).fetch();
+				.where(leaves.leaveStatus.in(LeaveStatus.Approved,LeaveStatus.Applied))
+				.where(leaves.employee.costCenter.in(centers))
+				.fetch();
 
-		// List<Employee> employees=query.fetch();
-		return onLeaveEmployees.stream().map(StaffNewJoinings::new).collect(Collectors.toList());
+		List<Employee> onLeave=onLeaveEmployees.stream().map(l->l.getEmployee()).collect(Collectors.toList());
+		return onLeave;
 
 	}
 

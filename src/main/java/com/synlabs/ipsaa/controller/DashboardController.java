@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.DASHBOARD_STATS;
 
@@ -128,18 +129,18 @@ public class DashboardController
   @PostMapping("dash/presentStaff")
   @Secured(DASHBOARD_STATS)
   public List<StaffNewJoinings> presentStaff(@RequestBody DashboardRequest request){
-    return dashboardService.presentStaff(request);
+    return dashboardService.presentStaff(request).stream().map(StaffNewJoinings::new).collect(Collectors.toList());
   }
 
   @PostMapping("dash/absentStaff")
   @Secured(DASHBOARD_STATS)
   public List<StaffNewJoinings> absentStaff(@RequestBody DashboardRequest request){
-    return dashboardService.absentStaff(request);
+    return dashboardService.absentStaff(request).stream().map(StaffNewJoinings::new).collect(Collectors.toList());
   }
 
   @PostMapping("dash/onLeaveStaff")
   @Secured(DASHBOARD_STATS)
   public List<StaffNewJoinings> onLeaveStaff(@RequestBody DashboardRequest request){
-    return dashboardService.onLeaveStaff(request);
+    return dashboardService.onLeaveStaff(request).stream().map(StaffNewJoinings::new).collect(Collectors.toList());
   }
 }
