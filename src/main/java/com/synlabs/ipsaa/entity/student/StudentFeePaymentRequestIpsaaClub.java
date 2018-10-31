@@ -22,8 +22,11 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
     @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal finalAnnualFee;
     @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
-
     private BigDecimal baseFeeDiscount;
+
+    @Enumerated(EnumType.STRING)
+    private FeeDuration feeDuration;
+
     @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal finalBaseFee;
     @Column(precision = 16, scale = 2, nullable = false,columnDefinition ="Decimal(10,2) default '0.00'")
@@ -112,6 +115,14 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
 
     @Column(columnDefinition = "bit(1) default 0")
     private boolean isExpire=false;
+
+    public FeeDuration getFeeDuration() {
+        return feeDuration;
+    }
+
+    public void setFeeDuration(FeeDuration feeDuration) {
+        this.feeDuration = feeDuration;
+    }
 
     public boolean isExpire() {
         return isExpire;

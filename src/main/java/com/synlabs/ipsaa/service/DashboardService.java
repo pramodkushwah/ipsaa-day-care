@@ -352,21 +352,21 @@ public class DashboardService extends BaseService
     feeStatsResponse.setMonth(month);
 
     QStudentFeePaymentRequest slip = QStudentFeePaymentRequest.studentFeePaymentRequest;
-    QStudentFeePaymentRecordIpsaaClub records=QStudentFeePaymentRecordIpsaaClub.studentFeePaymentRecordIpsaaClub;
+    QStudentFeePaymentRequestIpsaaClub ipsaaSlip=QStudentFeePaymentRequestIpsaaClub.studentFeePaymentRequestIpsaaClub;
     int total = 0;
 
     // 3. add monthly fee for this month removed
     if (feeDuration == null || feeDuration == FeeDuration.Monthly)
     {
       JPAQuery<BigDecimal> ipssaQuery = new JPAQuery<>(entityManager);
-      ipssaQuery.select(records.totalFee.sum())
-              .from(records)
-                  .where(records.student.active.isTrue())
-                  .where(records.paymentStatus.eq(PaymentStatus.Raised))
-                  .where(records.student.corporate.isFalse())
-                  .where(records.year.eq(year))
-                  .where(records.month.eq(month))
-                  .where(records.student.center.in(centers));
+      ipssaQuery.select(ipsaaSlip.totalFee.sum())
+              .from(ipsaaSlip)
+                  .where(ipsaaSlip.student.active.isTrue())
+                  .where(ipsaaSlip.paymentStatus.eq(PaymentStatus.Raised))
+                  .where(ipsaaSlip.student.corporate.isFalse())
+                  .where(ipsaaSlip.year.eq(year))
+                  .where(ipsaaSlip.month.eq(month))
+                  .where(ipsaaSlip.student.center.in(centers));
       BigDecimal totalSum = ipssaQuery.fetchFirst();
       total += totalSum == null ? 0 : totalSum.intValue();
       feeStatsResponse.setIpssaFee(totalSum == null ? 0 : totalSum.intValue());

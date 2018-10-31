@@ -2,6 +2,7 @@ package com.synlabs.ipsaa.service;
 
 import com.synlabs.ipsaa.entity.attendance.StudentAttendance;
 import com.synlabs.ipsaa.entity.student.*;
+import com.synlabs.ipsaa.enums.FeeDuration;
 import com.synlabs.ipsaa.enums.GST;
 import com.synlabs.ipsaa.enums.PaymentMode;
 import com.synlabs.ipsaa.enums.PaymentStatus;
@@ -61,7 +62,7 @@ public class IpsaaClubFeeSerivce {
            throw  new ValidationException("fee not found");
 
         List<StudentFeePaymentRequestIpsaaClub> slips = studentFeePaymentRequestIpsaaClubRepository.findByStudentIdOrderByCreatedDateDesc(fee.getStudent().getId());
-        StudentFeePaymentRequestIpsaaClub latestSlip;
+        StudentFeePaymentRequestIpsaaClub oldSlip;
 
         if (slips == null || slips.isEmpty()) {
             // first fee
@@ -69,51 +70,55 @@ public class IpsaaClubFeeSerivce {
             return new IpsaaClubSlipResponce(firstSlip);
         } else {
             // new slip
-            latestSlip=slips.get(0);
-            StudentFeePaymentRequestIpsaaClub newSlip=generateNewSlip(latestSlip,fee);
+            oldSlip=slips.get(0);
+            StudentFeePaymentRequestIpsaaClub newSlip=generateNewSlip(oldSlip,fee);
             return new IpsaaClubSlipResponce(newSlip);
         }
     }
-    private StudentFeePaymentRequestIpsaaClub generateNewSlip(StudentFeePaymentRequestIpsaaClub latestSlip, StudentFee fee) {
-        if((latestSlip.getInvoiceDate().getTime()-(new Date()).getTime())/60/60/24<1)
+    private StudentFeePaymentRequestIpsaaClub generateNewSlip(StudentFeePaymentRequestIpsaaClub lastSlip, StudentFee fee) {
+        if((lastSlip.getInvoiceDate().getTime()-(new Date()).getTime())/60/60/24<1)
         {
             throw  new ValidationException("can not generate same day from last generate date");
         }
 
         if (fee != null) {
-            Date expirDate=new Date();
 
-            latestSlip = generateFeeFrom(expirDate, fee, latestSlip); // generate fee from invoice to today
+            lastSlip.setExpire(true);
 
-            latestSlip.setExpireDate(expirDate);                     //invoice date is expire date of last latestSlip
-            latestSlip.setGstAmount(FeeUtilsV2.calculateGST(latestSlip.getTotalDaysFee(),latestSlip.getFinalAnnualFee(),GST.IGST));
-            latestSlip.setFinalFee(FeeUtilsV2.calculateIpsaaClubFinalFee(latestSlip));
+            StudentFeePaymentRequestIpsaaClub newslip=startNewSession(lastSlip);
+            Date startDate=lastSlip.getExpireDate();
+
+            newslip = generateFeeFrom(startDate, fee, newslip); // generate fee from invoice to today
+
+            newslip.setGstAmount(FeeUtilsV2.calculateGST(newslip.getTotalDaysFee(),newslip.getFinalAnnualFee(),GST.IGST));
+            newslip.setFinalFee(FeeUtilsV2.calculateIpsaaClubFinalFee(newslip));
 
             // check old payments is confrim or not
             boolean isConfirm=true;
-            if(latestSlip.getLastSlip()!=null)
-                isConfirm=this.isConfrom(latestSlip.getLastSlip().getPayments());
+            if(newslip.getLastSlip()!=null)
+                isConfirm=this.isConfrom(newslip.getLastSlip().getPayments());
 
             if(!isConfirm){
                 throw new ValidationException("your old slip payment is not confirm");
             }else{
-                BigDecimal balance=latestSlip.getTotalFee().subtract(latestSlip.getPaidAmount());
-                latestSlip.setBalance(balance);
+                BigDecimal balance=newslip.getTotalFee().subtract(newslip.getPaidAmount());
+                newslip.setBalance(balance);
             }
-
-            latestSlip.setTotalDaysFee(latestSlip.getFinalFee().add(latestSlip.getBalance()));
-            studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(latestSlip);
-
-            return startNewSession(latestSlip,fee);
+            newslip.setTotalDaysFee(newslip.getFinalFee().add(newslip.getBalance()));
+            return studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(newslip);
         } else
             throw new NotFoundException("student fee not found");
     }
 
-    private StudentFeePaymentRequestIpsaaClub startNewSession(StudentFeePaymentRequestIpsaaClub lastSlip, StudentFee fee) {
+    private StudentFeePaymentRequestIpsaaClub startNewSession(StudentFeePaymentRequestIpsaaClub lastSlip) {
         StudentFeePaymentRequestIpsaaClub newSlip= new StudentFeePaymentRequestIpsaaClub();
-        newSlip.setInvoiceDate(new Date()); // for first newSlips start date
-        newSlip.setStudent(fee.getStudent());
 
+        newSlip.setInvoiceDate(lastSlip.getExpireDate()); // for first newSlips start date
+        newSlip.setExpireDate(new Date());
+
+        newSlip.setStudent(lastSlip.getStudent());
+
+        newSlip.setFeeDuration(FeeDuration.Monthly);
         newSlip.setAnnualFee(ZERO);
         newSlip.setAnnualFeeDiscount(ZERO);
         newSlip.setFinalAnnualFee(ZERO);
@@ -137,15 +142,17 @@ public class IpsaaClubFeeSerivce {
         newSlip.setFinalFee(FeeUtilsV2.calculateIpsaaClubFinalFee(newSlip));
         newSlip.setTotalFee(newSlip.getFinalFee().add(newSlip.getBalance()));
         newSlip.setPaymentStatus(PaymentStatus.Raised);
-        return studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(newSlip);
-
+        return newSlip;
     }
 
     private StudentFeePaymentRequestIpsaaClub generateFirstSlip(StudentFee fee) {
 
         StudentFeePaymentRequestIpsaaClub newSlip= new StudentFeePaymentRequestIpsaaClub();
         newSlip.setInvoiceDate(new Date()); // for first newSlips start date
+        newSlip.setExpireDate(new Date());
         newSlip.setStudent(fee.getStudent());
+
+        newSlip.setFeeDuration(FeeDuration.Monthly);
 
         newSlip.setAnnualFee(fee.getAnnualCharges());
         newSlip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount());
@@ -186,8 +193,10 @@ public class IpsaaClubFeeSerivce {
         return true;
     }
 
-    private StudentFeePaymentRequestIpsaaClub generateFeeFrom(Date date, StudentFee fee, StudentFeePaymentRequestIpsaaClub slip) {
-        Map<String, Integer> counts = getStudentAttendanceFromTo(slip.getInvoiceDate(), date, fee.getStudent()); // gettting attendace from invoice day to now
+    private StudentFeePaymentRequestIpsaaClub generateFeeFrom(Date startdate, StudentFee fee, StudentFeePaymentRequestIpsaaClub slip) {
+
+        Date endDate=new Date();
+        Map<String, Integer> counts = getStudentAttendanceFromTo(startdate, endDate, fee.getStudent()); // gettting attendace from invoice day to now
         slip.setTotalNoOfDays(counts.get("total"));
         slip.setNoOfFullDays(counts.get("fullday"));
         slip.setNoOfHalfDays(counts.get("halfday"));
