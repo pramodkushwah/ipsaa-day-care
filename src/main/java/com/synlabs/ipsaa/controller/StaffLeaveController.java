@@ -88,9 +88,9 @@ public class StaffLeaveController
   }
 
   @PostMapping("/employeeMonthly")
-  public List<EmployeeLeaveResponse> employeeLeaves(@RequestParam("employeeId") Long employeeId,
+  public List<EmployeeLeaveResponse> employeeLeaves(@RequestParam("eid") String eid,
                                                            @RequestParam("month") Integer month){
-    return leaveService.employeeLeavesMonthly(employeeId,month).stream().map(EmployeeLeaveResponse::new)
+    return leaveService.employeeLeavesMonthly(eid,month).stream().map(EmployeeLeaveResponse::new)
             .collect(Collectors.toList());
   }
 }

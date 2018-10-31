@@ -576,18 +576,18 @@ public class StaffLeaveService extends BaseService
       return list;
   }
 
-  public List<EmployeeLeave> employeeLeavesMonthly(Long id,int month){
+  public List<EmployeeLeave> employeeLeavesMonthly(String eid,int month){
 
     if(month == 0)
       throw new ValidationException("Month is mandatory.");
-    if(id == null)
+    if(eid == null)
       throw new ValidationException("Employee id is required!");
 
     JPAQuery<EmployeeLeave> query= new JPAQuery<>(entityManager);
     QEmployeeLeave employeeLeave=QEmployeeLeave.employeeLeave;
 
     List<EmployeeLeave> leaves=query.select(employeeLeave).from(employeeLeave)
-            .where(employeeLeave.employee.id.eq(unmask(id)).and(employeeLeave.date.month().eq(month)))
+            .where(employeeLeave.employee.eid.eq(eid).and(employeeLeave.date.month().eq(month)))
             .fetch();
 
     return leaves;
