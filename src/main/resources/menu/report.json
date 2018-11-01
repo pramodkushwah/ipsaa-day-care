@@ -21,8 +21,8 @@
     },
     {
       "label": "Ipsaa Club Collection",
-      "state": "app.inquiryreport",
-      "p": "INQUIRY_REPORT",
+      "state": "app.stdfeereport",
+      "p": "FEE_REPORT",
       "seq": 220
     },{
       "label": "Student Fee Report",
