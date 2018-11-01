@@ -110,7 +110,7 @@ public class HolidayService extends BaseService
     holiday.setName(holidayRequest.getName().toUpperCase());
     holiday.setHolidayDate(holidayRequest.getHolidayDate());
 
-    System.out.println(holiday);
+   // System.out.println(holiday);
 
     return holidayRepository.save(holiday);
   }
