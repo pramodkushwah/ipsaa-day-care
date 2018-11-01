@@ -22,6 +22,7 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
   }
 
   $scope.showPayNow = function (studentFee) {
+    console.log(studentFee);
     $scope.selected = angular.copy(studentFee);
     $scope.selected.paymentDate = moment(new Date()).format("YYYY-MM-DD");
   }
@@ -67,6 +68,14 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
       }
     );
   };
+  $scope.confirm=function(payment){
+  $http.put('/api/student/ipsaaclub/record/update', {
+          confirmed: true,
+          id: payment.id
+        }).then(function (response) {
+          ok('Payment Confirmed');
+        })
+  }
   $scope.payFee = function (insertStudentFee) {
     $http.post('/api/student/ipsaaclub/generate/' + insertStudentFee.studentId, {}).then(function (response) {
       ok('Student Fee generated');

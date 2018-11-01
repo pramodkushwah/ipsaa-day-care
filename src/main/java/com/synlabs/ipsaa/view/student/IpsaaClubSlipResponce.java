@@ -5,7 +5,10 @@ import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecord;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecordIpsaaClub;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequestIpsaaClub;
 import com.synlabs.ipsaa.enums.PaymentStatus;
+import com.synlabs.ipsaa.view.center.CenterResponse;
+import com.synlabs.ipsaa.view.center.CenterResponseV2;
 import com.synlabs.ipsaa.view.common.Response;
+import com.synlabs.ipsaa.view.fee.StudentFeePaymentResponse;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 public class IpsaaClubSlipResponce implements Response {
     private long studentId;
     private long id;
+    private CenterResponseV2 center;
     private BigDecimal annualFee;
     private BigDecimal annualFeeDiscount;
     private BigDecimal finalAnnualFee;
@@ -52,33 +56,73 @@ public class IpsaaClubSlipResponce implements Response {
 
     private boolean reGenerateSlip = true;
     private boolean generateActive = false;
+    private BigDecimal payableAmount;
+    private BigDecimal totalDaysFee;
 
-    public IpsaaClubSlipResponce(StudentFeePaymentRequestIpsaaClub studentFeePaymentRequestIpsaaClub) {
-        this.setStudentId(studentFeePaymentRequestIpsaaClub.getStudent().getId());
-        this.name=studentFeePaymentRequestIpsaaClub.getStudent().getName();
-        this.annualFee=studentFeePaymentRequestIpsaaClub.getAnnualFee();
-        this.annualFeeDiscount=studentFeePaymentRequestIpsaaClub.getAnnualFeeDiscount();
-        this.autoComments=studentFeePaymentRequestIpsaaClub.getAutoComments();
-        this.balance=studentFeePaymentRequestIpsaaClub.getBalance();
-        this.baseFee=studentFeePaymentRequestIpsaaClub.getBaseFee();
-        this.baseFeeDiscount=studentFeePaymentRequestIpsaaClub.getBaseFeeDiscount();
-        this.comments=studentFeePaymentRequestIpsaaClub.getComments();
-        this.deposit=studentFeePaymentRequestIpsaaClub.getDeposit();
-        this.depositFeeDiscount=studentFeePaymentRequestIpsaaClub.getDepositFeeDiscount();
-        this.expireDate=studentFeePaymentRequestIpsaaClub.getExpireDate();
-        this.finalAnnualFee=studentFeePaymentRequestIpsaaClub.getFinalAnnualFee();
-        this.finalBaseFee=studentFeePaymentRequestIpsaaClub.getFinalBaseFee();
-        this.finalDepositFee=studentFeePaymentRequestIpsaaClub.getFinalDepositFee();
-        this.finalFee=studentFeePaymentRequestIpsaaClub.getFinalFee();
-        this.generateActive=studentFeePaymentRequestIpsaaClub.isGenerateActive();
-        this.gstAmount=studentFeePaymentRequestIpsaaClub.getGstAmount();
-        this.invoiceDate=studentFeePaymentRequestIpsaaClub.getInvoiceDate();
-        this.lastGenerationDate=studentFeePaymentRequestIpsaaClub.getLastGenerationDate();
-        this.month=studentFeePaymentRequestIpsaaClub.getMonth();
-        this.id=mask(studentFeePaymentRequestIpsaaClub.getId());
-        this.totalFee=studentFeePaymentRequestIpsaaClub.getTotalFee();
-        this.payments=studentFeePaymentRequestIpsaaClub.getPayments()
-                .stream().map(IpsaaClubRecordResponce::new).collect(Collectors.toList());
+    public IpsaaClubSlipResponce(StudentFeePaymentRequestIpsaaClub slip) {
+        center=new CenterResponseV2(slip.getStudent().getCenter());
+        this.setStudentId(slip.getStudent().getId());
+        this.name=slip.getStudent().getName();
+        this.annualFee=slip.getAnnualFee();
+        this.annualFeeDiscount=slip.getAnnualFeeDiscount();
+        this.autoComments=slip.getAutoComments();
+        this.balance=slip.getBalance();
+        this.totalNoOfDays=slip.getTotalNoOfDays();
+        this.noOfFullDays=slip.getNoOfFullDays();
+        this.noOfHalfDays=slip.getNoOfHalfDays();
+        this.baseFee=slip.getBaseFee();
+        this.baseFeeDiscount=slip.getBaseFeeDiscount();
+        this.comments=slip.getComments();
+        this.deposit=slip.getDeposit();
+        this.depositFeeDiscount=slip.getDepositFeeDiscount();
+        this.expireDate=slip.getExpireDate();
+        this.finalAnnualFee=slip.getFinalAnnualFee();
+        this.finalBaseFee=slip.getFinalBaseFee();
+        this.finalDepositFee=slip.getFinalDepositFee();
+        this.finalFee=slip.getFinalFee();
+        this.generateActive=slip.isGenerateActive();
+        this.gstAmount=slip.getGstAmount();
+        this.invoiceDate=slip.getInvoiceDate();
+        this.lastGenerationDate=slip.getLastGenerationDate();
+        this.month=slip.getMonth();
+        this.id=mask(slip.getId());
+        this.totalFee=slip.getTotalFee();
+        this.payableAmount=slip.getTotalFee();
+        this.paymentStatus=slip.getPaymentStatus();
+        this.totalDaysFee=slip.getTotalDaysFee();
+        if (slip.getPayments() != null && !slip.getPayments().isEmpty())
+        {
+            payments = new ArrayList<>(slip.getPayments().size());
+            slip.getPayments().forEach(payment -> {
+                payments.add(new IpsaaClubRecordResponce(payment));
+                this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
+                //   System.out.println("break");
+            });
+        }
+    }
+
+    public BigDecimal getTotalDaysFee() {
+        return totalDaysFee;
+    }
+
+    public void setTotalDaysFee(BigDecimal totalDaysFee) {
+        this.totalDaysFee = totalDaysFee;
+    }
+
+    public CenterResponseV2 getCenter() {
+        return center;
+    }
+
+    public void setCenter(CenterResponseV2 center) {
+        this.center = center;
+    }
+
+    public BigDecimal getPayableAmount() {
+        return payableAmount;
+    }
+
+    public void setPayableAmount(BigDecimal payableAmount) {
+        this.payableAmount = payableAmount;
     }
 
     public String getName() {

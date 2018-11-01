@@ -374,6 +374,6 @@ public class FeeUtilsV2 {
 		return 		slip.getTotalDaysFee()
 						.add(slip.getFinalAnnualFee())
 						.add(slip.getFinalDepositFee())
-						.add(slip.getGstAmount());
+						.add(slip.getGstAmount()==null?ZERO:slip.getGstAmount());
     }
 }

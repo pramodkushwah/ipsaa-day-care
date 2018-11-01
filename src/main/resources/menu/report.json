@@ -14,6 +14,17 @@
       "p": "STAFF_ATTENDANCE_REPORT",
       "seq": 200
     },{
+      "label": "Ipsaa Club Report",
+      "state": "app.stdfeereport",
+      "p": "FEE_REPORT",
+      "seq": 210
+    },
+    {
+      "label": "Ipsaa Club Collection",
+      "state": "app.inquiryreport",
+      "p": "INQUIRY_REPORT",
+      "seq": 220
+    },{
       "label": "Student Fee Report",
       "state": "app.stdfeereport",
       "p": "FEE_REPORT",

@@ -764,6 +764,39 @@ public class FeeService extends BaseService
     }
     return file;
   }
+  public File ipsaaCollectionFeeReport2(StudentFeeSlipRequest slipRequest) throws IOException
+  {
+    if (StringUtils.isEmpty(slipRequest.getPeriod()))
+    {
+      throw new ValidationException("Period is required.");
+    }
+    List<HdfcResponse> hdfc = hdfcResponseRepository.findBySlipQuarterAndSlipYear(slipRequest.getQuarter(),slipRequest.getYear());
+    List<Stack<Pair<String, Object>>> list=new ArrayList<>();
+    int count=1;
+    for(HdfcResponse res:hdfc){
+      Stack<Pair<String,Object>> row=new Stack<>();
+      row.push(new Pair("billing_name",res.getBillingName()));
+      row.push(new Pair("billing_email",res.getBillingEmail()));
+      row.push(new Pair("tracking_id",res.getTrackingId()));
+      row.push(new Pair("status_message",res.getStatusMessage()));
+      row.push(new Pair("bank_ref_no",res.getBankRefNo()));
+      row.push(new Pair("type",res.getType()));
+      row.push(new Pair("slip_id",res.getSlip().getId()));
+      row.push(new Pair("trans_date",res.getTransDate()));
+      row.push(new Pair("amount",res.getAmount()));
+      row.push(new Pair("program_name",res.getSlip().getStudent().getProgramName()));
+      row.push(new Pair("center",res.getSlip().getStudent().getCenterName()));
+      row.push(new Pair("student_name",res.getSlip().getStudent().getProfile().getFullName()));
+      row.push(new Pair("s.id",count++));
+
+      list.add(row);
+    }
+    ExcelGenerater eg=new ExcelGenerater(list);
+    File file=eg.create(exportDir,"hdfc report");
+    //File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
+
+    return file;
+  }
   public File collectionHdfcReport2(StudentFeeSlipRequest slipRequest) throws IOException
   {
     if (StringUtils.isEmpty(slipRequest.getPeriod()))

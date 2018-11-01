@@ -435,10 +435,8 @@ public class DashboardService extends BaseService
               .where(records.student.active.isTrue())
               .where(records.active.isTrue())
               .where(records.student.corporate.isFalse())
-              //.where(records.isExpire.isFalse())
               .where(records.request.year.eq(year))
               .where(records.request.month.eq(month))
-              .where(records.paymentStatus.eq(PaymentStatus.Paid).or(records.paymentStatus.eq(PaymentStatus.PartiallyPaid)))
               .where(records.student.center.in(centers));
 
       BigDecimal monthly = ipsaaClubq.fetchFirst();

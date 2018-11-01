@@ -250,7 +250,7 @@ public class StudentFeeController {
     }
 
     @Secured(STUDENTFEE_RECEIPT_CONFIRM)
-    @PutMapping("/ipsaaclub/update")
+    @PutMapping("/ipsaaclub/record/update")
     //Confirm payment
     public IpsaaClubRecordResponce updateIpsaaClubPayFee(@RequestBody SaveFeeSlipRequest request) {
         return new IpsaaClubRecordResponce(ipsaaClubFeeSerivce.updatePayFee(request));

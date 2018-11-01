@@ -37,6 +37,7 @@ public class IpsaaClubRecordResponce implements Response{
         this.setStudentId(record.getStudent().getId());
         paidAmount=record.getPaidAmount();
         paymentStatus=record.getPaymentStatus();
+        paymentDate=record.getPaymentDate();
         paymentMode=record.getPaymentMode();
         txnid=record.getTxnid();
         confirmed=record.getConfirmed();
