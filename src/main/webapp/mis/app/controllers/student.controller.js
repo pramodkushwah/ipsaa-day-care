@@ -135,8 +135,9 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     };
 
     $scope.bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'NA'];
-
+    $scope.isIpsaaclub = false;
     $scope.showStudent = function (student, callback, corporateChanged) {
+        $scope.workingStudent = null;
         $http.get('/api/student/' + student.id).then(function (response) {
             $scope.workingStudent = response.data;
             $scope.selectedStudent = JSON.parse(JSON.stringify(response.data));     
@@ -157,6 +158,12 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             // if corporate is checked or unchecked then update
             if(typeof corporateChanged !== "undefined")
               $scope.workingStudent.corporate = corporateChanged;
+              
+            if($scope.workingStudent.program.id === 72932732558618){
+                $scope.isIpsaaclub = true;
+            } else {
+                $scope.isIpsaaclub = false;
+            }
             
             callback(); // function updateFields() to update fields in front-end coming from backend with different names 
             setupProfilePic($scope.workingStudent);
@@ -188,6 +195,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     };
 
     $scope.editStudent = function (student, callback, corporateChanged) {
+        $scope.workingStudent = null;
         $http.get('/api/student/' + student.id).then(function (response) {
             $scope.workingStudent = response.data;
             console.log(JSON.parse(JSON.stringify($scope.workingStudent)));
@@ -196,6 +204,11 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
             $scope.workingStudent.centerId = $scope.workingStudent.center.id + "";
             $scope.workingStudent.programId = $scope.workingStudent.program.id + "";
             $scope.workingStudent.groupId = $scope.workingStudent.group.id + "";
+            if($scope.workingStudent.program.id === 72932732558618){
+                $scope.isIpsaaclub = true;
+            } else {
+                $scope.isIpsaaclub = false;
+            }
             delete $scope.workingStudent.center;
             delete $scope.workingStudent.program;
             delete $scope.workingStudent.group;
@@ -950,6 +963,17 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     snap.classList.remove("visible");
     error_message.classList.remove("visible");
   }
+
+  $scope.generateStudentFee = function() {
+    $scope.disableGenerate = true;
+    $http.post('/api/student/ipsaaclub/generate/' + $scope.workingStudent.fee.id, {}).then(function (response){
+        $scope.disableGenerate = false;
+        ok('Student Fee generated');
+    },function(error){
+        $scope.disableGenerate = false;
+        error('Somthing went wrong');
+    })
+    };
 
     function ok(message) {
         swal({

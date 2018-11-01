@@ -1,0 +1,34 @@
+<div class="row">
+    <div class="col-md-3">
+      <div class="form-group">
+        <label class="control-label">*Center</label>
+        <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers">
+        </select>
+      </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+          <label class="control-label">Month:*</label>
+          <select class="form-control" ng-options="month as month.name for month in months" ng-model="selectedMonth"></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label class="control-label">Year:*</label>
+        <select class="form-control" ng-options="year as year for year in years" ng-model="selectedYear"></select>
+      </div>
+    </div>    
+    <div class="col-md-3">
+      <div class="form-group">
+        <br>
+        <button  class="btn btn-md btn-primary" ng-click="downloadFee()"
+         >
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableDownloadFee"></i>Generate Fee
+        </button>
+        <button  class="btn btn-md btn-rose" ng-click="downloadCollection()"
+          ng-disabled="disableDownloadCoolection">
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableDownloadCoolection"></i>Generate Collection
+        </button>
+      </div>
+    </div>
+</div>

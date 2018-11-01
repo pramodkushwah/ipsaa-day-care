@@ -182,6 +182,11 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             controller: 'StudentAttendanceReportController',
             templateUrl: "views/mis/report/stdattendancereport.html"
         })
+        .state('app.ipsaaclubreport', {
+            url: "/ipsaaclubreport",
+            controller: 'IpsaaClubReportController',
+            templateUrl: "views/mis/report/ipsaaclubreport.html"
+        })
         .state('app.staffattendancereport', {
             url: "/staffattendancereport",
             controller: 'StaffAttendanceReportController',

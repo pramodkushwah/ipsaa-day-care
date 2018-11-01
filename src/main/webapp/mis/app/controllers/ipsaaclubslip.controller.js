@@ -76,6 +76,7 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
           ok('Payment Confirmed');
         })
   }
+
   $scope.payFee = function (insertStudentFee) {
     $http.post('/api/student/ipsaaclub/generate/' + insertStudentFee.studentId, {}).then(function (response) {
       ok('Student Fee generated');
@@ -115,6 +116,8 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
   $scope.feePaymentRequest = function() {
     $scope.disabledRecordPayment = true;
     $http.post('/api/student/ipsaaclub/payfee', $scope.selected).then(function (response) {
+      $('#myModal').modal('toggle');
+      $scope.selectedStudentFee.payments.push(response.data);
       $scope.disabledRecordPayment = false;
       ok("Successfully applied payment")
     }, function (response) {
@@ -128,6 +131,24 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
     $scope.selectedStudentFee.totalFee += $scope.selectedStudentFee.extraCharge;
     
   }
+
+  $scope.downloadReceipt = function (receipt) {
+    if (receipt && receipt.id) {
+        $scope.disabledReceiptDownload = true;
+        $http.get('/api/student/download/ipsaaclub/receipt/'+ receipt.id,{responseType: 'arraybuffer'}).then(
+            function (response) {
+                $scope.disabledReceiptDownload = false;
+                var blob = new Blob([response.data], {
+                    type: 'application/octet-stream'
+                });
+                saveAs(blob, response.headers("fileName"));
+            }, function (response) {
+                $scope.disabledReceiptDownload = false;
+                error(response.data.error);
+            }
+        );
+    }
+};
 
   function error(message) {
     swal({
