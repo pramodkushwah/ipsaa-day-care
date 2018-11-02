@@ -223,31 +223,29 @@
           </div>
         </div>
         <div class="col-md-2 col-sm-4 col-xs-6" ng-show="selectedMonthForEmployee">
-            <label class="control-label">Center:</label>
-            <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="filterLeavesByCenter(selectedCenter)">
-              <option value="">ALL</option>
-            </select>
-          </div>
+          <label class="control-label">Center:</label>
+          <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="filterLeavesByCenter(selectedCenter)">
+            <option value="">ALL</option>
+          </select>
+        </div>
       </div>
-      <div class="card table-responsive" ng-show="selectedMonthForEmployee">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th>Eid</th>
-              <th>Name</th>
-              <th>Center</th>
-              <th>No of Leaves</th>
-            </tr>
-          </thead>
-          <tbody ng-repeat="summary in employeeLeaveSummary">
-            <tr ng-click="getEmployeeLeaves(summary.eid)" data-toggle="collapse" ng-attr-data-target="{{'#' + summary.eid}}">
-              <td>{{summary.eid}}</td>
-              <td>{{summary.name}}</td>
-              <td>{{summary.center}}</td>
-              <td>{{summary.count}}</td>
-            </tr>
-            <tr ng-attr-id="{{summary.eid}}" class="collapse">
-              <td colspan="4">
+      <div class="card">
+        <div style="border: 1px solid #ddd;" id="accordion">
+          <div class="row" style="margin: 0px;font-weight: bold;">
+            <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">Eid</div>
+            <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">Name</div>
+            <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">Center</div>
+            <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">No of Leaves</div>
+          </div>
+          <div ng-repeat="summary in employeeLeaveSummary">
+            <div class="row" style="margin: 0px;" ng-click="getEmployeeLeaves(summary)" data-toggle="collapse" ng-attr-data-target="{{'#' + summary.eid}}" data-parent="#accordion">
+              <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">{{summary.eid}}</div>
+              <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">{{summary.name}}</div>
+              <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">{{summary.center}}</div>
+              <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">{{summary.count}}</div>
+            </div>
+            <div class="collapse" style="margin: 0px;" ng-attr-id="{{summary.eid}}">
+              <div class="col-md-12" style="padding: 12px 8px;border: 1px solid #ddd;">
                 <table class="table table-bordered">
                   <tr>
                     <th>Date</th>
@@ -255,22 +253,27 @@
                     <th>Leave Status</th>
                     <th>Reason</th>
                   </tr>
-                  <tr ng-repeat="leave in monthlyLeaves">
+                  <tr ng-repeat="leave in summary.monthlyLeaves">
                     <td>{{leave.date}}</td>
-                    <td>{{leave.leaveType}}</td>
+                    <td>{{leave.leaveType}} ({{leave.halfLeave=='NO'? 'Full Day' : 'Half Day'}})</td>
                     <td>{{leave.leaveStatus}}</td>
                     <td>{{leave.reason || 'None'}}</td>
                   </tr>
-                  <tr ng-hide="monthlyLeaves"><td colspan="4" class="text-center">No Leaves</td></tr>
+                  <tr ng-hide="summary.monthlyLeaves">
+                    <td colspan="4" class="text-center">No Leaves</td>
+                  </tr>
                 </table>
-              </td>
-            </tr>
-          </tbody>
-          <tfoot ng-hide="employeeLeaveSummary.length">
-            <tr><td colspan="4" class="text-center">No Content</td></tr>
-          </tfoot>
-        </table>
+              </div>
+            </div>
+          </div>
+          <div ng-hide="employeeLeaveSummary.length">
+            <div class="row" style="margin: 0px;">
+              <div class="col-md-12 text-center" style="padding: 8px">No Content</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+</div>
 </div>
