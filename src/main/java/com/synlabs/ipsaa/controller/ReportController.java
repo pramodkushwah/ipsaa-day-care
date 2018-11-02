@@ -307,13 +307,13 @@ public class ReportController {
 
 	@PostMapping("ipsaaclub/collectionfee/excel")
 	@Secured(COLLECTION_FEE_REPORT)
-	public void ipsaaclubCollectionFeeReportExcel(HttpServletResponse response, @RequestBody StudentFeeSlipRequest slipRequest)
+	public void ipsaaclubCollectionFeeReportExcel(HttpServletResponse response, @RequestBody FeeReportRequest slipRequest)
 			throws IOException {
 		File file = feeService.ipsaaCollectionFeeReport2(slipRequest);
 		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
-				slipRequest.getCenterCode(), slipRequest.getPeriod(), slipRequest.getYear()));
+				slipRequest.getCenterCode(), slipRequest.getMonth(), slipRequest.getYear()));
 		response.setHeader("fileName", String.format("%s_Month_%s_Year_%s.xlsx", slipRequest.getCenterCode(),
-				slipRequest.getPeriod(), slipRequest.getYear()));
+				slipRequest.getMonth(), slipRequest.getYear()));
 		OutputStream out = response.getOutputStream();
 		FileInputStream in = new FileInputStream(file);
 		// copy from in to out
@@ -325,17 +325,10 @@ public class ReportController {
 		}
 	}
 
-	@PostMapping("ipsaaclub/collectionfee")
-	@Secured(COLLECTION_FEE_REPORT)
-	public List<StudentFeeSlipResponse2> ipssaClubCollectionFeeReport(HttpServletResponse response,
-															 @RequestBody StudentFeeSlipRequest slipRequest) throws IOException {
-		return feeService.collectionFeeReportTable2(slipRequest);
-	}
-
 	@PostMapping("ipssaclub/studentfee/excel")
 	@Secured(FEE_REPORT)
 	public void ipsaaClubFeeReportExcel(@RequestBody FeeReportRequest request, HttpServletResponse response) throws IOException {
-		File file = feeService.FeeReport2(request);
+		File file = feeService.FeeReportIpsaClub2(request);
 
 		response.setContentType("application/octet-stream");
 		response.setHeader("Content-disposition",
@@ -351,8 +344,6 @@ public class ReportController {
 			throw new IOException("Could not delete temporary file after processing: " + file);
 		}
 	}
-
-
 
 	// TO BE REMOVED////Avneet - Read from Excel file and write into database
 	/*

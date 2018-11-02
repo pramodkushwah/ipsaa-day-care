@@ -257,11 +257,11 @@ public class StudentFeeController {
     }
 
     @Secured(STUDENTFEE_RECEIPT_WRITE)
-    @GetMapping("/download/ipssaclub/receipt/{recordId}")
-    public void downloadReceiptIpssa(@PathVariable("recordId") Long recordId, HttpServletResponse response) throws IOException {
+    @GetMapping("/download/ipssaclub/receipt/{slipId}")
+    public void downloadReceiptIpssa(@PathVariable("slipId") Long slipId, HttpServletResponse response) throws IOException {
 
         IpsaaClubSlipRequest request = new IpsaaClubSlipRequest();
-        request.setId(recordId);
+        request.setId(slipId);
         InputStream is = documentService.downloadFeeReceiptPdf(request);
         response.setContentType("application/octet-stream");
         String fileName = request.getReceiptSerial();

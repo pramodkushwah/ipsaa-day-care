@@ -20,6 +20,8 @@ import javax.persistence.EntityManager;
 import com.synlabs.ipsaa.entity.attendance.StudentAttendance;
 import com.synlabs.ipsaa.entity.common.*;
 import com.synlabs.ipsaa.entity.hdfc.HdfcApiDetails;
+import com.synlabs.ipsaa.entity.student.*;
+import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.util.FeeUtilsV2;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -52,14 +54,6 @@ import com.synlabs.ipsaa.entity.programs.ProgramGroup;
 import com.synlabs.ipsaa.entity.sharing.ParentSharingSheet;
 import com.synlabs.ipsaa.entity.sharing.SharingSheet;
 import com.synlabs.ipsaa.entity.sharing.SharingSheetEntry;
-import com.synlabs.ipsaa.entity.student.QStudent;
-import com.synlabs.ipsaa.entity.student.QStudentFee;
-import com.synlabs.ipsaa.entity.student.Student;
-import com.synlabs.ipsaa.entity.student.StudentFee;
-import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecord;
-import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
-import com.synlabs.ipsaa.entity.student.StudentParent;
-import com.synlabs.ipsaa.entity.student.StudentProfile;
 import com.synlabs.ipsaa.enums.AddressType;
 import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.enums.FamilyType;
@@ -73,22 +67,6 @@ import com.synlabs.ipsaa.enums.UserType;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.UploadException;
 import com.synlabs.ipsaa.ex.ValidationException;
-import com.synlabs.ipsaa.jpa.AdmissionNumberSequenceRepository;
-import com.synlabs.ipsaa.jpa.CenterProgramFeeRepository;
-import com.synlabs.ipsaa.jpa.CenterRepository;
-import com.synlabs.ipsaa.jpa.ParentSharingSheetRepository;
-import com.synlabs.ipsaa.jpa.ProgramGroupRepository;
-import com.synlabs.ipsaa.jpa.ProgramRepository;
-import com.synlabs.ipsaa.jpa.RoleRepository;
-import com.synlabs.ipsaa.jpa.SharingSheetEntryRepository;
-import com.synlabs.ipsaa.jpa.SharingSheetRepository;
-import com.synlabs.ipsaa.jpa.StudentFeePaymentRecordRepository;
-import com.synlabs.ipsaa.jpa.StudentFeePaymentRepository;
-import com.synlabs.ipsaa.jpa.StudentFeeRepository;
-import com.synlabs.ipsaa.jpa.StudentParentRepository;
-import com.synlabs.ipsaa.jpa.StudentProfileRepository;
-import com.synlabs.ipsaa.jpa.StudentRepository;
-import com.synlabs.ipsaa.jpa.UserRepository;
 import com.synlabs.ipsaa.store.FileStore;
 import com.synlabs.ipsaa.util.BigDecimalUtils;
 import com.synlabs.ipsaa.util.FeeUtils;
@@ -152,6 +130,9 @@ public class StudentService extends BaseService {
 
     @Autowired
     private StudentFeeRepository feeRepository;
+
+    @Autowired
+	StudentFeePaymentRequestIpsaaClubRepository ipsaaClubRequest;
 
     @Autowired
     private StudentFeePaymentRecordRepository paymentRecordRepository;
@@ -1844,20 +1825,35 @@ public class StudentService extends BaseService {
 
     // shubham
     public List<StudentFeePaymentRequest> listFeeReport(FeeReportRequest request) {
-        List<StudentFeePaymentRequest> slip2;
-        FeeDuration period = FeeDuration.valueOf("Quarterly");
-        if (request.getCenterCode().equals("All")) {
-            slip2 = feePaymentRepository
-                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
-                            period, request.getQuarter(), request.getYear());
-        } else {
-            slip2 = feePaymentRepository
-                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
-                            period, request.getQuarter(), request.getYear(),
-                            request.getCenterCode());
-        }
-        return slip2;
+		List<StudentFeePaymentRequest> slip2;
+		FeeDuration period = FeeDuration.valueOf("Quarterly");
+		if (request.getCenterCode().equals("All")) {
+			slip2 = feePaymentRepository
+					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
+							period, request.getQuarter(), request.getYear());
+		} else {
+			slip2 = feePaymentRepository
+					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
+							period, request.getQuarter(), request.getYear(),
+							request.getCenterCode());
+		}
+		return slip2;
+
     }
+	// shubham
+	public List<StudentFeePaymentRequestIpsaaClub> listFeeReportIpsaClub(FeeReportRequest request) {
+		List<StudentFeePaymentRequestIpsaaClub> slip2;
+		if (request.getCenterCode().equals("All")) {
+			slip2 = ipsaaClubRequest
+					.findByStudentProgramIdAndStudentCorporateIsFalseAndIsExpireIsFalseAndMonthAndYear(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID
+							, request.getMonth(), request.getYear());
+		} else {
+			slip2 = ipsaaClubRequest.findByStudentProgramIdAndStudentCorporateIsFalseAndIsExpireIsFalseAndMonthAndYearAndStudentCenterCode(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID
+					, request.getMonth(), request.getYear(),
+					request.getCenterCode());
+		}
+		return slip2;
+	}
 
     // shubham
     public List<StudentFeeSlipResponse3> listFeeReport2(FeeReportRequest request) {
