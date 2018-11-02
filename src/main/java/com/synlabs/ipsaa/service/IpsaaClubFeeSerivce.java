@@ -51,7 +51,7 @@ public class IpsaaClubFeeSerivce {
 
     public List<StudentFeePaymentRequestIpsaaClub> listFeeSlips(IpsaaClubSlipRequest request) {
         List<StudentFeePaymentRequestIpsaaClub> allslips = new LinkedList<>();
-        allslips = studentFeePaymentRequestIpsaaClubRepository.findByMonthAndYearOrderByCreatedDateDesc(10,2018);
+        allslips = studentFeePaymentRequestIpsaaClubRepository.findByMonthAndYearOrderByCreatedDateDesc(11,2018);
         return allslips;
     }
 

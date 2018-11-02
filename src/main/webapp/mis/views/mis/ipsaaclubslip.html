@@ -121,7 +121,7 @@
       </div>
       <div class="clearfix">
         <button type="button" class="btn btn-rose" ng-click="saveSlip(selectedStudentFee)">Save</button>
-        <button type="button" class="btn btn-rose" ng-click="showPayNow(selectedStudentFee)" data-toggle="modal" data-target="#myModal">Pay Now</button>
+        <button type="button" class="btn btn-rose" ng-click="showPayNow(selectedStudentFee)" data-toggle="modal" data-target="#myModal" ng-disabled="!selectedStudentFee.payments.length">Pay Now</button>
         <button type="button" class="btn btn-rose" ng-click="downloadSlip(selectedStudentFee)">Download Slip</button>
       </div>
     </div>
@@ -156,13 +156,6 @@
       </div>
     </div>
   </div>
-
-
-
-
-
-
-
 </div>
 
 <!-- Modal -->
