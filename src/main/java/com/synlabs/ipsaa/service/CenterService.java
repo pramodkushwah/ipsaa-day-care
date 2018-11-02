@@ -497,5 +497,23 @@ public class CenterService extends BaseService
     stateRepository.delete(request.getId());
   }
 
+  //////////////Avneet
+   public List<State> getStateByZone(Long zoneId){
 
+      Zone zone= zoneRepository.findOne(unmask(zoneId));
+      if(zone == null)
+          throw new ValidationException(String.format("Zone with this %s id doesn't exist.",zoneId));
+
+      List<State> states= stateRepository.findByCitiesZoneId(unmask(zoneId));
+      return states.stream().distinct().collect(Collectors.toList());
+  }
+
+  public List<City> getCityByState(Long stateId){
+
+      State state = stateRepository.findOne(unmask(stateId));
+      if(state == null)
+          throw new ValidationException(String.format("State with this %s id doesn't exist.",stateId));
+
+      return cityRepository.findByState(state);
+  }
 }

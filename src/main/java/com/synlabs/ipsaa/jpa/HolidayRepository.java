@@ -18,4 +18,6 @@ public interface HolidayRepository extends Repository<Holiday, Long>, JpaReposit
 
   ////Avneet
   List<Holiday> findByCentersIdAndHolidayDateBetween(Long centerId,Date from,Date to);
+
+  Holiday findByHolidayDateAndName(Date date,String name);
 }

@@ -4,6 +4,7 @@ import com.synlabs.ipsaa.enums.LeaveType;
 import com.synlabs.ipsaa.service.StaffLeaveService;
 import com.synlabs.ipsaa.view.attendance.EmployeeAttendanceFilterRequest;
 import com.synlabs.ipsaa.view.attendance.EmployeeLeaveRequest;
+import com.synlabs.ipsaa.view.attendance.EmployeeLeaveResponse;
 import com.synlabs.ipsaa.view.attendance.EmployeeLeaveSummaryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -79,5 +80,17 @@ public class StaffLeaveController
                                @RequestParam(value = "employeeActive", required = false) Boolean employeeActive)
   {
     leaveService.syncLeaveSummary(month, year, centerCode, employeeActive);
+  }
+
+  @PostMapping("{month}")
+  public List<EmployeeLeaveSummaryResponse> leavesBymonth(@PathVariable ("month") int month){
+    return leaveService.getLeavesByMonth(month);
+  }
+
+  @PostMapping("/employeeMonthly")
+  public List<EmployeeLeaveResponse> employeeLeaves(@RequestParam("eid") String eid,
+                                                           @RequestParam("month") Integer month){
+    return leaveService.employeeLeavesMonthly(eid,month).stream().map(EmployeeLeaveResponse::new)
+            .collect(Collectors.toList());
   }
 }

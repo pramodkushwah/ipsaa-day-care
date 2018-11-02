@@ -43,7 +43,7 @@ public class SalaryUtilsV2 {
 
 	public static BigDecimal calculateSpecial(BigDecimal ctc, BigDecimal basic, BigDecimal hra, BigDecimal conveyance,
 			BigDecimal bonus) {
-		return ctc.subtract(basic).subtract(hra).subtract(conveyance).subtract(bonus);
+			return ctc.subtract(basic).subtract(hra).subtract(conveyance).subtract(bonus);
 	}
 
 	// public static BigDecimal calculatePfe(EmployeeSalary salary)
@@ -134,12 +134,29 @@ public class SalaryUtilsV2 {
 		// modify by shubham calculateGrossV2 by calculateGross
 
 		salary.setBasic(SalaryUtilsV2.calculateBasic(salary.getCtc(),salary.getBasic()));
-		salary.setHra(SalaryUtilsV2.calculateHra(salary.getBasic()));
+
+		if(salary.getSpecial().signum() < 0)
+			salary.setHra(SalaryUtilsV2.calculateHra(salary.getBasic()).add(salary.getSpecial())); //add -ve special to hra
+		else if (salary.getSpecial().signum() ==0)
+			salary.setHra(salary.getHra());
+		else
+			salary.setHra(SalaryUtilsV2.calculateHra(salary.getBasic()));
+
 		salary.setConveyance(SalaryUtilsV2.CONVEYANCE);
 		salary.setBonus(SalaryUtilsV2.BOUNS);
 
 		// must be calculate after ctc basic hra bouns conveyance
-		salary.setSpecial(SalaryUtilsV2.calculateSpecial(salary));
+		if(salary.getSpecial().signum() <= 0)
+			salary.setSpecial(SalaryUtilsV2.calculateSpecial(salary).setScale(1)
+					.subtract(SalaryUtilsV2.calculateSpecial(salary).setScale(1)));
+		else
+			salary.setSpecial(SalaryUtilsV2.calculateSpecial(salary));
+
+//		if(salary.getSpecial().intValue() < 0 && salary.getHra().intValue() > salary.getSpecial().intValue()){
+//			salary.setHra(salary.getSpecial().add(salary.getHra()));
+//			salary.setSpecial(SalaryUtilsV2.calculateSpecial(salary));
+//		}
+
 		if (salary.isPfd()) {
 			salary.setPfe(SalaryUtilsV2.calculatePfe(salary.getBasic()));
 			salary.setPfr(SalaryUtilsV2.calculatePfr(salary.getBasic()));
@@ -215,7 +232,11 @@ public class SalaryUtilsV2 {
 
 		//paySlip.setBasic(calculateBasic(paySlip.getCtc(),paySlip.getBasic()));
         paySlip.setBasic(paySlip.getBasic().divide(oldRatio,6,RoundingMode.CEILING).multiply(newRatio));
-		paySlip.setHra(calculateHra(paySlip.getBasic()));
+		//paySlip.setHra(calculateHra(paySlip.getBasic()));
+		paySlip.setHra(paySlip.getHra().divide(oldRatio,6,RoundingMode.CEILING)
+				.multiply(newRatio));
+				//.add(paySlip.getSpecial()));
+
 		paySlip.setConveyance(CONVEYANCE.multiply(newRatio));
 		paySlip.setBonus(BOUNS.multiply(newRatio));
 		paySlip.setSpecial(calculateSpecial(paySlip.getCtc(), paySlip.getBasic(), paySlip.getHra(),
@@ -266,4 +287,6 @@ public class SalaryUtilsV2 {
 
 		return paySlip;
 	}
+
+
 }

@@ -12,7 +12,7 @@
     {
       "label": "Holidays",
       "state": "app.holiday",
-      "p": "CENTER_WRITE",
+      "p": "HOLIDAY_WRITE",
       "seq": 200
     },
     {

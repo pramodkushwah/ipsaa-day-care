@@ -300,10 +300,20 @@ app.controller('CenterController', function ($scope, $http) {
     };
 
     $scope.getState = function(city){
-        const selectedCity = $scope.selectedCenter.zone.cities.find(element => {
-            return element.name === city;
-        });
-        $scope.insertedCenter.state = selectedCity.state;
+        if($scope.selectedCenter){
+            const selectedCity = $scope.selectedCenter.zone.cities.find(element => {
+                return element.name === city;
+            });
+            $scope.insertedCenter.state = selectedCity.state;
+        } else {
+            const selectedCity = $scope.cities.find(element => {
+                return element.name === city;
+            });
+            $scope.insertedCenter.state = selectedCity.state;
+        }
+
+
+        
     }
 
     function refresh() {
