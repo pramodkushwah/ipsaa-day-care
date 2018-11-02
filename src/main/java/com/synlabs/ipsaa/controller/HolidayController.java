@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.CENTER_READ;
 import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.CENTER_WRITE;
+import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.HOLIDAY_WRITE;
 
 /**
  * Created by ttn on 10/6/17.
@@ -32,7 +33,7 @@ public class HolidayController
     return holidayService.list(request).stream().map(HolidayResponse::new).collect(Collectors.toList());
   }
 
-  @Secured(CENTER_WRITE)
+  @Secured({CENTER_WRITE,HOLIDAY_WRITE})
   @DeleteMapping(path = "{id}")
   public void delete(@PathVariable Long id) throws Exception
   {
@@ -41,7 +42,7 @@ public class HolidayController
     holidayService.delete(holidayRequest);
   }
 
-  @Secured(CENTER_WRITE)
+  @Secured({CENTER_WRITE,HOLIDAY_WRITE})
   @PostMapping(path = "save")
   public HolidayResponse save(@RequestBody HolidayRequest holidayRequest)
   {
