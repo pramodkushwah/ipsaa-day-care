@@ -1,5 +1,5 @@
 <div class="col-lg-3 col-md-4 col-sm-4">
-  <div class="card card-stats" style="height:179px;">
+  <div class="card card-stats" style="height:250px;">
     <div class="card-header" data-background-color="orange">
       <i class="material-icons">person_pin</i>
     </div>
@@ -20,18 +20,18 @@
         <a href="#" ng-click="showPanel('stafflist', 'recruitmentHeadCountList')">Active Headcount</a>
         : {{stats.recruitmentCount | number}} &nbsp;&nbsp;&nbsp;
       </p>
-      <!--<p style="margin: 0;text-align:left;">-->
-        <!--<a href="#" ng-click="showPanel('stafflist', 'absentStaff')">Absent</a>-->
-        <!--: {{stats.staffAbsent | number}} &nbsp;&nbsp;&nbsp;-->
-      <!--</p>-->
-      <!--<p style="margin: 0;text-align:left;">-->
-        <!--<a href="#" ng-click="showPanel('stafflist', 'presentStaff')">Presents</a>-->
-        <!--: {{stats.staffPresent | number}} &nbsp;&nbsp;&nbsp;-->
-      <!--</p>      -->
-      <!--<p style="margin: 0;text-align:left;">-->
-        <!--<a href="#" ng-click="showPanel('stafflist', 'onLeaveStaff')">On Leave</a>-->
-        <!--: {{stats.staffOnLeave | number}} &nbsp;&nbsp;&nbsp;-->
-      <!--</p>-->
+      <p style="margin: 0;text-align:left;">
+        <a href="#" ng-click="showPanel('stafflist', 'presentStaff')">Presents</a>
+        : {{stats.staffPresent | number}} &nbsp;&nbsp;&nbsp;
+      </p>
+      <p style="margin: 0;text-align:left;">
+        <a href="#" ng-click="showPanel('stafflist', 'absentStaff')">Absent</a>
+        : {{stats.staffAbsent | number}} &nbsp;&nbsp;&nbsp;
+      </p>
+      <p style="margin: 0;text-align:left;">
+        <a href="#" ng-click="showPanel('stafflist', 'onLeaveStaff')">On Leave</a>
+        : {{stats.staffOnLeave | number}} &nbsp;&nbsp;&nbsp;
+      </p>
     </div>
     <div class="card-footer footer-bottom">
       <div class="stats">
