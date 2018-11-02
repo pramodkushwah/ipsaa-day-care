@@ -365,9 +365,11 @@ app.controller('StaffLeaveController', function ($scope, $http, $rootScope, Auth
         
     }
 
-    $scope.getEmployeeLeaves = function(eid){
-        $http.post('/api/staff/leave/employeeMonthly?eid='+eid+'&month='+$scope.selectedMonthForEmployee.moy).then(function(response){
-            $scope.monthlyLeaves = response.data;           
+    $scope.getEmployeeLeaves = function(summary){
+        $('.collapse').collapse('hide');
+        $http.post('/api/staff/leave/employeeMonthly?eid='+summary.eid+'&month='+$scope.selectedMonthForEmployee.moy).then(function(response){
+            $scope.monthlyLeaves = response.data;      
+            summary.monthlyLeaves = response.data;
         },function(error){
             
         });        
