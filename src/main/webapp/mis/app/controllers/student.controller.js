@@ -966,7 +966,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
   $scope.generateStudentFee = function() {
     $scope.disableGenerate = true;
-    $http.post('/api/student/ipsaaclub/generate/' + $scope.workingStudent.fee.id, {}).then(function (response){
+    $http.post('/api/student/ipsaaclub/generate/' + $scope.workingStudent.id, {}).then(function (response){
         $scope.disableGenerate = false;
         ok('Student Fee generated');
     },function(error){

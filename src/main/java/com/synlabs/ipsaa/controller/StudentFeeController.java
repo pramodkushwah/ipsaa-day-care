@@ -262,7 +262,7 @@ public class StudentFeeController {
 
         IpsaaClubSlipRequest request = new IpsaaClubSlipRequest();
         request.setId(slipId);
-        InputStream is = documentService.downloadFeeReceiptPdf(request);
+        InputStream is = documentService.downloadFeeReceiptPdfIsaaClub(request);
         response.setContentType("application/octet-stream");
         String fileName = request.getReceiptSerial();
 
@@ -280,7 +280,7 @@ public class StudentFeeController {
     @PostMapping("/ipsaaclub/feeslips/pdf")
     public void downloadIpsaaClubFeeSlips(@RequestBody List<Long> ids, HttpServletResponse response) throws IOException, DocumentException {
         StudentFeeSlipRequest request = new StudentFeeSlipRequest();
-        File file = documentService.generateFeeSlipPdf(ids, request);
+        File file = documentService.generateFeeSlipPdfIpsaClub(ids, request);
 
         response.setContentType("application/octet-stream");
         String fileName = String.format("Slips_%s_%s.pdf", request.getCenterCode(), request.getPeriod());

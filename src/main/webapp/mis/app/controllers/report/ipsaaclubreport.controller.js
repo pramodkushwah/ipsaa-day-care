@@ -22,7 +22,7 @@ app.controller('IpsaaClubReportController', function ($scope, $http) {
   $scope.downloadFee = function(){
     if(validate()){
       const request = {
-        center:$scope.selectedCenter.name,
+        centerCode:$scope.selectedCenter.name,
         month:$scope.selectedMonth.moy,
         year:$scope.selectedYear
       }
@@ -46,7 +46,7 @@ app.controller('IpsaaClubReportController', function ($scope, $http) {
   $scope.downloadCollection = function(){
     if(validate()){
       const request = {
-        center:$scope.selectedCenter.name,
+        centerCode:$scope.selectedCenter.name,
         month:$scope.selectedMonth.moy,
         year:$scope.selectedYear
       }

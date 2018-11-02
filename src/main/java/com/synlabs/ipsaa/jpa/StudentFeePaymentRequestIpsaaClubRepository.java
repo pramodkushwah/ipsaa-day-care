@@ -12,6 +12,7 @@ import java.util.List;
 public interface StudentFeePaymentRequestIpsaaClubRepository  extends JpaRepository<StudentFeePaymentRequestIpsaaClub, Long> {
     List<StudentFeePaymentRequestIpsaaClub> findByStudentIdOrderByCreatedDateDesc(Long id);
     List<StudentFeePaymentRequestIpsaaClub> findByMonthAndYearOrderByCreatedDateDesc(int month,int year);
+    List<StudentFeePaymentRequestIpsaaClub> findByIsExpireIsFalseOrderByCreatedDateDesc();
 
     List<StudentFeePaymentRequestIpsaaClub> findByStudentProgramIdAndStudentCorporateIsFalseAndIsExpireIsFalseAndMonthAndYearAndStudentCenterCode(long id,int month, int year, String centerCode);
     List<StudentFeePaymentRequestIpsaaClub> findByStudentProgramIdAndStudentCorporateIsFalseAndIsExpireIsFalseAndMonthAndYear(long id, int month, int year);

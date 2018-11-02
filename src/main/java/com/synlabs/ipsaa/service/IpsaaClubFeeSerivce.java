@@ -51,13 +51,12 @@ public class IpsaaClubFeeSerivce {
 
     public List<StudentFeePaymentRequestIpsaaClub> listFeeSlips(IpsaaClubSlipRequest request) {
         List<StudentFeePaymentRequestIpsaaClub> allslips = new LinkedList<>();
-        allslips = studentFeePaymentRequestIpsaaClubRepository.findByMonthAndYearOrderByCreatedDateDesc(11,2018);
+        allslips = studentFeePaymentRequestIpsaaClubRepository.findByIsExpireIsFalseOrderByCreatedDateDesc();
         return allslips;
     }
-
     @Transactional
-    public IpsaaClubSlipResponce generateSlip(Long id) {
-        StudentFee fee = feeRepository.findByStudentId(id);
+    public IpsaaClubSlipResponce generateSlip(Long studentID) {
+        StudentFee fee = feeRepository.findByStudentId(studentID);
         if (fee == null)
            throw  new ValidationException("fee not found");
 
@@ -272,7 +271,7 @@ public class IpsaaClubFeeSerivce {
         record.setPaymentDate(request.getPaymentDate() == null ? new Date() : request.getPaymentDate());
         studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(record);
         logger.info(String.format("Student Fee payment recoded successfully.%s", slip));
-        //documentService.generateFeeReceiptPdf(record);
+        documentService.generateFeeReceiptPdfIpsaaClub(slip);
         return record;
     }
 

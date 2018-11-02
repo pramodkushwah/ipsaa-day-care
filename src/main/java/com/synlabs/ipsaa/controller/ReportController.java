@@ -325,7 +325,7 @@ public class ReportController {
 		}
 	}
 
-	@PostMapping("ipssaclub/studentfee/excel")
+	@PostMapping("ipsaaclub/studentfee/excel")
 	@Secured(FEE_REPORT)
 	public void ipsaaClubFeeReportExcel(@RequestBody FeeReportRequest request, HttpServletResponse response) throws IOException {
 		File file = feeService.FeeReportIpsaClub2(request);

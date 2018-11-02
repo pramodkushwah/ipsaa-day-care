@@ -7,10 +7,7 @@ import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.fee.Charge;
 import com.synlabs.ipsaa.entity.fee.HdfcResponse;
 import com.synlabs.ipsaa.entity.programs.Program;
-import com.synlabs.ipsaa.entity.student.Student;
-import com.synlabs.ipsaa.entity.student.StudentFee;
-import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
-import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequestIpsaaClub;
+import com.synlabs.ipsaa.entity.student.*;
 import com.synlabs.ipsaa.enums.PaymentStatus;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.ValidationException;
@@ -823,9 +820,9 @@ public class FeeService extends BaseService
     }
 
     List<LinkedHashMap<String,Object>> list=new ArrayList<>();
+    int count=0;
     for (StudentFeePaymentRequestIpsaaClub slip : slips)
     {
-      int count=0;
       LinkedHashMap<String,Object> row=new LinkedHashMap<>();
             row.put("s.id",count++);
             row.put("student_name",slip.getStudent().getProfile().getFullName());
@@ -869,24 +866,23 @@ public class FeeService extends BaseService
     }
 
     List<LinkedHashMap<String,Object>> list=new ArrayList<>();
+    int count=0;
     for (StudentFeePaymentRequestIpsaaClub slip : slips)
     {
-      int count=0;
-      LinkedHashMap<String,Object> row=new LinkedHashMap<>();
-      row.put("s.id",count++);
-      row.put("student_name",slip.getStudent().getProfile().getFullName());
-      row.put("center",slip.getStudent().getCenterName());
-      row.put("program_name",slip.getStudent().getProgramName());
-      row.put("Invoice Date",slip.getInvoiceDate());
-      row.put("Gst",slip.getGstAmount());
-      row.put("Annual Fee",slip.getFinalAnnualFee());
-      row.put("Security",slip.getFinalDepositFee());
-      row.put("Raised Amount",slip.getTotalFee());
-      row.put("Extra Amount",slip.getExtraCharge());
-      row.put("Due Amount",slip.getTotalFee().subtract(slip.getPaidAmount()));
-      row.put("Payment Status",slip.getPaymentStatus());
-      row.put("Comment",slip.getComments());
-      list.add(row);
+      for(StudentFeePaymentRecordIpsaaClub payment:slip.getPayments()){
+        LinkedHashMap<String,Object> row=new LinkedHashMap<>();
+        row.put("s.id",count++);
+        row.put("student_name",payment.getStudent().getProfile().getFullName());
+        row.put("center",payment.getStudent().getCenterName());
+        row.put("program_name",payment.getStudent().getProgramName());
+        row.put("Invoice Date",payment.getRequest().getInvoiceDate());
+        row.put("Expire Date",payment.getRequest().getExpireDate());
+        row.put("Paid Amount",payment.getPaidAmount());
+        row.put("Txnid",payment.getTxnid());
+        row.put("comment",payment.getComment());
+        row.put("confirmed",payment.getConfirmed());
+        list.add(row);
+      }
     }
     ExcelGenerater eg=new ExcelGenerater(list);
     file=eg.create(exportDir,"ipsaa club fee report");

@@ -27,10 +27,13 @@ public class ExcelGenerater {
                 SXSSFWorkbook workbook = new SXSSFWorkbook();
                 createStyle(workbook);
                 Sheet feeCollectionReportSheet = workbook.createSheet(sheetName);// creating a blank sheet
-                createHeader(list.get(0), 0, feeCollectionReportSheet);
-                boolean isCreated = makeList(list, 1, feeCollectionReportSheet);
-                workbook.write(fileOutputStream);
-                workbook.dispose();
+                if(!list.isEmpty())
+                {
+                    createHeader(list.get(0), 0, feeCollectionReportSheet);
+                    boolean isCreated = makeList(list, 1, feeCollectionReportSheet);
+                    workbook.write(fileOutputStream);
+                    workbook.dispose();
+                }
                 return file;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
