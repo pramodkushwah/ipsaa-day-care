@@ -873,15 +873,6 @@ public class DashboardService extends BaseService {
 	public List<Employee> absentStaff(DashboardRequest request) {
 
 		List<Center> centers = getCenters(request);
-//
-//		JPAQuery<EmployeeAttendance> query = new JPAQuery<>(entityManager);
-//		QEmployeeAttendance attendance = QEmployeeAttendance.employeeAttendance;
-//		// QEmployee employee=QEmployee.employee;
-//
-//		List<EmployeeAttendance> employees = query.select(attendance).from(attendance)
-//				.where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
-//				.where(attendance.status.eq(AttendanceStatus.Present)).where(attendance.checkout.isNull())
-//				.where(attendance.center.in(centers)).orderBy(attendance.employee.id.asc()).fetch();
 
 		List<Employee> employeeList = employeeRepository.findByActiveTrueAndCostCenterInOrderByIdAsc(centers);
 
