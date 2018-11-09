@@ -172,15 +172,23 @@ public class BiometricAttendanceService extends BaseService
           attendance.setCenter(employee.getCostCenter());
           attendance.setAttendanceDate(ba.getDate().toDate());
           attendance.setStatus(AttendanceStatus.Present);
+
+          if(attendance.getCheckin() == null)
+            attendance.setCheckin(ba.getClockin());
         }
-        if (attendance.getCheckin() == null)
-        {
-          attendance.setCheckin(ba.getClockin());
-        }
-        if (attendance.getCheckout() == null)
-        {
+        else{
+          ////update timings
           attendance.setCheckout(ba.getClockout());
         }
+//        if (attendance.getCheckin() == null)
+//        {
+//          System.out.println(ba.getClockin());
+//          attendance.setCheckin(ba.getClockin());
+//        }
+//        if (attendance.getCheckout() == null)
+//        {
+//          attendance.setCheckout(ba.getClockout());
+//        }
         list.add(attendance);
       }
     });
