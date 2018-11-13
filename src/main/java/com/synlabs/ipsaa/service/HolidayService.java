@@ -17,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.EntityManager;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,12 +64,14 @@ public class HolidayService extends BaseService
     try
     {
       LocalDate localDate = LocalDate.fromDateFields(pareDate(dateString,"dd-MM-yyyy"));
-      query.where(holiday.holidayDate.between(localDate.toDate(),localDate.plusMonths(1).toDate()));
+      System.out.println(localDate.plusMonths(12-request.getMonth()+1).toDate());
+      query.where(holiday.holidayDate.between(localDate.toDate(),localDate.plusMonths(12-request.getMonth()+1).toDate()));
     }
     catch (ParseException e)
     {
       throw new ValidationException("Invalid Date " + dateString);
     }
+
     return query.fetch();
   }
 
@@ -107,7 +110,7 @@ public class HolidayService extends BaseService
     holiday.setName(holidayRequest.getName().toUpperCase());
     holiday.setHolidayDate(holidayRequest.getHolidayDate());
 
-    System.out.println(holiday);
+   // System.out.println(holiday);
 
     return holidayRepository.save(holiday);
   }

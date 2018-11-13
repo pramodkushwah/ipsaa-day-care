@@ -1,4 +1,4 @@
-<div class="row">
+<!-- <div class="row">
   <div class="col-md-5">
     <input type="file" file-model="file" style="margin-top: 20px;">
   </div>
@@ -7,194 +7,269 @@
       <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableUploadBtn"></i>upload
     </button>
   </div>
-</div>
+</div> -->
 
-<div class="row">
-  <div class="col-md-4">
-    <div class="form-group">
-      <div class="input-group">
-        <label class="control-label">*Employee:</label>
-        <input type="text" class="form-control dropdown-toggle" data-toggle="dropdown" placeholder="Employee" ng-model="searchEmployee">
-        <ul class="dropdown-menu dropdown-menu-right" role="menu">
-          <li ng-repeat="staff in allStaff | filter: {name: searchEmployee}">
-            <a ng-click="selectEmployee(staff)">{{staff.name}}</a>
-          </li>
-        </ul>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" style="background: #ff9800;">
+    <li class="active">
+      <a data-toggle="tab" data-target="#applyForLeave">View/Apply For Leave</a>
+    </li>
+    <li>
+      <a data-toggle="tab" data-target="#viewLeaves">View Leaves By Month</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="applyForLeave" class="tab-pane fade in active">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <div class="input-group">
+              <label class="control-label">*Employee:</label>
+              <input type="text" class="form-control dropdown-toggle" data-toggle="dropdown" placeholder="Employee" ng-model="searchEmployee">
+              <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                <li ng-repeat="staff in allStaff | filter: {name: searchEmployee}">
+                  <a ng-click="selectEmployee(staff)">{{staff.name}}</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" ng-show="selectedEmployee.eid">
+        <div class="card-header">
+          <h4 style="text-align: center">Apply Leaves</h4>
+        </div>
+        <div class="card-content">
+          <div class="row">
+            <div class="col-md-1">
+              <div class="form-group">
+                <div class="input-group">
+                  <label class="control-label">*EID</label>
+                  <input type="text" class="form-control" placeholder="*Eid" readonly ng-model="leave.eid">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-1">
+              <div class="form-group">
+                <div class="checkbox" style="padding-top: 45px;">
+                  <label>
+                    <input type="checkbox" name="half" ng-model="leave.halfLeave"> Half
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <div class="input-group">
+                  <label class="control-label">*From Date</label>
+                  <input type="text" class="form-control datepicker" placeholder="*From Date (YYYY-MM-DD)" ng-model="leave.fromDate" id="leave_fromDate">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <div class="input-group">
+                  <label class="control-label">*To Date</label>
+                  <input type="text" class="form-control datepicker" placeholder="*To Date (YYYY-MM-DD)" ng-model="leave.toDate" id="leave_toDate">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <div class="input-group">
+                  <label class="control-label">*Reason</label>
+                  <input type="text" class="form-control" placeholder="*Reason" ng-model="leave.reason">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <div class="input-group">
+                  <label class="control-label">*Leave Type</label>
+                  <select class="form-control" ng-model="leave.leaveType" ng-options="leave as leave for leave in leaveTypes" required>
+                    <option value="" style="font-weight: 100">Leave Type</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="input-group-addon"></div>
+                  <a class="btn btn-fab-mini btn-round" ng-click="multiLeave()">APPLY</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" ng-show="selectedEmployee.eid">
+        <div class="card-header" style="text-align: center">
+          <h4>Details</h4>
+        </div>
+        <div class="card-content">
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="label-control">Year</label>
+                <select class="form-control" ng-model="selectedYear" ng-options="year as year for year in years" ng-change="yearChange()">
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="label-control">Month</label>
+                <select class="form-control" ng-model="selectedMonth" ng-options="month as month.name for month in months" ng-change="monthChange()">
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <h3>Leave Summary</h3>
+                <table class="table table-bordered">
+                  <tr>
+                    <th>Month</th>
+                    <th ng-repeat="leaveType in leaveTypes">{{leaveType}}</th>
+                    <th>Total</th>
+                    <th>Total (Yearly)</th>
+                  </tr>
+                  <tr>
+                    <td>{{leaveSummary.month}}</td>
+                    <td ng-repeat="leaveType in leaveTypes">{{leaveSummary[leaveType]}}</td>
+                    <td>{{leaveSummary.total}}</td>
+                    <td>{{leaveSummary.yearTotal}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <h3>Attendance Summary</h3>
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <tr class="text-center">
+                    <th>Date</th>
+                    <th>Day</th>
+                    <th>Status</th>
+                    <th>ClockIn</th>
+                    <th>ClockOut</th>
+                    <th>Action</th>
+                    <th ng-show="hrAdmin">Attendance Action</th>
+                  </tr>
+                  <tr ng-repeat="atten in attendanceList | orderBy: 'date'" ng-class="atten.class" class="text-center">
+                    <td>{{atten.date | date : 'dd/MM/yyyy'}}</td>
+                    <td>{{atten.date | date : 'EEEE'}}</td>
+                    <td ng-if="atten.status == 'Present'">{{atten.status}}</td>
+                    <td ng-if="atten.status == 'Absent'">{{atten.status}}</td>
+                    <td ng-if="atten.status == 'Holiday'">{{atten.status}} ( {{atten.holidayName}} )</td>
+                    <td ng-if="atten.status == 'Leave'">{{atten.halfLeave ? 'Half Day' : 'Full Day'}} Leave ({{atten.leaveType}})</td>
+
+                    <td>
+                      <span ng-if="atten.actualIn">{{atten.actualIn}}</span>
+                      <input ng-if="hrAdmin && !atten.actualIn && atten.status != 'Holiday'" type="text" ng-model="atten.clockin">
+                    </td>
+                    <td>
+                      <span ng-if="atten.actualOut">{{atten.actualOut}}</span>
+                      <input ng-if="hrAdmin && !atten.actualOut && !atten.actualIn && atten.status != 'Holiday'" type="text" ng-model="atten.clockout">
+                    </td>
+
+
+
+                    <td>
+                      <span class="label label-info">{{atten.leaveStatus}}</span>
+                      <button class="btn btn-sm btn-primary" ng-show="atten.leaveStatus == 'Applied' || atten.leaveStatus == 'Rejected'" ng-click="approveLeave(atten)"
+                        ng-disabled="atten.disableApprove">
+                        <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="atten.disableApprove"></i>
+                        Approve
+                      </button>
+                      <button class="btn btn-sm btn-primary" ng-show="atten.leaveStatus == 'Applied' || atten.leaveStatus == 'Approved'" ng-click="rejectLeave(atten)"
+                        ng-disabled="atten.disableApprove">
+                        <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="atten.disableApprove"></i>
+                        Reject
+                      </button>
+                    </td>
+                    <td ng-show="hrAdmin">
+                      <button class="btn btn-sm" ng-show="atten.status == 'Present'" ng-click="deleteAttendance(atten)">
+                        <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="atten.disableDelete"></i>delete</button>
+                      <button class="btn btn-sm" ng-show="!(atten.actualIn && atten.actualOut)&&(atten.status == 'Absent' || atten.status == 'Leave')"
+                        ng-click="saveAttendance(atten)">
+                        <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="atten.disableSave"></i>save</button>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
-<div class="card" ng-show="selectedEmployee.eid">
-  <div class="card-header">
-    <h4 style="text-align: center">Apply Leaves</h4>
-  </div>
-  <div class="card-content">
-    <div class="row">
-      <div class="col-md-1">
-        <div class="form-group">
-          <div class="input-group">
-            <label class="control-label">*EID</label>
-            <input type="text" class="form-control" placeholder="*Eid" readonly ng-model="leave.eid">
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-1">
-        <div class="form-group">
-          <div class="checkbox" style="padding-top: 45px;">
-            <label>
-              <input type="checkbox" name="half" ng-model="leave.halfLeave"> Half
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-2">
-        <div class="form-group">
-          <div class="input-group">
-            <label class="control-label">*From Date</label>
-            <input type="text" class="form-control datepicker" placeholder="*From Date (YYYY-MM-DD)" ng-model="leave.fromDate" id="leave_fromDate">
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div class="form-group">
-          <div class="input-group">
-            <label class="control-label">*To Date</label>
-            <input type="text" class="form-control datepicker" placeholder="*To Date (YYYY-MM-DD)" ng-model="leave.toDate" id="leave_toDate">
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div class="form-group">
-          <div class="input-group">
-            <label class="control-label">*Reason</label>
-            <input type="text" class="form-control" placeholder="*Reason" ng-model="leave.reason">
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-2">
-        <div class="form-group">
-          <div class="input-group">
-            <label class="control-label">*Leave Type</label>
-            <select class="form-control" ng-model="leave.leaveType" ng-options="leave as leave for leave in leaveTypes" required>
-              <option value="" style="font-weight: 100">Leave Type</option>
+    <div id="viewLeaves" class="tab-pane fade">
+      <div class="row">
+        <div class="col-md-2 col-sm-4 col-xs-6">
+          <div class="form-group">
+            <label class="label-control">Month</label>
+            <select class="form-control" ng-model="selectedMonthForEmployee" ng-options="month as month.name for month in months" ng-change="getEmployees()">
             </select>
           </div>
         </div>
-      </div>
-
-      <div class="col-md-2">
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-addon"></div>
-            <a class="btn btn-fab-mini btn-round" ng-click="multiLeave()">APPLY</a>
+        <div class="col-md-2 col-sm-4 col-xs-6" ng-show="selectedMonthForEmployee">
+            <label class="control-label">Center:</label>
+            <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="filterLeavesByCenter(selectedCenter)">
+              <option value="">ALL</option>
+            </select>
           </div>
-        </div>
       </div>
-    </div>
-  </div>
-</div>
-
-<div class="card" ng-show="selectedEmployee.eid">
-  <div class="card-header" style="text-align: center">
-    <h4>Details</h4>
-  </div>
-  <div class="card-content">
-    <div class="row">
-      <div class="col-md-2">
-        <div class="form-group">
-          <label class="label-control">Year</label>
-          <select class="form-control" ng-model="selectedYear" ng-options="year as year for year in years" ng-change="yearChange()">
-          </select>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div class="form-group">
-          <label class="label-control">Month</label>
-          <select class="form-control" ng-model="selectedMonth" ng-options="month as month.name for month in months" ng-change="monthChange()">
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="table-responsive">
-          <h3>Leave Summary</h3>
-          <table class="table table-bordered">
+      <div class="card table-responsive" ng-show="selectedMonthForEmployee">
+        <table class="table table-hover">
+          <thead>
             <tr>
-              <th>Month</th>
-              <th ng-repeat="leaveType in leaveTypes">{{leaveType}}</th>
-              <th>Total</th>
-              <th>Total (Yearly)</th>
+              <th>Eid</th>
+              <th>Name</th>
+              <th>Center</th>
+              <th>No of Leaves</th>
             </tr>
-            <tr>
-              <td>{{leaveSummary.month}}</td>
-              <td ng-repeat="leaveType in leaveTypes">{{leaveSummary[leaveType]}}</td>
-              <td>{{leaveSummary.total}}</td>
-              <td>{{leaveSummary.yearTotal}}</td>
+          </thead>
+          <tbody ng-repeat="summary in employeeLeaveSummary">
+            <tr ng-click="getEmployeeLeaves(summary.eid)" data-toggle="collapse" ng-attr-data-target="{{'#' + summary.eid}}">
+              <td>{{summary.eid}}</td>
+              <td>{{summary.name}}</td>
+              <td>{{summary.center}}</td>
+              <td>{{summary.count}}</td>
             </tr>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <h3>Attendance Summary</h3>
-        <div class="table-responsive">
-          <table class="table table-bordered">
-            <tr class="text-center">
-              <th>Date</th>
-              <th>Day</th>
-              <th>Status</th>
-              <th>ClockIn</th>
-              <th>ClockOut</th>
-              <th>Action</th>
-              <th ng-show="hrAdmin">Attendance Action</th>
-            </tr>
-            <tr ng-repeat="atten in attendanceList | orderBy: 'date'" ng-class="atten.class" class="text-center">
-              <td>{{atten.date | date : 'dd/MM/yyyy'}}</td>
-              <td>{{atten.date | date : 'EEEE'}}</td>
-              <td ng-if="atten.status == 'Present'">{{atten.status}}</td>
-              <td ng-if="atten.status == 'Absent'">{{atten.status}}</td>
-              <td ng-if="atten.status == 'Holiday'">{{atten.status}} ( {{atten.holidayName}} )</td>
-              <td ng-if="atten.status == 'Leave'">{{atten.halfLeave ? 'Half Day' : 'Full Day'}} Leave ({{atten.leaveType}})</td>
-
-              <td>
-                <span ng-if="atten.actualIn">{{atten.actualIn}}</span>
-                <input ng-if="hrAdmin && !atten.actualIn && atten.status != 'Holiday'" type="text" ng-model="atten.clockin">
-              </td>
-              <td>
-                <span ng-if="atten.actualOut">{{atten.actualOut}}</span>
-                <input ng-if="hrAdmin && !atten.actualOut && !atten.actualIn && atten.status != 'Holiday'" type="text" ng-model="atten.clockout">
-              </td>
-
-
-
-              <td>
-                <span class="label label-info">{{atten.leaveStatus}}</span>
-                <button class="btn btn-sm btn-primary" ng-show="atten.leaveStatus == 'Applied' || atten.leaveStatus == 'Rejected'"
-                        ng-click="approveLeave(atten)" ng-disabled="atten.disableApprove">
-                  <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="atten.disableApprove"></i>
-                  Approve
-                </button>
-                <button class="btn btn-sm btn-primary" ng-show="atten.leaveStatus == 'Applied' || atten.leaveStatus == 'Approved'"
-                        ng-click="rejectLeave(atten)" ng-disabled="atten.disableApprove">
-                  <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="atten.disableApprove"></i>
-                  Reject
-                </button>
-              </td>
-              <td ng-show="hrAdmin">
-                <button class="btn btn-sm" ng-show="atten.status == 'Present'" ng-click="deleteAttendance(atten)">
-                  <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="atten.disableDelete"></i>delete</button>
-                <button class="btn btn-sm" ng-show="!(atten.actualIn && atten.actualOut)&&(atten.status == 'Absent' || atten.status == 'Leave')" ng-click="saveAttendance(atten)">
-                  <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="atten.disableSave"></i>save</button>
+            <tr ng-attr-id="{{summary.eid}}" class="collapse">
+              <td colspan="4">
+                <table class="table table-bordered">
+                  <tr>
+                    <th>Date</th>
+                    <th>Leave Type</th>
+                    <th>Leave Status</th>
+                    <th>Reason</th>
+                  </tr>
+                  <tr ng-repeat="leave in monthlyLeaves">
+                    <td>{{leave.date}}</td>
+                    <td>{{leave.leaveType}}</td>
+                    <td>{{leave.leaveStatus}}</td>
+                    <td>{{leave.reason || 'None'}}</td>
+                  </tr>
+                  <tr ng-hide="monthlyLeaves"><td colspan="4" class="text-center">No Leaves</td></tr>
+                </table>
               </td>
             </tr>
-          </table>
-        </div>
+          </tbody>
+          <tfoot ng-hide="employeeLeaveSummary.length">
+            <tr><td colspan="4" class="text-center">No Content</td></tr>
+          </tfoot>
+        </table>
       </div>
     </div>
   </div>

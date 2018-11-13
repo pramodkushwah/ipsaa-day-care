@@ -1,12 +1,10 @@
 package com.synlabs.ipsaa.service;
 
 import com.google.common.eventbus.EventBus;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.synlabs.ipsaa.entity.center.Center;
-import com.synlabs.ipsaa.entity.staff.Employee;
-import com.synlabs.ipsaa.entity.staff.EmployeeLeave;
-import com.synlabs.ipsaa.entity.staff.EmployeeLeaveSummary;
-import com.synlabs.ipsaa.entity.staff.QEmployeeLeave;
+import com.synlabs.ipsaa.entity.staff.*;
 import com.synlabs.ipsaa.enums.LeaveStatus;
 import com.synlabs.ipsaa.enums.LeaveType;
 import com.synlabs.ipsaa.ex.ValidationException;
@@ -15,6 +13,7 @@ import com.synlabs.ipsaa.util.BigDecimalUtils;
 import com.synlabs.ipsaa.util.CollectionUtils;
 import com.synlabs.ipsaa.view.attendance.EmployeeAttendanceFilterRequest;
 import com.synlabs.ipsaa.view.attendance.EmployeeLeaveRequest;
+import com.synlabs.ipsaa.view.attendance.EmployeeLeaveSummaryResponse;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -36,6 +35,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -543,6 +543,54 @@ public class StaffLeaveService extends BaseService
       }
     }
 
+  }
+
+
+  public List<EmployeeLeaveSummaryResponse> getLeavesByMonth(int month){
+
+      if(month == 0 )
+          throw new ValidationException("Month is required");
+      JPAQuery<EmployeeLeaveSummary> query= new JPAQuery<>(entityManager);
+      QEmployeeLeaveSummary leaveSummary=QEmployeeLeaveSummary.employeeLeaveSummary;
+
+      List<Tuple> fetch=query.select(leaveSummary.employee,leaveSummary.count.sum()).from(leaveSummary)
+              .where(leaveSummary.month.eq(month))
+              .where(leaveSummary.year.eq(LocalDate.now().getYear()))
+              .groupBy(leaveSummary.employee)
+              .fetch();
+
+      List<EmployeeLeaveSummaryResponse> list = new ArrayList<>();
+      EmployeeLeaveSummaryResponse summaryResponse;
+
+      for(Tuple row: fetch){
+        summaryResponse= new EmployeeLeaveSummaryResponse();
+        summaryResponse.setName(row.get(leaveSummary.employee).getName());
+        summaryResponse.setCenter(row.get(leaveSummary.employee).getCostCenter().getName());
+        summaryResponse.setEid(row.get(leaveSummary.employee).getEid());
+        summaryResponse.setCount(row.get(leaveSummary.count.sum()));
+        summaryResponse.setMonth(month);
+        System.out.println(row.get(leaveSummary.employee).getName()+ "   "+row.get(leaveSummary.count.sum()));
+        list.add(summaryResponse);
+      }
+
+      return list;
+  }
+
+  public List<EmployeeLeave> employeeLeavesMonthly(String eid,int month){
+
+    if(month == 0)
+      throw new ValidationException("Month is mandatory.");
+    if(eid == null)
+      throw new ValidationException("Employee id is required!");
+
+    JPAQuery<EmployeeLeave> query= new JPAQuery<>(entityManager);
+    QEmployeeLeave employeeLeave=QEmployeeLeave.employeeLeave;
+
+    List<EmployeeLeave> leaves=query.select(employeeLeave).from(employeeLeave)
+            .where(employeeLeave.employee.eid.eq(eid).and(employeeLeave.date.month().eq(month)))
+            .fetch();
+
+    return leaves;
   }
 }
 
