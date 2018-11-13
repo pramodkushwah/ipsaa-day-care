@@ -3,8 +3,7 @@ package com.synlabs.ipsaa.view.center;
 import com.synlabs.ipsaa.entity.center.City;
 import com.synlabs.ipsaa.view.common.Response;
 
-public class CityResponse
-    implements Response
+public class CityResponse implements Response
 {
   private Long id;
   private String name;

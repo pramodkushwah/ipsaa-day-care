@@ -10,7 +10,7 @@
         <thead class="text-primary">
         <tr>
           <th>S.No</th>
-          <th>EID</th>
+          <!-- <th>EID</th> -->
           <th>Name</th>
           <th>Designation</th>
           <th>Mobile</th>
@@ -18,8 +18,8 @@
           <th>Employer</th>
           <!-- <th>Email</th>
           <th ng-if="SALARY_READ">Basic Salary</th> -->
-          <th ng-hide="staffPage.filter=='newjoinings' || staffPage.filter== 'newleavings' || staffPage.filter=='all' || staffPage.filter== 'recruitmentHeadCountList'">Checkin</th>
-          <th ng-hide="staffPage.filter=='newleavings' || staffPage.filter== 'newjoinings' || staffPage.filter=='all' || staffPage.filter== 'recruitmentHeadCountList'">Expected Checout</th>
+          <th ng-hide="staffPage.filter=='newjoinings' || staffPage.filter== 'newleavings' || staffPage.filter=='all' || staffPage.filter== 'recruitmentHeadCountList' || staffPage.filter== 'absentStaff'">Checkin</th>
+          <th ng-hide="staffPage.filter=='newleavings' || staffPage.filter== 'newjoinings' || staffPage.filter=='all' || staffPage.filter== 'recruitmentHeadCountList' || staffPage.filter== 'absentStaff'">Expected Checout</th>
           <th ng-show="staffPage.filter=='newjoinings'">Date of Joining</th>
           <th ng-show="staffPage.filter=='newleavings' || staffPage.filter== 'recruitmentHeadCountList'">Date of Leaving</th>
           <th ng-show="staffPage.filter=='all'">CTC</th>
@@ -29,7 +29,7 @@
         <tbody>
         <tr ng-repeat="staff in staffPage">
           <td>{{ (PAGESIZE * (staffPageNumber - 1)) + $index + 1}}</td>
-          <td>{{staff.eid}}</td>
+          <!-- <td>{{staff.eid}}</td> -->
           <td>{{staff.name}}</td>
           <td>{{staff.designation}}</td>
           <td>{{staff.mobile}}</td>
