@@ -3,6 +3,7 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
   $scope.selectedCenter = {};
   $scope.downloadPdfDisable = false;
   $scope.STUDENTFEE_WRITE = Auth.hasPrivilege('STUDENTFEE_WRITE');
+  $scope.STUDENTFEE_RECEIPT_CONFIRM = Auth.hasPrivilege('STUDENTFEE_RECEIPT_CONFIRM');
   $http.get('/api/center/').then(function (response) {
     $scope.centers = response.data;
   });
@@ -68,18 +69,12 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
       }
     );
   };
-  $scope.confirm=function(payment){
-  $http.put('/api/student/ipsaaclub/record/update', {
-          confirmed: true,
-          id: payment.id
-        }).then(function (response) {
-          ok('Payment Confirmed');
-        })
-  }
+
 
   $scope.payFee = function (insertStudentFee) {
     $http.post('/api/student/ipsaaclub/generate/' + insertStudentFee.studentId, {}).then(function (response) {
       ok('Student Fee generated');
+      $scope.getGeneratedFeeSlips();
     }, function (error) {
       error('Somthing went wrong');
     })
@@ -119,7 +114,8 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
       $('#myModal').modal('toggle');
       $scope.selectedStudentFee.payments.push(response.data);
       $scope.disabledRecordPayment = false;
-      ok("Successfully applied payment")
+      ok("Successfully applied payment");
+      $scope.getGeneratedFeeSlips();
     }, function (response) {
       $scope.disabledRecordPayment = false;
       error(response.data.error);
@@ -148,7 +144,54 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
             }
         );
     }
-};
+  };
+
+  $scope.confirm=function(payment){
+    $http.put('/api/student/ipsaaclub/record/update', {
+          confirmed: true,
+          id: payment.id          
+        }).then(function (response) {
+          $.extend(payment,response.data);
+          ok('Payment Confirmed');
+        })
+  }
+
+  $scope.showCommentField = function(reciept) {
+    var this_receipt = reciept;
+    if (reciept && reciept.id) {
+      swal({
+        title: 'Confirm',
+        type: 'warning',
+        input: 'textarea',
+        text: 'Please submit a comment to decline transaction',
+        showCancelButton: true,
+        inputValidator: value => {
+          return new Promise((resolve, reject) => {
+            if (value !== '') {
+              resolve();
+            } else {
+              reject('Comment Required');
+            }
+          });
+        }
+      }).then(function(text) {
+          if (text) {
+            $http
+              .put('/api/student/payfee', {
+                id: this_receipt.id,
+                confirmed: false,
+                comments: text
+              })
+              .then(function(response) {
+                  $scope.getFeeSlips();
+                  ok('success');
+                }, function(response) {
+                  error(response.data.error);
+                });
+          }
+        }, function(cancel) {});
+    }
+  }
 
   function error(message) {
     swal({
