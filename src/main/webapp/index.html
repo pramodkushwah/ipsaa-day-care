@@ -1,47 +1,20 @@
-<!DOCTYPE HTML>
-<html lang="en-US">
+<!doctype html>
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>IPSAA</title>
+  <meta charset="utf-8">
+  <title>Ipsaa</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon.png">
+  <!--     Fonts and icons     -->
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons' rel='stylesheet' type='text/css'>
 </head>
+
 <body>
-</body>
+  <app-root></app-root>
+<script type="text/javascript" src="runtime.js"></script><script type="text/javascript" src="polyfills.js"></script><script type="text/javascript" src="styles.js"></script><script type="text/javascript" src="scripts.js"></script><script type="text/javascript" src="vendor.js"></script><script type="text/javascript" src="main.js"></script></body>
+
 </html>
-
-<script type="text/javascript">
-
-    redirect();
-
-    function redirect() {
-        var token = localStorage.getItem("ngStorage-token");
-        if (token) {
-            var parts = token.split('.');
-            var decoded = urlBase64Decode(parts[1]);
-            var decodedObj = JSON.parse(decoded);
-            window.location.href = decodedObj.domain + "index.html";
-            return;
-        }
-        window.location.href = "/pp/index.html";
-    }
-
-    function urlBase64Decode(str) {
-        var output = str.replace(/-/g, '+').replace(/_/g, '/');
-        switch (output.length % 4) {
-            case 0: {
-                break;
-            }
-            case 2: {
-                output += '==';
-                break;
-            }
-            case 3: {
-                output += '=';
-                break;
-            }
-            default: {
-                throw 'Illegal base64url string!';
-            }
-        }
-        return window.decodeURIComponent(escape(window.atob(output))); //polyfill https://github.com/davidchambers/Base64.js
-    }
-</script>
