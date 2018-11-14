@@ -1,7 +1,9 @@
 app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
 
   $scope.selectedCenter = {};
+  $scope.sendPaymentLinkDisable = false;
   $scope.downloadPdfDisable = false;
+  $scope.checkedSlipCount = 0;
   $scope.STUDENTFEE_WRITE = Auth.hasPrivilege('STUDENTFEE_WRITE');
   $scope.STUDENTFEE_RECEIPT_CONFIRM = Auth.hasPrivilege('STUDENTFEE_RECEIPT_CONFIRM');
   $http.get('/api/center/').then(function (response) {
@@ -20,6 +22,7 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
 
   $scope.loadStudentFee = function (studentFee) {
     $scope.selectedStudentFee = studentFee;
+    $scope.showPanel = false;
   }
 
   $scope.showPayNow = function (studentFee) {
@@ -192,6 +195,61 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
         }, function(cancel) {});
     }
   }
+
+  $scope.allchecked = false;
+  $scope.toggleAll = function (allchecked) {
+    $scope.allchecked = allchecked;
+    $scope.checkedSlipCount = 0;
+    if ($scope.generatedFeeSlips) {
+        for (i = 0; i < $scope.generatedFeeSlips.length; i++) {
+            $scope.generatedFeeSlips[i].selected = allchecked;
+            if (allchecked) {
+                $scope.checkedSlipCount++;
+            }
+        }
+    }
+};
+
+$scope.toggleOneSlip = function (slip) {
+    if (slip.selected) {
+        $scope.checkedSlipCount++;
+    } else {
+        $scope.checkedSlipCount--;
+    }
+};
+
+$scope.sendSlipEmail = function (generatedFeeSlips, slipEmail) {
+    var list = [];
+    for (var i = 0; i < generatedFeeSlips.length; i++) {
+        var slip = generatedFeeSlips[i];
+        if (slip.selected) {
+            list.push(slip.id);
+        }
+    }
+    if (list.length == 0) {
+        error("Please select al least on slip.");
+        return;
+    }
+
+    slipEmail.slipIds = list;
+    slipEmail.body = $("#slipEmailMessage").clone().html();
+    $scope.sendPaymentLinkDisable = true;
+    $http.post('/api/student/paymentLink/', slipEmail).then(function (response) {
+      $scope.sendPaymentLinkDisable = false;
+      $scope.showPanel = false;
+      $scope.toggleAll(false);
+      ok("Successfully sent emails");
+    }, function (response) {
+        $scope.sendPaymentLinkDisable = false;
+        error(response.data.error);
+    });
+
+};
+
+$scope.cancelSlipEmail = function () {
+    $scope.slipEmail = {};
+    $scope.showPanel = "";
+};
 
   function error(message) {
     swal({

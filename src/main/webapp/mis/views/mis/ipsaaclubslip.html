@@ -16,11 +16,16 @@
         <i class="material-icons">assignment</i>
       </div>
       <div class="card-content">
-        <h4 class="card-title">Student Fee</h4>
+        <h4 class="card-title">Student Fee
+          <button class="btn btn-info pull-right" ng-click="showPanel = 'email';selectedStudentFee = null;" ng-show="generatedFeeSlips.length>0" ng-disabled="checkedSlipCount==0">
+            <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="sendPaymentLinkDisable"></i>Send Email
+          </button>
+        </h4>
         <div class="table-responsive">
           <table class="table table-condensed table-striped table-hover" ng-show="selectedCenter">
             <thead class="text-primary">
               <tr>
+                <th><input type="checkbox" class="checkbox" ng-change="toggleAll(allchecked)" ng-model="allchecked"/></th>
                 <th>Name</th>
                 <th>Center</th>
                 <th>Invoice Date</th>
@@ -29,12 +34,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="studentfee in generatedFeeSlips | filter: searchFee" ng-click="loadStudentFee(studentfee)">
-                <td>{{studentfee.name}}</td>
-                <td>{{studentfee.center.code}}</td>
-                <td>{{studentfee.invoiceDate}}</td>
-                <td>{{studentfee.totalFee}}</td>
-                <td>{{studentfee.paymentStatus}}</td>
+              <tr ng-repeat="studentfee in generatedFeeSlips | filter: searchFee">
+                <td><input type="checkbox" class="checkbox" ng-model="studentfee.selected" ng-click="toggleOneSlip(studentfee)"></td>
+                <td ng-click="loadStudentFee(studentfee)">{{studentfee.name}}</td>
+                <td ng-click="loadStudentFee(studentfee)">{{studentfee.center.code}}</td>
+                <td ng-click="loadStudentFee(studentfee)">{{studentfee.invoiceDate}}</td>
+                <td ng-click="loadStudentFee(studentfee)">{{studentfee.totalFee}}</td>
+                <td ng-click="loadStudentFee(studentfee)">{{studentfee.paymentStatus}}</td>
               </tr>
             </tbody>
           </table>
@@ -166,6 +172,46 @@
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6" ng-show="showPanel == 'email'">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">chrome_reader_mode</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Send email to parents</h4>
+
+        <h4>Note: To add payment link in email add {paymentlink} in email body.</h4>
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Subject</label>
+              <input type="text" class="form-control" ng-model="slipEmail.subject">
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Message</label>
+              <div id="slipEmailMessage" class="form-control" contenteditable="true" style="min-height: 200px;overflow: scroll;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane active">
+          <div class="form-footer text-right">
+            <div><span>This email will sent to {{checkedSlipCount}} student's parents.</span></div>
+
+            <button class="btn btn-rose btn-fill" ng-click="sendSlipEmail(generatedFeeSlips, slipEmail)" ng-show="checkedSlipCount > 0">
+
+              Send
+            </button>
+            <button class="btn btn-default" ng-click="cancelSlipEmail()">Cancel</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
