@@ -74,6 +74,9 @@ public class FeeService extends BaseService
   private StudentFeePaymentRepository slipRepository;
 
   @Autowired
+  private StudentFeePaymentRequestIpsaaClubRepository ipsaaClubSlipRepository;
+
+  @Autowired
   private StudentRepository studentRepository;
   @Autowired
   private EntityManager entityManager;
@@ -373,6 +376,24 @@ public class FeeService extends BaseService
   public StudentFeePaymentRequest getSlip(Long id)
   {
     StudentFeePaymentRequest slip = slipRepository.findOne(id);
+    if (id == null)
+    {
+      throw new ValidationException("Slip id is required.");
+    }
+    if (slip == null)
+    {
+      throw new ValidationException(String.format("Cannot locate slip [id = %s ]", mask(id)));
+    }
+
+    if (!hasCenter(slip.getStudent().getCenter().getCode()))
+    {
+      throw new ValidationException(String.format("Unauthorized access to center[code=%s]", slip.getStudent().getCenter().getCode()));
+    }
+    return slip;
+  }
+  public StudentFeePaymentRequestIpsaaClub getIpsaaClubSlip(Long id)
+  {
+    StudentFeePaymentRequestIpsaaClub slip = ipsaaClubSlipRepository.findOne(id);
     if (id == null)
     {
       throw new ValidationException("Slip id is required.");

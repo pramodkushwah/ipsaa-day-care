@@ -132,7 +132,7 @@ public class StudentService extends BaseService {
     private StudentFeeRepository feeRepository;
 
     @Autowired
-	StudentFeePaymentRequestIpsaaClubRepository ipsaaClubRequest;
+	StudentFeePaymentRequestIpsaaClubRepository ipsaaClubRepository;
 
     @Autowired
     private StudentFeePaymentRecordRepository paymentRecordRepository;
@@ -1803,6 +1803,17 @@ public class StudentService extends BaseService {
         }
         communicationService.sendPaymentLink(slips, request);
     }
+	public void sendPaymentLinkIpsaaClub(SlipEmailRequest request) {
+		List<StudentFeePaymentRequestIpsaaClub> ipsaaClubSlips = new ArrayList<>();
+		for (Long aLong : request.getSlipIds()) {
+			StudentFeePaymentRequestIpsaaClub slip = ipsaaClubRepository.findOne(unmask(aLong));
+			if (slip == null) {
+				throw new ValidationException(String.format("Cannot locate Slip[id=%s]", aLong));
+			}
+			ipsaaClubSlips.add(slip);
+		}
+		communicationService.sendPaymentLinkIpsaaClub(ipsaaClubSlips, request);
+	}
 
     public StudentFeePaymentRecord getReceipt(SaveFeeSlipRequest request) {
         if (request.getId() == null) {
@@ -1844,11 +1855,11 @@ public class StudentService extends BaseService {
 	public List<StudentFeePaymentRequestIpsaaClub> listFeeReportIpsaClub(FeeReportRequest request) {
 		List<StudentFeePaymentRequestIpsaaClub> slip2;
 		if (request.getCenterCode().equals("All")) {
-			slip2 = ipsaaClubRequest
+			slip2 = ipsaaClubRepository
 					.findByStudentProgramIdAndStudentCorporateIsFalseAndIsExpireIsFalseAndMonthAndYear(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID
 							, request.getMonth(), request.getYear());
 		} else {
-			slip2 = ipsaaClubRequest.findByStudentProgramIdAndStudentCorporateIsFalseAndIsExpireIsFalseAndMonthAndYearAndStudentCenterCode(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID
+			slip2 = ipsaaClubRepository.findByStudentProgramIdAndStudentCorporateIsFalseAndIsExpireIsFalseAndMonthAndYearAndStudentCenterCode(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID
 					, request.getMonth(), request.getYear(),
 					request.getCenterCode());
 		}

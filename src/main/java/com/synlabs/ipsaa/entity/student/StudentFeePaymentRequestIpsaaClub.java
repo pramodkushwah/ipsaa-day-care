@@ -13,8 +13,6 @@ import java.util.List;
 @Entity
 public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
 
-
-
     @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")
     private BigDecimal annualFee;
     @Column(precision = 16, scale = 2,columnDefinition ="Decimal(10,2) default '0.00'")

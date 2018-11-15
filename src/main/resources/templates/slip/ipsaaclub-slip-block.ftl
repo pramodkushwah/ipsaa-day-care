@@ -1,7 +1,7 @@
 <table style="margin: auto" class="sliptable">
   <tr>
     <th>Fee for the Days of</th>
-    <td><span> : </span> ${slip.startDate} to ${slip.endDate}}</div></td>
+    <td><span> : </span> ${slip.invoiceDate} to ${slip.expireDate}</div></td>
   </tr>
   <tr>
     <th>Name of the child</th>
@@ -22,7 +22,7 @@
 <#if isAnnualFee==true>
   <tr>
     <th>Annual Charges</th>
-    <td><span> : </span>${slip.finalAnnualCharges}</td>
+    <td><span> : </span>${slip.finalAnnualFee}</td>
   </tr>
 </#if>
 
@@ -63,14 +63,12 @@
   </tr>
 </#if>
 
+<#if slip.extraCharge??>
   <tr>
     <th>Extra Charges</th>
     <td><span> : </span>${slip.extraCharge}</td>
   </tr>
-  <tr>
-    <th>Late Payment</th>
-    <td><span> : </span>${slip.latePaymentCharge}</td>
-  </tr>
+</#if>
   <tr>
     <th>Total</th>
     <td><span> : </span>${slip.totalFee?string["0"]}</td>

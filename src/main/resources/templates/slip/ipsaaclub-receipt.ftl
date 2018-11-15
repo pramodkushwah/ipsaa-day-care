@@ -41,7 +41,7 @@
         </td></tr>
         <tr>
           <td colspan="3">
-          <#include "new-slip-block.ftl">
+          <#include "ipsaaclub-slip-block.ftl">
           <#include "new-receipt-blick.ftl">
           </td>
         </tr>
