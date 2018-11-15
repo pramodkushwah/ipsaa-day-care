@@ -3,10 +3,7 @@ package com.synlabs.ipsaa.util;
 import com.synlabs.ipsaa.ccavenue.AesCryptUtil;
 import com.synlabs.ipsaa.entity.fee.HdfcResponse;
 import com.synlabs.ipsaa.entity.hdfc.HdfcApiDetails;
-import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecord;
-import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
-import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequestIpsaaClub;
-import com.synlabs.ipsaa.entity.student.StudentParent;
+import com.synlabs.ipsaa.entity.student.*;
 import com.synlabs.ipsaa.enums.HdfcResponseType;
 import com.synlabs.ipsaa.enums.HdfcStatus;
 import com.synlabs.ipsaa.enums.PaymentMode;
@@ -339,11 +336,11 @@ public class HdfcHelper extends BaseService
   }
   private BigDecimal getPayableAmount(StudentFeePaymentRequestIpsaaClub slip)
   {
-    List<StudentFeePaymentRecord> receipts = ipsaaclubReceiptRepository.findByRequest(slip);
+    List<StudentFeePaymentRecordIpsaaClub> receipts = ipsaaclubReceiptRepository.findByRequest(slip);
     BigDecimal payableAmount = slip.getTotalFee().add(BigDecimal.ZERO);
     if (!CollectionUtils.isEmpty(receipts))
     {
-      for (StudentFeePaymentRecord receipt : receipts)
+      for (StudentFeePaymentRecordIpsaaClub receipt : receipts)
       {
         payableAmount = payableAmount.subtract(receipt.getPaidAmount());
       }

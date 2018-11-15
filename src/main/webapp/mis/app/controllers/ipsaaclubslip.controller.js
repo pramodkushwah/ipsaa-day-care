@@ -234,14 +234,14 @@ $scope.sendSlipEmail = function (generatedFeeSlips, slipEmail) {
     slipEmail.slipIds = list;
     slipEmail.body = $("#slipEmailMessage").clone().html();
     $scope.sendPaymentLinkDisable = true;
-    console.log("ipsaaclub")
+
     $http.post('/api/student/ipsaaclub/paymentLink/', slipEmail).then(function (response) {
       $scope.sendPaymentLinkDisable = false;
       $scope.showPanel = false;
       $scope.toggleAll(false);
-      ok("Successfully sent emails");
     }, function (response) {
         $scope.sendPaymentLinkDisable = false;
+        ok("Successfully sent emails");
         error(response.data.error);
     });
 

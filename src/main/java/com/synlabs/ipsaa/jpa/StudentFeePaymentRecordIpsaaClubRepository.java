@@ -11,5 +11,5 @@ import java.util.List;
 
 @Repository
 public interface StudentFeePaymentRecordIpsaaClubRepository  extends JpaRepository<StudentFeePaymentRecordIpsaaClub,Long> {
-    List<StudentFeePaymentRecord> findByRequest(StudentFeePaymentRequestIpsaaClub slip);
+    List<StudentFeePaymentRecordIpsaaClub> findByRequest(StudentFeePaymentRequestIpsaaClub slip);
 }

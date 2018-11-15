@@ -54,7 +54,7 @@ public class HdfcController
   @GetMapping("checkout/ipsaaclub/{slipId}/{parentId}")
   public HdfcCheckoutDetails getCheckoutDetailsIpsaaclub(@PathVariable("parentId") Long parentId, @PathVariable("slipId") Long slipId)
   {
-    return hdfcHelper.getCheckoutDetails(BaseService.unmask(slipId), BaseService.unmask(parentId));
+    return hdfcHelper.getCheckoutDetailsIpsaaclub(BaseService.unmask(slipId), BaseService.unmask(parentId));
   }
 
   @GetMapping("payment/{responseId}")
