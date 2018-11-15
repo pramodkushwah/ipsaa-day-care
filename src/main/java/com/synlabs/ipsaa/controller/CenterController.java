@@ -69,8 +69,7 @@ public class CenterController {
 		Center center = centerService.updateCenter(request);
 		return new CenterResponseV2(center);
 	}
-
-
+	
   @Secured(CENTER_DELETE)
   @DeleteMapping(path = "{centerId}")
   public void deleteCenter(@PathVariable Long centerId)
