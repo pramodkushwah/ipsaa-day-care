@@ -268,7 +268,7 @@ public class DashboardService extends BaseService {
 		QEmployee employee = QEmployee.employee;
 		query.select(attendance).from(attendance).where(employee.active.isTrue())
 				.where(attendance.status.eq(AttendanceStatus.Present))
-				.where(attendance.attendanceDate.eq(LocalDate.now().toDate())).where(attendance.checkout.isNull())
+				.where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
 				.where(attendance.center.in(centers));
 
 		return (int) query.fetchCount();
