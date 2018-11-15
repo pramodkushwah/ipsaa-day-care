@@ -1,0 +1,173 @@
+<div class="row" [formGroup]="paySlipForm">
+  <div class="col-lg-3">
+    <div class="form-group">
+      <label class="control-label" style="float: left;margin: 0px">Employer</label>
+      <select class="form-control" formControlName="employer">
+        <option *ngFor="let emp of employers; index as i" [ngValue]="emp.id">{{emp.name}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-lg-3">
+    <div class="form-group">
+      <label class="control-label" style="float: left;margin: 0px">Year</label>
+      <select class="form-control" formControlName="year">
+        <option *ngFor="let year of years;" value="{{year}}">{{year}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-lg-3">
+    <div class="form-group">
+      <label class="control-label" style="float: left;margin: 0px">Month</label>
+      <select class="form-control" formControlName="month">
+        <option *ngFor="let month of months;let i = index;" value="{{ i+1 }}">{{month}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-lg-3">
+    <button class="btn btn-primary" (click)="getPayslips()">Generate</button>
+  </div>
+</div>
+<div class="row" *ngIf="salaryList.length">
+  <div [class]="viewPanel?'col-lg-6':'col-lg-12'">
+    <div class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <h3 class="card-title">
+          Employee Monthly Salary
+        </h3>
+      </div>
+      <div class="card-content mx-3">
+        <div class="table-responsive">
+          <table class="table">
+            <colgroup>
+              <col width="20%">
+              <col width="10%">
+              <col width="15%">
+              <col width="15%">
+              <col width="15%">
+              <col width="15%">
+              <col width="10%">
+            </colgroup>
+            <thead class="text-primary">
+              <th>Employee</th>
+              <th>CTC</th>
+              <th>Present Days</th>
+              <th>Other Allowances</th>
+              <th>Other Deductions</th>
+              <th>Net Salary</th>
+              <th>Pay Slip</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let salary of salaryList;">
+                <td>{{salary.empName}}</td>
+                <td>{{salary.ctc}}</td>
+                <td>{{salary.presents}}</td>
+                <td>{{salary.otherAllowances}}</td>
+                <td>{{salary.otherDeductions}}</td>
+                <td>{{salary.netSalary}}</td>
+                <td>
+                  <button class="btn btn-primary btn-sm" (click)="showSidePanel(salary)">Edit</button>
+                  <button class="btn btn-primary btn-sm" (click)="downloadPaySlip(salary)">Download</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="viewPanel">
+    <div class="card">
+      <div class="card-header card-header-warning">
+        <button type="button" class="close" aria-label="Close" (click)="hideViewPanel()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="card-title">Pay Slip</h4>
+      </div>
+      <div class="card-body" [formGroup]="salaryPayslipForm">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Employee</label>
+              <input class="form-control" name="empId" type="text" formControlName="empName" readonly>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">EID* : </label>
+              <input class="form-control" name="empId" type="text" required formControlName="eid" readonly>
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Employer* : </label>
+              <input class="form-control" name="employer" type="text" required formControlName="employerName" readonly>
+              <span class="material-input"></span>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Other Allowances</label>
+              <input class="form-control" name="otherAllowances" type="number" formControlName="otherAllowances">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Other Deductions</label>
+              <input class="form-control" name="otherDeductions" type="number" formControlName="otherDeductions">
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Present Days</label>
+              <input class="form-control" name="presentDays" type="number" formControlName="presents">
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">TDS</label>
+              <input class="form-control" name="tds" type="number" formControlName="tds">
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Comment</label>
+              <textarea class="form-control" rows="3" name="Comment" type="text" formControlName="comment"></textarea>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Auto Comment</label>
+              <textarea class="form-control" rows="3" name="autoComment" type="text" formControlName="autoComment" readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+          <button class="btn btn-rose" (click)="updatePaySlip()" [disabled]="selectedSalary.islock">
+              <span *ngIf="saving;else save">
+                <i class="fa fa-spinner fa-spin"></i> Saving
+              </span>
+              <ng-template #save>Save</ng-template>
+          </button>
+          <button class="btn btn-rose" [disabled]="selectedSalary.islock">
+              <span *ngIf="regenerating;else regenerate">
+                <i class="fa fa-spinner fa-spin"></i> Regenerating
+              </span>
+              <ng-template #regenerate>Regenerate</ng-template>
+          </button>
+          <button class="btn btn-rose" (click)="lockControls()" [disabled]="selectedSalary.islock"> Lock </button>
+          <button class="btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

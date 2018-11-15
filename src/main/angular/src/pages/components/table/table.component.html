@@ -1,0 +1,32 @@
+<div class="card card-stats">
+  <div class="card-header card-header-warning card-header-icon">
+    <div class="card-icon">
+      <i class="material-icons">content_copy</i>
+    </div>
+    <h3 class="card-title">
+      <i class="fa fa-spinner fa-fw fa-pulse fa-2x text-primary" [hidden]="tableColums.length || tableData.length"></i>{{tableTitle}}<br>
+    </h3>
+    <!-- <p class="card-category">Table Title</p> -->
+  </div>
+  <div class="card-footer">
+    <div class="table-responsive ps-child">
+      <table class="table table-condensed table-striped table-hover text-center">
+        <thead class="text-primary" *ngIf="tableColums.length">
+          <tr>
+            <th>S No.</th>
+            <th *ngFor="let col of tableColums;">{{col}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of tableData;let i = index;" (click)="showInfoInSidePanel(row)">
+            <td> {{i + 1}}</td>
+            <td *ngFor="let col of tableColums;">{{row[col]}}</td>
+          </tr>
+          <tr *ngIf="tableColums.length && !tableData.length">
+            <td [attr.colspan]="tableColums.length + 1">No {{tableTitle}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

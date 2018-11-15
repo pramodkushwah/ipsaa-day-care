@@ -1,0 +1,90 @@
+<div class="row">
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="exampleFormControlInput1">Search</label>
+      <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Search by Student Name.." (keyup)="searchStudent($event)">
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="exampleFormControlSelect2">Program</label>
+      <select class="form-control" id="exampleFormControlSelect2" [(ngModel)]="programCode" (ngModelChange)="getStudents()">
+        <option value="ALL">ALL</option>
+        <option *ngFor="let program of programs;" value="{{program.code}}">{{program.code}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="exampleFormControlSelect3">Active/Incative</label>
+      <select class="form-control" id="exampleFormControlSelect3" [(ngModel)]="activeStatus">
+        <option value="true">Active</option>
+        <option value="false">Inactive</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div [class]="viewPanel?'transition col-md-6':'transition col-md-12'">
+    <div class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <h3 class="card-title">Students
+          <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="!loader"></i>
+          <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" (click)="addNewStudent()">Add New</button>
+        </h3>
+      </div>
+      <div class="card-content mx-3">
+        <div class="table-responsive">
+          <table class="table">
+            <thead class="text-primary">
+              <tr>
+                <th>Name</th>
+                <th>Program</th>
+                <th>Group</th>
+                <th>Operation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let student of pagedItems;">
+                <td (click)="showStudent(student)">{{student.fullName}}</td>
+                <td (click)="showStudent(student)">{{student.program.name}}</td>
+                <td (click)="showStudent(student)">{{student.group.name}}</td>
+                <td *ngIf="activeStatus">
+                  <button type="button" class="btn btn-primary btn-sm" (click)="editStudent(student)">edit</button>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="deleteStudentSwal(student)" *ngIf="hasPrivilege('STUDENT_DELETE')">del</button>
+                </td>
+              </tr>
+              <tr *ngIf="!loader && pagedItems.length === 0"><td colspan="4" class="text-center">No Student</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card-footer">
+        <!-- pager -->
+        <ul *ngIf="pager.pages && pager.pages.length" class="pagination pagination-info">
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === 1}">
+            <a class="page-link" (click)="setPage(1)">First</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === 1}">
+            <a class="page-link" (click)="setPage(pager.currentPage - 1)">Previous</a>
+          </li>
+          <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+            <a class="page-link" (click)="setPage(page)">{{page}}</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+            <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+            <a class="page-link" (click)="setPage(pager.totalPages)">Last</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="viewPanel">
+    <app-student-info [id]="selectedStudent.id" [update]="update"></app-student-info>
+  </div>
+</div>

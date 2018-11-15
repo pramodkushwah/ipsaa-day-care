@@ -1,0 +1,171 @@
+<div *ngIf="!mailPanel" class="card">
+  <div class="card-header card-header-warning card-header-icon">
+    <div class="card-icon">
+      <i class="material-icons">content_copy</i>
+    </div>
+    <button type="button" class="close" aria-label="Close" (click)="hideSidePanel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="card-title">
+      <span>
+      show  Fee - {{selectedStudentDetails.fullName}}
+      </span>
+   
+      <br>
+      <td>
+        <span class="badge badge-primary margin-right-5"> {{selectedStudentDetails.program.description}} </span>
+        <span class="badge badge-primary margin-right-5"> {{selectedStudentDetails.group.description}} </span>
+        
+     
+      </td>
+    </h4>
+  </div>
+  <div class="card-body">
+    <form id="studentFeeForm" [formGroup]="studentFeeForm">
+      <div class="card-content">
+        <div class="row">
+          <div class="col-lg-6 col-md-3 col-sm-3">
+            <div class="form-group">
+              <label class="control-label"> Annual Charge</label>
+              <input class="form-control" type="number"  readonly name="annualFee"  formControlName="annualFee">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label"> Discount(%)</label>
+              <input class="form-control" type="number"  readonly name="discountAnnualCharges"  formControlName="discountAnnualCharges">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Final Annual Charges</label>
+              <input class="form-control" type="number"   name="finalAnnualFee" (keyup)="setDiscount('annualFee','discountAnnualCharges','finalAnnualFee')"  formControlName="finalAnnualFee">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Admission Charges</label>
+              <input class="form-control" type="number" readonly name="admissionCharges"  formControlName="admissionCharges">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Discount(%)</label>
+              <input class="form-control" type="number" readonly name="discountAdmissionCharges"  formControlName="discountAdmissionCharges">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Final Admission Charges</label>
+              <input class="form-control" type="number"  name="finalAdmissionCharges" (keyup)="setDiscount('admissionCharges','discountAdmissionCharges','finalAdmissionCharges')" formControlName="finalAdmissionCharges">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Monthly Program Fees</label>
+              <input class="form-control" type="number" readonly name="baseFee"  formControlName="baseFee">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Discount(%)</label>
+              <input class="form-control" type="number" readonly name="discountBaseFee"  formControlName="discountBaseFee">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Final Monthly Fees</label>
+              <input class="form-control" type="number" (keyup)="setDiscount('baseFee','discountBaseFee','finalBaseFee')" formControlName="finalBaseFee"  name="finalBaseFee"  >
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Security Deposit</label>
+              <input class="form-control" type="number" readonly name="securityDeposit"  formControlName="securityDeposit">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Discount(%)</label>
+              <input class="form-control" type="number" readonly name="discountSecurityDeposit"  formControlName="discountSecurityDeposit">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Final Security Deposit</label>
+              <input class="form-control" type="number"  name="finalSecurityDeposit" (keyup)="setDiscount('securityDeposit','discountSecurityDeposit','finalSecurityDeposit')" formControlName="finalSecurityDeposit">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Monthly Transport Fees</label>
+              <input class="form-control" type="number"  name="transportFee"  formControlName="transportFee">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Annual-Fee-GST</label> &nbsp; <a data-toggle="tooltip" title="18% if applicable ">
+                <b>i</b></a>
+              <input class="form-control" type="number" readonly name="gstFee" formControlName="gstFee">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Quarterly-Program-Fee-GST</label> &nbsp; <a data-toggle="tooltip" title="18% if applicable ">
+                <b>i</b></a>
+              <input class="form-control"  type="number" readonly name="baseFeeGst" formControlName="baseFeeGst">
+              <span class="material-input"></span>
+            </div>
+          </div>
+       
+          <div class="col-lg-6 col-md-4 col-sm-3">
+            <div class="form-group">
+              <label class="control-label">Final Fees</label>
+              <input class="form-control" type="number"  readonly name="finalFee"  formControlName="finalFee">
+              <span class="material-input"></span>
+            </div>
+          </div>
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="form-group">
+                <label class="control-label">Comments*</label>
+                <textarea class="form-control" name="comment"  formControlName="comment" rows="3" cols="100"> </textarea>
+                <span class="material-input"></span>
+              </div>
+            </div>
+
+      
+
+          </div>
+          <div class="category form-category">
+            *Required Fields
+          </div>
+          <div *ngIf="true" class="form-footer text-right">
+
+            <button class="btn btn-sm btn-rose btn-fill" (click)="saveStudentFee()" [disabled]="false">
+              <span *ngIf=" false ;else save">
+                <i class="fa fa-spinner fa-spin"></i> Saving
+              </span>
+              <ng-template #save>Save</ng-template>
+            </button>
+            <button class="btn btn-sm btn-default"  (click)="hideSidePanel()">Cancel</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>

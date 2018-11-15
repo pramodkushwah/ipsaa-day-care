@@ -1,0 +1,84 @@
+<div class="row">
+
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="control-label" for="center"> Select Center:</label>
+      <select class="form-control" id="center" name="center" [(ngModel)]="selectedCenterId">
+        <option value="" disabled="true">Select Center</option>
+        <option *ngFor="let center of centers;" [value]="center.id"> ( {{center.count}} ){{center.centerName}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <button type="submit" mat-raised-button class="btn btn-warning btn-lg" [disabled]="!selectedCenterId" (click)="getStudentsList()">
+      Get
+    </button>
+  </div>
+
+</div>
+<div class="row">
+
+  <div [class]="viewPanel?'transition col-lg-6':'transition col-md-12'">
+    <div class="card">
+
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
+            </div>
+            <h3 style="float: left" class="card-title">
+
+              Student Approvals
+              <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="true"></i>
+            </h3>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-body">
+        <table class="table table-responsive">
+          <thead class="text-primary" *ngIf=" studentAprrovelList ?.length >0">
+            <th> Sr.No</th>
+            <th>Name</th>
+            <th>Program</th>
+            <th> Center </th>
+            <th> Group </th>
+            <th>Corporate</th>
+            <th>Link </th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let student of studentAprrovelList ; let i= index">
+
+              <td>{{i+1}}</td>
+              <td>{{student.fullName}}</td>
+              <td> {{student.program.name}} </td>
+              <td>{{student.center.name}}</td>
+              <td> {{student.group.name}} </td>
+              <td> {{student.corporate}} </td>
+              <td>
+                <button mat-raised-button class="btn btn-primary btn-sm" (click)="getSelectedStudentsDetail(student)">Approve
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot *ngIf=" studentAprrovelList.length === 0" style="border: 1px groove #e8e8e8;">
+            <tr>
+              <td class="text-center">No Content</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6" *ngIf="viewPanel">
+    <div class="card">
+      <div class="card-body">
+        <app-student-info [id]="selectedStudent.id" [update]="update"></app-student-info>
+      </div>
+    </div>
+  </div>
+</div>

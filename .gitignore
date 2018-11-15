@@ -3,10 +3,7 @@
 .classpath
 .project
 *.iml
-/src/main/webapp/package-lock.json
-/src/main/webapp/components/*
-/src/main/webapp/node_modules/
-/src/main/webapp/dist/
+/src/main/webapp
 package-lock.json
 /src/main/webapp/mis/index.html
 /src/main/webapp/pp/index.html
@@ -17,3 +14,4 @@ package-lock.json
 /src/main/webapp/kidslife/
 /data
 /node_modules/
+/src/main/angular/node_modules/

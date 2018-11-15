@@ -1,0 +1,34 @@
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group">
+        <label for="center">Center:</label>
+        <select class="form-control" [(ngModel)]="SelectedCenter">
+          <option value="All" disabled="true">All</option>
+          <option *ngFor="let center of centerList;" [value]="center">{{center.name}}</option>
+        </select>
+        <span class="material-input"></span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label for="From">From:</label>
+        <input class="form-control" id="From" [(ngModel)]="formDate" type="date" [value] = "currentDate" name="date">
+        <span class="material-input"></span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label for="To">To:</label>
+        <input class="form-control" id="To"  [(ngModel)]="toDate" type="date" value = "currentDate" name="date">
+        <span class="material-input"></span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <button type="submit" class="btn btn-warning btn-md" (click)="downloadFeeCollectionReport()" [disabled]="downloadData">
+        <span *ngIf=" downloadData ;else save">
+          <i class="fa fa-spinner fa-spin"></i> Downloading
+        </span>
+        <ng-template #save>Download</ng-template>
+      </button>
+    </div>
+

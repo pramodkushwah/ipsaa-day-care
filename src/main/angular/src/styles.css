@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files */
+
+.transition {
+    transition: all .3s linear;
+}
+
+.table-responsive {
+height: 60vh;
+overflow: auto;
+}
+.table th {
+text-transform: capitalize;
+}
+
+.margin-right-5{
+    margin-right: 5px;
+}
+
+/* form-input label */
+.form-check, label {
+  font-size: 13px;
+}
+/* .swal-footer {
+    background-color: rgb(245, 248, 250);
+    margin-top: 32px;
+    border-top: 1px solid #E9EEF1;
+    overflow: hidden;
+  } */

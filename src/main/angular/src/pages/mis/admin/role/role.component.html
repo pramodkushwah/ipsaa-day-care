@@ -1,0 +1,97 @@
+<div class="row">
+  <div [class]="viewPanel?'col-lg-6':'col-lg-12'">
+    <div class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <h3 class="card-title">
+          Roles and Privileges
+          <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="roles.length"></i>
+          <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" (click)="showSidePanel(false,null)">Add New</button>
+        </h3>
+      </div>
+      <div class="card-footer">
+        <div class="table-responsive">
+          <table class="table">
+            <colgroup>
+              <col width="10%">
+              <col width="80%">
+              <col width="10%">
+            </colgroup>
+            <thead class="text-primary">
+              <th>Name</th>
+              <th>Privileges</th>
+              <th>*Action</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let role of roles;">
+                <td>{{role.name}}</td>
+                <td>
+                  <span class="badge badge-primary margin-right-5" *ngFor="let privilege of role.privileges;">{{privilege.name}}</span>
+                </td>
+                <td>
+                  <button mat-raised-button class="btn btn-primary btn-sm" (click)="showSidePanel(true,role)">Edit </button>
+                  <button mat-raised-button class="btn btn-danger btn-sm" (click)="deleteRole(role)">Delete </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="viewPanel">
+    <div class="card">
+      <div class="card-header card-header-warning">
+        <button type="button" class="close" aria-label="Close" (click)="hideViewPanel()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="card-title">
+          <span *ngIf="!editable;else edit">
+            Add
+          </span>
+          <ng-template #edit>
+            Edit
+          </ng-template>
+          {{selectedTab}}
+        </h4>
+      </div>
+      <div class="card-body">
+        <form id="roleForm" [formGroup]="roleForm">
+          <div class="card-content">
+            <h4 class="card-title" *ngIf="selectedRole">{{selectedRole.mode}} Role</h4>
+            <div class="form-group">
+              <label class="control-label">*Name</label>
+              <input class="form-control" name="name" type="text" required formControlName="name">
+              <span class="material-input"></span>
+            </div>
+            <div class="form-group" *ngIf="selectedPrivileges.length">
+              <label class="control-label">Privilege(s)</label>
+              <span class="badge badge-primary margin-right-5" *ngFor="let privilege of selectedPrivileges;let i = index;">
+                {{privilege.name}}
+                <i class="material-icons icon-inside-button" (click)="removeRolePrivilege(i)">close</i>
+              </span>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Select Privileges</label>
+              <select class="form-control" [ngModelOptions]="{standalone: true}" (ngModelChange)="addRolePrivilege($event)" [(ngModel)]="selectedPrivilegeModel">
+                <option value="">Select privilege</option>
+                <option *ngFor="let privilege of privileges;" [ngValue]="privilege">{{privilege.name}}</option>
+              </select>
+            </div>
+            <div class="form-footer text-right">
+              <button class="btn btn-rose btn-fill" (click)="saveRole()">
+                <span *ngIf="saving;else save">
+                  <i class="fa fa-spinner fa-spin"></i> Saving
+                </span>
+                <ng-template #save>Save</ng-template>
+              </button>
+              <button class="btn btn-default">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

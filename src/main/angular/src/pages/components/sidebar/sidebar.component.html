@@ -1,0 +1,55 @@
+<div class="logo">
+  <a ui-sref="app.home" class="simple-text">
+    <img src="/assets/img/ipsaa-logo-sm.png">
+  </a>
+</div>
+<div class="sidebar-wrapper">
+  <div class="user">
+    <div class="photo">
+      <img *ngIf="!loaded" src="/assets/img/faces/default_profile_pic.png" />
+      <img *ngIf="profileImageURI" [hidden]="!loaded" (load)="loaded = true" [src]="profileImageURI" />
+    </div>
+    <div class="info">
+      <a data-toggle="collapse" class="collapsed">{{self.name}}</a>
+      <a href="{{self.name}}" style="text-transform: lowercase">{{self.email}}</a>
+    </div>
+  </div>
+  <div *ngIf="isMobileMenu()">
+    <ul class="nav navbar-nav nav-mobile-menu">
+      <li class="nav-item">
+        <a class="nav-link" (click)="onLogout()" style="cursor: pointer;">
+          <i class="material-icons">power_settings_new</i>
+          <p>
+            <span class="d-lg-none d-md-block">Log Out</span>
+          </p>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <ul class="nav" id="accordion">
+    <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
+      <a class="nav-link" [routerLink]="[menuItem.path]" data-toggle="collapse" >
+        <i class="material-icons">{{menuItem.icon}}</i>
+        <p>{{menuItem.title}}</p>
+      </a>
+    </li>
+    <li routerLinkActive="active" *ngFor="let item of menu.items" class="nav-item">
+      <a class="nav-link" data-toggle="collapse" [attr.href]="'#id_' + item.label.split(' ').join('-')">
+        <i class="material-icons">{{item.icon}}</i>
+        <p>{{item.label}}
+          <b class="caret"></b>
+        </p>
+      </a>
+      <div class="collapse" [attr.id]="'id_'+item.label.split(' ').join('-')" data-parent="#accordion">
+        <ul class="nav">
+          <li class="nav-item" routerLinkActive="active" *ngFor="let submenu of item.submenu">
+            <a class="nav-link" [routerLink]="[submenu.state]">
+              <span class="sidebar-mini">&nbsp;</span>
+              <span class="sidebar-normal">{{submenu.label}}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+</div>

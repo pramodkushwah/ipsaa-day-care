@@ -1,0 +1,116 @@
+<div class="card">
+  <div class="card-header card-header-warning">
+    <button type="button" class="close" aria-label="Close" (click)="hideViewPanel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="card-title">
+      <span *ngIf="!editable;else edit">
+        Add
+      </span>
+      <ng-template #edit>
+        Edit
+      </ng-template>
+      Center
+    </h4>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="centerForm" id="CenterForm" name="CenterForm" novalidate>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label">*Code</label>
+            <input class="form-control" formControlName="code" name="code" type="text" required >
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label">*Name</label>
+            <input class="form-control" formControlName="name" name="name" type="text" required  >
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label">*Type</label>
+            <select class="form-control" formControlName="type" >
+              <option value="Corporate">Corporate</option>
+              <option value="Community">Community</option>
+              <option value="School">School</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label">*Capacity</label>
+            <input class="form-control" formControlName="capacity" name="capacity" type="number" required  >
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label">*Zone</label>
+            <select class="form-control" formControlName="zone" (ngModelChange)="getCitiesByZone($event)" required>
+              <option *ngFor="let zone of zones;" [ngValue]="zone.name">{{zone.name}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label">*Phone</label>
+            <input class="form-control" formControlName="phone" name="phone" type="text" required  >
+            <span class="material-input"></span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="control-label">*Address</label>
+            <input class="form-control" formControlName="address" name="address" type="text" required >
+            <span class="material-input"></span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label">*City</label>
+            <select class="form-control" formControlName="city" required>
+              <option *ngFor="let city of cities;" [ngValue]="city.name">{{city.name}}</option>
+            </select>
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label">*State</label>
+            <input class="form-control" formControlName="state" name="state" type="text" required >
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label">*Zipcode</label>
+            <input class="form-control" formControlName="zipcode" name="zipcode" type="text" required >
+            <span class="material-input"></span>
+          </div>
+        </div>
+      </div>
+      <div class="category form-category">
+        *Required Fields
+      </div>
+      <div class="form-footer text-right">
+        <button class="btn btn-rose btn-fill" (click)="saveCenter()">
+          <span *ngIf="saving;else save">
+            <i class="fa fa-spinner fa-spin"></i> Saving
+          </span>
+          <ng-template #save>Save</ng-template>
+        </button>
+        <button class="btn btn-default">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

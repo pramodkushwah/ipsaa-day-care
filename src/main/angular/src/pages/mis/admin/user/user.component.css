@@ -1,0 +1,25 @@
+/* .wrapped-text {
+  max-width: 258px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+} */
+
+.more-less input {display:none;}
+
+.more{
+  cursor: pointer;
+  color: blue;
+}
+
+.more:before {
+  content: "more...";  
+}
+
+.more-less input:checked + .more:before{
+  content: "less...";
+}
+
+.more-less input:checked + .more{
+  /* background: red;   */
+}

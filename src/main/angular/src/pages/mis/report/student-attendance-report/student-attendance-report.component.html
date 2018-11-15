@@ -1,0 +1,35 @@
+<div class="col-lg-12">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group">
+        <label class="control-label" for="center"> Select Center:</label>
+        <select class="form-control"id="center" name="center" [(ngModel)]="SelectedCenterId">
+          <option value="All" disabled="true">Select Center</option>
+          <option *ngFor="let center of centerList;"[value]="center.id">{{center.name}}</option>
+        </select>
+        <span class="material-input"></span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label for="From">From:</label>
+        <input class="form-control" id="From" [(ngModel)]="formDate" type="date" value="currentDate | date: 'y-MM-dd'"  name="fromdate">
+        <span class="material-input"></span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label for="To">To:</label>
+        <input class="form-control" id="To" [(ngModel)]="toDate" type="date" value="currentDate | date: 'y-MM-dd'"  name="todate">
+        <span class="material-input"></span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <button type="submit" class="btn btn-warning btn-md" (click)="studentAttendanceReportDownload()" [disabled]="!( toDate && formDate && SelectedCenterId)">
+        <span *ngIf=" downloadData ;else save">
+          <i class="fa fa-spinner fa-spin"></i> Downloading
+        </span>
+        <ng-template #save>Download</ng-template>
+      </button>
+    </div>
+  </div>

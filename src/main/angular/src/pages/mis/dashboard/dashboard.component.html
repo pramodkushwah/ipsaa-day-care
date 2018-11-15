@@ -1,0 +1,208 @@
+<div class="row">
+  <div class="col-lg-4">
+    <div class="form-group">
+      <label for="sel1">Zone:</label>
+      <select class="form-control" id="sel1" [(ngModel)]="selectedZone" (ngModelChange)="getCenterByZone($event.name);getStatsResult()">
+        <option value="all">All</option>
+        <option *ngFor="let zone of zones;" [ngValue]="zone">{{zone.name}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="form-group">
+      <label for="sel2">City:</label>
+      <select class="form-control" id="sel2" [(ngModel)]="selectedCity" (ngModelChange)="getStatsResult()">
+        <option value="all">All</option>
+        <option *ngFor="let city of cities;" [ngValue]="city">{{city.name}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="form-group">
+      <label for="sel3">Center:</label>
+      <select class="form-control" id="sel3" [(ngModel)]="selectedCenter" (ngModelChange)="getStatsResult()">
+        <option value="all">All</option>
+        <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4 col-sm-4" [hidden]="isAccessible('followup')">
+    <div class="card card-stats">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <p class="card-category">Inquiries</p>
+        <h3 class="card-title">{{statsResult.monthInquiries}}
+        </h3>
+      </div>
+      <div class="card-footer" (click)="getFolloups()">
+        <div class="stats">
+          <a class="link"> Open: {{statsResult.openFollowups}} | Today : {{statsResult.todayFollowups}} | Due :
+            {{statsResult.previousFollowups}}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 col-sm-4" [hidden]="isAccessible('center')">
+    <div class="card card-stats">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <p class="card-category">Centers</p>
+        <h3 class="card-title">{{statsResult.centers}}
+        </h3>
+      </div>
+      <div class="card-footer" (click)="getCenterList()">
+        <div class="stats">
+          <a class="link">Capacity:{{statsResult.capacity}} | Utilization:{{statsResult.utilisation}} %</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 col-sm-4" [hidden]="isAccessible('staff')">
+    <div class="card card-stats">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <p class="card-category">Staff</p>
+        <h3 class="card-title">{{statsResult.staffCount}}
+        </h3>
+        <p class="card-category">Staff Cost : {{statsResult.staffCost}}</p>
+      </div>
+      <div class="card-footer" (click)="getStaff()">
+        <div class="stats">
+          <a class="link">Present</a>
+          : {{statsResult.staffPresent}} | &nbsp;
+          <a class="link">New Joiners</a> : {{statsResult.newJoinings}} | &nbsp;
+          <a class="link">Leavers</a>
+          : {{statsResult.newLeavings}} &nbsp;&nbsp;&nbsp;
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 col-sm-4" [hidden]="isAccessible('student')">
+    <div class="card card-stats">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <p class="card-category">Students</p>
+        <h3 class="card-title">{{statsResult.students}}
+        </h3>
+      </div>
+      <div class="card-footer">
+        <div class="stats">
+          <a class="link" (click)="getFilteredStudents('Present')"> Present</a> : {{statsResult.studentPresent |
+          number}} | &nbsp;
+          <a class="link" (click)="getFilteredStudents('Corporate')"> Corporate</a> : {{statsResult.corporateStudents |
+          number}} | &nbsp;
+          <a class="link" (click)="getFilteredStudents('Non-corporate')"> Non-Corporate</a> : {{(statsResult.students -
+          statsResult.corporateStudents) | number}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="col-md-4 col-sm-4">
+    <div class="card card-stats">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <p class="card-category">Monthly Fee</p>
+        <h3 class="card-title" *ngIf="monthlyFee.expectedFee">{{monthlyFee.expectedFee.monthly ? monthlyFee.expectedFee.monthly : 0}}
+        </h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label" style="float: left;margin: 0px">Month:</label>
+              <select class="form-control" [(ngModel)]="monthly.month" (ngModelChange)="getMonthlyFee()">
+                <option *ngFor="let month of months;let i = index;" value="{{ i+1 }}">{{month}}</option>
+              </select>
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label" style="float: left;margin: 0px">Year:</label>
+              <select class="form-control" [(ngModel)]="monthly.year" (ngModelChange)="getMonthlyFee()">
+                <option *ngFor="let year of years;" value="{{year}}">{{year}}</option>
+              </select>
+              <span class="material-input"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="stats">
+          <a class="link" *ngIf="monthlyFee.collectedFee" (click)="getStudentFee(monthly.feeDuration)">Collected : {{monthlyFee.collectedFee.quarterly?monthlyFee.collectedFee.quarterly:0}}</a>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="col-md-4 col-sm-4" [hidden]="isAccessible('fee')">
+    <div class="card card-stats">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <p class="card-category">Quarterly Fee</p>
+        <h3 class="card-title" *ngIf="quarterlyFee.expectedFee">{{quarterlyFee.expectedFee.quarterly ?
+          quarterlyFee.expectedFee.quarterly : 0}}
+        </h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label" style="float: left;margin: 0px">Quarter:</label>
+              <select class="form-control" [(ngModel)]="quarterly.quarter" (ngModelChange)="getQuarterlyFee()">
+                <option *ngFor="let quarter of quarters;let i = index" value="{{i + 1}}">{{quarter}}</option>
+              </select>
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="control-label" style="float: left;margin: 0px">Year:</label>
+              <select class="form-control" [(ngModel)]="quarterly.year" (ngModelChange)="getQuarterlyFee()">
+                <option *ngFor="let year of years;" value="{{year}}">{{year}}</option>
+              </select>
+              <span class="material-input"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="stats">
+          <a class="link" *ngIf="quarterlyFee.collectedFee" (click)="getStudentFee(quarterly.feeDuration)">Collected :
+            {{quarterlyFee.collectedFee.quarterly?quarterlyFee.collectedFee.quarterly:0}}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row" *ngIf="tableTitle">
+  <div [class]="viewPanelForFee?'transition col-lg-8':'transition col-lg-12'" style="padding: 0px">
+    <div class="row" style="margin: 0px">
+      <div [class]="viewPanel?'transition col-lg-6':'transition col-lg-12'">
+        <app-table [title]="tableTitle" [dataArray]="tableData" [tableColumn]="tableColumn" [tableFor]="tableFor"
+          (showDetail)="showDetail($event)"></app-table>
+      </div>
+      <div class="col-lg-6" *ngIf="viewPanel">
+        <app-student-info [id]="selectedStudent.id" [update]="update" *ngIf="tableFor === 'student'"
+          (getPayReceiptHistory)="getHistory($event)"></app-student-info>
+        <app-center-info [center]="selectedCenterFromList" [update]="update" *ngIf="tableFor === 'center'"></app-center-info>
+        <app-staff-info [id]="selectedStaff.id" *ngIf="tableFor === 'staff'" [update]="update"></app-staff-info>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4" *ngIf="viewPanelForFee">
+    <app-fee-receipt-info [studentReceipt]="history"></app-fee-receipt-info>
+  </div>
+</div>

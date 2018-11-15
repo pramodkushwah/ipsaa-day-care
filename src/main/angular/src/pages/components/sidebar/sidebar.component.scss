@@ -1,0 +1,35 @@
+.user {
+  padding-bottom: 20px;
+  margin: 20px auto 0;
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 15px;
+    height: 1px;
+    width: calc(100% - 30px);
+    background-color: rgba(180, 180, 180, 0.3);
+  }
+
+  .photo {
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: 0 auto;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  a {
+    text-align: center;
+    color: black;
+    text-align: center;
+    display: block;
+    white-space: nowrap;
+  }
+}

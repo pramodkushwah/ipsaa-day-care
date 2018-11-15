@@ -1,0 +1,93 @@
+<div class="row">
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="control-label"> Search:</label>
+      <input type="text" class="form-control" placeholder="By Student Name" [(ngModel)]="searchStudentName">
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="control-label">Center:</label>
+      <select class="form-control" [(ngModel)]="selectedCenter" (ngModelChange)="centerChange($event)">
+        <option value="">ALL</option>
+        <option *ngFor="let center of centers" [ngValue]="center">{{center.name}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-3" *ngIf="bharatRamSchool">
+    <div class="form-group">
+      <label class="control-label">Program*</label>
+      <select class="form-control" [(ngModel)]="selectedProgram" (ngModelChange)="programChange($event)">
+        <option value="">ALL</option>
+        <option *ngFor="let program of programs;" [ngValue]="program">{{program.name}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-3" *ngIf="selectedProgram">
+    <div class="form-group">
+    <button class="btn btn-rose btn-round" (click)="presentFilteredStudent()">Mark All Present</button>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let student of attendance;">
+    <div class="card">
+      <div class="card-header card-header-warning">
+        <img *ngIf="!imgLaod[i]" src="/assets/img/default-avatar.png" />
+        <img [hidden]="!imgLaod[i]" (load)="imgLaod[i] = true" [attr.src]="'http://ipsaaprod.s3-website.ap-south-1.amazonaws.com/' + student.img" />
+        <h4 class="card-profile-name">{{student.fullName}}</h4>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="row">
+            <div class="col offset-5">Program:</div>
+            <div class="col">{{student.program}}</div>
+          </div>
+          <div class="row">
+            <div class="col offset-5">Group:</div>
+            <div class="col">{{student.group}}</div>
+          </div>
+          <div class="row">
+            <div class="col">Center:</div>
+            <div class="col">{{student.center}}</div>
+          </div>
+          <div class="row">
+            <div class="col">Parent (s):</div>
+            <div class="col">{{student.parent || "NA"}}</div>
+          </div>
+          <div class="row">
+            <div class="col">Expected In:</div>
+            <div class="col">{{student.expectedIn || '&nbsp;'}}</div>
+          </div>
+          <div class="row">
+            <div class="col">Expected Out:</div>
+            <div class="col">{{student.expectedOut || '&nbsp;'}}</div>
+          </div>
+          <div class="row" *ngIf="student.actualIn">
+            <div class="col">Actual In:</div>
+            <div class="col">{{student.actualIn || '&nbsp;'}}</div>
+          </div>
+          <div class="row" *ngIf="student.actualOut">
+            <div class="col">Actual Out:</div>
+            <div class="col">{{student.actualOut || '&nbsp;'}}</div>
+          </div>
+          <div class="row">
+            <div class="col">Status:</div>
+            <div class="col">{{student.status}}</div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm btn-round pull-right" (click)="clockin(student)" *ngIf="student.status==='Absent'" [disabled]="student.clockinDisabled">
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="student.clockinDisabled"></i>
+          <span *ngIf="student.centerType !== 'School'">Clock In</span>
+          <span *ngIf="student.centerType === 'School'">Present</span>
+        </button>
+        <button class="btn btn-primary btn-sm btn-round pull-right" (click)="clockOut(student)" *ngIf="student.status=='Present' && !student.actualOut"
+          [disabled]="student.clockoutDisabled">
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="student.clockoutDisabled"></i>
+          <span *ngIf="student.centerType !== 'School'">Clock Out</span>
+          <span *ngIf="student.centerType === 'School'">Absent</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,66 @@
+<div class="row">
+  <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let staff of attendance;let i =index;">
+    <div class="card">
+      <div class="card-header card-header-warning">
+        <img *ngIf="imgLaod[i]" src="/assets/img/default-avatar.png" />
+        <img [hidden]="imgLaod[i]" (load)="imgLaod[i] = false" [attr.src]="'http://ipsaaprod.s3-website.ap-south-1.amazonaws.com/' + staff.img" />
+        <h4 class="card-profile-name">{{staff.fullName}}</h4>
+      </div>
+      <div class="card-body">
+        <div><br><br>
+          <div class="row">
+            <div class="col">EID:</div>
+            <div class="col">{{staff.eid}}</div>
+          </div>
+          <div class="row">
+            <div class="col">Center:</div>
+            <div class="col">{{staff.center}}</div>
+          </div>
+          <div class="row">
+            <div class="col">Mobile:</div>
+            <div class="col">{{staff.mobile}}</div>
+          </div>
+          <div class="row">
+            <div class="col">Expected In:</div>
+            <div class="col">{{staff.expectedIn || 'NA'}}</div>
+          </div>
+          <div class="row">
+            <div class="col">Expected Out:</div>
+            <div class="col">{{staff.expectedOut || 'NA'}}</div>
+          </div>
+          <div class="row" *ngIf="staff.actualIn">
+            <div class="col">Clock In:</div>
+            <div class="col">{{staff.actualIn || 'NA'}}</div>
+          </div>
+          <div class="row" *ngIf="staff.actualOut">
+            <div class="col">Clock Out:</div>
+            <div class="col">{{staff.actualOut || 'NA'}}</div>
+          </div>
+          <div class="row">
+            <div class="col">Status:</div>
+            <div class="col">{{staff.status}}</div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm btn-round pull-right" (click)="clockin(staff)" *ngIf="!staff.onLeave && staff.status==='Absent'" [disabled]="staff.clockinDisabled" >
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="staff.clockinDisabled"></i>
+          Clock In
+        </button>
+        <button class="btn btn-primary btn-sm btn-round pull-right" (click)="clockout(staff)" *ngIf="staff.status=='Present' && !staff.actualOut"
+          [disabled]="staff.clockoutDisabled">
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="staff.clockoutDisabled"></i>
+          Clock Out
+        </button>
+        <button class="btn btn-primary btn-sm btn-round pull-right" (click)="singleLeave(staff,false)"
+        *ngIf="!(staff.actualIn || staff.actualOut || staff.onLeave)">
+        <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="staff.fullLeave"></i>
+          Fullday Leave
+        </button>
+        <button class="btn btn-primary btn-sm btn-round pull-right" (click)="singleLeave(staff,true)"
+          *ngIf="!staff.onLeave">
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="staff.halfLeaf"></i>
+          Halfday Leave
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+<div class="row">
+  <div [class]="viewPanel?'col-lg-6':'col-lg-12'">
+    <div class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <h3 class="card-title">
+          Users
+          <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="users.length"></i>
+          <button class="btn btn-primary btn-sm" style="float: right;" (click)="showSidePanel(false,null)">Add New</button>
+        </h3>
+      </div>
+      <div class="card-footer">
+        <div class="table-responsive">
+          <table class="table">
+            <colgroup>
+              <col width="15%">
+              <col width="15%">
+              <col width="15%">
+              <col width="15%">
+              <col width="15%">
+              <col width="15%">
+              <col width="10%">
+            </colgroup>
+            <thead class="text-primary">
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Type</th>
+              <th>Role(s)</th>
+              <th>Center(s)</th>
+              <th>*Action</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users;">
+              <td>{{user.name}}</td>
+              <td><span style="word-break: break-all;">{{user.email}}</span></td>
+              <td><span style="word-break: break-all;">{{user.phone}}</span></td>
+              <td><span style="word-break: break-all;">{{user.type}}</span></td>
+              <td>
+                <ng-container *ngFor="let role of user.roles;let i = index">
+                    <span class="badge badge-primary margin-right-5" *ngIf="!i">{{role}}</span>
+                  <span class="complete" *ngIf="user.role"><!--user.role is used only for show content more or less-->
+                      <span class="badge badge-primary margin-right-5">{{role}}</span>
+                  </span>
+                </ng-container>
+                <label class="more-less">
+                  <input type="checkbox" [(ngModel)]="user.role">
+                  <span class="more"></span>
+                </label>
+              </td>
+              <td>
+                <ng-container *ngFor="let center of user.centers;let i = index">
+                  <span class="badge badge-primary margin-right-5" *ngIf="!i">{{center}}</span>
+                  <span class="complete" *ngIf="user.center"><!--user.center is used only for show content more or less-->
+                    <span class="badge badge-primary margin-right-5">{{center}}</span>
+                  </span>
+                </ng-container>
+                <label class="more-less">
+                  <input type="checkbox" [(ngModel)]="user.center">
+                  <span class="more"></span>
+                </label>
+              </td>
+              <td>
+                <button mat-raised-button class="btn btn-primary btn-sm" (click)="showSidePanel(true,user)">Edit </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="viewPanel">
+    <app-user-info [user]="selectedUser" [update]="editable"></app-user-info>
+  </div>
+</div>

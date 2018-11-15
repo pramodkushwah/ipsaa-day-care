@@ -1,0 +1,186 @@
+<div class="card">
+  <div class="card-header card-header-warning">
+    <button type="button" class="close" aria-label="Close" (click)="hideViewPanel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="card-title">
+      <span *ngIf="!editable;else edit">
+        Add
+      </span>
+      <ng-template #edit>
+        Edit
+      </ng-template>
+      Salary
+    </h4>
+    <p class="card-category" *ngIf="selectedSalary">{{selectedSalary.firstName}}&nbsp;{{selectedSalary.lastName}}</p>
+  </div>
+  <div class="card-body">
+    <form id="salaryForm" [formGroup]="salaryForm" novalidate>
+      <div *ngIf="!editable" class="row">
+        <div class="col-lg-4">
+          <div class="form-group">
+            <label class="control-label">Employee</label>
+            <select class="form-control" [(ngModel)]="employee" [ngModelOptions]="{standalone: true}">
+              <option *ngFor="let emp of employees; index as i" [ngValue]="emp">{{emp.name}}</option>
+              <option value="{}" selected="selected">Select Employee</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group">
+            <label class="control-label">EID* : </label>
+            <input class="form-control" name="empId" type="text" readonly formControlName="eid" [(ngModel)]="employee.eid">
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group">
+            <label class="control-label">Employer* : </label>
+            <input class="form-control" name="employer" type="text" readonly formControlName="employer" [(ngModel)]="employee.employer">
+            <span class="material-input"></span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label class="control-label">Ctc*</label>
+            <input class="form-control" name="ctc" type="number" formControlName="ctc" (ngModelChange)="onChange()">
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label class="control-label">Basic*</label>
+            <input class="form-control" name="basic" type="number" formControlName="basic" readonly>
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label class="control-label">Bonus*</label>
+            <input class="form-control" name="bonus" type="number" formControlName="bonus" readonly>
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label class="control-label">Conveyance*</label>
+            <input class="form-control" name="conveyance" type="number" formControlName="conveyance" readonly>
+            <span class="material-input"></span>
+          </div>
+        </div>
+    
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label class="control-label">HRA*</label>
+            <input class="form-control" name="hra" type="number" formControlName="hra" readonly>
+            <span class="material-input"></span>
+          </div>
+        </div>
+    
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label class="control-label">Special*</label>
+            <input class="form-control" name="special" type="number" formControlName="special" readonly>
+            <span class="material-input"></span>
+          </div>
+        </div>
+    
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label class="control-label">Extra Monthly Fixed Allowance</label>
+            <input class="form-control" name="extra_allowance" type="number" formControlName="extraMonthlyAllowance" ng-readonly="show"
+              (ngModelChange)="onChange()">
+            <span class="material-input"></span>
+          </div>
+        </div>
+      </div>
+    
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="form-group">
+            <label class="control-label">
+              <b>Gross Salary</b>
+            </label>
+            <input class="form-control" name="earning" type="number" formControlName="grossSalary" readonly>
+            <span class="material-input"></span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="form-group">
+            <input type="checkbox" name="esid" formControlName="esid" (ngModelChange)="onChange()">
+            <label class="control-label">ESI*</label>
+            <input class="form-control" name="esi" type="number" ng-disabled="!runningSalary.esid" formControlName="esi"
+              readonly>
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <input type="checkbox" name="pfd" formControlName="pfd" (ngModelChange)="onChange()">
+            <label class="control-label">PF*(employee)</label>
+            <input class="form-control" name="pf" type="number" ng-disabled="!runningSalary.pfd" formControlName="pfe"
+              readonly>
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <input type="checkbox" name="esid" formControlName="pfd" (ngModelChange)="onChange()">
+            <label class="control-label">PF*</label>
+            <input class="form-control" name="pf" type="number" ng-disabled="!runningSalary.pfd" formControlName="pfr"
+              readonly>
+            <span class="material-input"></span>
+          </div>
+        </div>
+    
+        <div class="col-lg-3">
+          <div class="form-group">
+            <input type="checkbox" name="pftax" formControlName="profd" (ngModelChange)="onChange()">
+            <label class="control-label">Professional Tax*</label>
+            <input class="form-control" name="pf" type="number" ng-disabled="!runningSalary.profd" formControlName="professionalTax"
+              readonly>
+            <span class="material-input"></span>
+          </div>
+        </div>
+    
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label class="control-label">Retention*</label>
+            <input class="form-control" name="retention" type="number" formControlName="retention" ng-readonly="show">
+            <span class="material-input"></span>
+          </div>
+        </div>
+      </div>
+    
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="form-group">
+            <label class="control-label">
+              <b>Net Salary</b>
+            </label>
+            <input class="form-control" name="deduction" type="number" formControlName="netSalary" readonly>
+            <span class="material-input"></span>
+          </div>
+        </div>
+      </div>
+    
+    
+      <div class="category form-category">
+        *Required Fields
+      </div>
+      <div class="form-footer text-right">
+        <button class="btn btn-rose btn-fill" (click)="saveSalary()">
+          <span *ngIf="saving;else save">
+            <i class="fa fa-spinner fa-spin"></i> Saving
+          </span>
+          <ng-template #save>Save</ng-template>
+        </button>
+        <button class="btn btn-default">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
