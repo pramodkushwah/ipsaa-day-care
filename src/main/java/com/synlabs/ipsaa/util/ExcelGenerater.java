@@ -47,15 +47,15 @@ public class ExcelGenerater {
     private boolean makeList(List<LinkedHashMap<String,Object>> list, int i, Sheet feeCollectionReportSheet) {
         int rowCount=i;
 
-        for(LinkedHashMap<String,Object> col:list){
-            Row row = feeCollectionReportSheet.createRow(rowCount++);
-            int count = 0;
-            for (Map.Entry<String, Object> entry : col.entrySet()){
+                for(LinkedHashMap<String,Object> col:list){
+                    Row row = feeCollectionReportSheet.createRow(rowCount++);
+                    int count = 0;
+                    for (Map.Entry<String, Object> entry : col.entrySet()){
 
-                Cell cell = row.createCell(count++);
-                cell.setCellValue(entry.getValue()+"");
-            }
-        }
+                        Cell cell = row.createCell(count++);
+                        cell.setCellValue(entry.getValue()+"");
+                    }
+                }
         return true;
     }
 
@@ -63,10 +63,10 @@ public class ExcelGenerater {
         Row row = feeCollectionReportSheet.createRow(i);
         int count = 0;
 
-        for (Map.Entry<String, Object> entry : list.entrySet()){
-            Cell cell = row.createCell(count++);
-            cell.setCellValue(entry.getKey().toUpperCase());
-        }
+            for (Map.Entry<String, Object> entry : list.entrySet()){
+                Cell cell = row.createCell(count++);
+                cell.setCellValue(entry.getKey().toUpperCase());
+            }
     }
 
     protected void createStyle(SXSSFWorkbook workbook) {

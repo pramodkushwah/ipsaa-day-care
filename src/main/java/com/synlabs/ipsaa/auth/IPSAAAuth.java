@@ -114,5 +114,7 @@ public final class IPSAAAuth
 
     public static final String HR_ADMIN = "ROLE_HR_ADMIN";
 
+    public static final String HOLIDAY_WRITE="ROLE_HOLIDAY_WRITE";
+
   }
 }

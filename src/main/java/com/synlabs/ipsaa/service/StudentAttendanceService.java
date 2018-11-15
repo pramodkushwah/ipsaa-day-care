@@ -462,7 +462,7 @@ public class StudentAttendanceService extends BaseService {
 			attendance.setStatus(AttendanceStatus.Absent);
 			attendance.setAttendanceDate(LocalDate.now().toDate());
 			attendance.setCenter(student.getCenter());
-			eventBus.post(attendance);
+			//eventBus.post(attendance);  for now.
 		}
 		return attendance ;
 	}

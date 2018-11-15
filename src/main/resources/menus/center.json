@@ -5,37 +5,37 @@
   "submenu": [
     {
       "label": "Sharing Sheet",
-      "state": "app.sharingsheet",
+      "state": "center/sharingsheet",
       "p": "SHARINGSHEET_WRITE",
       "seq": 100
     },
     {
       "label": "Holidays",
-      "state": "app.holiday",
-      "p": "HOLIDAY_WRITE",
+      "state": "center/holiday",
+      "p": "CENTER_WRITE",
       "seq": 200
     },
     {
       "label": "Food Menu",
-      "state": "app.foodmenu",
+      "state": "center/foodmenu",
       "p": "CENTER_WRITE",
       "seq": 300
     },
     {
       "label": "Hygiene",
-      "state": "app.hygiene",
+      "state": "center/hygiene",
       "p": "HYGIENE_WRITE",
       "seq": 400
     },
     {
       "label": "Group Activity",
-      "state": "app.activity",
+      "state": "center/activity",
       "p": "GROUP_ACTIVITY_WRITE",
       "seq": 500
     },
     {
       "label": "Gallery",
-      "state": "app.gallery",
+      "state": "center/gallery",
       "p": "GALLERY_WRITE",
       "seq": 600
     }

@@ -63,6 +63,15 @@ public class EmployeeController
   {
     return employeeService.list().stream().map(EmployeeSalaryResponse::new).collect(Collectors.toList());
   }
+  @Secured(SALARY_READ)
+  @GetMapping("{eid}/salary")
+  public EmployeeSalaryResponse getOne(@PathVariable("eid") String eid)
+  {
+    EmployeeSalaryRequest req=new EmployeeSalaryRequest();
+    req.setEid(eid);
+    return new EmployeeSalaryResponse(employeeService.getSalary(req));
+
+    }
 
   @Secured(SALARY_READ)
   @PostMapping("salary")
@@ -76,6 +85,13 @@ public class EmployeeController
   public List<EmployeePaySlipResponse> list(@RequestParam Integer month, @RequestParam Integer year, @RequestParam String employerId) throws ParseException
   {
     return paySlipService.listPayslips(month, year, employerId).stream().map(EmployeePaySlipResponse::new).collect(Collectors.toList());
+  }
+  
+  @Secured(SALARY_READ)
+  @PostMapping("payslip/{id}")
+  public List<EmployeePaySlipResponse> list(@PathVariable("id") long employeeId) throws ParseException
+  {
+    return paySlipService.listPaySlip(employeeId).stream().map(EmployeePaySlipResponse::new).collect(Collectors.toList());
   }
 
   @Secured(SALARY_WRITE)
@@ -159,7 +175,11 @@ public class EmployeeController
     return tax;
   }
 
-  ////set Professional Tax feom Backend
+  @PutMapping("updateCTC")
+  public void updateCTC() throws IOException{
+
+  }
+////set Professional Tax feom Backend
 //  @PutMapping("updating")
 //  public void update(){
 //    employeeService.update();

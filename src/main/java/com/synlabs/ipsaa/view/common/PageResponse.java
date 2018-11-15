@@ -19,6 +19,9 @@ public class PageResponse<T extends Response>
     this.pageNumber = pageNumber;
     this.totalPages = totalPages;
   }
+  public PageResponse(){
+
+  }
 
   public PageResponse(Page<T> page)
   {

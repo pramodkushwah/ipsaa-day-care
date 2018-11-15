@@ -7,6 +7,7 @@ import com.synlabs.ipsaa.entity.attendance.StudentAttendance;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.entity.student.Student;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequestIpsaaClub;
 import com.synlabs.ipsaa.entity.student.StudentParent;
 import com.synlabs.ipsaa.enums.AttendanceStatus;
 import com.synlabs.ipsaa.enums.EmailNotificationType;
@@ -77,6 +78,9 @@ public class CommunicationService
   @Value("${ipsaa.hdfc.payment.baseurl}")
   private String paymentBaseUrl;
 
+  @Value("${ipsaa.hdfc.payment.ipsaaclubbaseurl}")
+  private String ipsaaclubpaymentBaseUrl;
+
   @Autowired
   private NotificationEmailService notificationEmailService;
 
@@ -138,7 +142,7 @@ public class CommunicationService
       String emailarray[] = emails.toArray(new String[emails.size()]);
       String smsarray[] = phones.toArray(new String[phones.size()]);
 
-      if (attendance.getCheckout() != null || attendance.getStatus()== AttendanceStatus.Absent)
+      if (attendance.getCheckout() != null) //for now || attendance.getStatus()== AttendanceStatus.Absent)
       {
         if (smsarray.length > 0)
         {
@@ -476,6 +480,32 @@ public class CommunicationService
                                                 paymentBaseUrl + "/" +
                                                     BaseService.mask(slip.getId()) + "/" +
                                                     BaseService.mask(parent.getId()));
+        email.setBody(body);
+        email.setHtml(true);
+        emails.add(email);
+      }
+    }
+    for (MessageEmail email : emails)
+    {
+      emailSender.sendMessage(email);
+    }
+  }
+  public void sendPaymentLinkIpsaaClub(List<StudentFeePaymentRequestIpsaaClub> slips, SlipEmailRequest request)
+  {
+    List<MessageEmail> emails = new ArrayList<>();
+    for (StudentFeePaymentRequestIpsaaClub slip : slips)
+    {
+      List<StudentParent> parents = slip.getStudent().getParents();
+      for (StudentParent parent : parents)
+      {
+        MessageEmail email = new MessageEmail();
+        email.setSubject(request.getSubject());
+        email.getTo().addAll(Arrays.asList(notificationEmailService.notificationEmailList(EmailNotificationType.FeePaymentLink)));
+        email.getBcc().add(parent.getEmail());
+        String body = request.getBody().replace("{paymentlink}",
+                ipsaaclubpaymentBaseUrl + "/" +
+                        BaseService.mask(slip.getId()) + "/" +
+                        BaseService.mask(parent.getId()));
         email.setBody(body);
         email.setHtml(true);
         emails.add(email);

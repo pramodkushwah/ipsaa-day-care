@@ -35,8 +35,8 @@ app.controller('HolidayController', function ($scope, $http, $rootScope, $filter
     };
 
     $scope.resetPagination = function () {
-        $scope.currentPage = 0;
-        $scope.updatePageBar();
+            $scope.currentPage = 0;
+            $scope.updatePageBar();
     };
 
     $scope.updatePageBar = function () {
@@ -69,8 +69,55 @@ app.controller('HolidayController', function ($scope, $http, $rootScope, $filter
 
     $http.get('/api/center/').then(function (response) {
         $scope.centerList = response.data;
-        $scope.centerList.unshift({id:'All',name:'All',code:'All'});
+        $scope.centerList.unshift({id:'All',name:'All',code:'All',zone:{},address:{}});
+        $scope.centerListCopy = angular.copy($scope.centerList);
     });
+
+    $http.get('/api/zone/').then(function(response){
+        $scope.zones = response.data;
+        // $scope.zones.unshift({id:'All',name:'All'});
+    });
+
+    $scope.getStates = function(zone){
+        filterCenterByZone(zone.id);        
+        $http.get('/api/state/zone/'+zone.id).then(function(response){
+            $scope.states = response.data;
+            // $scope.states.unshift({id:'All',name:'All'});
+        });
+        
+    };
+
+    $scope.getCities = function(state){
+        $http.get('/api/city/state/'+state.id).then(function(response){
+            $scope.cities = response.data;
+            // $scope.cities.unshift({id:'All',name:'All'});
+        });
+        filterCenterByState(state.name);
+    };
+
+    function filterCenterByZone(id){
+        $scope.centerList = $scope.centerListCopy;
+        $scope.centerList = $scope.centerListCopy.filter(element => {
+            return (element.zone.id == id || element.name == 'All');
+        });
+        $scope.selectedState = '';
+    }
+
+    function filterCenterByState(name){
+        $scope.centerList = $scope.centerListCopy.filter(element => {
+            return (element.address.state == name || element.name == 'All');
+        });
+        $scope.selectedCity = '';
+    }
+
+    $scope.filterCenterByCity = function(city){
+        $scope.centerList = $scope.centerListCopy.filter(element => {
+            return (element.address.city == city.name || element.name == 'All');
+        });
+        $scope.selectedCenter = '';
+    }
+
+
 
     $scope.loadHolidays = function () {
         loadHolidays();

@@ -257,7 +257,7 @@ public class StudentFeeController {
     }
 
     @Secured(STUDENTFEE_RECEIPT_WRITE)
-    @GetMapping("/download/ipssaclub/receipt/{slipId}")
+    @GetMapping("/download/ipsaaclub/receipt/{slipId}")
     public void downloadReceiptIpssa(@PathVariable("slipId") Long slipId, HttpServletResponse response) throws IOException {
 
         IpsaaClubSlipRequest request = new IpsaaClubSlipRequest();
@@ -297,4 +297,10 @@ public class StudentFeeController {
             throw new IOException("Could not delete temporary file after processing: " + file);
         }
     }
+    @PostMapping("ipsaaclub/paymentLink/")
+    @Secured(STUDENTFEE_READ)
+    public void sentPaymentLinkIpsaaclub(@RequestBody SlipEmailRequest request) {
+        studentService.sendPaymentLinkIpsaaClub(request);
+    }
+
 }
