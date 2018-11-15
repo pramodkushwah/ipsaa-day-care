@@ -16,9 +16,16 @@ import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.store.FileStore;
 import com.synlabs.ipsaa.util.BigDecimalUtils;
+import com.synlabs.ipsaa.util.SalaryUtils;
+import com.synlabs.ipsaa.util.SalaryUtilsV2;
 import com.synlabs.ipsaa.view.center.StateTaxRequest;
 import com.synlabs.ipsaa.view.staff.EmployeeSalaryFilterRequest;
 import com.synlabs.ipsaa.view.student.EmployeeSalaryRequest;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +33,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -216,6 +225,73 @@ public class EmployeeService extends BaseService {
     return professionalTax;
   }
 
+
+  public static final String SAMPLE_PATH="C:\\Users\\avnib\\Desktop\\ipsaa\\SalaryRevised3.xlsx";
+
+  @Transactional
+  public void uploadCTC() throws IOException,InvalidFormatException {
+
+    HashMap<String,ctcBasic> map= new HashMap<>();
+    List<String> list= new ArrayList<>();
+    Workbook workbook= WorkbookFactory.create(new File(SAMPLE_PATH));
+    Sheet sheet= workbook.getSheetAt(0);
+
+    for(int i=0;i<= sheet.getPhysicalNumberOfRows();i++) {
+
+      Row row = sheet.getRow(i);
+      if(row != null){
+        String eid= row.getCell(0).getStringCellValue();
+        BigDecimal ctc= new BigDecimal(row.getCell(3).getNumericCellValue());
+        BigDecimal basic= new BigDecimal(row.getCell(4).getNumericCellValue());
+        System.out.println(eid+"  "+ctc);
+        ctcBasic components= new ctcBasic();
+        components.setCtc(ctc);
+        components.setBasic(basic);
+        map.put(eid,components);
+        list.add(eid);
+      }
+
+    }
+
+    List<Employee> employee= employeeRepository.findByEidIn(list);//d
+    List<EmployeeSalary> salary= employeeSalaryRepository.findByEmployeeIn(employee);
+
+    //EmployeeSalaryRequest request;
+    salary.stream().forEach(s->{
+      System.out.println(s.getEmployee().getName()+ " "+s.getCtc());
+      ctcBasic component=map.get(s.getEmployee().getEid());
+      s.setCtc(component.getCtc());
+      s.setBasic(component.getBasic());
+      s.setHra(SalaryUtilsV2.calculateHra(s.getBasic()));
+      s.setConveyance(s.getConveyance());
+      s.setBonus(s.getBonus());
+      s.setSpecial(SalaryUtilsV2.calculateSpecial(s.getCtc(),s.getBasic(),s.getHra(),s.getConveyance(),s.getBonus()));
+
+      s.setPfe(SalaryUtilsV2.calculatePfe(s.getBasic()));
+      s.setEsi(SalaryUtilsV2.calculateEsi(s,SalaryUtilsV2.ESI_PERCENT));
+      s.setPfr(SalaryUtilsV2.calculatePfr(s.getBasic()));
+      s.setGrossSalary(SalaryUtilsV2.calculateGross(s.getCtc(),s.getBonus(),s.getPfr()));
+      s.setExtraMonthlyAllowance(s.getExtraMonthlyAllowance());
+      s.setProfessionalTax(s.getProfessionalTax());
+
+      BigDecimal totalDeduction = SalaryUtilsV2.calculateTotalDeduction(s.getPfe(), s.getPfr(),
+              s.getEsi(), s.getProfessionalTax(),BigDecimal.ZERO, BigDecimal.ZERO); //other deductions + tds
+      s.setTotalDeduction(totalDeduction);
+      BigDecimal totalEaring = SalaryUtilsV2.calculateTotalEaring(s.getCtc(), s.getExtraMonthlyAllowance(), BigDecimal.ZERO);//other allownace
+      s.setTotalEarning(totalEaring);
+      s.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring, totalDeduction));
+
+
+
+
+
+      System.out.println(s.getEmployee().getName()+" "+s.getCtc());
+      employeeSalaryRepository.saveAndFlush(s);
+    });
+
+
+
+  }
 //  @Transactional
 //  public void update() {
 //    List<Center> centers= centerRepository.findAll();
@@ -352,4 +428,24 @@ public class EmployeeService extends BaseService {
 //    }
 //
 //  }
+  class ctcBasic{
+    public BigDecimal ctc;
+    private BigDecimal basic;
+
+      public BigDecimal getCtc() {
+        return ctc;
+      }
+
+      public void setCtc(BigDecimal ctc) {
+        this.ctc = ctc;
+      }
+
+      public BigDecimal getBasic() {
+        return basic;
+      }
+
+      public void setBasic(BigDecimal basic) {
+        this.basic = basic;
+      }
+    }
 }

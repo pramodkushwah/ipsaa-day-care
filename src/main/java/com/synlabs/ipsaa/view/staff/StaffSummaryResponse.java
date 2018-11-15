@@ -42,6 +42,7 @@ public class StaffSummaryResponse implements Response
     this.eid = employee.getEid();
     this.id = mask(employee.getId());
     this.name = employee.getName();
+    this.designation = employee.getDesignation();
     if (onlyName)
     {
       return;
@@ -52,7 +53,7 @@ public class StaffSummaryResponse implements Response
     this.employerCode = employee.getEmployer() == null ? null : employee.getEmployer().getCode();
     this.reportingManagerId = mask(employee.getReportingManager() == null ? null : employee.getReportingManager().getId());
     this.reportingManagerName = employee.getReportingManager() == null ? null : employee.getReportingManager().getName();
-    this.designation = employee.getDesignation();
+    //this.designation = employee.getDesignation();
     this.email = employee.getEmail();
     this.mobile = employee.getMobile();
     this.type = employee.getEmployeeType();
