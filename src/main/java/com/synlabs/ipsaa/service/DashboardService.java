@@ -266,7 +266,7 @@ public class DashboardService extends BaseService {
 		JPAQuery<Employee> query = new JPAQuery<>(entityManager);
 		QEmployeeAttendance attendance = QEmployeeAttendance.employeeAttendance;
 		QEmployee employee = QEmployee.employee;
-		query.select(attendance).from(attendance).where(employee.active.isTrue())
+		query.select(attendance).from(attendance)
 				.where(attendance.status.eq(AttendanceStatus.Present))
 				.where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
 				.where(attendance.center.in(centers));
@@ -860,7 +860,7 @@ public class DashboardService extends BaseService {
 		// QEmployee employee=QEmployee.employee;
 
 		query.select(attendance).from(attendance).where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
-				.where(attendance.status.eq(AttendanceStatus.Present)).where(attendance.checkout.isNull())
+				.where(attendance.status.eq(AttendanceStatus.Present))
 				.where(attendance.center.in(centers));
 
 		List<EmployeeAttendance> attendances = query.fetch();
