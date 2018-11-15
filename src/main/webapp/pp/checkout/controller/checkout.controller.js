@@ -1,4 +1,4 @@
-app.controller('CheckoutController', function ($scope, $http, $stateParams, $state) {
+app.controller('CheckoutController', function ($scope, $http, $stateParams, $state, $location) {
     $scope.checkoutDetails = {};
 
     $scope.checkout = function () {
@@ -6,13 +6,28 @@ app.controller('CheckoutController', function ($scope, $http, $stateParams, $sta
     };
 
     function loadCheckoutDetails() {
-        $http.get('/hdfc/checkout/' + $stateParams.slipId + "/" + $stateParams.parentId).then(
-            function (response) {
-                $scope.checkoutDetails = response.data;
-            }, function (response) {
-                error(response.data ? response.data.error : "Unknown error. Please contact support.")
-            }
-        );
+        console.log($location.url());
+        console.log($location.absUrl());
+        console.log($location.path());
+        if($location.path().indexOf("checkoutdetails") > -1) {
+           $http.get('/hdfc/checkout/' + $stateParams.slipId + "/" + $stateParams.parentId).then(
+               function (response) {
+                   $scope.checkoutDetails = response.data;
+               }, function (response) {
+                   error(response.data ? response.data.error : "Unknown error. Please contact support.")
+               }
+           );
+        }
+        if($location.path().indexOf("ipsaaclubcheckoutdetails") > -1) {
+           $http.get('/hdfc/checkout/ipsaaclub/' + $stateParams.slipId + "/" + $stateParams.parentId).then(
+              function (response) {
+                  $scope.checkoutDetails = response.data;
+              }, function (response) {
+                  error(response.data ? response.data.error : "Unknown error. Please contact support.")
+              }
+          );
+        }
+
     }
 
     loadCheckoutDetails();

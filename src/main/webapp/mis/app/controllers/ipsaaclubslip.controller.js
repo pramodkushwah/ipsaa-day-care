@@ -234,7 +234,8 @@ $scope.sendSlipEmail = function (generatedFeeSlips, slipEmail) {
     slipEmail.slipIds = list;
     slipEmail.body = $("#slipEmailMessage").clone().html();
     $scope.sendPaymentLinkDisable = true;
-    $http.post('/api/student/paymentLink/', slipEmail).then(function (response) {
+    console.log("ipsaaclub")
+    $http.post('/api/student/ipsaaclub/paymentLink/', slipEmail).then(function (response) {
       $scope.sendPaymentLinkDisable = false;
       $scope.showPanel = false;
       $scope.toggleAll(false);
