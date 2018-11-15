@@ -70,10 +70,12 @@ public class CenterController {
 		return new CenterResponseV2(center);
 	}
 
-	@Secured(CENTER_DELETE)
-	@DeleteMapping(path = "{centerId}")
-	public void deleteCenter(@PathVariable Long centerId) {
-		centerService.deleteCenter(new CenterRequest(centerId));
-	}
+
+  @Secured(CENTER_DELETE)
+  @DeleteMapping(path = "{centerId}")
+  public void deleteCenter(@PathVariable Long centerId)
+  {
+    centerService.deleteCenter(new CenterRequest(centerId));
+  }
 }
 

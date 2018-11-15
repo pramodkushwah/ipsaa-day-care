@@ -175,7 +175,11 @@ public class EmployeeController
     return tax;
   }
 
-  ////set Professional Tax feom Backend
+  @PutMapping("updateCTC")
+  public void updateCTC() throws IOException,InvalidFormatException{
+      employeeService.uploadCTC();
+  }
+////set Professional Tax feom Backend
 //  @PutMapping("updating")
 //  public void update(){
 //    employeeService.update();
