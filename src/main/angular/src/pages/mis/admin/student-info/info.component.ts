@@ -76,13 +76,13 @@ export class StudentInfoComponent implements OnInit {
     return this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      nickName: [''],
+      nickName: ['', [Validators.required]],
       centerId: ['', [Validators.required]],
       programId: ['', [Validators.required]],
       groupId: ['', [Validators.required]],
       gender: ['', [Validators.required]],
-      bloodGroup: [''],
-      familyType: [''],
+      bloodGroup: ['', [Validators.required]],
+      familyType: ['', [Validators.required]],
       nationality: ['', [Validators.required]],
       expectedIn: ['', [Validators.required]],
       expectedOut: ['', [Validators.required]],
@@ -94,13 +94,13 @@ export class StudentInfoComponent implements OnInit {
       admissionDate: [this.datePipe.transform(new Date(), 'yyyy-MM-dd')],
       admissionNumber: [''],
       approvalStatus: [''],
-      dob: [''],
+      dob: ['', [Validators.required]],
       fullName: [''],
       id: [''],
       imagePath: [''],
       mode: [''],
       profile: [''],
-      parents: this.fb.array([this.getParentData(), this.getParentData()]),
+      parents: this.fb.array([this.getParentData('Father'), this.getParentData('Mother')]),
       fee: this.getFeeField()
     });
   }
@@ -113,7 +113,7 @@ export class StudentInfoComponent implements OnInit {
     this.studentForm.controls['programId'].reset();
   }
 
-  getParentData() {
+  getParentData(relation: string) {
     return this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
@@ -121,9 +121,9 @@ export class StudentInfoComponent implements OnInit {
       email: ['', [Validators.required]],
       smsEnabled: [''],
       emailEnabled: [''],
-      educationalQualification: ['', [Validators.required]],
-      occupation: ['', [Validators.required]],
-      designation: ['', [Validators.required]],
+      educationalQualification: [''],
+      occupation: [''],
+      designation: [''],
       residentialAddress: this.getAddressField(),
       officeAddress: this.getAddressField(),
       account: [''],
@@ -131,17 +131,17 @@ export class StudentInfoComponent implements OnInit {
       fullName: [''],
       id: [''],
       organisation: [''],
-      relationship: [''],
+      relationship: [relation],
       secondaryNumbers: ['']
     });
   }
 
   getAddressField() {
     return this.fb.group({
-      address: ['', [Validators.required]],
-      city: ['', [Validators.required]],
-      state: ['', [Validators.required]],
-      zipcode: ['', [Validators.required]],
+      address: [''],
+      city: [''],
+      state: [''],
+      zipcode: [''],
       addressType: [''],
       phone: ['']
     });
@@ -164,7 +164,7 @@ export class StudentInfoComponent implements OnInit {
       transportFee: [0],
       uniformCharges: [0],
       stationary: [0],
-      comment: [''],
+      comment: ['', [Validators.required]],
       gstFee: [0],
       baseFeeGst: [0],
       finalFee: [0],

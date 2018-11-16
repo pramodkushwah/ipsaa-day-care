@@ -426,28 +426,28 @@ export class AdminService {
   }
 
   closeQuery(queryId) {
-    return this.api.post('/api/support/' + queryId + '/close' , {});
+    return this.api.post('api/support/' + queryId + '/close' , {});
   }
 
   replyToQuery(queryId , replyText) {
-    return this.api.post('/api/support/' + queryId + '/reply' , replyText);
+    return this.api.post('api/support/' + queryId + '/reply' , replyText);
 
   }
 
 getAllCenterStaffApprovalCount() {
-  return this.api.get('/api/staff/approvals/count');
+  return this.api.get('api/staff/approvals/count');
 }
 
 getSelectedCenterStaffApprovalCount(centerId: number) {
-  return this.api.get('/api/staff/approvals/' + centerId);
+  return this.api.get('api/staff/approvals/' + centerId);
 }
 
 getAllCenterStudentsApprovalCount() {
-  return this.api.get('/api/student/approvals/count');
+  return this.api.get('api/student/approvals/count');
 }
 
 getSelectedCenterStudentsApprovalCount(centerId: number) {
-  return this.api.get('/api/student/approvals/' + centerId);
+  return this.api.get('api/student/approvals/' + centerId);
 }
 
 
