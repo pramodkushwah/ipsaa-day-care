@@ -6,17 +6,16 @@ import com.synlabs.ipsaa.entity.common.Address;
 import com.synlabs.ipsaa.entity.inquiry.Inquiry;
 import com.synlabs.ipsaa.entity.inquiry.InquiryEventLog;
 import com.synlabs.ipsaa.entity.inquiry.QInquiryEventLog;
+import com.synlabs.ipsaa.entity.inquiry.WebsiteInquiry;
 import com.synlabs.ipsaa.entity.programs.Program;
 import com.synlabs.ipsaa.entity.programs.ProgramGroup;
-import com.synlabs.ipsaa.enums.AddressType;
-import com.synlabs.ipsaa.enums.CallDisposition;
-import com.synlabs.ipsaa.enums.InquiryType;
-import com.synlabs.ipsaa.enums.LeadSource;
+import com.synlabs.ipsaa.enums.*;
 import com.synlabs.ipsaa.ex.ValidationException;
 import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.view.inquiry.InquiryEventLogFilterRequest;
 import com.synlabs.ipsaa.view.inquiry.InquiryReportRequest;
 import com.synlabs.ipsaa.view.inquiry.InquiryRequest;
+import com.synlabs.ipsaa.view.inquiry.WebsiteInquiryRequest;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -59,6 +58,9 @@ public class InquiryService extends BaseService
 
   @Autowired
   private EntityManager entityManager;
+
+  @Autowired
+  private WebsiteInquiryRepository websiteInquiryRepository;
 
   @Value("${ipsaa.export.directory}")
   private String exportDir;
@@ -331,201 +333,230 @@ public class InquiryService extends BaseService
     return file;
   }
 
+  /////////Avneet
+  public void save(WebsiteInquiryRequest request){
+
+    WebsiteInquiry inquiry = request.toEntity(new WebsiteInquiry());
+
+    inquiry.setFormType(request.getFormType());
+
+    Program program= programRepository.findByCode(request.getProgram());
+    if(program == null)
+      throw new ValidationException(String.format("Program not found[%s]",request.getProgram()));
+    inquiry.setProgram(program);
+
+    websiteInquiryRepository.save(inquiry);
+  }
+
+  public List<WebsiteInquiry> getWebsiteInquiry(){
+    List<WebsiteInquiry> inquiries= websiteInquiryRepository.findByStatus(InquiryStatus.New);
+    return inquiries;
+  }
+
+
+//  public WebsiteInquiry updateInquiry( WebsiteInquiryRequest websiteInquiryRequest){
+//
+//    WebsiteInquiry inquiry= websiteInquiryRepository.findOne(unmask(websiteInquiryRequest.getId()));
+//    if(inquiry == null)
+//      throw new ValidationException("Doesn't exist");
+//    websiteInquiryRepository.save(websiteInquiryRequest.toEntity(inquiry));
+//  }
   ////////Avneet
 
-  public static final String SAMPLE_XLSX_FILE_PATH2 = " ";
-  public void uploadFromExcel() throws IOException, InvalidFormatException, ParseException
+//  public static final String SAMPLE_XLSX_FILE_PATH2 = " ";
+//  public void uploadFromExcel() throws IOException, InvalidFormatException, ParseException
+//
+//  {
+//    File file = new File(SAMPLE_XLSX_FILE_PATH2);
+//    FileInputStream inputStream = new FileInputStream(file);
+//    Workbook workbook = WorkbookFactory.create(inputStream);
+//    int c=0;
+//
+//    try {
+//
+//
+//      Sheet sheet = workbook.getSheetAt(2); ///change it
+//      DataFormatter formatter = new DataFormatter();
+//      Row row;
+//      int n = sheet.getPhysicalNumberOfRows();
+//      String zip;
+//      String state;
+//
+//      SimpleDateFormat format1 = new SimpleDateFormat("MM/dd/yyyy");
+//
+//      List<CallDisposition> callDispositionList=new ArrayList<>();
+//      callDispositionList.add(CallDisposition.Followup);
+//      callDispositionList.add(CallDisposition.Enrolled);
+//
+//      for (int i = 1; i <= 5; i++) {
+//        row = sheet.getRow(i);
+//
+//        if (row != null) {
+//
+//          String leadsource = formatter.formatCellValue(row.getCell(1)).toUpperCase();
+//          String inquiryType = formatter.formatCellValue(row.getCell(2));
+//          String center = formatter.formatCellValue(row.getCell(3));
+//
+//          String program = formatter.formatCellValue(row.getCell(4));
+//          String group = formatter.formatCellValue(row.getCell(5));
+//          String childFirstName = formatter.formatCellValue(row.getCell(7));
+//          String childLastName = formatter.formatCellValue(row.getCell(8));
+//          String motherFirstName = formatter.formatCellValue(row.getCell(9));
+//          String motherlastName = formatter.formatCellValue(row.getCell(10));
+//          String motherEmail = formatter.formatCellValue(row.getCell(11));
+//          String motherMobile = formatter.formatCellValue(row.getCell(12));String deposition;
+//          String diposition = (formatter.formatCellValue(row.getCell(13)));
+//          if(diposition.equals("Walk In")){
+//            deposition="Followup";
+//          }else{
+//            deposition=(formatter.formatCellValue(row.getCell(13)));
+//          }
+//
+//          ///For future purposes assuming data is correct.-ask Sir
+//          Date inquiryDate =( formatter.formatCellValue(row.getCell(6)).isEmpty())?
+//                  null : row.getCell(6).getDateCellValue() ;
+//          Date callBackDate=( formatter.formatCellValue(row.getCell(14)).isEmpty())?
+//                  null : row.getCell(14).getDateCellValue() ;
+//
+//
+//          String callBackTime = formatter.formatCellValue(row.getCell(15));
+//          String callBackNumber = formatter.formatCellValue(row.getCell(16));
+//          String comments = formatter.formatCellValue(row.getCell(17));
+//          String location=formatter.formatCellValue(row.getCell(18));
+//          String str[]=callBackTime.split(":");
+//
+//          Calendar cal= Calendar.getInstance();
+//          if(callBackDate!=null){
+//            cal.setTime(callBackDate);
+//          }
+//
+//          if( !org.apache.commons.lang3.StringUtils.isEmpty(callBackTime)){
+//            cal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(str[0]));
+//            cal.set(Calendar.MINUTE,Integer.parseInt(str[1]));
+//            System.out.println(cal.getTime());
+//          }
+//
+//
+//          state=locateState(location);
+//           zip=locateZip(state);
+//
+//
+//
+//
+//
+//          if (!deposition.isEmpty() && callDispositionList.contains(CallDisposition.valueOf(deposition))) {
+//
+//            Inquiry inquiry = new Inquiry();
+//            InquiryEventLog inquiryEventLog = new InquiryEventLog();
+//            List<InquiryEventLog> logs = new ArrayList<>();
+//            Address address = new Address();
+//
+//
+//            Center iscenter = centerRepository.getOneByName(center);
+//            if (iscenter != null) {
+//              inquiry.setCenter(iscenter);
+//            }
+//
+//            Program isProgram = programRepository.findByCode(program);
+//            if (isProgram != null) {
+//              inquiry.setProgram(isProgram);
+//            }
+//
+//            if (group != null && isProgram != null) {
+//              List<ProgramGroup> groups = isProgram.getGroups();
+//              ProgramGroup isGroup = programGroupRepository.findByName(group);
+//              if (groups.contains(isGroup)) {
+//                inquiry.setGroup(isGroup);
+//              }
+//            }
+//
+//            UUID uuid=UUID.randomUUID();
+//            inquiry.setInquiryNumber(inquiryType+" "+uuid.toString().substring(0,4));
+//            inquiry.setFirstName(childFirstName);
+//            inquiry.setLastName(childLastName);
+//            inquiry.setFatherFirstName(motherFirstName);
+//            inquiry.setFatherLastName(motherlastName);
+//            inquiry.setFatherMobile(motherMobile);
+//            inquiry.setMotherFirstName(motherFirstName);
+//            inquiry.setMotherLastName(motherlastName);
+//            inquiry.setMotherMobile(motherMobile);
+//            inquiry.setMotherEmail(motherEmail);
+//            inquiry.setInquiryType(InquiryType.valueOf(inquiryType));
+//            inquiry.setInquiryDate(inquiryDate);
+//            inquiry.setStatus(CallDisposition.valueOf(deposition));
+//
+//            address.setAddress(location);
+//            address.setCity(location);
+//            address.setState(state);
+//            address.setZipcode(zip);
+//            address.setPhone(callBackNumber);
+//            address.setAddressType(AddressType.Home);
+//
+//
+//            inquiry.setLeadSource(LeadSource.valueOf(leadsource.toUpperCase()));
+//            inquiryEventLog.setCallDisposition(CallDisposition.valueOf(deposition));
+//            inquiryEventLog.setCallBack(cal.getTime());
+//            inquiryEventLog.setCallBackNumber(callBackNumber);
+//            inquiryEventLog.setComment(comments);
+//
+//
+//            logs.add(inquiryEventLog);
+//            inquiry.setResidentialAddress(address);
+//            inquiry.setLogs(logs);
+//            inquiryEventLog.setInquiry(inquiry);
+//            System.out.println(inquiry.getLeadSource()+" "+inquiry.getInquiryNumber() + " " + inquiry.getResidentialAddress() + "  " + inquiry.getChildName() + "  " + inquiry.getFatherFirstName() + "  " + inquiry.getInquiryDate() + "  " + inquiry.getStatus() + "     " + inquiryEventLog.getCallBack() + "     " + i + " " + c);
+//
+//            //inquiryRepository.saveAndFlush(inquiry);
+//            //inquiryEventLogRepository.saveAndFlush(inquiryEventLog);
+//            System.out.println("Value inserted "+c);
+//
+//          }
+//        }
+//        workbook.close();
+//
+//      }System.out.println(c);
+//
+//
+//    }catch(Exception e){
+//      e.printStackTrace();
+//    }finally{
+//
+//      workbook.close();
+//
+//    }
+//  }
+//
+//  public String locateState(String location){
+//    String state;
+//    switch(location){
+//      case "Delhi":   state="Delhi"; break;
+//      case "Mumbai":   state="Maharashtra"; break;
+//      case "Pune":   state="Maharashtra"; break;
+//      case "Chennai":   state="Delhi"; break;
+//      case "Gurgaon":   state="Harayana"; break;
+//      case "Bengaluru": state="Karnataka"; break;
+//      case "Dombvili": state="Maharashtra";break;
+//      case "Thane": state="Maharashtra";break;
+//      case "Noida": state="Uttar Pradesh"; break;
+//      default: state=location; break;
+//
+//    }
+//    return state;
+//  }
+//
+//
+//  public String locateZip(String state){
+//    String zip;
+//    switch(state){
+//      case "Delhi": zip="1100xx"; break;
+//      case "Maharashtra": zip="400xxx"; break;
+//      case "Karnataka": zip="5xxxxx"; break;
+//      case "Uttar Pradesh": zip="201301"; break;
+//      case "Harayana": zip="122xxx"; break;
+//      default: zip=" "; break;
+//    }
+//
+//    return zip;
+//  }
 
-  {
-    File file = new File(SAMPLE_XLSX_FILE_PATH2);
-    FileInputStream inputStream = new FileInputStream(file);
-    Workbook workbook = WorkbookFactory.create(inputStream);
-    int c=0;
-
-    try {
-
-
-      Sheet sheet = workbook.getSheetAt(2); ///change it
-      DataFormatter formatter = new DataFormatter();
-      Row row;
-      int n = sheet.getPhysicalNumberOfRows();
-      String zip;
-      String state;
-
-      SimpleDateFormat format1 = new SimpleDateFormat("MM/dd/yyyy");
-
-      List<CallDisposition> callDispositionList=new ArrayList<>();
-      callDispositionList.add(CallDisposition.Followup);
-      callDispositionList.add(CallDisposition.Enrolled);
-
-      for (int i = 1; i <= 5; i++) {
-        row = sheet.getRow(i);
-
-        if (row != null) {
-
-          String leadsource = formatter.formatCellValue(row.getCell(1)).toUpperCase();
-          String inquiryType = formatter.formatCellValue(row.getCell(2));
-          String center = formatter.formatCellValue(row.getCell(3));
-
-          String program = formatter.formatCellValue(row.getCell(4));
-          String group = formatter.formatCellValue(row.getCell(5));
-          String childFirstName = formatter.formatCellValue(row.getCell(7));
-          String childLastName = formatter.formatCellValue(row.getCell(8));
-          String motherFirstName = formatter.formatCellValue(row.getCell(9));
-          String motherlastName = formatter.formatCellValue(row.getCell(10));
-          String motherEmail = formatter.formatCellValue(row.getCell(11));
-          String motherMobile = formatter.formatCellValue(row.getCell(12));String deposition;
-          String diposition = (formatter.formatCellValue(row.getCell(13)));
-          if(diposition.equals("Walk In")){
-            deposition="Followup";
-          }else{
-            deposition=(formatter.formatCellValue(row.getCell(13)));
-          }
-
-          ///For future purposes assuming data is correct.-ask Sir
-          Date inquiryDate =( formatter.formatCellValue(row.getCell(6)).isEmpty())?
-                  null : row.getCell(6).getDateCellValue() ;
-          Date callBackDate=( formatter.formatCellValue(row.getCell(14)).isEmpty())?
-                  null : row.getCell(14).getDateCellValue() ;
-
-
-          String callBackTime = formatter.formatCellValue(row.getCell(15));
-          String callBackNumber = formatter.formatCellValue(row.getCell(16));
-          String comments = formatter.formatCellValue(row.getCell(17));
-          String location=formatter.formatCellValue(row.getCell(18));
-          String str[]=callBackTime.split(":");
-
-          Calendar cal= Calendar.getInstance();
-          if(callBackDate!=null){
-            cal.setTime(callBackDate);
-          }
-
-          if( !org.apache.commons.lang3.StringUtils.isEmpty(callBackTime)){
-            cal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(str[0]));
-            cal.set(Calendar.MINUTE,Integer.parseInt(str[1]));
-            System.out.println(cal.getTime());
-          }
-
-
-          state=locateState(location);
-           zip=locateZip(state);
-
-
-
-
-
-          if (!deposition.isEmpty() && callDispositionList.contains(CallDisposition.valueOf(deposition))) {
-
-            Inquiry inquiry = new Inquiry();
-            InquiryEventLog inquiryEventLog = new InquiryEventLog();
-            List<InquiryEventLog> logs = new ArrayList<>();
-            Address address = new Address();
-
-
-            Center iscenter = centerRepository.getOneByName(center);
-            if (iscenter != null) {
-              inquiry.setCenter(iscenter);
-            }
-
-            Program isProgram = programRepository.findByCode(program);
-            if (isProgram != null) {
-              inquiry.setProgram(isProgram);
-            }
-
-            if (group != null && isProgram != null) {
-              List<ProgramGroup> groups = isProgram.getGroups();
-              ProgramGroup isGroup = programGroupRepository.findByName(group);
-              if (groups.contains(isGroup)) {
-                inquiry.setGroup(isGroup);
-              }
-            }
-
-            UUID uuid=UUID.randomUUID();
-            inquiry.setInquiryNumber(inquiryType+" "+uuid.toString().substring(0,4));
-            inquiry.setFirstName(childFirstName);
-            inquiry.setLastName(childLastName);
-            inquiry.setFatherFirstName(motherFirstName);
-            inquiry.setFatherLastName(motherlastName);
-            inquiry.setFatherMobile(motherMobile);
-            inquiry.setMotherFirstName(motherFirstName);
-            inquiry.setMotherLastName(motherlastName);
-            inquiry.setMotherMobile(motherMobile);
-            inquiry.setMotherEmail(motherEmail);
-            inquiry.setInquiryType(InquiryType.valueOf(inquiryType));
-            inquiry.setInquiryDate(inquiryDate);
-            inquiry.setStatus(CallDisposition.valueOf(deposition));
-
-            address.setAddress(location);
-            address.setCity(location);
-            address.setState(state);
-            address.setZipcode(zip);
-            address.setPhone(callBackNumber);
-            address.setAddressType(AddressType.Home);
-
-
-            inquiry.setLeadSource(LeadSource.valueOf(leadsource.toUpperCase()));
-            inquiryEventLog.setCallDisposition(CallDisposition.valueOf(deposition));
-            inquiryEventLog.setCallBack(cal.getTime());
-            inquiryEventLog.setCallBackNumber(callBackNumber);
-            inquiryEventLog.setComment(comments);
-
-
-            logs.add(inquiryEventLog);
-            inquiry.setResidentialAddress(address);
-            inquiry.setLogs(logs);
-            inquiryEventLog.setInquiry(inquiry);
-            System.out.println(inquiry.getLeadSource()+" "+inquiry.getInquiryNumber() + " " + inquiry.getResidentialAddress() + "  " + inquiry.getChildName() + "  " + inquiry.getFatherFirstName() + "  " + inquiry.getInquiryDate() + "  " + inquiry.getStatus() + "     " + inquiryEventLog.getCallBack() + "     " + i + " " + c);
-
-            //inquiryRepository.saveAndFlush(inquiry);
-            //inquiryEventLogRepository.saveAndFlush(inquiryEventLog);
-            System.out.println("Value inserted "+c);
-
-          }
-        }
-        workbook.close();
-
-      }System.out.println(c);
-
-
-    }catch(Exception e){
-      e.printStackTrace();
-    }finally{
-
-      workbook.close();
-
-    }
-  }
-
-  public String locateState(String location){
-    String state;
-    switch(location){
-      case "Delhi":   state="Delhi"; break;
-      case "Mumbai":   state="Maharashtra"; break;
-      case "Pune":   state="Maharashtra"; break;
-      case "Chennai":   state="Delhi"; break;
-      case "Gurgaon":   state="Harayana"; break;
-      case "Bengaluru": state="Karnataka"; break;
-      case "Dombvili": state="Maharashtra";break;
-      case "Thane": state="Maharashtra";break;
-      case "Noida": state="Uttar Pradesh"; break;
-      default: state=location; break;
-
-    }
-    return state;
-  }
-
-
-  public String locateZip(String state){
-    String zip;
-    switch(state){
-      case "Delhi": zip="1100xx"; break;
-      case "Maharashtra": zip="400xxx"; break;
-      case "Karnataka": zip="5xxxxx"; break;
-      case "Uttar Pradesh": zip="201301"; break;
-      case "Harayana": zip="122xxx"; break;
-      default: zip=" "; break;
-    }
-
-    return zip;
-  }
 }
