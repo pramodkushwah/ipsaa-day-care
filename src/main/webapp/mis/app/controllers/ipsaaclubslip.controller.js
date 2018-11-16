@@ -33,16 +33,16 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
 
   $scope.downloadSlip = function (slip) {
     console.log(slip);
-    $scope.downloadPdfDisable = true;
+    $scope.disabledSlipDownload = true;
     $http.post('/api/student/ipsaaclub/feeslips/pdf', [slip.id], { responseType: 'arraybuffer' }).then(
       function (response) {
-        $scope.downloadPdfDisable = false;
+        $scope.disabledSlipDownload = false;
         var blob = new Blob([response.data], {
           type: 'application/octet-stream'
         });
         saveAs(blob, response.headers("fileName"));
       }, function (response) {
-        $scope.downloadPdfDisable = false;
+        $scope.disabledSlipDownload = false;
         error(response.data.error);
       }
     );

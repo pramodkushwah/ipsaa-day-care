@@ -128,7 +128,8 @@
       <div class="clearfix">
         <button type="button" class="btn btn-rose" ng-click="saveSlip(selectedStudentFee)">Save</button>
         <button type="button" class="btn btn-rose" ng-click="showPayNow(selectedStudentFee)" data-toggle="modal" data-target="#myModal" ng-disabled="selectedStudentFee.paymentStatus=='Paid'">Pay Now</button>
-        <button type="button" class="btn btn-rose" ng-click="downloadSlip(selectedStudentFee)">Download Slip</button>
+        <button type="button" class="btn btn-rose" ng-click="downloadSlip(selectedStudentFee)" ng-disabled="disabledSlipDownload">
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disabledSlipDownload"></i>Download Slip</button>
       </div>
     </div>
     <div class="card" ng-show="selectedStudentFee.payments.length">

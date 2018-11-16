@@ -889,7 +889,7 @@ public class DocumentService extends BaseService
   }
   private List<String> generateSlipPdfIpsaaClub(List<StudentFeePaymentRequestIpsaaClub> feeSlips) throws IOException
   {
-    Template template = configuration.getTemplate("slip/ipsaaclub-slip-block.ftl");
+    Template template = configuration.getTemplate("slip/ipsaaclub-slip.ftl");
 
     List<String> slipNames = new ArrayList<>();
     for (StudentFeePaymentRequestIpsaaClub feeSlip : feeSlips)
