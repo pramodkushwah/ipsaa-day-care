@@ -4,14 +4,53 @@
 .project
 *.iml
 /src/main/webapp
-package-lock.json
-/src/main/webapp/mis/index.html
-/src/main/webapp/pp/index.html
-/src/main/webapp/pp/checkout.html
 
 .*log
 /target
 /src/main/webapp/kidslife/
 /data
 /node_modules/
+
+
+# compiled output
+/src/main/angular/dist
+/src/main/angular/dist-server
+/src/main/angular/tmp
+/src/main/angular/out-tsc
+
+# dependencies
 /src/main/angular/node_modules/
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# e2e
+/src/main/angular/e2e/*.js
+/src/main/angular/e2e/*.map
+
+# System Files
+.DS_Store
+Thumbs.db
