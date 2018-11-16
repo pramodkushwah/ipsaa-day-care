@@ -340,11 +340,12 @@ public class InquiryService extends BaseService
 
     inquiry.setFormType(request.getFormType());
 
-    Program program= programRepository.findByCode(request.getProgram());
-    if(program == null)
-      throw new ValidationException(String.format("Program not found[%s]",request.getProgram()));
-    inquiry.setProgram(program);
-
+    if(request.getProgram() != null) {
+      Program program = programRepository.findByCode(request.getProgram());
+      if (program == null)
+        throw new ValidationException(String.format("Program not found[%s]", request.getProgram()));
+      inquiry.setProgram(program);
+    }
     websiteInquiryRepository.save(inquiry);
   }
 

@@ -63,14 +63,7 @@ public class InquiryController
     return inquiryService.getFollowUps(request).stream().map(InquiryEventLogResponse::new).collect(Collectors.toList());
   }
 
-  @PostMapping("website")
-  public void websiteInquiry(@RequestBody WebsiteInquiryRequest websiteInquiryRequest){
-    String url= request.getRequestURL().toString();
-    if(url.equals("http://ipsaa.in"))
-      inquiryService.save(websiteInquiryRequest);
-    else
-      System.out.println("No inquiry added");
-    }
+
 
   @GetMapping("website")
   public List<WebsiteInquiryResponse> getWebsiteInquiries(){
