@@ -2,6 +2,7 @@ package com.synlabs.ipsaa.entity.fee;
 
 import com.synlabs.ipsaa.entity.common.BaseEntity;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequestIpsaaClub;
 import com.synlabs.ipsaa.enums.HdfcResponseType;
 import com.synlabs.ipsaa.enums.HdfcStatus;
 import com.synlabs.ipsaa.service.BaseService;
@@ -16,6 +17,8 @@ public class HdfcResponse extends BaseEntity
 {
   @ManyToOne
   private StudentFeePaymentRequest slip;
+  @ManyToOne
+  private StudentFeePaymentRequestIpsaaClub ipsaaClubSlip;
 
   @Column(length = 4112)
   private String encResponse;
@@ -89,6 +92,8 @@ public class HdfcResponse extends BaseEntity
     });
     putDetails(map);
   }
+
+
 
   @Transient
   public void putDetails(Map<String, String> map)
@@ -218,6 +223,18 @@ public class HdfcResponse extends BaseEntity
   public void setSlip(StudentFeePaymentRequest slip)
   {
     this.slip = slip;
+  }
+  public void setSlip(StudentFeePaymentRequestIpsaaClub ipsaaClubSlip)
+  {
+    this.ipsaaClubSlip = ipsaaClubSlip;
+  }
+
+  public StudentFeePaymentRequestIpsaaClub getIpsaaClubSlip() {
+    return ipsaaClubSlip;
+  }
+
+  public void setIpsaaClubSlip(StudentFeePaymentRequestIpsaaClub ipsaaClubSlip) {
+    this.ipsaaClubSlip = ipsaaClubSlip;
   }
 
   public String getEncResponse()

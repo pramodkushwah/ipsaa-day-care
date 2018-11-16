@@ -13,7 +13,9 @@ public interface StudentFeePaymentRequestIpsaaClubRepository  extends JpaReposit
     List<StudentFeePaymentRequestIpsaaClub> findByStudentIdOrderByCreatedDateDesc(Long id);
     List<StudentFeePaymentRequestIpsaaClub> findByMonthAndYearOrderByCreatedDateDesc(int month,int year);
     List<StudentFeePaymentRequestIpsaaClub> findByIsExpireIsFalseOrderByCreatedDateDesc();
+    List<StudentFeePaymentRequestIpsaaClub> findByIsExpireIsFalseAndStudentCenterCodeOrderByCreatedDateDesc(String code);
 
+    StudentFeePaymentRequestIpsaaClub findOneByTnxid(String tnxid);
     List<StudentFeePaymentRequestIpsaaClub> findByStudentProgramIdAndStudentCorporateIsFalseAndIsExpireIsFalseAndMonthAndYearAndStudentCenterCode(long id,int month, int year, String centerCode);
     List<StudentFeePaymentRequestIpsaaClub> findByStudentProgramIdAndStudentCorporateIsFalseAndIsExpireIsFalseAndMonthAndYear(long id, int month, int year);
 

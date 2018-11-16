@@ -51,7 +51,10 @@ public class IpsaaClubFeeSerivce {
 
     public List<StudentFeePaymentRequestIpsaaClub> listFeeSlips(IpsaaClubSlipRequest request) {
         List<StudentFeePaymentRequestIpsaaClub> allslips = new LinkedList<>();
-        allslips = studentFeePaymentRequestIpsaaClubRepository.findByIsExpireIsFalseOrderByCreatedDateDesc();
+        if(request.getCenterCode()!=null){
+            allslips = studentFeePaymentRequestIpsaaClubRepository.findByIsExpireIsFalseAndStudentCenterCodeOrderByCreatedDateDesc(request.getCenterCode());
+        }else
+            allslips = studentFeePaymentRequestIpsaaClubRepository.findByIsExpireIsFalseOrderByCreatedDateDesc();
         return allslips;
     }
     @Transactional
