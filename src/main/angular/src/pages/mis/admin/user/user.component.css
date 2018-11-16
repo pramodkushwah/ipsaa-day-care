@@ -17,7 +17,7 @@
 }
 
 .more-less input:checked + .more:before{
-  content: "less...";
+  content: "...less";
 }
 
 .more-less input:checked + .more{

@@ -50,23 +50,15 @@ export class DashboardService {
     return this.api.post('api/stats/fee', timestamp);
   }
 
-  getStudents() {
-    if (this.students) {
-      return of(this.students);
-    }
-    return this.api
-      .post('api/dash/student', { status: 'new request' })
-      .map((response: any) => {
-        this.students = response;
-        return response;
-      });
+  getStudents(object) {
+    return this.api.post('api/dash/student', object);
   }
 
-  getStaff() {
+  getStaff(object) {
     if (this.staff) {
       return of(this.staff);
     }
-    return this.api.post('api/dash/staff', {}).map((response: any) => {
+    return this.api.post('api/dash/staff', object).map((response: any) => {
       this.staff = response;
       return response;
     });

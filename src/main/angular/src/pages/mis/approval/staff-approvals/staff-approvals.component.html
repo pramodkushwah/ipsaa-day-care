@@ -15,7 +15,7 @@
     </button>
   </div>
 </div>
-<div class="row">
+<div class="row"  *ngIf="showTable">
   <div [class]="viewPanel?'transition col-lg-6':'transition col-md-12'">
     <div class="card">
       <div class="card-header card-header-warning card-header-icon">
@@ -33,7 +33,19 @@
       </div>
       <div class="card-body">
         <table class="table table-responsive">
-          <thead class="text-primary" *ngIf=" staffAprrovelList ?.length >0">
+            <colgroup>
+            
+              <col width="10%">
+              <col width="10%">
+              <col width="10%">
+              <col width="15%">
+              <col width="15%">
+              <col width="10%">
+              <col width="10%">
+              <col width="10%">
+            </colgroup>
+          <thead class="text-primary" >
+              <!-- *ngIf=" staffAprrovelList ?.length >0"s -->
             <th> Sr.No</th>
             <th>Name</th>
             <th>Designation</th>
@@ -58,7 +70,7 @@
               </td>
             </tr>
           </tbody>
-          <tfoot *ngIf=" staffAprrovelList.length === 0" style="border: 1px groove #e8e8e8;">
+          <tfoot *ngIf="staffAprrovelList.length === 0" style="border: 1px groove #e8e8e8;">
             <tr>
               <td class="text-center">No Content</td>
             </tr>
@@ -68,10 +80,6 @@
     </div>
   </div>
   <div class="col-lg-6" *ngIf="viewPanel">
-    <div class="card">
-      <div class="card-body">
-        <app-staff-info [id]="selectedStaff.id" [update]="update"></app-staff-info>
-      </div>
-    </div>
+    <app-staff-info [id]="selectedStaff.id" [update]="update"></app-staff-info>
   </div>
 </div>

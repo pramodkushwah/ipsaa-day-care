@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, FormControl, Validators, ValidatorFn, AbstractC
 import { AdminService } from '../../../../providers/admin/admin.service';
 import * as _ from 'underscore';
 import { AlertService } from '../../../../providers/alert/alert.service';
+import { PayrollService } from '../../../../providers/payroll/payroll.service';
 declare let $: any;
 
 @Component({
@@ -35,8 +36,10 @@ export class StaffInfoComponent implements OnInit {
     'Nov',
     'Dec'
   ];
+  salary: any;
   constructor(
     private adminService: AdminService,
+    private payrollService: PayrollService,
     private fb: FormBuilder,
     private alertService: AlertService,
     private datePipe: DatePipe
@@ -79,7 +82,9 @@ export class StaffInfoComponent implements OnInit {
       this.staffForm.controls['costCenterId'].patchValue(
         staff.costCenter ? staff.costCenter.id + '' : ''
       );
-      console.log(this.staffForm.value);
+      this.payrollService.getSalaryByEmployee(staff.eid).subscribe(response => {
+        this.salary = response;
+      });
     });
   }
 
@@ -286,4 +291,5 @@ export class StaffInfoComponent implements OnInit {
       this.paySlips = response;
     });
   }
+
 }

@@ -27,6 +27,7 @@ export class CenterComponent implements OnInit {
   selectedCenter: any;
   selectedZone: any;
   selectedCity: any;
+  centersCopy: any = [];
 
   constructor(
     private dashboardService: DashboardService,
@@ -60,6 +61,7 @@ export class CenterComponent implements OnInit {
   getCenters() {
     this.dashboardService.getCenters().subscribe((response: any[]) => {
       this.centers = response;
+      this.centersCopy = JSON.parse(JSON.stringify(response));
       this.tableTitle = 'Centers';
       this.tableData = this.centers;
       this.tableColumn = [
@@ -267,5 +269,14 @@ export class CenterComponent implements OnInit {
         });
       }
     });
+  }
+
+  filterCenter(searchKey) {
+    const val = searchKey.toLowerCase();
+    if (val && val.trim() !== '') {
+      this.centers = this.centersCopy.filter((center: any) => {
+        return center.code.toLowerCase().startsWith(val);
+      });
+    }
   }
 }

@@ -6,6 +6,7 @@ import {
 } from '../../../../../node_modules/@angular/forms';
 import { AlertService } from '../../../../providers/alert/alert.service';
 import * as _ from 'underscore';
+import { PayrollService } from '../../../../providers/payroll/payroll.service';
 @Component({
   selector: 'app-salary-info',
   templateUrl: './salary-info.component.html',
@@ -21,7 +22,6 @@ export class SalaryInfoComponent implements OnInit {
 
   @Input()
   set salary(salary: any) {
-    console.log(salary);
     this.selectedSalary = salary;
     this.salaryForm = this.getSalaryForm();
     salary
@@ -37,7 +37,8 @@ export class SalaryInfoComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private adminService: AdminService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private payrollService: PayrollService
   ) {}
 
   ngOnInit() {

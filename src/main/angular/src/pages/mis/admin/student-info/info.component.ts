@@ -94,7 +94,7 @@ export class StudentInfoComponent implements OnInit {
       admissionDate: [this.datePipe.transform(new Date(), 'yyyy-MM-dd')],
       admissionNumber: [''],
       approvalStatus: [''],
-      dob: ['', [Validators.required]],
+      dob: [''],
       fullName: [''],
       id: [''],
       imagePath: [''],
@@ -256,7 +256,7 @@ export class StudentInfoComponent implements OnInit {
           this.adminService.viewPanel.next(false);
         });
     } else {
-      this.adminService
+            this.adminService
         .addStudent(this.studentForm.value)
         .subscribe((response: any) => {
           this.alertService.successAlert('Student Info Successfully added.');

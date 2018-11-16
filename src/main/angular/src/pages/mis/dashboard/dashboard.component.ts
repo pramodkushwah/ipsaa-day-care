@@ -148,11 +148,11 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  getStudents() {
+  getStudents(object) {
     this.adminService.viewPanel.next(false);
     this.tableTitle = 'Students';
     this.tableData = [];
-    this.dashboardService.getStudents().subscribe((response: any) => {
+    this.dashboardService.getStudents(object).subscribe((response: any) => {
       this.tableData = response;
       this.students = response;
       this.tableColumn = [
@@ -170,11 +170,16 @@ export class DashboardComponent implements OnInit {
   }
 
   getStaff() {
+    const object = {
+      center : this.selectedCenter.code,
+      city : this.selectedCity.name,
+      zone : this.selectedZone.name
+    };
     this.adminService.viewPanel.next(false);
     this.tableFor = 'staff';
     this.tableTitle = 'Staff';
     this.tableData = [];
-    this.dashboardService.getStaff().subscribe((response: any) => {
+    this.dashboardService.getStaff(object).subscribe((response: any) => {
       this.tableData = response;
       this.tableColumn = [
         'eid',
@@ -208,12 +213,18 @@ export class DashboardComponent implements OnInit {
   }
 
   getFilteredStudents(filterType: any) {
+    const object = {
+      center : this.selectedCenter.code,
+      city : this.selectedCity.name,
+      zone : this.selectedZone.name,
+      status: 'new request'
+    };
     this.adminService.viewPanel.next(false);
     this.tableFor = 'student';
     this.tableTitle = filterType + ' Students';
     this.tableData = [];
     this.tableColumn = [];
-    this.dashboardService.getStudents().subscribe((response: any) => {
+    this.dashboardService.getStudents(object).subscribe((response: any) => {
       this.students = response;
       switch (filterType) {
         case 'Present':

@@ -3,8 +3,6 @@
     <button type="button" class="close" aria-label="Close" (click)="hideViewPanel()">
       <span aria-hidden="true">&times;</span>
     </button>
-    <!-- <h4 class="card-title">Student Info</h4>
-        <p class="card-category">Category subtitle</p> -->
     <div class="card-profile">
       <div class="staff-img mx-auto rounded-circle">
         <img class="img-fluid" *ngIf="staff && !staff.staffImageData" src="/assets/img/default-avatar.png" />
@@ -12,7 +10,6 @@
           [src]="'data:image/PNG;base64,' + staff.staffImageData">
       </div>
     </div>
-
   </div>
   <div class="card-body">
     <div class="card-profile-name">
@@ -27,7 +24,6 @@
       />
     </div>
     <div class="card-content">
-      <!-- Nav pills of staff card -->
       <ul class="nav nav-pills nav-tabs" role="tablist">
         <li class="nav-item">
           <a class="nav-link active" data-toggle="tab" href="#profile">Profile</a>
@@ -45,9 +41,7 @@
           <a class="nav-link" data-toggle="tab" href="#payslips">Payslip</a>
         </li>
       </ul>
-      <!-- Nav pills of staff card -->
 
-      <!-- staff form starts -->
       <form class="tab-content" [formGroup]="staffForm">
         <div class="tab-pane container active mt-2" id="profile">
           <div class="row">
@@ -332,8 +326,6 @@
 
           </div>
         </div>
-
-        <!-- /////////////////// -->
         <div class="tab-pane container mt-2" id="address" formGroupName="profile">
           <div formGroupName="address">
             <div class="row">
@@ -390,7 +382,6 @@
 
 
         </div>
-
         <div class="tab-pane container mt-2" id="address2" formGroupName="profile">
           <div formGroupName="permanentAddress">
             <div class="row">
@@ -446,12 +437,9 @@
           </div>
 
         </div>
-
         <div class="tab-pane container mt-2" id="salary" *ngIf="!newStaff">
-          <br>
-          <h3>Salary Detail Coming Soon</h3>
+            <app-salary-info [salary]="salary" [update]="true"></app-salary-info>
         </div>
-
         <div class="tab-pane container mt-2" id="payslips" *ngIf="!newStaff">
           <h3>PaySlips Detail</h3>
           <div class="table-responsive">
@@ -479,9 +467,7 @@
             </table>
           </div>
         </div>
-
       </form>
-      <!-- staff form ends -->
     </div>
   </div>
 

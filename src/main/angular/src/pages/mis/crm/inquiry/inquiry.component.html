@@ -1,119 +1,454 @@
-<div class="row">
-  <div class="col-md-2">
-    <div class="form-group ipsaa-form-group">
-      <label class="control-label">Center:</label>
-      <select class="form-control" [(ngModel)]="selectedCenter"  (ngModelChange)="centerChanged(selectedCenter)">
-        <option value="">Select Center</option>
-        <option *ngFor="let center of centers" value=""> {{center.name}}</option>
 
-      </select>
-    </div>
-  </div>
-  <div class="col-md-2">
-    <div class="form-group ipsaa-form-group">
-      <label class="control-label">Search:</label>
-      <input class="form-control" [(ngModel)]="searchInquiry" type="text">
-    </div>
-  </div>
 
-  <div class="col-md-2">
-    <button class="btn btn-rose" (click)="addInquiry()" style="margin-top: 20px;">Add Inquiry</button>
-  </div>
-</div>
+
+
+
+
+
+
+
 <div class="row">
-  <div class="col-md-6">
-    <ul class="nav nav-pills nav-pills-warning">
-      <li class="active">
-        <a data-href="#inquiries" data-toggle="tab" class="active" (click)="changeTab(1)">Inquiry</a>
+    <!-- Nav tabs -->
+    <!-- <ul class="nav nav-tabs col-lg-12" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" (click)="changeTab('Inquiry');" href="#Inquiry">Inquiry</a>
       </li>
-      <li>
-        <a data-href="#followups" data-toggle="tab" (click)="changeTab(2)">Follow up</a>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" (click)="changeTab(' FollowUps');" href="#FollowUps">FollowUps</a>
       </li>
     </ul>
-  </div>
-</div>
-<div class="row">
-
-  <div class="col-md-12">
-    <div class="tab-content">
-      <div class="tab-pane active" id="inquiries">
-
-        <div class="card">
-          <div class="card-header card-header-icon" data-background-color="rose">
-            <i class="material-icons">account_box</i>
+  
+  
+    <div [class]="viewPanel?'col-lg-8':'col-lg-12'">
+      <div class="card">
+        <div class="card-header card-header-warning card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">content_copy</i>
           </div>
-          <div class="card-content">
-            <h4 class="card-title">Inquiries</h4>
-            <div class="table-responsive">
-              <table class="table table-condensed table-striped table-hover">
-                <thead class="text-primary">
-                <tr>
-                  <th>#</th>
-                  <th>Child Name</th>
-                  <th>Center</th>
-                  <th>Program</th>
-                  <th>Group</th>
-                  <th>Fees offer</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor=" let inquiry of  inquiries | filter: searchInquiry">
-                  <td (click)="loadInquiry(inquiry.id,'Show')">{{inquiry.inquiryNumber}}</td>
-                  <td (click)="loadInquiry(inquiry.id,'Show')">{{inquiry.childName}}</td>
-                  <td (click)="loadInquiry(inquiry.id,'Show')">{{inquiry.centerCode}}</td>
-                  <td (click)="loadInquiry(inquiry.id,'Show')">{{inquiry.programCode}}</td>
-                  <td (click)="loadInquiry(inquiry.id,'Show')">{{inquiry.groupName}}</td>
-                  <td (click)="loadInquiry(inquiry.id,'Show')">{{inquiry.feeOffer}}</td>
-                </tr>
-                </tbody>
-              </table>
+
+          <h3 class="card-title">
+            {{selectedTab}}
+            <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="!loader"></i>
+            <button class="btn btn-primary btn-sm pull-right" *ngIf="inquiryTable" >New</button>
+          </h3>
+          <div class="row">
+            <div class="form-group col-lg-4 col-md-6">
+              <label class="control-label" for="center">Center:</label>
+              <select  class="form-control" id="center"
+                [(ngModel)]="selectedCenterId" (ngModelChange)="filterFeeByCenter(selectedCenterId)">
+                <option [ngValue]="'All'">Select Option</option>
+                <option *ngFor="let center of centers;" [ngValue]="center.id">{{center.name}}</option>
+              </select>
             </div>
           </div>
-        </div>
-
-      </div>
-      <div class="tab-pane" id="followups">
-        <div class="card">
-          <div class="card-header card-header-icon" data-background-color="rose">
-            <i class="material-icons">account_box</i>
+        </div> -->
+  
+        <!-- Tab panes -->
+<!--   
+        <div class="tab-content">
+          <div id="Inquiry" class="tab-pane active">
+            <br>
+            <div *ngIf="inquiryTable" class="card-body">
+                <table class="table table-responsive table-hover">
+                  <thead class="text-primary">
+                    <tr>
+                      <th>#</th>
+                      <th>Child Name</th>
+                      <th>Center</th>
+                      <th>Program</th>
+                      <th>Group</th>
+                      <th>Fees offer</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor=" let inquiry of  inquiries ">
+                      <td (click)="loadInquiry(inquiry.id,'Show')">{{inquiry.inquiryNumber}}</td>
+                      <td (click)="loadInquiry(inquiry.id,'Show')">{{inquiry.childName}}</td>
+                      <td (click)="loadInquiry(inquiry.id,'Show')">{{inquiry.centerCode}}</td>
+                      <td (click)="loadInquiry(inquiry.id,'Show')">{{inquiry.programCode}}</td>
+                      <td (click)="loadInquiry(inquiry.id,'Show')">{{inquiry.groupName}}</td>
+                      <td (click)="loadInquiry(inquiry.id,'Show')">{{inquiry.feeOffer}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
           </div>
-          <div class="card-content">
-            <h4 class="card-title">Followups</h4>
-            <div class="row">
-              <div class="col-md-3">
-                <div class="form-group">
-                  <label class="control-label">Filter</label>
-                  <select class="form-control" [(ngModel)]="followupFilter" (ngModelChange)="followupFilterChanged(followupFilter)" ng-options="followupFilter as followupFilter for followupFilter in followupFilters"></select>
-                </div>
+  
+          <div id="FollowUps" class="tab-pane fade">
+            <br>
+            <div *ngIf="followUpsTable" class="card-body">
+                <table  class="table table-hover table-responsive ">
+                  <thead class="text-primary">
+                    <tr>
+                      <th>Inquiry Number</th>
+                      <th>Disposition</th>
+                      <th>CallBack Date</th>
+                      <th>CallBack Number</th>
+                      <th>Comment</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor=" let followUp of followUps ">
+                      <td (click)="loadFollowup(followUp.inquiryId)">{{followUp.inquiryNumber}}</td>
+                      <td (click)="loadFollowup(followUp.inquiryId)">{{followUp.callDisposition}}</td>
+                      <td (click)="loadFollowup(followUp.inquiryId)">{{followUp.callBack}}</td>
+                      <td (click)="loadFollowup(followUp.inquiryId)">{{followUp.callBackNumber}}</td>
+                      <td (click)="loadFollowup(followUp.inquiryId)">{{followUp.comment}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+          </div>
+  
+          
+        </div>
+      </div>
+  
+  
+    </div>
+  
+    <div class="col-lg-4" *ngIf="viewPanel">
+  
+  
+  
+  
+      <div class="card">
+        <div class="card-header card-header-warning">
+          <button type="button" class="close" aria-label="Close" >
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="card-title">
+            <span *ngIf="!editable;else edit">
+              Add
+            </span>
+            <ng-template #edit>
+              Edit
+            </ng-template>
+            {{selectedTab}}
+          </h4>
+        </div>
+        <div class="card-body" *ngIf="selectedTab === 'Inquiry'">
+         
+        </div>
+  
+        <div class="card-body" *ngIf="selectedTab === 'FollowUps'">
+        
+        </div>
+  
+  
+        
+      </div>
+    </div>-->
+  
+
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header card-header-warning card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
+            </div>
+            <h4>{{workingInquiry.mode}} Inquiry</h4>
+          </div>
+          <div class="card-body">
+        <div class="card-content">
+    
+          <button class="btn btn-sm" (click)="addInquiry()">Back</button>
+    
+          <div class="row">
+    
+            <div class="form-group ipsaa-form-group col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Inquiry Number</label>
+                <input class="form-control" name="inquiryNumber" type="text" [(ngModel)]="workingInquiry.inquiryNumber">
               </div>
             </div>
+            <div class="form-group ipsaa-form-group col-md-2">
+              <label class="control-label">Lead Source</label>
+              <select class="form-control" name="leadSource" [(ngModel)]="workingInquiry.leadSource">
+                <option selected="selected" value="">Select Source</option>
+                <option *ngFor="let leadSource of leadSources;" [value]="leadSource">{{leadSource}}</option>
 
-            <div class="table-responsive">
-              <table class="table table-condensed table-striped table-hover">
-                <thead class="text-primary">
-                <tr>
-                  <th>Inquiry Number</th>
-                  <th>Disposition</th>
-                  <th>CallBack Date</th>
-                  <th>CallBack Number</th>
-                  <th>Comment</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor=" let followUp of followUps | orderBy:'callBack'">
-                  <td (click)="loadFollowup(followUp.inquiryId)">{{followUp.inquiryNumber}}</td>
-                  <td (click)="loadFollowup(followUp.inquiryId)">{{followUp.callDisposition}}</td>
-                  <td (click)="loadFollowup(followUp.inquiryId)">{{followUp.callBack}}</td>
-                  <td (click)="loadFollowup(followUp.inquiryId)">{{followUp.callBackNumber}}</td>
-                  <td (click)="loadFollowup(followUp.inquiryId)">{{followUp.comment}}</td>
-                </tr>
-                </tbody>
-              </table>
+              </select>
+            </div>
+            <div class="form-group ipsaa-form-group col-md-2">
+              <label class="control-label">Inquiry Type</label>
+              <select class="form-control" name="inquiryType" [(ngModel)]="workingInquiry.inquiryType" >
+                <option selected="selected" value="">Select Type</option>
+                <option *ngFor="let inquiryType of inquiryTypes;" [value]="inquiryType">{{inquiryType}}</option>
+              </select>
+            </div>
+    
+    
+            <div class="form-group ipsaa-form-group col-md-2">
+              <label class="control-label">Center</label>
+              <select class="form-control" [(ngModel)]="workingInquiry.center">
+                <option selected="selected" value="">Select Center</option>
+                <option *ngFor="let center of centers;" [value]="center.code">{{center.name}}</option>
+              </select>
+            </div>
+            <div class="form-group ipsaa-form-group col-md-2">
+              <label class="control-label">Program</label>
+              <select class="form-control" [(ngModel)]="workingInquiry.program" >
+                <option selected="selected" value="">Select Program</option>
+                <option *ngFor="let program of programs;" [value]="program.code">{{program.name}}</option>
+              </select>
+            </div>
+            <div class="form-group ipsaa-form-group col-md-2">
+              <label class="control-label">Group</label>
+              <select class="form-control" [(ngModel)]="workingInquiry.group" >
+                <option selected="selected" value="">Select Group</option>
+                <option *ngFor="let program of programs.groups ;" [value]="program.id">{{program.name}}</option>
+
+              </select>
+            </div>
+    
+    
+            <div class="form-group ipsaa-form-group col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Who Visited</label>
+                <input class="form-control" name="whoVisited" type="text" [(ngModel)]="workingInquiry.whoVisited">
+              </div>
+            </div>
+            <div class="form-group ipsaa-form-group col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">From Time</label>
+                <input class="form-control timepicker" name="fromTime" id="fromTime" type="text" [(ngModel)]="workingInquiry.fromTime">
+              </div>
+            </div>
+            <div class="form-group ipsaa-form-group col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">To Time</label>
+                <input class="form-control timepicker" name="toTime" id="toTime" type="text" [(ngModel)]="workingInquiry.toTime">
+              </div>
+            </div>
+            <div class="form-group ipsaa-form-group col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Fees offer</label>
+                <input class="form-control" name="feeOffer" [(ngModel)]="workingInquiry.feeOffer">
+              </div>
+            </div>
+    
+            <div class="form-group ipsaa-form-group col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Inquiry Date (YYYY-MM-DD)</label>
+                <input class="form-control datepicker" id="inquiryDate" name="workingInquiry.inquiryDate" type="text" [(ngModel)]="workingInquiry.inquiryDate">
+              </div>
+            </div>
+          </div>
+    
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <legend>Child</legend>
+              </div>
+            </div>
+            <div class="form-group ipsaa-form-group col-md-4">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">First Name</label>
+                <input class="form-control" name="childFirstName" type="text" [(ngModel)]="workingInquiry.childFirstName">
+              </div>
+            </div>
+            <div class="form-group ipsaa-form-group col-md-4">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Last Name</label>
+                <input class="form-control" name="childLastName" type="text" [(ngModel)]="workingInquiry.childLastName">
+              </div>
+            </div>
+            <div class="form-group ipsaa-form-group col-md-4">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">DOB(YYYY-MM-DD)</label>
+                <input class="form-control datepicker" id="childDob" name="childDob" type="text" [(ngModel)]="workingInquiry.childDob">
+              </div>
+            </div>
+          </div>
+    
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <legend>Parents</legend>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Father's First Name</label>
+                <input class="form-control" name="fatherFirstName" type="text" [(ngModel)]="workingInquiry.fatherFirstName">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Father's Last Name</label>
+                <input class="form-control" name="fatherLastName" type="text" [(ngModel)]="workingInquiry.fatherLastName">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Father's Email</label>
+                <input class="form-control" name="fatherEmail" type="text" [(ngModel)]="workingInquiry.fatherEmail">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Father's Mobile</label>
+                <input class="form-control" name="fatherMobile" type="text" [(ngModel)]="workingInquiry.fatherMobile">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Father's Company</label>
+                <input class="form-control" name="fatherCompanyName" type="text" [(ngModel)]="workingInquiry.fatherCompanyName">
+              </div>
+            </div>
+          </div>
+    
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Mother's First Name</label>
+                <input class="form-control" name="motherFirstName" type="text" [(ngModel)]="workingInquiry.motherFirstName">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Mother's Last Name</label>
+                <input class="form-control" name="motherLastName" type="text" [(ngModel)]="workingInquiry.motherLastName">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Mother's Email</label>
+                <input class="form-control" name="motherEmail" type="text" [(ngModel)]="workingInquiry.motherEmail">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Mother's Mobile</label>
+                <input class="form-control" name="motherMobile" type="text" [(ngModel)]="workingInquiry.motherMobile">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Mother's Company</label>
+                <input class="form-control" name="motherCompanyName" type="text" [(ngModel)]="workingInquiry.motherCompanyName">
+              </div>
+            </div>
+    
+          </div>
+    
+          <div class="row">
+            <div class="col-md-5">
+              <div class="form-group  ipsaa-form-group">
+                <label class="control-label">Secondary Numbers</label>
+                <input class="form-control" type="text" [(ngModel)]="workingInquiry.secondaryNumbers">
+              </div>
+            </div>
+            <div class="col-md-7">
+              <div class="form-group  ipsaa-form-group">
+                <label class="control-label">Address</label>
+                <input class="form-control" type="text" [(ngModel)]="workingInquiry.address.address">
+              </div>
+            </div>
+          </div>
+    
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <legend>Call Log</legend>
+              </div>
+            </div>
+            <div class="form-group ipsaa-form-group col-md-2">
+              <label class="control-label">Disposition</label>
+              <select class="form-control" [(ngModel)]="workingInquiry.log.callDisposition"
+                      ng-options="disposition as disposition for disposition in dispositions">
+                <option selected="selected" value="">Select Disposition</option>
+                <option *ngFor="let disposition of dispositions;" [value]="disposition">{{disposition}}</option>
+
+              </select>
+            </div>
+            <div ng-show="workingInquiry.log.callDisposition=='NewInquiry'||
+                        workingInquiry.log.callDisposition=='Followup'||
+                        workingInquiry.log.callDisposition=='Callback'||
+                        workingInquiry.log.callDisposition=='ParentMessage'||
+                        workingInquiry.log.callDisposition=='Revisit'">
+              <div class="form-group ipsaa-form-group col-md-2">
+                <div class="form-group ipsaa-form-group">
+                  <label class="control-label">Callback Date (YYYY-MM-DD)</label>
+                  <input class="form-control datepicker" id="callBackDate" name="workingInquiry.log.callBackDate" type="text" [(ngModel)]="workingInquiry.log.callBackDate">
+                </div>
+              </div>
+              <div class="form-group ipsaa-form-group col-md-2">
+                <div class="form-group ipsaa-form-group">
+                  <label class="control-label">Callback Time (HH:MM)</label>
+                  <input class="form-control timepicker" id="callBackTime" name="workingInquiry.log.callBackTime" type="text" [(ngModel)]="workingInquiry.log.callBackTime">
+                </div>
+              </div>
+              <div class="form-group ipsaa-form-group col-md-2">
+                <!-- <div class="form-group ipsaa-form-group">
+                  <label class="control-label">Callback Number</label>
+                  <input class="form-control dropdown-toggle" data-toggle="dropdown" name="workingInquiry.log.callBackNumber" type="text" [(ngModel)]="workingInquiry.log.callBackNumber">
+                  <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                    <li ng-repeat="number in inquiryNumbers | filter: workingInquiry.log.callBackNumber">
+                      <a (click)="workingInquiry.log.callBackNumber = number">{{number}}</a>
+                    </li>
+                  </ul>
+                </div> -->
+              </div>
+            </div>
+    
+          </div>
+    
+          <div class="row">
+            <div class="form-group ipsaa-form-group col-md-8">
+              <div class="form-group ipsaa-form-group">
+                <label class="control-label">Comment</label>
+                <textarea class="form-control" [(ngModel)]="workingInquiry.log.comment" row="5" maxlength="500"></textarea>
+              </div>
+            </div>
+          </div>
+    
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <legend>History</legend>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table table-condensed table-striped table-hover">
+                  <thead class="text-primary">
+                  <tr>
+                    <th>Disposition</th>
+                    <th>CallBack Date</th>
+                    <th>CallBack Number</th>
+                    <th>Comment</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor=" let log of workingInquiry.logs ">
+                    <td>{{log.callDisposition}}</td>
+                    <td>{{log.callBack}}</td>
+                    <td>{{log.callBackNumber}}</td>
+                    <td>{{log.comment}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+    
+          <div class="tab-pane active" id="controls">
+            <div class="category form-category">
+              *Required Fields
+            </div>
+            <div class="form-footer text-right">
+              <button class="btn btn-rose btn-fill" (click)="addInquiry()">Save</button>
+              <button class="btn btn-default" (click)="addInquiry()">Cancel</button>
             </div>
           </div>
         </div>
       </div>
+      </div>
     </div>
-  </div>
-
-</div>
+    
+    
+    
+  </div> 

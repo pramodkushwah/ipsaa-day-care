@@ -14,6 +14,7 @@ export class StaffApprovalsComponent implements OnInit {
   selectedStaff: any = {};
   viewPanel = false;
   update = false;
+  showTable = false;
   constructor(
     private alertService: AlertService,
     private adminService: AdminService,
@@ -33,11 +34,17 @@ export class StaffApprovalsComponent implements OnInit {
       });
   }
   getStaffList() {
-    console.log(this.selectedCenterId);
+    this.alertService.loading.next(true);
+
     this.adminService.getSelectedCenterStaffApprovalCount(this.selectedCenterId)
       .subscribe((res: any) => {
+        this.alertService.loading.next(false);
+this.showTable = true;
         this.staffAprrovelList = res;
       }, (err) => {
+        this.alertService.loading.next(false);
+        this.showTable = true;
+
         this.alertService.errorAlert(err);
       });
   }

@@ -450,6 +450,37 @@ getSelectedCenterStudentsApprovalCount(centerId: number) {
   return this.api.get('api/student/approvals/' + centerId);
 }
 
+// center
+
+getZones() {
+  return this.api.get('/api/zone/');
+}
+
+
+getStatesByZone(zoneId) {
+  return this.api.get('/api/state/zone/' + zoneId + '/');
+}
+getCitiesByStateByZone(stateId) {
+  return this.api.get('/api/ctty/state/' + stateId + '/');
+}
+
+
+
+
+// crm
+
+
+getInquiry(centerId?) {
+  if (centerId) {
+    return this.api.get('/api/inquiry/?centerId=' + centerId);
+  } else {
+    return this.api.get('/api/inquiry/');
+  }
+}
+
+getFollowUps(date_Dispositions) {
+  return this.api.post('api/inquiry/followUps/', date_Dispositions );
+}
 
 
 }

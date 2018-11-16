@@ -15,6 +15,7 @@ import { RoleComponent } from './role/role.component';
 import { UserComponent } from './user/user.component';
 import { UserInfoComponent } from './user-info/user-info.component';
 import { ImportDataComponent } from './import-data/import-data.component';
+import { PayrollModule } from '../payroll/payroll.module';
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { ImportDataComponent } from './import-data/import-data.component';
     AdminRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    ComponentsModule
+    ComponentsModule,
+    PayrollModule
   ],
   declarations: [
     StudentComponent,

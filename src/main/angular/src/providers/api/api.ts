@@ -120,7 +120,6 @@ export class Api {
   }
 
   handleError = (errorResponse: HttpErrorResponse) => {
-    console.log(errorResponse);
     switch (errorResponse.status) {
       case 401:
         this.alertService.errorAlert('Session Expired');

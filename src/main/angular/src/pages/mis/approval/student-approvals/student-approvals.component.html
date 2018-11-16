@@ -75,8 +75,10 @@
   </div>
 
   <div class="col-lg-6" *ngIf="viewPanel">
-   
+    <div class="card">
+      <div class="card-body">
         <app-student-info [id]="selectedStudent.id" [update]="update"></app-student-info>
-   
+      </div>
+    </div>
   </div>
 </div>

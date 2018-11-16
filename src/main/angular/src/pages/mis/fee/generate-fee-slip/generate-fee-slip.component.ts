@@ -69,8 +69,6 @@ export class GenerateFeeSlipComponent implements OnInit {
   }
 
 
-
-
   generate() {
     this.downloadinData = false;
     this.alertService.loading.next(true);
@@ -304,7 +302,7 @@ export class GenerateFeeSlipComponent implements OnInit {
         const blob = new Blob([res], {
           // type: 'application/octet-stream'
         });
-        FileSaver.saveAs(blob, 'abc.pdf');
+        FileSaver.saveAs(blob, 'abc.pdf' );
 
         this.downloadingSlips = false;
         this.alertService.successAlert('');
@@ -355,13 +353,11 @@ export class GenerateFeeSlipComponent implements OnInit {
   }
 
   sendMail() {
-
-    console.log(this.eMailForm.value);
-
     this.adminService.sendEmails({ 'subject': this.eMailForm.value.subject, 'body': this.eMailForm.value.body, 'slipIds': this.ids })
       .subscribe((res: any) => {
         this.eMailForm.reset();
         this.alertService.successAlert('');
+this.showSidePanel(false, null);
       }, (err) => {
         this.alertService.errorAlert(err);
       });

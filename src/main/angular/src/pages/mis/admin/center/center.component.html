@@ -22,9 +22,12 @@
               <i class="material-icons">content_copy</i>
             </div>
             <h3 class="card-title">
-              {{tableTitle}}
               <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="tableData.length"></i>
+              {{tableTitle}}
               <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" (click)="showSidePanel(false,null)" >Add New</button>
+              <div class="form-group" style="float: right;" *ngIf="tableTitle=='Centers'">
+                <input class="form-control" [(ngModel)]="searchCenter" (ngModelChange)="filterCenter($event)" placeholder="Search by center code..">
+              </div>
             </h3>
           </div>
           <div class="card-footer">

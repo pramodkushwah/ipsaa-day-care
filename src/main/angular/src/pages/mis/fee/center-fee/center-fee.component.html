@@ -24,7 +24,7 @@
         <h3 class="card-title">
           {{selectedTab}}
           <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="!loader"></i>
-          <button class="btn btn-primary btn-sm pull-right" *ngIf="tableShow || selectedTab ==='Charge'" [disabled]="(selectedTab ==='Additional Charges') && additionCharge?.length >2" (click)="showSidePanel(true,null)">New</button>
+          <button class="btn btn-primary btn-sm pull-right" *ngIf="tableShow || selectedTab ==='Charge'" [disabled]="(selectedTab ==='Additional Charges') " (click)="showSidePanel(true,null)">New</button>
         </h3>
         <div class="row">
           <div class="form-group col-lg-4 col-md-6">
@@ -235,7 +235,7 @@
                   <option *ngFor="let charge of filterCharge;let c = index;" [ngValue]="charge.id"> {{charge.name}}</option>
                 </select>
                 <div *ngIf="id.invalid && (id.dirty || id.touched)" class="text-danger position-absolute">
-                  <div *ngIf="id.errors.required">Required</div>
+                  <div *ngIf="!!id.errors.required">Required</div>
                 </div>
               </div>
 

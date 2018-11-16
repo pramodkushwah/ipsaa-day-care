@@ -39,6 +39,7 @@ export class StaffLeavesComponent implements OnInit {
   monthlyLeaveHistory: Array<any>;
   yearlyLeaveHistory: Array<any>;
   applyLeavDetails = {};
+  apllyLeaveSuccessful = true;
   showDetails = false;
   employeeList: Array<any>;
   currentDate: Date;
@@ -74,6 +75,7 @@ export class StaffLeavesComponent implements OnInit {
       });
   }
   getEmployeeAttendance() {
+    this.alertService.loading.next(true);
     this.applyLeavDetails = {};
     this.payrollService.getAttendance({
       empId: this.selectedId,
@@ -82,13 +84,13 @@ export class StaffLeavesComponent implements OnInit {
     })
       .subscribe((res: any) => {
         this.LeaveMonthTable();
+        this.alertService.loading.next(false);
+
         this.showDetails = true;
         this.eId = res[0].eid;
         this.selectedEmployeeAttendanceDetails = res.sort((val1, val2) => {
           return new Date(val1.date).getTime() - new Date(val2.date).getTime();
         });
-        console.log(this.selectedEmployeeAttendanceDetails);
-
         for (let i = 0; i < this.selectedEmployeeAttendanceDetails.length; i++) {
           switch (this.selectedEmployeeAttendanceDetails[i].status) {
             case 'Absent':
@@ -112,6 +114,7 @@ export class StaffLeavesComponent implements OnInit {
 
       }, (err) => {
         this.showDetails = true;
+        this.alertService.loading.next(false);
         this.alertService.errorAlert(err);
       });
 
@@ -120,6 +123,7 @@ export class StaffLeavesComponent implements OnInit {
   }
 
   apllyLeave() {
+    this.apllyLeaveSuccessful = false ;
     this.applyLeavDetails['eid'] = this.eId;
     this.applyLeavDetails['fromDate'] = this.fromDate;
     this.applyLeavDetails['leaveType'] = this.selectedLeaveType;
@@ -130,10 +134,18 @@ export class StaffLeavesComponent implements OnInit {
     }
     this.payrollService.leaveApplication(this.applyLeavDetails)
       .subscribe((res) => {
+        this.apllyLeaveSuccessful = true;
         this.applyLeavDetails = {};
+        this.fromDate = '';
+        this.selectedLeaveType = '';
+        this.reason = '';
+        this.toDate = '';
+        this.halfDay = '';
         this.alertService.successAlert('Leave operation successful');
 
       }, (err) => {
+        this.apllyLeaveSuccessful = false;
+
         this.alertService.errorAlert(err);
       });
   }
@@ -144,7 +156,7 @@ export class StaffLeavesComponent implements OnInit {
       .subscribe((res) => {
         this.getEmployeeAttendance();
         this.disableApprove = false;
-this.alertService.successAlert('Leave Approve');
+        this.alertService.successAlert('Leave Approve');
       }, (err) => {
         this.disableApprove = false;
         this.alertService.errorAlert(err);
@@ -155,16 +167,16 @@ this.alertService.successAlert('Leave Approve');
   rejectLeave(details) {
     this.disableApprove = true;
     this.payrollService.rejectLeave(details.leaveId)
-    .subscribe((res) => {
-      this.alertService.successAlert('Leave Reject');
-this.getEmployeeAttendance();
-      this.disableApprove = false;
-      console.log(res);
+      .subscribe((res) => {
+        this.alertService.successAlert('Leave Reject');
+        this.getEmployeeAttendance();
+        this.disableApprove = false;
+        console.log(res);
 
-    }, (err) => {
-      this.disableApprove = false;
-      this.alertService.errorAlert(err);
-    });
+      }, (err) => {
+        this.disableApprove = false;
+        this.alertService.errorAlert(err);
+      });
   }
 
   MonthlyLeaveSummry() {

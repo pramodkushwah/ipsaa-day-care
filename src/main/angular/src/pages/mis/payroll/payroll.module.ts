@@ -15,6 +15,7 @@ import { StaffLeavesComponent } from './staff-leaves/staff-leaves.component';
     ReactiveFormsModule,
     PayrollRoutingModule
   ],
+  exports: [SalaryInfoComponent],
   declarations: [SalaryComponent, SalaryInfoComponent, GenerateMonthlySalaryComponent, StaffLeavesComponent],
   providers: [PayrollService]
 })

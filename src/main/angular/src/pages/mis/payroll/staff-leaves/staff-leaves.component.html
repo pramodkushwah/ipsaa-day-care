@@ -48,7 +48,7 @@
         <div class="col-md-2">
           <div class="form-group">
             <label for="To">*To:</label>
-            <input class="form-control" id="To" min="fromDate" [(ngModel)]="toDate" type="date" name="todate">
+            <input class="form-control" id="To" min="{{ fromDate | date: 'y-MM-dd'}}" [(ngModel)]="toDate" type="date" name="todate">
             <span class="material-input"></span>
           </div>
         </div>
@@ -71,8 +71,9 @@
         </div>
 
         <div class="col-md-2">
-          <button type="submit" class="btn btn-warning btn-md" (click)="apllyLeave()" [disabled]="false">
-            <span *ngIf=" false ;else save">
+          <button type="submit" class="btn btn-warning btn-md" (click)="apllyLeave()"
+           [disabled]="!(selectedLeaveType && reason && fromDate && toDate)">
+            <span *ngIf=" !apllyLeaveSuccessful ;else save">
               <i class="fa fa-spinner fa-spin"></i> Applying
             </span>
             <ng-template #save>Apply</ng-template>

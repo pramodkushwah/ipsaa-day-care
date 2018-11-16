@@ -249,7 +249,7 @@
                 <div class="form-group">
                   <label class="control-label">First Name : </label>
                   <input class="form-control" value=" Pankaj" formControlName="firstName">
-                  <!-- <input hidden name="relationship" formControlName="relationship" [ngValue]="i?'Mother':'Father'"> -->
+                  <!-- <input hidden formControlName="relationship" [ngValue] ="i?'Mother':'Father'"> -->
                 </div>
               </div>
               <div class="col-lg-6">
@@ -486,14 +486,14 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">Monthly Transport Fees</label>
-                  <input class="form-control" type="number" formControlName="transportFee" (ngModelChange)="monthlyTransportFeesChanged(!!studentForm.controls.fee.value)">
+                  <input class="form-control" type="number" formControlName="transportFee" (ngModelChange)="monthlyTransportFeesChanged(studentForm.controls.fee.value)">
                 </div>
               </div>
 
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">Uniform Charges</label>
-                  <input class="form-control" type="number" formControlName="uniformCharges" (ngModelChange)="monthlyUniformChargesChanged(!!studentForm.controls.fee.value)">
+                  <input class="form-control" type="number" formControlName="uniformCharges" (ngModelChange)="monthlyUniformChargesChanged(studentForm.controls.fee.value)">
                 </div>
               </div>
 
@@ -568,7 +568,7 @@
 
   <div class="card-footer">
     <div class="stats padding-left-right-30">
-      <button mat-raised-button class="btn btn-primary" (click)="saveStudent()" [disabled]="studentForm.invalid">Save</button>
+      <button mat-raised-button class="btn btn-primary" (click)="saveStudent()" [disabled]="!studentForm.valid">Save</button>
       <button mat-raised-button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>
     </div>
   </div>

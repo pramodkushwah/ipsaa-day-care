@@ -37,4 +37,13 @@ export class UserComponent implements OnInit {
     this.users = JSON.parse(JSON.stringify(this.usersCopy));
   }
 
+  filterUser(searchKey) {
+    const val = searchKey.toLowerCase();
+    if (val && val.trim() !== '') {
+      this.users = this.usersCopy.filter((user: any) => {
+        return user.name.toLowerCase().startsWith(val);
+      });
+    }
+  }
+
 }
