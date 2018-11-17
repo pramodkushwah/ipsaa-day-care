@@ -144,7 +144,12 @@
         <button type="button" class="btn btn-rose" ng-click="saveSlip(selectedStudentFee)">Save</button>
         <button type="button" class="btn btn-rose" ng-click="showPayNow(selectedStudentFee)" data-toggle="modal" data-target="#myModal" ng-disabled="selectedStudentFee.paymentStatus=='Paid'">Pay Now</button>
         <button type="button" class="btn btn-rose" ng-click="downloadSlip(selectedStudentFee)" ng-disabled="disabledSlipDownload">
-          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disabledSlipDownload"></i>Download Slip</button>
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disabledSlipDownload"></i>Download Slip
+        </button>
+        <button class="btn btn-rose btn-fill" ng-click="downloadReceipt(selectedStudentFee)" ng-disabled="selectedStudentFee.status=='Raised'|| disabledReceiptDownload" ng-show="selectedStudentFee.paymentStatus!='Raised'">
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disabledReceiptDownload"></i>
+          Download Receipt
+        </button>
       </div>
     </div>
     <div class="card" ng-show="selectedStudentFee.payments.length">
@@ -309,11 +314,6 @@
             <button class="btn btn-rose btn-fill" ng-click="payStudentFee()" ng-disabled="selected.status=='Paid'||disabledRecordPayment">
               <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disabledRecordPayment"></i>
               Record Payment
-            </button>
-
-            <button class="btn btn-rose btn-fill" ng-click="downloadReceipt(selected)" ng-disabled="selected.status=='Raised'|| disabledReceiptDownload" ng-show="selected.paymentStatus!='Raised'">
-              <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disabledReceiptDownload"></i>
-              Download Receipt
             </button>
             <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelStudentSlip()">Cancel</button>
             <!-- <button class="btn btn-default" ng-click="cancelStudentSlip()">Cancel</button> -->
