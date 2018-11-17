@@ -26,8 +26,7 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
   }
 
   $scope.showPayNow = function (studentFee) {
-    console.log(studentFee);
-    $scope.selected = angular.copy(studentFee);
+    $scope.selected = studentFee;
     $scope.selected.paymentDate = moment(new Date()).format("YYYY-MM-DD");
   }
 
@@ -117,6 +116,8 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
     $scope.disabledRecordPayment = true;
     $http.post('/api/student/ipsaaclub/payfee', $scope.selected).then(function (response) {
       $('#myModal').modal('toggle');
+      $scope.selected.payableAmount = $scope.selected.payableAmount - $scope.selected.paidAmount;
+      $scope.selected.paidAmount = 0;
       $scope.selectedStudentFee.payments.push(response.data);
       $scope.disabledRecordPayment = false;
       ok("Successfully applied payment");
