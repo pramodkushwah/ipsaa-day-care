@@ -30,6 +30,7 @@ public class IpsaaClubSlipResponce implements Response {
     private BigDecimal deposit;
     private BigDecimal finalDepositFee;
     private BigDecimal depositFeeDiscount;
+    private BigDecimal extraCharge;
     private BigDecimal gstAmount;
     private int noOfFullDays;
     private int noOfHalfDays;
@@ -90,6 +91,7 @@ public class IpsaaClubSlipResponce implements Response {
         this.payableAmount=slip.getTotalFee();
         this.paymentStatus=slip.getPaymentStatus();
         this.totalDaysFee=slip.getTotalDaysFee();
+        this.extraCharge=slip.getExtraCharge();
         if (slip.getPayments() != null && !slip.getPayments().isEmpty())
         {
             payments = new ArrayList<>(slip.getPayments().size());
@@ -99,6 +101,14 @@ public class IpsaaClubSlipResponce implements Response {
                 //   System.out.println("break");
             });
         }
+    }
+
+    public BigDecimal getExtraCharge() {
+        return extraCharge;
+    }
+
+    public void setExtraCharge(BigDecimal extraCharge) {
+        this.extraCharge = extraCharge;
     }
 
     public BigDecimal getTotalDaysFee() {

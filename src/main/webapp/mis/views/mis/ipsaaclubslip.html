@@ -296,7 +296,7 @@
               Record Payment
             </button>
 
-            <button class="btn btn-rose btn-fill" ng-click="downloadReceipt(selected)" ng-disabled="selected.status=='Raised'|| disabledReceiptDownload">
+            <button class="btn btn-rose btn-fill" ng-click="downloadReceipt(selected)" ng-disabled="selected.status=='Raised'|| disabledReceiptDownload" ng-show="selected.paymentStatus!='Raised'">
               <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disabledReceiptDownload"></i>
               Download Receipt
             </button>

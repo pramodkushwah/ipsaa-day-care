@@ -160,8 +160,8 @@ public class IpsaaClubFeeSerivce {
         newSlip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount());
         newSlip.setFinalAnnualFee(fee.getFinalAnnualCharges());
 
-        newSlip.setBaseFee(ZERO);
-        newSlip.setFinalBaseFee(ZERO);
+        newSlip.setBaseFee(fee.getBaseFee());
+        newSlip.setFinalBaseFee(fee.getFinalBaseFee());
         newSlip.setBaseFeeDiscount(ZERO);
 
         newSlip.setDeposit(fee.getDepositFee());
@@ -203,9 +203,9 @@ public class IpsaaClubFeeSerivce {
         slip.setNoOfFullDays(counts.get("fullday"));
         slip.setNoOfHalfDays(counts.get("halfday"));
 
-        slip.setNoOfHalfDays(4);
-        slip.setNoOfFullDays(3);
-        slip.setNoOfFullDays(7);
+//        slip.setNoOfHalfDays(4);
+//        slip.setNoOfFullDays(3);
+//        slip.setNoOfFullDays(7);
 
         slip.setBaseFeeDiscount(fee.getBaseFeeDiscount());
         slip.setBaseFee(fee.getBaseFee());
@@ -273,7 +273,7 @@ public class IpsaaClubFeeSerivce {
         record.setConfirmed(request.getConfirmed());
         record.setPaymentDate(request.getPaymentDate() == null ? new Date() : request.getPaymentDate());
         studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(record);
-        logger.info(String.format("Student Fee payment recoded successfully.%s", slip));
+        logger.info(String.format("ipsaa club Student Fee payment recoded successfully.%s", slip.getStudent().getName()));
         documentService.generateFeeReceiptPdfIpsaaClub(slip);
         return record;
     }

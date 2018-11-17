@@ -247,22 +247,17 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
     $scope.generateStudentFee = function(insertStudentFee) {
         $http.post('/api/student/ipsaaclub/generate/' + insertStudentFee.studentId, {}).then(function (response){
             ok('Student Fee generated');
-        },function(error){
-            error('Somthing went wrong');
+        },function(err){
+            error(err.data.error);
         })
     }
 
     function ok(message) {
-        swal({
-            title: 'Success',
-            text: message,
-            type: 'success',
-            buttonsStyling: false,
-            confirmButtonClass: "btn btn-warning"
+        swal({d
         });
     }
 
-    function error(message) {
+    function error(message){
         swal({
             title: 'Error',
             text: message,

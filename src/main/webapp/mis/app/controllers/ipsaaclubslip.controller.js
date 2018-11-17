@@ -180,7 +180,7 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
       }).then(function(text) {
           if (text) {
             $http
-              .put('/api/student/payfee', {
+              .put('/api/student/ipsaaclub/record/update', {
                 id: this_receipt.id,
                 confirmed: false,
                 comments: text

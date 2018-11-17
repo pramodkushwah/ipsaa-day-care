@@ -250,7 +250,9 @@ public class StudentService extends BaseService {
 	public List<StudentFee> listFee(StudentFeeRequest request) {
 		QStudentFee fee = QStudentFee.studentFee;
 		JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
-		query.select(fee).from(fee).where(fee.student.active.isTrue()).where(fee.feeDuration.eq(FeeDuration.Quarterly))
+		query.select(fee).from(fee).where(fee.student.active.isTrue())
+				.where(fee.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
+				.where(fee.feeDuration.eq(FeeDuration.Quarterly))
 				.where(fee.student.corporate.isFalse());
 
 		List<StudentFee> fees;
@@ -260,10 +262,6 @@ public class StudentService extends BaseService {
 
 		if (request.getCenterId() != null) {
 			fees = query.where(fee.student.center.id.eq(request.getCenterId())).fetch();
-			// to ajust chnages
-			//ajustChnages();
-			//adjustGst();
-			//addSecurity();
 			return fees;
 		}
 		fees = query.where(fee.student.center.in(getUserCenters())).fetch();
@@ -290,102 +288,6 @@ public class StudentService extends BaseService {
 		fees = query.where(fee.student.center.in(getUserCenters())).fetch();
 		return fees;
 	}
-
-
-	@Transactional
-	private void addSecurity() {
-			String SAMPLE_XLSX_FILE_PATH ="C:/Users/shubham/Desktop/ipsaa/query/duplicate.xlsx";
-			try{
-				File file = new File(SAMPLE_XLSX_FILE_PATH);
-				FileInputStream inputStream = new FileInputStream(file);
-				Workbook workbook = WorkbookFactory.create(inputStream);
-				workbook = WorkbookFactory.create(new File(SAMPLE_XLSX_FILE_PATH));
-				Sheet sheet = workbook.getSheetAt(0);
-				Iterator<Row> iterator = sheet.iterator();
-				while (iterator.hasNext()) {
-
-					Row currentRow = iterator.next();
-					Iterator<Cell> cellIterator = currentRow.iterator();
-
-					Cell currentCell = cellIterator.next();
-					if(currentCell.getStringCellValue().equals("Merchant Name"))
-						continue;
-					currentCell = cellIterator.next();
-					Student student =studentRepository.findByAdmissionNumber(currentCell.getStringCellValue());
-					if(student!=null){
-						StudentFee fee=studentFeeRepository.findByStudent(student);
-						if(fee!=null){
-							fee.setDepositFeeDiscount(new BigDecimal(0));
-							fee.setDepositFee(new BigDecimal(0));
-							fee.setFinalDepositFee(new BigDecimal(0));
-							fee.setFinalFee(fee.getFinalFee().add(fee.getDepositFee()));
-						}
-						System.out.println(student);
-						studentRepository.save(student);
-					}else {
-						System.out.println("center not found"+currentCell.getStringCellValue());
-					}
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-	}
-
-	@Transactional
-	private void adjustGst() {
-		QStudentFee fee = QStudentFee.studentFee;
-		JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
-		query.select(fee).from(fee)
-				.where(fee.student.active.isTrue())
-				.where(fee.feeDuration.eq(FeeDuration.Quarterly))
-				.where(fee.student.corporate.isFalse());
-
-		for (StudentFee studentFee:query.fetch() ){
-			if(studentFee.getStudent().getProgram().getId()==11) {
-				CenterProgramFee centerProgramFee=centerProgramFeeRepository.findByProgramIdAndCenterId(studentFee.getStudent().getProgram().getId(),studentFee.getStudent().getCenter().getId());
-				if(centerProgramFee==null){
-					throw new NotFoundException("Center program fee not found ");
-				}
-				studentFee.getStudent().setFormalSchool(true);
-				studentFee.getStudent().setSchoolName("Formal School Name yet to be added");
-				studentFee.setIgst(new BigDecimal(18));
-				studentFee.setGstAmount(studentFee.getFinalBaseFee().multiply(new BigDecimal(0.18)));
-				studentFeeRepository.saveAndFlush(studentFee);
-				System.out.println(studentFee.getStudent().getName());
-				}
-			}
-		}
-
-	@Transactional
-	private void ajustChnages() {
-		//  code for adjust new fee changes
-		QStudentFee fee = QStudentFee.studentFee;
-		JPAQuery<StudentFee> query = new JPAQuery<>(entityManager);
-		query.select(fee).from(fee)
-				.where(fee.student.active.isTrue())
-				.where(fee.feeDuration.eq(FeeDuration.Quarterly))
-				.where(fee.student.corporate.isFalse());
-
-		for (StudentFee studentFee:query.fetch() ){
-			BigDecimal adjust=ZERO;
-			if(studentFee.getAdjust()!=null)
-				adjust=studentFee.getAdjust().multiply(THREE);
-			else
-				studentFee.setAdjust(ZERO);
-
-			if(studentFee.getDiscount()!=null && studentFee.getDiscount().intValue()>0)
-				studentFee.setBaseFeeDiscount(studentFee.getDiscount());
-			studentFee.setFinalBaseFee(FeeUtilsV2.calculateDiscountAmount(studentFee.getBaseFee(),studentFee.getBaseFeeDiscount()));
-
-			studentFee.setBaseFeeDiscount(FeeUtilsV2.calculateDiscount(studentFee.getBaseFee(),studentFee.getFinalBaseFee().add(studentFee.getAdjust())));
-			studentFee.setFinalFee(studentFee.getFinalFee().add(adjust));
-
-			studentFeeService.saveStudentFee(studentFee);
-			System.out.println(studentFee.getStudent().getName());
-			//studentFeeRepository.save(studentFee);
-		}
-	}
-
 	public List<StudentFeePaymentRequest> listFeeLedger(StudentFeeLedgerRequest request) {
 		return feePaymentRepository.findByStudentId(request.getStudentId());
 	}

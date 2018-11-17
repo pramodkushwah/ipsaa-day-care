@@ -1,7 +1,7 @@
 <table style="margin: auto" class="sliptable">
   <tr>
-    <th>Fee for the Days of</th>
-    <td><span> : </span> ${slip.invoiceDate} to ${slip.expireDate}</div></td>
+    <th>Fee for the Days </th>
+    <td><span> : from </span> ${slip.invoiceDate} to ${slip.expireDate}</div></td>
   </tr>
   <tr>
     <th>Name of the child</th>
@@ -37,22 +37,19 @@
     <th>Program Fee</th>
     <td><span> : </span>${slip.finalBaseFee?string["0"]}</td>
   </tr>
+    <tr>
+      <th>Total Days Fee</th>
+      <td><span> : </span>${slip.totalDaysFee?string["0"]}</td>
+    </tr>
 
   <!-- <tr>
     <th>Sub Total</th>
     <td><span> : </span> ${subTotal?string["0"]}</td>
   </tr> -->
 
-<#if slip.gstAmount?? && (slip.sgst?? || slip.cgst??)>
+<#if slip.gstAmount??>
   <tr>
-    <th>I-GST (${slip.sgst+slip.cgst}%)</th>
-    <td><span> : ${slip.gstAmount}</span></td>
-  </tr>
-</#if>
-
-<#if slip.gstAmount?? && slip.igst??>
-  <tr>
-    <th>GST (${slip.igst}%)</th>
+    <th>GST 18%</th>
     <td><span> : ${slip.gstAmount}</span></td>
   </tr>
 </#if>

@@ -545,11 +545,12 @@ public class StudentAttendanceService extends BaseService {
 		Map<String,Integer> counts=new HashMap<>();
 		int full=0;
 		int half=0;
-		List<StudentAttendance> list=attendanceRepository.findByCreatedDateBetweenAndStudent(lastGenerationDate,today,student);
+		List<StudentAttendance> list=attendanceRepository.findByAttendanceDateBetweenAndStudent(lastGenerationDate,today,student);
 		for(StudentAttendance att:list){
 			if(att.getCheckin()!=null && att.getCheckout()!=null){
-				double timeDiff=getmintusDiff(new DateTime(att.getCheckin()),new DateTime(att.getCheckout()));
-				if(timeDiff/60<=5){
+				double timeDiff=getmintusDiff(new DateTime(att.getCheckout()),new DateTime(att.getCheckin()));
+				double min=timeDiff/60;
+				if(min<=5){
 					half++;
 				}else{
 					full++;

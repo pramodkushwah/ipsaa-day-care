@@ -790,21 +790,35 @@ public class FeeService extends BaseService
     {
       throw new ValidationException("Period is required.");
     }
-    List<HdfcResponse> hdfc = hdfcResponseRepository.findBySlipQuarterAndSlipYear(slipRequest.getQuarter(),slipRequest.getYear());
-    List<LinkedHashMap<String,Object>> list=new ArrayList<>();
+    List<HdfcResponse> hdfc=null;
+    if(slipRequest.getMonth()>0){
+      hdfc = hdfcResponseRepository.findByIpsaaClubSlipMonthAndIpsaaClubSlipYear(slipRequest.getMonth(),slipRequest.getYear());
+    }
+    else
+    hdfc = hdfcResponseRepository.findBySlipQuarterAndSlipYear(slipRequest.getQuarter(),slipRequest.getYear());
 
+    if(hdfc==null){
+      throw new ValidationException("no data found");
+    }
+
+    List<LinkedHashMap<String,Object>> list=new ArrayList<>();
     int count=1;
     for(HdfcResponse res:hdfc){
       LinkedHashMap<String,Object> row=new LinkedHashMap<>();
       row.put("s.id",count++);
-      row.put("student_name",res.getSlip().getStudent().getProfile().getFullName());
-      row.put("center",res.getSlip().getStudent().getCenterName());
-
-      row.put("program_name",res.getSlip().getStudent().getProgramName());
-
+      if(res.getSlip()==null){
+        row.put("student_name",res.getSlip().getStudent().getProfile().getFullName());
+        row.put("center",res.getSlip().getStudent().getCenterName());
+        row.put("program_name",res.getSlip().getStudent().getProgramName());
+        row.put("slip_id",res.getSlip().getId());
+      }else{
+        row.put("student_name",res.getIpsaaClubSlip().getStudent().getProfile().getFullName());
+        row.put("center",res.getIpsaaClubSlip().getStudent().getCenterName());
+        row.put("program_name",res.getIpsaaClubSlip().getStudent().getProgramName());
+        row.put("slip_id",res.getIpsaaClubSlip().getId());
+      }
       row.put("amount",res.getAmount());
       row.put("trans_date",res.getTransDate());
-      row.put("slip_id",res.getSlip().getId());
       row.put("type",res.getType());
       row.put("bank_ref_no",res.getBankRefNo());
       row.put("status_message",res.getStatusMessage());
