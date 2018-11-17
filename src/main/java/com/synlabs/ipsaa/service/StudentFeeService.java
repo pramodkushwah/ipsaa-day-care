@@ -981,9 +981,10 @@ public class StudentFeeService {
 
         feePaymentRepository.saveAndFlush(slip);
         paymentRecordRepository.saveAndFlush(record);
-        logger.info(String.format("Student Fee payment recoded successfully.%s", record));
 
+        logger.info(String.format("Student Fee payment recoded successfully.%s", record));
         documentService.generateFeeReceiptPdf(slip);
+        slip.getPayments().add(record);
         return slip;
     }
 
