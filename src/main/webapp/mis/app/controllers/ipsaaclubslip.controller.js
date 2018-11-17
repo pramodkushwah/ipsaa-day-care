@@ -51,8 +51,10 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
     if ($scope.selectedCenter) {
       $http.post('/api/student/ipsaaclub/slip/update', {
         extraCharge: $scope.selectedStudentFee.extraCharge,
+        comments: $scope.selectedStudentFee.comments,
         id: slip.id
       }).then(function (response) {
+        $.extend($scope.selectedStudentFee,response.data);
         ok('Extra Charges saved, Now you have to pay');
       })
     }
@@ -126,7 +128,7 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
   }
 
   $scope.addExtraCharges = function (){
-    $scope.selectedStudentFee.totalFee = $scope.selectedStudentFee.finalFee;
+    $scope.selectedStudentFee.totalFee = $scope.selectedStudentFee.finalFee + $scope.selectedStudentFee.balance;
     $scope.selectedStudentFee.totalFee += $scope.selectedStudentFee.extraCharge;
     
   }
@@ -179,15 +181,14 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
         }
       }).then(function(text) {
           if (text) {
-            $http
-              .put('/api/student/ipsaaclub/record/update', {
+            $http.put('/api/student/ipsaaclub/record/update', {
                 id: this_receipt.id,
                 confirmed: false,
                 comments: text
               })
               .then(function(response) {
-                  $scope.getFeeSlips();
-                  ok('success');
+                $.extend(reciept,response.data);
+                  ok('Payment Rejected');
                 }, function(response) {
                   error(response.data.error);
                 });
