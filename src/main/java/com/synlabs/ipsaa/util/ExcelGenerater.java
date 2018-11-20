@@ -13,10 +13,14 @@ import java.io.IOException;
 import java.util.*;
 
 public class ExcelGenerater {
-    List<LinkedHashMap<String,Object>> list=new ArrayList<>();
+    private List<LinkedHashMap<String,Object>> list=new ArrayList<>();
+    SXSSFWorkbook workbook;
 
     public ExcelGenerater(List<LinkedHashMap<String,Object>>  list) {
         this.list = list;
+    }
+    public ExcelGenerater() {
+        this.list = null;
     }
     public File create(String exportDir, String sheetName) {
         File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
@@ -44,6 +48,36 @@ public class ExcelGenerater {
         return file;
     }
 
+    public SXSSFWorkbook createWithSheets(String sheetName,List<LinkedHashMap<String,Object>>  list) {
+
+        if(this.workbook==null){
+            this.workbook = new SXSSFWorkbook();
+        }
+                createStyle(this.workbook);
+                Sheet feeCollectionReportSheet = this.workbook.createSheet(sheetName);// creating a blank sheet
+                if(!list.isEmpty())
+                {
+                    createHeader(list.get(0), 0, feeCollectionReportSheet);
+                    boolean isCreated = makeList(list, 1, feeCollectionReportSheet);
+                    return workbook;
+                }
+                return null;
+    }
+    public File createWorkBook(String exportDir){
+            File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
+            if (!file.exists()) {
+                try {
+                    file.createNewFile();
+                    FileOutputStream fileOutputStream = null;
+                    fileOutputStream = new FileOutputStream(file);
+                    this.workbook.write(fileOutputStream);
+                    this.workbook.dispose();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return file;
+    }
     private boolean makeList(List<LinkedHashMap<String,Object>> list, int i, Sheet feeCollectionReportSheet) {
         int rowCount=i;
 

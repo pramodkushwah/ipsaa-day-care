@@ -831,6 +831,72 @@ public class FeeService extends BaseService
     ExcelGenerater eg=new ExcelGenerater(list);
     return eg.create(exportDir,"hdfc report");
   }
+  public File studentFeeSheetReport(StudentFeeSlipRequest slipRequest) throws IOException
+  {
+
+    // collection list
+    // center wise collection list
+    slipRequest.setCenterCode("All");
+    List<StudentFeePaymentRequest> slips=studentService.listFeeSlips2(slipRequest);
+
+    ExcelGenerater eg=new ExcelGenerater();
+    List<LinkedHashMap<String,Object>> slipList=new ArrayList<>();
+    int count=1;
+    for(StudentFeePaymentRequest res:slips){
+      LinkedHashMap<String,Object> row=new LinkedHashMap<>();
+      row.put("s.id",count++);
+      row.put("center",res.getStudent().getCenterName());
+      row.put("student Name",res.getStudent().getName());
+      row.put("StudentActive",res.getStudent().isActive());
+      row.put("groupName",res.getStudent().getGroupName());
+      row.put("program Name",res.getStudent().getProgramName());
+      row.put("total fee",res.getTotalFee());
+      row.put("paid amount",res.getPaidAmount());
+      row.put("unpaid amount",res.getTotalFee().subtract(res.getPaidAmount()));
+      row.put("payment status",res.getPaymentStatus().name());
+      slipList.add(row);
+    }
+
+    eg.createWithSheets("hdfc report",slipList);
+    for(Center centers:getUserCenters()){
+      slipList.clear();
+      List<StudentFeePaymentRequest> centerSlips= slips.stream()
+              .filter(s->s.getStudent().getCenter().getCode().equals(centers.getCode())).collect(Collectors.toList());
+
+      for(StudentFeePaymentRequest res:centerSlips){
+        LinkedHashMap<String,Object> row=new LinkedHashMap<>();
+        row.put("s.id",count++);
+        row.put("center",res.getStudent().getCenterName());
+        row.put("Admission Date",res.getStudent().getProfile().getAdmissionDate());
+        row.put("Last Modified date",res.getLastModifiedDate());
+        row.put("Student Name",res.getStudent().getName());
+        row.put("Student Active",res.getStudent().isActive());
+        row.put("Group name",res.getStudent().getGroupName());
+        row.put("Program name",res.getStudent().getProgramName());
+        row.put("base Fee",res.getFinalBaseFee());
+        row.put("Base Fee Discount",res.getFinalBaseFee());
+
+        row.put("Annual Fee",res.getFinalAnnualCharges());
+        row.put("Annual Fee Discount",res.getAnnualFeeDiscount());
+
+        row.put("Admission Fee",res.getFinalAdmissionFee());
+        row.put("Admission Fee Discount",res.getAddmissionFeeDiscount());
+
+        row.put("Security Deposite",res.getPaymentStatus().name());
+        row.put("Security Deposite Discount",res.getDepositFeeDiscount());
+
+        row.put("Monthly Transport Fee",res.getTransportFee());
+        row.put("Extra Charges",res.getExtraCharge());
+        row.put("Late Payment",res.getLatePaymentCharge());
+        row.put("Uniform Charges",res.getUniformCharges());
+        row.put("Stationary Charges",res.getStationary());
+        row.put("Total Fee",res.getTotalFee());
+        slipList.add(row);
+      }
+      eg.createWithSheets(centers.getCode(),slipList);
+    }
+    return eg.createWorkBook(exportDir);
+  }
   //--------------------------------------shubham ---------------------------------------------------------------
   // shubham for feeReport with extraout hours
   public File FeeReportIpsaClub2(FeeReportRequest slipRequest) throws IOException
