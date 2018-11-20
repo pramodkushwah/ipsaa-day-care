@@ -354,7 +354,7 @@ export class StudentInfoComponent implements OnInit {
     if (fee.baseFeeGst > 0) {
       final += Number(fee.baseFeeGst);
     }
-
+console.log(final);
     feeControlForm.controls['finalFee'].patchValue(Number(final.toFixed(2)));
   }
 

@@ -67,6 +67,8 @@ export class StudentFeeComponent implements OnInit {
   }
 
   getStudentFee(student) {
+    console.log(student);
+
     this.selectedStudentDetails = (student) ? student : {};
     this.showSidePanel();
 

@@ -374,6 +374,10 @@ export class AdminService {
 
   }
 
+  studentPaymentConfirm(paymentDetails) {
+    return this.api.put('api/student/payfee', paymentDetails);
+  }
+
   inquiryReportDownload(centerId_and_range) {
     return this.api.getPDF('api/report/inquiry/', centerId_and_range);
   }

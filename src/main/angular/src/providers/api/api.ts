@@ -12,6 +12,7 @@ import { Observable } from 'rxjs/Observable';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import {tap} from 'rxjs/operators';
 import 'rxjs/add/observable/throw';
 import { AlertService } from '../alert/alert.service';
 
@@ -22,7 +23,7 @@ import { AlertService } from '../alert/alert.service';
 export class Api {
   url: string = environment.api;
 
-  constructor(public http: HttpClient, public storage: StorageService, public alertService: AlertService) {}
+  constructor(public http: HttpClient, public storage: StorageService, public alertService: AlertService) { }
 
   getHeaders(optHeaders?: HttpHeaders) {
     let headers = new HttpHeaders();
@@ -79,6 +80,7 @@ export class Api {
         observe: 'response',
         responseType: 'arraybuffer'
       })
+      .pipe(tap((res: any) => console.log('response', res)))
       .map(this.extractData)
       .catch(this.handleError);
   }
@@ -116,13 +118,15 @@ export class Api {
   }
 
   extractData(response: HttpResponse<any>) {
+    console.log(response);
+    
     return response.body || response.status;
   }
 
   handleError = (errorResponse: HttpErrorResponse) => {
     switch (errorResponse.status) {
       case 401:
-        this.alertService.errorAlert('Session Expired');
+        this.alertService.errorAlert(errorResponse.error.message);
         this.storage.clearData();
         break;
       case 0:

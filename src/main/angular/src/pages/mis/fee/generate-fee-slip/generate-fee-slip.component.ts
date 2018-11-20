@@ -298,17 +298,17 @@ export class GenerateFeeSlipComponent implements OnInit {
     this.downloadingSlips = true;
 
     this.adminService.downloadFeeSlips(this.ids)
-      .subscribe((res: ArrayBuffer) => {
-        const blob = new Blob([res], {
-          // type: 'application/octet-stream'
-        });
-        FileSaver.saveAs(blob, 'abc.pdf' );
+      .subscribe( res => {
+        // const blob = new Blob([res], {
+        //   // type: 'application/octet-stream'
+        // });
+        FileSaver.saveAs(res, 'pankaj.pdf' );
 
         this.downloadingSlips = false;
         this.alertService.successAlert('');
       }, (err) => {
         this.downloadingSlips = false;
-        // this.alertService.errorAlert(err)
+        // this.alertService.errorAlert(err);
       }
       );
   }

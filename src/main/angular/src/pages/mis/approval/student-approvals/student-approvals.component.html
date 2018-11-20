@@ -17,8 +17,7 @@
   </div>
 
 </div>
-<div class="row">
-
+<div class="row" *ngIf="showTable">
   <div [class]="viewPanel?'transition col-lg-6':'transition col-md-12'">
     <div class="card">
 
@@ -40,7 +39,19 @@
 
       <div class="card-body">
         <table class="table table-responsive">
-          <thead class="text-primary" *ngIf=" studentAprrovelList ?.length >0">
+          <colgroup>
+            
+            <col width="10%">
+            <col width="15%">
+            <col width="15%">
+            <col width="15%">
+            <col width="15%">
+            <col width="10%">
+            <col width="10%">
+            <!-- <col width="10%"> -->
+          </colgroup>
+          <thead class="text-primary">
+              <!-- *ngIf=" studentAprrovelList ?.length >0" -->
             <th> Sr.No</th>
             <th>Name</th>
             <th>Program</th>
@@ -75,10 +86,7 @@
   </div>
 
   <div class="col-lg-6" *ngIf="viewPanel">
-    <div class="card">
-      <div class="card-body">
         <app-student-info [id]="selectedStudent.id" [update]="update"></app-student-info>
-      </div>
-    </div>
+     
   </div>
 </div>
