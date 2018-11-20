@@ -247,6 +247,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
     };
 
     $scope.addStudent = function () {
+        $scope.isIpsaaclub = false;
         $scope.addstudent = true;
         $scope.showstudent = false;
         $scope.editstudent = false;
@@ -669,6 +670,11 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
 
     function loadProgramFee(centerId, programId) {
         if (centerId && programId) {
+            if(programId == 72932732558618){
+                $scope.isIpsaaclub = true;
+            } else {
+                $scope.isIpsaaclub = false;
+            }
             $http.post('/api/center/fee/', {centerId: centerId, programId: programId}).then(
                 function (response) {
                     $scope.workingStudent.feeMessage = null;
