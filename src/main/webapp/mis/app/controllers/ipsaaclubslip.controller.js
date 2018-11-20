@@ -188,7 +188,9 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
                 comments: text
               })
               .then(function(response) {
+                $scope.selectedStudentFee = null;
                 $.extend(reciept,response.data);
+                $scope.getGeneratedFeeSlips();
                   ok('Payment Rejected');
                 }, function(response) {
                   error(response.data.error);

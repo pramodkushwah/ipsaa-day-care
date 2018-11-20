@@ -359,7 +359,6 @@ public class DashboardService extends BaseService
 			ipssaQuery.select(ipsaaSlip.totalFee.sum())
 					.from(ipsaaSlip)
 					.where(ipsaaSlip.student.active.isTrue())
-					.where(ipsaaSlip.paymentStatus.eq(PaymentStatus.Raised))
 					.where(ipsaaSlip.student.corporate.isFalse())
 					.where(ipsaaSlip.year.eq(year))
 					.where(ipsaaSlip.month.eq(month))

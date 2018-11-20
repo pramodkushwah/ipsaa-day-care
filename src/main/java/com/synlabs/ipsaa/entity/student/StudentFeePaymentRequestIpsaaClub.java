@@ -96,7 +96,7 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
     @Column(length = 200)
     private String comments;
 
-    @Column(length = 200)
+    @Column(length = 500)
     private String autoComments;
 
     @Column(unique = true)

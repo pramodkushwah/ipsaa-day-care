@@ -79,10 +79,10 @@ public class IpsaaClubFeeSerivce {
     }
     @Transactional
     private StudentFeePaymentRequestIpsaaClub generateNewSlip(StudentFeePaymentRequestIpsaaClub lastSlip, StudentFee fee) {
-//        if((lastSlip.getInvoiceDate().getTime()-(new Date()).getTime())/60/60/24<1)
-//        {
-//            throw  new ValidationException("can not generate same day from last generate date");
-//        }
+        if((lastSlip.getInvoiceDate().getTime()-(new Date()).getTime())/60/60/24<1)
+        {
+            throw  new ValidationException("can not generate same day from last generate date");
+        }
 
         if (fee != null) {
 

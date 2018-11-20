@@ -980,8 +980,8 @@ public class FeeService extends BaseService
         row.put("Expire Date",payment.getRequest().getExpireDate());
         row.put("Paid Amount",payment.getPaidAmount());
         row.put("Txnid",payment.getTxnid());
-        row.put("comment",payment.getComment());
-        row.put("confirmed",payment.getConfirmed());
+        row.put("comment",payment.getComment()==null?"":payment.getComment());
+        row.put("confirmed",payment.getConfirmed()?"True":"False");
         list.add(row);
       }
     }

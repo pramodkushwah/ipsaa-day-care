@@ -96,8 +96,10 @@ public class IpsaaClubSlipResponce implements Response {
         {
             payments = new ArrayList<>(slip.getPayments().size());
             slip.getPayments().forEach(payment -> {
-                payments.add(new IpsaaClubRecordResponce(payment));
-                this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
+
+                    payments.add(new IpsaaClubRecordResponce(payment));
+                if(payment.getActive())
+                    this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
                 //   System.out.println("break");
             });
         }
