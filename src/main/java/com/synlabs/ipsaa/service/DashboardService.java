@@ -254,15 +254,10 @@ public class DashboardService extends BaseService
 		QEmployeeAttendance attendance = QEmployeeAttendance.employeeAttendance;
 		QEmployee employee = QEmployee.employee;
 		query.select(attendance).from(attendance)
-<<<<<<< HEAD
-				.where(attendance.status.eq(AttendanceStatus.Present))
-				.where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
-=======
 				.where(employee.active.isTrue())
 				.where(attendance.status.eq(AttendanceStatus.Present))
 				.where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
 				.where(attendance.checkout.isNull())
->>>>>>> ipsaa_club
 				.where(attendance.center.in(centers));
 
 		return (int) query.fetchCount();
