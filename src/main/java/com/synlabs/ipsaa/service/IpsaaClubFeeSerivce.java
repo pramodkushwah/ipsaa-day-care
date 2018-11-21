@@ -83,7 +83,6 @@ public class IpsaaClubFeeSerivce {
         {
             throw  new ValidationException("can not generate same day from last generate date");
         }
-
         if (fee != null) {
 
             StudentFeePaymentRequestIpsaaClub newslip=startNewSession(lastSlip,fee);
