@@ -10,10 +10,16 @@
       "seq" : 100
     },
     {
+      "label": "Ipsaa Club Fee",
+      "state": "fee/ipsaaclub",
+      "p" : "STUDENTFEE_READ",
+      "seq" : 200
+    },
+    {
       "label": "Student Fee",
       "state": "fee/studentfeemanagement",
       "p" : "STUDENTFEE_READ",
-      "seq" : 200
+      "seq" : 250
     },
     {
       "label": "Generate Fee Slip",
