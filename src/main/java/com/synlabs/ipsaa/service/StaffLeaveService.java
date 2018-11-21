@@ -1,12 +1,10 @@
 package com.synlabs.ipsaa.service;
 
 import com.google.common.eventbus.EventBus;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.synlabs.ipsaa.entity.center.Center;
-import com.synlabs.ipsaa.entity.staff.Employee;
-import com.synlabs.ipsaa.entity.staff.EmployeeLeave;
-import com.synlabs.ipsaa.entity.staff.EmployeeLeaveSummary;
-import com.synlabs.ipsaa.entity.staff.QEmployeeLeave;
+import com.synlabs.ipsaa.entity.staff.*;
 import com.synlabs.ipsaa.enums.LeaveStatus;
 import com.synlabs.ipsaa.enums.LeaveType;
 import com.synlabs.ipsaa.ex.ValidationException;
@@ -15,6 +13,7 @@ import com.synlabs.ipsaa.util.BigDecimalUtils;
 import com.synlabs.ipsaa.util.CollectionUtils;
 import com.synlabs.ipsaa.view.attendance.EmployeeAttendanceFilterRequest;
 import com.synlabs.ipsaa.view.attendance.EmployeeLeaveRequest;
+import com.synlabs.ipsaa.view.attendance.EmployeeLeaveSummaryResponse;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -34,16 +33,13 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by sushil on 03-04-2018.
  */
 @Service
-public class StaffLeaveService extends BaseService
-{
+public class StaffLeaveService extends BaseService {
 
   @Autowired
   private EmployeeRepository employeeRepository;
@@ -69,45 +65,37 @@ public class StaffLeaveService extends BaseService
   @Autowired
   private CenterRepository centerRepository;
 
-  public void singleDayLeave(String eid, Boolean halfLeave, LeaveType leaveType, Date date)
-  {
+  public void singleDayLeave(String eid, Boolean halfLeave, LeaveType leaveType, Date date) {
     leaveType = leaveType == null ? LeaveType.CASUAL : leaveType;
     halfLeave = halfLeave == null ? false : halfLeave;
     LocalDate localDate = date == null ? LocalDate.now() : LocalDate.fromDateFields(date);
 
     Employee currentEmployee = getEmployee();
-    if (currentEmployee == null)
-    {
+    if (currentEmployee == null) {
       throw new ValidationException("Current user is not authorised to mark leave for any center!");
     }
     Employee employee = StringUtils.isEmpty(eid) ? currentEmployee : employeeRepository.findByEid(eid);
-    if (employee == null)
-    {
+    if (employee == null) {
       throw new ValidationException(String.format("Cannot locate Employee[eid = %s]", eid));
     }
 
-    if (!halfLeave && attendanceRepository.countByEmployeeAndAttendanceDate(employee, localDate.toDate()) > 0)
-    {
+    if (!halfLeave && attendanceRepository.countByEmployeeAndAttendanceDate(employee, localDate.toDate()) > 0) {
       throw new ValidationException("This employee is marked present");
     }
 
     EmployeeLeave employeeLeave = employeeLeaveRepository.findByEmployeeAndDate(employee, localDate.toDate());
-    if (employeeLeave == null)
-    {
+    if (employeeLeave == null) {
       employeeLeave = new EmployeeLeave();
       employeeLeave.setDate(localDate.toDate());
       employeeLeave.setEmployee(employee);
-      employeeLeave.setLeaveStatus(LeaveStatus.Applied);
+      employeeLeave.setLeaveStatus(LeaveStatus.Approved);
       employeeLeave.setLeaveType(leaveType);
       employeeLeave.setReason("CASUAL LEAVE");
       employeeLeave.setHalfLeave(halfLeave);
       employeeLeaveRepository.saveAndFlush(employeeLeave);
       eventBus.post(employeeLeave);
-    }
-    else
-    {
-      if (employeeLeave.getLeaveStatus() == LeaveStatus.Approved)
-      {
+    } else {
+      if (employeeLeave.getLeaveStatus() == LeaveStatus.Approved) {
         //update leavesummary before delete leave
         localDate = LocalDate.fromDateFields(employeeLeave.getDate());
         int month = localDate.monthOfYear().get();
@@ -115,9 +103,8 @@ public class StaffLeaveService extends BaseService
         halfLeave = isHalfDayLeave(employeeLeave);
         leaveType = employeeLeave.getLeaveType();
         EmployeeLeaveSummary leaveSummary = employeeLeaveSummaryRepository
-            .findByLeaveTypeAndMonthAndYearAndEmployeeId(leaveType, month, year, employee.getId());
-        if (leaveSummary != null)
-        {
+                .findByLeaveTypeAndMonthAndYearAndEmployeeId(leaveType, month, year, employee.getId());
+        if (leaveSummary != null) {
           BigDecimal count = leaveSummary.getCount();
           count = count.subtract(halfLeave ? BigDecimalUtils.HALF : BigDecimalUtils.ONE);
           leaveSummary.setCount(count);
@@ -129,23 +116,19 @@ public class StaffLeaveService extends BaseService
     }
   }
 
-  public boolean approveLeave(Long id)
-  {
+  public boolean approveLeave(Long id) {
     EmployeeLeave leave = employeeLeaveRepository.findOne(id);
-    if (leave == null)
-    {
+    if (leave == null) {
       throw new ValidationException(String.format("Cannot locate Leave[id = %s]", id));
     }
 
     Employee currentEmployee = getEmployee();
-    if (currentEmployee == null)
-    {
+    if (currentEmployee == null) {
       throw new ValidationException("Current user is not authorised to approve leave for any center!");
     }
 
     Employee employee = leave.getEmployee();
-    if (!isReportingManager(currentEmployee, employee))
-    {
+    if (!isReportingManager(currentEmployee, employee)) {
       throw new ValidationException("Current user is not authorised to reject leave.");
     }
 
@@ -159,9 +142,8 @@ public class StaffLeaveService extends BaseService
     Boolean halfLeave = isHalfDayLeave(leave);
     LeaveType leaveType = leave.getLeaveType();
     EmployeeLeaveSummary leaveSummary = employeeLeaveSummaryRepository
-        .findByLeaveTypeAndMonthAndYearAndEmployeeId(leaveType, month, year, employee.getId());
-    if (leaveSummary == null)
-    {
+            .findByLeaveTypeAndMonthAndYearAndEmployeeId(leaveType, month, year, employee.getId());
+    if (leaveSummary == null) {
       leaveSummary = new EmployeeLeaveSummary();
       leaveSummary.setEmployee(employee);
       leaveSummary.setLeaveType(leaveType);
@@ -176,24 +158,20 @@ public class StaffLeaveService extends BaseService
     return true;
   }
 
-  public boolean rejectLeave(Long id)
-  {
+  public boolean rejectLeave(Long id) {
 
     EmployeeLeave leave = employeeLeaveRepository.findOne(id);
-    if (leave == null)
-    {
+    if (leave == null) {
       throw new ValidationException(String.format("Cannot locate Leave[id = %s]", id));
     }
 
     Employee currentEmployee = getEmployee();
-    if (currentEmployee == null)
-    {
+    if (currentEmployee == null) {
       throw new ValidationException("Current user is not authorised to reject leave for any center!");
     }
 
     Employee employee = leave.getEmployee();
-    if (!isReportingManager(currentEmployee, employee))
-    {
+    if (!isReportingManager(currentEmployee, employee)) {
       throw new ValidationException("Current user is not authorised to reject leave.");
     }
 
@@ -207,18 +185,15 @@ public class StaffLeaveService extends BaseService
     Boolean halfLeave = isHalfDayLeave(leave);
     LeaveType leaveType = leave.getLeaveType();
     EmployeeLeaveSummary leaveSummary = employeeLeaveSummaryRepository
-        .findByLeaveTypeAndMonthAndYearAndEmployeeId(leaveType, month, year, employee.getId());
-    if (leaveSummary == null)
-    {
+            .findByLeaveTypeAndMonthAndYearAndEmployeeId(leaveType, month, year, employee.getId());
+    if (leaveSummary == null) {
       leaveSummary = new EmployeeLeaveSummary();
       leaveSummary.setEmployee(employee);
       leaveSummary.setLeaveType(leaveType);
       leaveSummary.setMonth(month);
       leaveSummary.setYear(year);
       leaveSummary.setCount(BigDecimal.ZERO);
-    }
-    else
-    {
+    } else {
       BigDecimal count = leaveSummary.getCount();
       count = count.subtract(halfLeave ? BigDecimalUtils.HALF : BigDecimalUtils.ONE);
       leaveSummary.setCount(count);
@@ -230,12 +205,10 @@ public class StaffLeaveService extends BaseService
 
   private static final Logger logger = LoggerFactory.getLogger(StaffLeaveService.class);
 
-  public void multiDayLeave(EmployeeLeaveRequest request)
-  {
+  public void multiDayLeave(EmployeeLeaveRequest request) {
     LocalDate from = LocalDate.fromDateFields(request.getFromDate());
     LocalDate to = LocalDate.fromDateFields(request.getToDate());
-    if (from.getYear() != from.getYear())
-    {
+    if (from.getYear() != from.getYear()) {
       throw new ValidationException("Year overlaping at from and to dates");
     }
     request.validateRequest();
@@ -246,18 +219,15 @@ public class StaffLeaveService extends BaseService
 //    }
 
     Employee currentEmployee = getEmployee();
-    if (currentEmployee == null)
-    {
+    if (currentEmployee == null) {
       throw new ValidationException("Current user is not authorised to mark leave for any center!");
     }
     Employee employee = employeeRepository.findByEid(request.getEid());
-    if (employee == null)
-    {
+    if (employee == null) {
       throw new ValidationException(String.format("Cannot locate Employee[EID=%s]", request.getEid()));
     }
 
-    if (!isReportingManager(currentEmployee, employee))
-    {
+    if (!isReportingManager(currentEmployee, employee)) {
       throw new ValidationException("Current user is not authorised to apply multiday leaves.");
     }
 
@@ -271,8 +241,7 @@ public class StaffLeaveService extends BaseService
     DateTime fromDate = new DateTime(request.getFromDate());
     DateTime toDate = new DateTime(request.getToDate());
     int noOfDays = Days.daysBetween(fromDate, toDate).getDays();
-    for (int i = 0; i <= noOfDays; i++)
-    {
+    for (int i = 0; i <= noOfDays; i++) {
       employeeLeave = new EmployeeLeave();
       employeeLeave.setHalfLeave(halfLeave);
       employeeLeave.setReason(request.getReason());
@@ -292,50 +261,40 @@ public class StaffLeaveService extends BaseService
 
     LeaveType leaveType = LeaveType.valueOf(request.getLeaveType());
 
-    for (int month = fromMonth; month <= toMonth; month++)
-    {
+    for (int month = fromMonth; month <= toMonth; month++) {
       syncLeaveSummary(employee, month, year);
     }
 
     eventBus.post(employeeLeaves);
   }
 
-  public List<EmployeeLeaveSummary> listSummary(EmployeeAttendanceFilterRequest request)
-  {
+  public List<EmployeeLeaveSummary> listSummary(EmployeeAttendanceFilterRequest request) {
     Employee currentEmployee = getEmployee();
-    if (currentEmployee == null)
-    {
+    if (currentEmployee == null) {
       throw new ValidationException("Current user is not authorised to get Employee leave summary!");
     }
 
     Employee employee = employeeRepository.findOne(request.getEmpId());
-    if (employee == null)
-    {
+    if (employee == null) {
       throw new ValidationException(String.format("Cannot locate Employee[id=%s]", mask(request.getEmpId())));
     }
 
-    if (!isReportingManager(currentEmployee, employee) && !currentEmployee.equals(employee))
-    {
+    if (!isReportingManager(currentEmployee, employee) && !currentEmployee.equals(employee)) {
       throw new ValidationException("Current user is not authorised to get Employee leave summary!");
     }
 
-    if (request.getMonth() == null)
-    {
+    if (request.getMonth() == null) {
       return employeeLeaveSummaryRepository.findByEmployeeIdAndYear(employee.getId(), request.getYear());
-    }
-    else
-    {
+    } else {
       return employeeLeaveSummaryRepository.findByEmployeeIdAndMonthAndYear(employee.getId(), request.getMonth(), request.getYear());
     }
   }
 
   @Transactional
-  public void importLeaveSummary(MultipartFile file) throws IOException
-  {
+  public void importLeaveSummary(MultipartFile file) throws IOException {
     XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
     XSSFSheet workSheet = workbook.getSheet("leaves");
-    if (workSheet == null)
-    {
+    if (workSheet == null) {
       throw new ValidationException("Cannot find workSheet[name = leaves]");
     }
 
@@ -343,20 +302,16 @@ public class StaffLeaveService extends BaseService
     XSSFRow xssfRow = workSheet.getRow(row);
     DataFormatter df = new DataFormatter();
     FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
-    while (xssfRow != null)
-    {
+    while (xssfRow != null) {
       int col = 0;
-      try
-      {
+      try {
         String eid = getString(xssfRow.getCell(col++), df);
         Integer year = getInteger(xssfRow.getCell(col++), df);
-        if (year == null)
-        {
+        if (year == null) {
           throw new ValidationException(String.format("Invalid Year in row-%s", row));
         }
         Integer month = getInteger(xssfRow.getCell(col++), df);
-        if (month == null)
-        {
+        if (month == null) {
           throw new ValidationException(String.format("Invalid Month in row-%s", row));
         }
         BigDecimal CL = getBigDecimal(xssfRow.getCell(col++), df);
@@ -369,8 +324,7 @@ public class StaffLeaveService extends BaseService
         BigDecimal UPL = new BigDecimal(evaluateFormula(xssfRow.getCell(col++), evaluator));
 
         Employee employee = employeeRepository.findByEid(eid);
-        if (employee == null)
-        {
+        if (employee == null) {
           throw new ValidationException(String.format("Cannot locate Employee[eid = %s] in %s", eid, row));
         }
 
@@ -382,36 +336,26 @@ public class StaffLeaveService extends BaseService
         saveEmployeeLeaveSummary(employee, LeaveType.MATERNITY, year, month, MATERNITY);
         saveEmployeeLeaveSummary(employee, LeaveType.UNPAID, year, month, UPL);
 
-      }
-      catch (NumberFormatException ex)
-      {
+      } catch (NumberFormatException ex) {
         ex.printStackTrace();
         throw new ValidationException(String.format("Cannot convert to number col-%s and row-%s", col - 1, row));
-      }
-      catch (ValidationException ex)
-      {
+      } catch (ValidationException ex) {
         throw ex;
-      }
-      catch (Exception ex)
-      {
+      } catch (Exception ex) {
         ex.printStackTrace();
         throw new ValidationException(String.format("Unknown error while saving col-%s and row-%s", col - 1, row));
-      }
-      finally
-      {
+      } finally {
         row++;
         xssfRow = workSheet.getRow(row);
       }
     }
   }
 
-  private EmployeeLeaveSummary saveEmployeeLeaveSummary(Employee employee, LeaveType leaveType, int year, int month, BigDecimal count)
-  {
+  private EmployeeLeaveSummary saveEmployeeLeaveSummary(Employee employee, LeaveType leaveType, int year, int month, BigDecimal count) {
     count = count == null ? BigDecimal.ZERO : count;
     EmployeeLeaveSummary employeeLeaveSummary = employeeLeaveSummaryRepository
-        .findByLeaveTypeAndMonthAndYearAndEmployeeId(leaveType, month, year, employee.getId());
-    if (employeeLeaveSummary == null)
-    {
+            .findByLeaveTypeAndMonthAndYearAndEmployeeId(leaveType, month, year, employee.getId());
+    if (employeeLeaveSummary == null) {
       employeeLeaveSummary = new EmployeeLeaveSummary();
       employeeLeaveSummary.setEmployee(employee);
       employeeLeaveSummary.setYear(year);
@@ -422,74 +366,56 @@ public class StaffLeaveService extends BaseService
     return employeeLeaveSummaryRepository.saveAndFlush(employeeLeaveSummary);
   }
 
-  public List<EmployeeLeave> getEmployeeLeaves(Employee employee, Date from, Date to)
-  {
+  public List<EmployeeLeave> getEmployeeLeaves(Employee employee, Date from, Date to) {
     return employeeLeaveRepository.findByEmployeeAndDateBetween(employee, from, to);
   }
 
   @Transactional
-  public void syncLeaveSummary(Integer month, Integer year, String centerCode, Boolean employeeActive)
-  {
+  public void syncLeaveSummary(Integer month, Integer year, String centerCode, Boolean employeeActive) {
     Center center = StringUtils.isEmpty(centerCode) ? null : centerRepository.findByCode(centerCode);
     List<Employee> employees;
-    if (employeeActive == null)
-    {
+    if (employeeActive == null) {
       employees = center == null ? employeeRepository.findAll()
-                                 : employeeRepository.findByCostCenter(center);
-    }
-    else
-    {
+              : employeeRepository.findByCostCenter(center);
+    } else {
       employees = center == null ? employeeRepository.findByActive(employeeActive)
-                                 : employeeRepository.findByActiveAndCostCenter(employeeActive, center);
+              : employeeRepository.findByActiveAndCostCenter(employeeActive, center);
     }
 
     int count = 0;
-    if (!CollectionUtils.isEmpty(employees))
-    {
-      for (Employee employee : employees)
-      {
+    if (!CollectionUtils.isEmpty(employees)) {
+      for (Employee employee : employees) {
         logger.info(String.format("Syncing Leave summary for employee %s/%s...", ++count, employees.size()));
         if (employeeActive != null &&
-            employeeActive != employee.isActive())
-        {
+                employeeActive != employee.isActive()) {
           continue;
         }
-        if (month == null)
-        {
-          for (int i = 1; i <= 12; i++)
-          {
+        if (month == null) {
+          for (int i = 1; i <= 12; i++) {
             syncLeaveSummary(employee, i, year);
           }
-        }
-        else
-        {
+        } else {
           syncLeaveSummary(employee, month, year);
         }
       }
     }
   }
 
-  private long countLeave(Employee employee, boolean half, Date from, Date to, LeaveType type, LeaveStatus status)
-  {
+  private long countLeave(Employee employee, boolean half, Date from, Date to, LeaveType type, LeaveStatus status) {
     JPAQuery<Integer> query = new JPAQuery<>(entityManager);
     QEmployeeLeave leave = QEmployeeLeave.employeeLeave;
 
     query.select(leave).from(leave)
-         .where(leave.employee.eq(employee));
-    if (type != null)
-    {
+            .where(leave.employee.eq(employee));
+    if (type != null) {
       query.where(leave.leaveType.eq(type));
     }
-    if (status != null)
-    {
+    if (status != null) {
       query.where(leave.leaveStatus.eq(status));
     }
-    if (half)
-    {
+    if (half) {
       query.where(leave.halfLeave.isTrue());
-    }
-    else
-    {
+    } else {
       query.where(leave.halfLeave.isNull().or(leave.halfLeave.isFalse()));
     }
 
@@ -498,32 +424,26 @@ public class StaffLeaveService extends BaseService
     return query.fetchCount();
   }
 
-  private void syncLeaveSummary(Employee employee, Integer month, Integer year)
-  {
+  private void syncLeaveSummary(Employee employee, Integer month, Integer year) {
     DateTime from = new DateTime(year, month, 1, 0, 0, 0);
     DateTime to = new DateTime(year, month, from.dayOfMonth().getMaximumValue(), 23, 59);
-    for (LeaveType leaveType : LeaveType.values())
-    {
+    for (LeaveType leaveType : LeaveType.values()) {
       BigDecimal count = BigDecimal.ZERO;
 
       long halfCount = countLeave(employee, true, from.toDate(), to.toDate(), leaveType, LeaveStatus.Approved);
       long fullCount = countLeave(employee, false, from.toDate(), to.toDate(), leaveType, LeaveStatus.Approved);
 
-      if (fullCount > 0)
-      {
+      if (fullCount > 0) {
         count = count.add(new BigDecimal(fullCount));
       }
-      if (halfCount > 0)
-      {
+      if (halfCount > 0) {
         count = count.add(new BigDecimal(halfCount / 2));
       }
 
       EmployeeLeaveSummary leaveSummary = employeeLeaveSummaryRepository
-          .findByEmployeeIdAndLeaveTypeAndMonthAndYear(employee.getId(), leaveType, month, year);
-      if (count.doubleValue() > 0)
-      {
-        if (leaveSummary == null)
-        {
+              .findByEmployeeIdAndLeaveTypeAndMonthAndYear(employee.getId(), leaveType, month, year);
+      if (count.doubleValue() > 0) {
+        if (leaveSummary == null) {
           leaveSummary = new EmployeeLeaveSummary();
           leaveSummary.setEmployee(employee);
           leaveSummary.setYear(year);
@@ -533,16 +453,104 @@ public class StaffLeaveService extends BaseService
         }
         leaveSummary.setCount(count);
         employeeLeaveSummaryRepository.saveAndFlush(leaveSummary);
-      }
-      else
-      {
-        if (leaveSummary != null)
-        {
+      } else {
+        if (leaveSummary != null) {
           employeeLeaveSummaryRepository.delete(leaveSummary);
         }
       }
     }
 
   }
+
+
+  public List<EmployeeLeaveSummaryResponse> getLeavesByMonth(int month) {
+
+    if (month == 0)
+      throw new ValidationException("Month is required");
+    JPAQuery<EmployeeLeaveSummary> query = new JPAQuery<>(entityManager);
+//      QEmployeeLeaveSummary leaveSummary=QEmployeeLeaveSummary.employeeLeaveSummary;
+//
+//      List<Tuple> fetch=query.select(leaveSummary.employee,leaveSummary.count.sum()).from(leaveSummary)
+//              .where(leaveSummary.month.eq(month))
+//              .where(leaveSummary.year.eq(LocalDate.now().getYear()))
+//              .groupBy(leaveSummary.employee)
+//              .fetch();
+
+    List<EmployeeLeaveSummaryResponse> list = new ArrayList<>();
+    EmployeeLeaveSummaryResponse summaryResponse;
+//
+//      for(Tuple row: fetch){
+//        summaryResponse= new EmployeeLeaveSummaryResponse();
+//        summaryResponse.setName(row.get(leaveSummary.employee).getName());
+//        summaryResponse.setCenter(row.get(leaveSummary.employee).getCostCenter().getName());
+//        summaryResponse.setEid(row.get(leaveSummary.employee).getEid());
+//        summaryResponse.setCount(row.get(leaveSummary.count.sum()));
+//        summaryResponse.setMonth(month);
+//        System.out.println(row.get(leaveSummary.employee).getName()+ "   "+row.get(leaveSummary.count.sum()));
+//        list.add(summaryResponse);
+//
+//
+//      }
+
+    Map<Employee, BigDecimal> leaveCount = new HashMap<>();
+    QEmployeeLeave leave = QEmployeeLeave.employeeLeave;
+    List<EmployeeLeave> leaves = query.select(leave).from(leave)
+            .where(leave.date.month().eq(month).and(leave.employee.active.isTrue()))
+            .orderBy(leave.employee.id.asc())
+            .fetch();
+
+    for (EmployeeLeave l : leaves){
+      System.out.println(l.getEmployee().getName()+ " ");
+
+      if (leaveCount.containsKey(l.getEmployee()))
+
+           //leaveCount.put(l.getEmployee(),count(l,leaveCount.get(l)));
+            leaveCount.put(l.getEmployee(),count(l,leaveCount.get(l.getEmployee())));
+      else
+        leaveCount.putIfAbsent(l.getEmployee(),count(l,BigDecimal.ZERO));
+    };
+
+      for (Map.Entry<Employee, BigDecimal> entry : leaveCount.entrySet()) {
+        summaryResponse = new EmployeeLeaveSummaryResponse();
+        summaryResponse.setName(entry.getKey().getName());
+        summaryResponse.setCenter(entry.getKey().getCostCenter().getName());
+        summaryResponse.setEid(entry.getKey().getEid());
+        summaryResponse.setCount(entry.getValue());
+        summaryResponse.setMonth(month);
+        System.out.println(summaryResponse.getName() + " " + summaryResponse.getCount());
+        list.add(summaryResponse);
+      }
+    return list;
+    }
+
+
+
+    public List<EmployeeLeave> employeeLeavesMonthly (String eid,int month){
+
+      if (month == 0)
+        throw new ValidationException("Month is mandatory.");
+      if (eid == null)
+        throw new ValidationException("Employee id is required!");
+
+      JPAQuery<EmployeeLeave> query = new JPAQuery<>(entityManager);
+      QEmployeeLeave employeeLeave = QEmployeeLeave.employeeLeave;
+
+      List<EmployeeLeave> leaves = query.select(employeeLeave).from(employeeLeave)
+              .where(employeeLeave.employee.eid.eq(eid).and(employeeLeave.date.month().eq(month)))
+              .fetch();
+
+      return leaves;
+    }
+
+
+ public BigDecimal count (EmployeeLeave leave,BigDecimal count){
+
+   System.out.println(leave);
+    if (leave.getHalfLeave())
+      return count.add(new BigDecimal(0.5));
+    else
+      return count.add(BigDecimal.ONE);
+
+    }
 }
 

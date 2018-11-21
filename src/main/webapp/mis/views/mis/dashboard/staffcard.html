@@ -21,13 +21,13 @@
         : {{stats.recruitmentCount | number}} &nbsp;&nbsp;&nbsp;
       </p>
       <p style="margin: 0;text-align:left;">
+        <a href="#" ng-click="showPanel('stafflist', 'presentStaff')">Presents</a>
+        : {{stats.staffPresent | number}} &nbsp;&nbsp;&nbsp;
+      </p>
+      <p style="margin: 0;text-align:left;">
         <a href="#" ng-click="showPanel('stafflist', 'absentStaff')">Absent</a>
         : {{stats.staffAbsent | number}} &nbsp;&nbsp;&nbsp;
       </p>
-      <p style="margin: 0;text-align:left;">
-        <a href="#" ng-click="showPanel('stafflist', 'presentStaff')">Presents</a>
-        : {{stats.staffPresent | number}} &nbsp;&nbsp;&nbsp;
-      </p>      
       <p style="margin: 0;text-align:left;">
         <a href="#" ng-click="showPanel('stafflist', 'onLeaveStaff')">On Leave</a>
         : {{stats.staffOnLeave | number}} &nbsp;&nbsp;&nbsp;

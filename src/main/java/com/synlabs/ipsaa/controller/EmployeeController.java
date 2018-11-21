@@ -176,8 +176,8 @@ public class EmployeeController
   }
 
   @PutMapping("updateCTC")
-  public void updateCTC() throws IOException{
-
+  public void updateCTC() throws IOException,InvalidFormatException{
+      employeeService.uploadCTC();
   }
 ////set Professional Tax feom Backend
 //  @PutMapping("updating")

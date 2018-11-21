@@ -182,8 +182,8 @@ app.controller('StaffLeaveController', function ($scope, $http, $rootScope, Auth
     function fetchMonths(year) {
         months = [];
         var allmonths = moment.months();
-        var counttill = year == moment().year() ? moment().month() : 11;
-        for (var i = 0; i <= counttill; i++) {
+        // var counttill = year == moment().year() ? moment().month() : 11;
+        for (var i = 0; i <= 11; i++) {
             months.push({
                 name: allmonths[i],
                 moy: i + 1
@@ -354,6 +354,37 @@ app.controller('StaffLeaveController', function ($scope, $http, $rootScope, Auth
         });
     }
 
+    $scope.selectedMonthForEmployee = null;
+    $scope.getEmployees = function(){
+        $http.post('/api/staff/leave/'+$scope.selectedMonthForEmployee.moy).then(function(response){
+            $scope.employeeLeaveSummary = response.data;   
+            $scope.employeeLeaveSummaryCopy = angular.copy($scope.employeeLeaveSummary);         
+        },function(error){
+
+        });
+        
+    }
+
+    $scope.getEmployeeLeaves = function(summary){
+        $('.collapse').collapse('hide');
+        $http.post('/api/staff/leave/employeeMonthly?eid='+summary.eid+'&month='+$scope.selectedMonthForEmployee.moy).then(function(response){
+            $scope.monthlyLeaves = response.data;      
+            summary.monthlyLeaves = response.data;
+        },function(error){
+            
+        });        
+    }
+
+    $scope.filterLeavesByCenter = function(center) {
+        if(center){
+            $scope.employeeLeaveSummary = $scope.employeeLeaveSummaryCopy.filter(element => {
+                return element.center === center.name;
+            });
+        } else {
+            $scope.employeeLeaveSummary = $scope.employeeLeaveSummaryCopy;
+        }
+    }
+
     function ok(message) {
         swal({
             title: message,
@@ -374,7 +405,9 @@ app.controller('StaffLeaveController', function ($scope, $http, $rootScope, Auth
 
     function refresh() {
         loadStaff();
-
+        $http.get('/api/center/').then(function (response) {
+            $scope.centers = response.data;
+        });
         var now = moment();
         var month = now.month();
         var day = now.day();
