@@ -21,7 +21,7 @@ export class StudentFeeComponent implements OnInit {
   viewPanel = false;
   loadingFeeList = false;
   allItems = [];
-
+update = true;
   constructor(
     private adminService: AdminService,
     private alertService: AlertService,

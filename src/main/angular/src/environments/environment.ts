@@ -5,9 +5,9 @@
 
 export const environment = {
   production: false,
-  // api: 'http://ipsaa-dev.ap-south-1.elasticbeanstalk.com'
+  api: 'http://ipsaa-dev.ap-south-1.elasticbeanstalk.com'
   // api: 'http://localhost:8080'
   // api: 'http://ipsaa-dev2.ap-south-1.elasticbeanstalk.com'
 // api: window.location.origin
-api: 'http://192.168.1.26:8182'
+// api: 'http://192.168.1.26:8182'
 };

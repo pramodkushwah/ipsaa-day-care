@@ -6,26 +6,29 @@ import { Page404Component } from '../pages/404/page404.component';
 import { LoginComponent } from '../pages/login/login.component';
 
 const routes: Routes = [
- { path: '', redirectTo: 'login', pathMatch: 'full' },
- { path: 'login',
-   // loadChildren: 'pages/login/login.module#LoginModule',
-   component: LoginComponent, canActivate: [LoginGaurd]},
- { path: 'mis', loadChildren: 'pages/mis/mis.module#MISModule', canActivate: [AuthGaurd] },
- {
-  path: '**',
-  redirectTo: '/page404'
- },
- {
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  {
+    path: 'login',
+    // loadChildren: 'pages/login/login.module#LoginModule',
+    component: LoginComponent, canActivate: [LoginGaurd]
+  },
+  { path: 'mis', loadChildren: 'pages/mis/mis.module#MISModule', canActivate: [AuthGaurd] },
+  {
+    path: '**',
+    redirectTo: '/page404'
+  },
+  {
     path: 'page404',
     component: Page404Component
- }
+  },
+
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule],
   providers: [AuthGaurd, LoginGaurd]
 })
 export class AppRoutingModule {
-  constructor() {}
+  constructor() { }
 }

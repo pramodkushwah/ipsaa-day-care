@@ -149,6 +149,7 @@ export class StudentInfoComponent implements OnInit {
 
   getFeeField() {
     return this.fb.group({
+      id: [''],
       annualFee: [0],
       discountAnnualCharges: [0],
       finalAnnualFee: [0],
@@ -247,7 +248,7 @@ export class StudentInfoComponent implements OnInit {
 
   saveStudent() {
     this.studentForm.value['dob'] = this.datePipe.transform(this.studentForm.controls['dob'].value, 'yyyy-MM-dd');
-    if (this.editable) {
+    if (this.studentForm.controls['id'].value) {
       this.adminService
         .updateStudent(this.studentForm.value)
         .subscribe((response: any) => {
@@ -354,7 +355,6 @@ export class StudentInfoComponent implements OnInit {
     if (fee.baseFeeGst > 0) {
       final += Number(fee.baseFeeGst);
     }
-console.log(final);
     feeControlForm.controls['finalFee'].patchValue(Number(final.toFixed(2)));
   }
 

@@ -90,7 +90,7 @@ export class StudentComponent implements OnInit {
   }
 
   addNewStudent() {
-    this.update = false;
+    this.update = true;
     this.selectedStudent = {};
     this.adminService.viewPanel.next(true);
   }

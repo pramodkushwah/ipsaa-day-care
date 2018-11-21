@@ -21,11 +21,16 @@ export class StudentFeeInfoComponent implements OnInit {
   loadingFeeList = false;
   studentFeeForm: FormGroup;
   updateFee: any;
-
+  editable: boolean;
   @Input() set studentFee(studentFee: any) {
     this.updateFee = studentFee;
 
     this.getStudentFee(studentFee);
+  }
+
+  @Input()
+  set update(update: boolean) {
+    this.editable = update;
   }
 
   constructor(

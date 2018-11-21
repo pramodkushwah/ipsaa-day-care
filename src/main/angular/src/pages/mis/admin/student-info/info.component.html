@@ -52,19 +52,19 @@
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">First Name : </label>
-                <input class="form-control" value=" Pankaj" formControlName="firstName">
+                <input class="form-control" [readonly]="!editable" value=" Pankaj" formControlName="firstName">
               </div>
             </div>
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Last Name : </label>
-                <input class="form-control" value=" Kharetwal" formControlName="lastName">
+                <input class="form-control" [readonly]="!editable" value=" Kharetwal" formControlName="lastName">
               </div>
             </div>
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Nick Name : </label>
-                <input class="form-control" value=" Pankaj" formControlName="nickName">
+                <input class="form-control" [readonly]="!editable"  value=" Pankaj" formControlName="nickName">
               </div>
             </div>
           </div>
@@ -72,7 +72,7 @@
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Center : </label>
-                <select class="form-control" formControlName="centerId" (ngModelChange)="getProgramsByCenter($event)">
+                <select class="form-control"  [class.readonly]="!editable"  formControlName="centerId" (ngModelChange)="getProgramsByCenter($event)">
                   <option *ngFor="let center of centers;let c = index;" [ngValue]="center.id"> {{center.name}}</option>
                 </select>
               </div>
@@ -80,7 +80,7 @@
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Program : </label>
-                <select class="form-control" formControlName="programId" (ngModelChange)="getFee($event)">
+                <select class="form-control"  [class.readonly]="!editable"  formControlName="programId" (ngModelChange)="getFee($event)">
                   <option *ngFor="let program of programs;let c = index;" [ngValue]="program.id"> {{program.name}}</option>
                 </select>
               </div>
@@ -88,7 +88,7 @@
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Group : </label>
-                <select class="form-control" formControlName="groupId">
+                <select class="form-control"  [class.readonly]="!editable"  formControlName="groupId">
                   <option *ngFor="let group of groups;let c = index;" [ngValue]="group.id"> {{group.name}}</option>
                 </select>
               </div>
@@ -98,7 +98,7 @@
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Gender : </label>
-                <select class="form-control" formControlName="gender">
+                <select class="form-control"  [class.readonly]="!editable"  formControlName="gender">
                   <option value="">Gender</option>
                   <option value="Male">Boy</option>
                   <option value="Female">Girl</option>
@@ -108,7 +108,7 @@
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Blood Group : </label>
-                <select class="form-control" formControlName="bloodGroup">
+                <select class="form-control"  [class.readonly]="!editable" formControlName="bloodGroup">
                   <option *ngFor="let bg of bloodGroups;">{{bg}}</option>
                 </select>
               </div>
@@ -116,7 +116,7 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">*Date of Birth</label>
-                <input class="form-control" name="dob" type="date" required formControlName="dob" [readonly]="!newStudent">
+                <input class="form-control"   name="dob" type="date" required formControlName="dob" [readonly]="!newStudent">
               </div>
             </div>
           </div>
@@ -124,7 +124,7 @@
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Familty Type : </label>
-                <select class="form-control" formControlName="familyType">
+                <select class="form-control"   [class.readonly]="!editable" formControlName="familyType">
                   <option value="">Family Type</option>
                   <option value="Nuclear">Nuclear</option>
                   <option value="Joint">Joint</option>
@@ -134,13 +134,13 @@
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">*Nationality</label>
-                <input class="form-control" name="nationality" type="text" formControlName="nationality">
+                <input class="form-control" [readonly]="!editable"  name="nationality" type="text" formControlName="nationality">
               </div>
             </div>
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Expected In : </label>
-                <input class="form-control" formControlName="expectedIn">
+                <input class="form-control" [readonly]="!editable"  formControlName="expectedIn">
               </div>
             </div>
           </div>
@@ -148,13 +148,13 @@
             <div class="col-md-8">
               <div class="form-group">
                 <label class="control-label">*Comment</label>
-                <textarea class="form-control" formControlName="profile" required ng-readonly="showstudent" maxlength="1000"></textarea>
+                <textarea class="form-control" [readonly]="!editable"  formControlName="profile" required ng-readonly="showstudent" maxlength="1000"></textarea>
               </div>
             </div>
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Expected Out : </label>
-                <input class="form-control" formControlName="expectedOut">
+                <input class="form-control"  [readonly]="!editable"  formControlName="expectedOut">
               </div>
             </div>
           </div>
@@ -163,7 +163,7 @@
               <div class="form-group">
                 <div class="checkbox" style="padding-top: 45px;">
                   <label>
-                    <input type="checkbox" checked="checked" formControlName="corporate" (ngModelChange)="removeFee($event)">
+                    <input type="checkbox" [readonly]="!editable"  checked="checked" formControlName="corporate" (ngModelChange)="removeFee($event)">
                     Corporate Student
                   </label>
                 </div>
@@ -173,7 +173,7 @@
               <div class="form-group">
                 <div class="checkbox" style="padding-top: 45px;">
                   <label>
-                    <input type="checkbox" (ngModelChange)="formalClicked($event)" name="formalSchool" formControlName="formalSchool">
+                    <input type="checkbox" [readonly]="!editable"  (ngModelChange)="formalClicked($event)" name="formalSchool" formControlName="formalSchool">
                     Formal School
                   </label>
                 </div>
@@ -182,7 +182,7 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">*School Name</label>
-                <input class="form-control" name="school" type="text" formControlName="schoolName"  [disabled]="!studentForm.controls.formalSchool.value">
+                <input class="form-control"  [readonly]="!editable"  name="school" type="text" formControlName="schoolName"  [disabled]="!studentForm.controls.formalSchool.value">
                 <span class="material-input"></span>
               </div>
             </div>
@@ -191,7 +191,7 @@
             <div class="col-md-12">
               <div class="checkbox" style="padding-top: 45px;">
                 <label>Siblings
-                  <input type="checkbox" name="sibling" [(ngModel)]="sibling.hasSibling" [ngModelOptions]="{standalone: true}">
+                  <input type="checkbox"  [readonly]="!editable"  name="sibling" [(ngModel)]="sibling.hasSibling" [ngModelOptions]="{standalone: true}">
                 </label>
               </div>
             </div>
@@ -199,7 +199,7 @@
             <div class="col-md-3">
               <div class="form-group ">
                 <label class="control-label">*Center</label>
-                <select class="form-control" id="sel3" [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingCenter"
+                <select class="form-control" id="sel3"  [disabled]="editable"  [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingCenter"
                   [disabled]="!sibling.hasSibling">
                   <option value="">Select</option>
                   <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
@@ -209,7 +209,7 @@
             <div class="col-md-3">
               <div class="form-group ">
                 <label class="control-label">Sibling Program</label>
-                <select class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingProgram"
+                <select class="form-control"  [disabled]="editable"  [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingProgram"
                   [disabled]="!sibling.hasSibling">
                   <option value="">Select</option>
                   <option *ngFor="let program of programs;" [ngValue]="program"> {{program.name}}</option>
@@ -219,7 +219,7 @@
             <div class="col-md-3">
               <div class="form-group ">
                 <label class="control-label">Sibling Group</label>
-                <select class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingGroup"
+                <select class="form-control"  [disabled]="editable"  [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingGroup"
                   [disabled]="!sibling.hasSibling">
                   <option value="">Select</option>
                   <option *ngFor="let group of groups;" [ngValue]="group"> {{group.name}}</option>
@@ -229,7 +229,7 @@
             <div class="col-md-3">
               <div class="form-group ">
                 <label class="control-label">Student</label>
-                <select class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="sibling.siblingId"
+                <select class="form-control"  [disabled]="editable" [ngModelOptions]="{standalone: true}" [(ngModel)]="sibling.siblingId"
                   [disabled]="!sibling.hasSibling" (ngModelChange)="siblingSelected($event)">
                   <option value="">Select</option>
                   <ng-container *ngFor="let student of students;">
@@ -248,14 +248,13 @@
               <div class="col-lg-6">
                 <div class="form-group">
                   <label class="control-label">First Name : </label>
-                  <input class="form-control" value=" Pankaj" formControlName="firstName">
-                  <!-- <input hidden formControlName="relationship" [ngValue] ="i?'Mother':'Father'"> -->
+                  <input class="form-control" [readonly]="!editable" value=" Pankaj" formControlName="firstName">
                 </div>
               </div>
               <div class="col-lg-6">
                 <div class="form-group">
                   <label class="control-label">Last Name : </label>
-                  <input class="form-control" value=" Kharetwal" formControlName="lastName">
+                  <input class="form-control" [readonly]="!editable" value=" Kharetwal" formControlName="lastName">
                 </div>
               </div>
             </div>
@@ -263,14 +262,14 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">*Phone</label>
-                  <input class="form-control" type="text" formControlName="mobile">
+                  <input class="form-control"  [readonly]="!editable"  type="text" formControlName="mobile">
                   <span class="material-input"></span>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">*Email</label>
-                  <input class="form-control" type="email" formControlName="email">
+                  <input class="form-control"  [readonly]="!editable"  type="email" formControlName="email">
                   <span class="material-input"></span>
                 </div>
               </div>
@@ -279,14 +278,14 @@
               <div class="col-md-6">
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" checked="checked" formControlName="smsEnabled"> SMS Notification
+                    <input type="checkbox"  [readonly]="!editable"  checked="checked" formControlName="smsEnabled"> SMS Notification
                   </label>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" checked="checked" formControlName="emailEnabled"> Email Notification
+                    <input type="checkbox"  [readonly]="!editable"  checked="checked" formControlName="emailEnabled"> Email Notification
                   </label>
                 </div>
               </div>
@@ -295,14 +294,14 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">Educational Qualification</label>
-                  <input class="form-control" name="fatherEducationalQualification" type="text" formControlName="educationalQualification">
+                  <input class="form-control" name="fatherEducationalQualification"  [readonly]="!editable"  type="text" formControlName="educationalQualification">
                   <span class="material-input"></span>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">Occupation</label>
-                  <input class="form-control" name="fatherOccupation" type="text" formControlName="occupation">
+                  <input class="form-control"  [readonly]="!editable"  name="fatherOccupation" type="text" formControlName="occupation">
                   <span class="material-input"></span>
                 </div>
               </div>
@@ -311,14 +310,14 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">Designation</label>
-                  <input class="form-control" name="fatherdesignation" type="text" formControlName="designation">
+                  <input class="form-control"  [readonly]="!editable"  name="fatherdesignation" type="text" formControlName="designation">
                   <span class="material-input"></span>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">Organisation</label>
-                  <input class="form-control" name="fatherOrganisation" type="text" formControlName="organisation">
+                  <input class="form-control"  [readonly]="!editable"  name="fatherOrganisation" type="text" formControlName="organisation">
                   <span class="material-input"></span>
                 </div>
               </div>
@@ -328,28 +327,28 @@
               <div class="col-lg-12">
                 <div class="form-group">
                   <label class="control-label">Address</label>
-                  <input class="form-control" type="text" formControlName="address">
+                  <input class="form-control"  [readonly]="!editable"  type="text" formControlName="address">
                   <span class="material-input"></span>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">City</label>
-                  <input class="form-control" name="city" type="text" formControlName="city">
+                  <input class="form-control" name="city"  [readonly]="!editable" type="text" formControlName="city">
                   <span class="material-input"></span>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">State</label>
-                  <input class="form-control" name="state" type="text" formControlName="state">
+                  <input class="form-control" name="state"  [readonly]="!editable" type="text" formControlName="state">
                   <span class="material-input"></span>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Zipcode</label>
-                  <input class="form-control" name="zipcode" type="text" formControlName="zipcode">
+                  <input class="form-control" name="zipcode"  [readonly]="!editable" type="text" formControlName="zipcode">
                   <span class="material-input"></span>
                 </div>
               </div>
@@ -359,28 +358,28 @@
               <div class="col-lg-12">
                 <div class="form-group">
                   <label class="control-label">Address</label>
-                  <input class="form-control" type="text" formControlName="address">
+                  <input class="form-control"  [readonly]="!editable" type="text" formControlName="address">
                   <span class="material-input"></span>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">City</label>
-                  <input class="form-control" name="city" type="text" formControlName="city">
+                  <input class="form-control" name="city"  [readonly]="!editable" type="text" formControlName="city">
                   <span class="material-input"></span>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">State</label>
-                  <input class="form-control" name="state" type="text" formControlName="state">
+                  <input class="form-control" name="state"  [readonly]="!editable" type="text" formControlName="state">
                   <span class="material-input"></span>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Zipcode</label>
-                  <input class="form-control" name="zipcode" type="text" formControlName="zipcode">
+                  <input class="form-control" name="zipcode"  [readonly]="!editable" type="text" formControlName="zipcode">
                   <span class="material-input"></span>
                 </div>
               </div>
@@ -393,7 +392,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Annual Charges</label>
-                  <input class="form-control" type="number" formControlName="annualFee" readonly>
+                  <input class="form-control" type="number"  formControlName="annualFee" readonly>
                 </div>
               </div>
               <div class="col-md-4">
@@ -408,7 +407,7 @@
                 <div class="form-group">
                   <label class="control-label">Final Annual Charges
                   </label>
-                  <input class="form-control" type="number" formControlName="finalAnnualFee" required min="0"
+                  <input class="form-control" type="number" [readonly]="!editable" formControlName="finalAnnualFee" required min="0"
                     (ngModelChange)="calculateDiscount('annualFee','finalAnnualFee', 'discountAnnualCharges')">
                 </div>
               </div>
@@ -429,7 +428,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Final Admission Charges</label>
-                  <input class="form-control" type="number" formControlName="finalAdmissionCharges" required min="0"
+                  <input class="form-control" type="number"  [readonly]="!editable" formControlName="finalAdmissionCharges" required min="0"
                     (ngModelChange)="calculateDiscount('admissionFee', 'finalAdmissionCharges', 'discountAdmissionCharges')"
                     [disabled]="!studentForm.controls.fee.controls.admissionFee.value">
                 </div>
@@ -454,7 +453,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Final Monthly Fees Amount</label>
-                  <input class="form-control" type="text" formControlName="finalBaseFee" required [disabled]="!studentForm.controls.fee.controls.baseFee.value"
+                  <input class="form-control" type="text" [readonly]="!editable" formControlName="finalBaseFee" required [disabled]="!studentForm.controls.fee.controls.baseFee.value"
                     min="0" (ngModelChange)="calculateDiscount('baseFee', 'finalBaseFee', 'discountBaseFee')">
                 </div>
               </div>
@@ -478,7 +477,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Final Security Deposit Fees</label>
-                  <input class="form-control" type="number" formControlName="finalSecurityDeposit" required [disabled]="!studentForm.controls.fee.controls.deposit.value"
+                  <input class="form-control" type="number" [readonly]="!editable" formControlName="finalSecurityDeposit" required [disabled]="!studentForm.controls.fee.controls.deposit.value"
                     min="0" (ngModelChange)="calculateDiscount('deposit', 'finalSecurityDeposit', 'discountSecurityDeposit')">
                 </div>
               </div>
@@ -486,21 +485,21 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">Monthly Transport Fees</label>
-                  <input class="form-control" type="number" formControlName="transportFee" (ngModelChange)="monthlyTransportFeesChanged(studentForm.controls.fee.value)">
+                  <input class="form-control" type="number" [readonly]="!editable" formControlName="transportFee" (ngModelChange)="monthlyTransportFeesChanged(studentForm.controls.fee.value)">
                 </div>
               </div>
 
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">Uniform Charges</label>
-                  <input class="form-control" type="number" formControlName="uniformCharges" (ngModelChange)="monthlyUniformChargesChanged(studentForm.controls.fee.value)">
+                  <input class="form-control" type="number" [readonly]="!editable" formControlName="uniformCharges" (ngModelChange)="monthlyUniformChargesChanged(studentForm.controls.fee.value)">
                 </div>
               </div>
 
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">Stationery Charges</label>
-                  <input class="form-control" type="number" formControlName="stationary" (ngModelChange)="monthlyStationeryChargesChanged(studentForm.controls.fee.value)">
+                  <input class="form-control" type="number"  formControlName="stationary" (ngModelChange)="monthlyStationeryChargesChanged(studentForm.controls.fee.value)">
                 </div>
               </div>
 
@@ -510,7 +509,7 @@
               <div class="col-md-12">
                 <div class="form-group">
                   <label class="control-label">Comment*</label>
-                  <input class="form-control" type="text" formControlName="comment">
+                  <input class="form-control" type="text"  formControlName="comment">
                 </div>
               </div>
             </div>
@@ -566,7 +565,7 @@
     </div>
   </div>
 
-  <div class="card-footer">
+  <div  *ngIf="editable"  class="card-footer">
     <div class="stats padding-left-right-30">
       <button mat-raised-button class="btn btn-primary" (click)="saveStudent()" [disabled]="!studentForm.valid">Save</button>
       <button mat-raised-button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>

@@ -41,7 +41,7 @@
           <div class="col-lg-6 col-md-4 col-sm-3">
             <div class="form-group">
               <label class="control-label">Final Annual Charges</label>
-              <input class="form-control" type="number"   name="finalAnnualFee" (keyup)="setDiscount('annualFee','discountAnnualCharges','finalAnnualFee')"  formControlName="finalAnnualFee">
+              <input class="form-control" type="number"  [readonly]="!editable"  name="finalAnnualFee" (keyup)="setDiscount('annualFee','discountAnnualCharges','finalAnnualFee')"  formControlName="finalAnnualFee">
               <span class="material-input"></span>
             </div>
           </div>
@@ -62,7 +62,7 @@
           <div class="col-lg-6 col-md-4 col-sm-3">
             <div class="form-group">
               <label class="control-label">Final Admission Charges</label>
-              <input class="form-control" type="number"  name="finalAdmissionCharges" (keyup)="setDiscount('admissionCharges','discountAdmissionCharges','finalAdmissionCharges')" formControlName="finalAdmissionCharges">
+              <input class="form-control" type="number"  [readonly]="!editable"  name="finalAdmissionCharges" (keyup)="setDiscount('admissionCharges','discountAdmissionCharges','finalAdmissionCharges')" formControlName="finalAdmissionCharges">
               <span class="material-input"></span>
             </div>
           </div>
@@ -84,7 +84,7 @@
           <div class="col-lg-6 col-md-4 col-sm-3">
             <div class="form-group">
               <label class="control-label">Final Monthly Fees</label>
-              <input class="form-control" type="number" (keyup)="setDiscount('baseFee','discountBaseFee','finalBaseFee')" formControlName="finalBaseFee"  name="finalBaseFee"  >
+              <input class="form-control" type="number"  [readonly]="!editable" (keyup)="setDiscount('baseFee','discountBaseFee','finalBaseFee')" formControlName="finalBaseFee"  name="finalBaseFee"  >
               <span class="material-input"></span>
             </div>
           </div>
@@ -105,7 +105,7 @@
           <div class="col-lg-6 col-md-4 col-sm-3">
             <div class="form-group">
               <label class="control-label">Final Security Deposit</label>
-              <input class="form-control" type="number"  name="finalSecurityDeposit" (keyup)="setDiscount('securityDeposit','discountSecurityDeposit','finalSecurityDeposit')" formControlName="finalSecurityDeposit">
+              <input class="form-control" type="number"  [readonly]="!editable"  name="finalSecurityDeposit" (keyup)="setDiscount('securityDeposit','discountSecurityDeposit','finalSecurityDeposit')" formControlName="finalSecurityDeposit">
               <span class="material-input"></span>
             </div>
           </div>
@@ -113,7 +113,7 @@
           <div class="col-lg-6 col-md-4 col-sm-3">
             <div class="form-group">
               <label class="control-label">Monthly Transport Fees</label>
-              <input class="form-control" type="number"  name="transportFee"  formControlName="transportFee">
+              <input class="form-control" type="number"  [readonly]="!editable"  name="transportFee"  formControlName="transportFee">
               <span class="material-input"></span>
             </div>
           </div>
@@ -144,7 +144,7 @@
             <div class="col-lg-12 col-md-12 col-sm-12">
               <div class="form-group">
                 <label class="control-label">Comments*</label>
-                <textarea class="form-control" name="comment"  formControlName="comment" rows="3" cols="100"> </textarea>
+                <textarea class="form-control" name="comment"  [readonly]="!editable" formControlName="comment" rows="3" cols="100"> </textarea>
                 <span class="material-input"></span>
               </div>
             </div>
@@ -152,10 +152,10 @@
       
 
           </div>
-          <div class="category form-category">
+          <div *ngIf="editable" class="category form-category">
             *Required Fields
           </div>
-          <div *ngIf="true" class="form-footer text-right">
+          <div *ngIf="editable" class="form-footer text-right">
 
             <button class="btn btn-sm btn-rose btn-fill" (click)="saveStudentFee()" [disabled]="false">
               <span *ngIf=" false ;else save">
