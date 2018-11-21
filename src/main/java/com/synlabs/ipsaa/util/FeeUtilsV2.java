@@ -12,6 +12,7 @@ import java.util.Map;
 import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequestIpsaaClub;
 import com.synlabs.ipsaa.enums.GST;
 import com.synlabs.ipsaa.ex.ValidationException;
 
@@ -44,7 +45,19 @@ public class FeeUtilsV2 {
 		gst = finalFee.multiply(gst).divide(HUNDRED, 2, BigDecimal.ROUND_CEILING);
 		return gst;
 	}
-
+	public static BigDecimal calculateGST(BigDecimal baseFee, GST type) {
+		BigDecimal finalFee = ZERO;
+		finalFee = finalFee.add(baseFee);
+		BigDecimal gst;
+		if (type == GST.IGST) {
+			gst = new BigDecimal(18);
+		} else if (type == GST.CGST)
+			gst = new BigDecimal(9);
+		else
+			gst = new BigDecimal(9);
+		gst = finalFee.multiply(gst).divide(HUNDRED, 2, BigDecimal.ROUND_CEILING);
+		return gst;
+	}
 	public static BigDecimal calculateFinalFee(StudentFee fee, boolean isGst) {
 		// fee.setTransportFee(fee.getTransportFee().multiply(THREE));
 
@@ -287,25 +300,29 @@ public class FeeUtilsV2 {
 	public static int getQuarter() {
 		Calendar cal = Calendar.getInstance();
 		int month = cal.get(Calendar.MONTH)+1;
-		if (month >= 1 && month <= 3)
-			return 1;
-		else if (month >= 4 && month <= 6)
-			return 2;
-		else if (month >= 7 && month <= 9)
-			return 3;
-		else
-			return 4;
+//		if (month >= 1 && month <= 3)
+//			return 1;
+//		else if (month >= 4 && month <= 6)
+//			return 2;
+//		else if (month >= 7 && month <= 9)
+//			return 3;
+//		else
+//			return 4;
+//
+		return (month / 3) + 1;
 	}
 
 	public static int getQuarter(int month) {
-		if (month >= 1 && month <= 3)
-			return 1;
-		else if (month >= 4 && month <= 6)
-			return 2;
-		else if (month >= 7 && month <= 9)
-			return 3;
-		else
-			return 4;
+//		if (month >= 1 && month <= 3)
+//			return 1;
+//		else if (month >= 4 && month <= 6)
+//			return 2;
+//		else if (month >= 7 && month <= 9)
+//			return 3;
+//		else
+//			return 4;
+		return (month / 3) + 1;
+
 	}
 
 	public static BigDecimal calculateFeeRatioForQuarter(Date admissionDate,int quarter) {
@@ -352,4 +369,11 @@ public class FeeUtilsV2 {
 		BigDecimal dis = baseFee.subtract(DiscountAmmount);
 		return dis.divide(baseFee, 6).multiply(HUNDRED);
 	}
+
+    public static BigDecimal calculateIpsaaClubFinalFee(StudentFeePaymentRequestIpsaaClub slip) {
+		return 		slip.getTotalDaysFee()
+						.add(slip.getFinalAnnualFee())
+						.add(slip.getFinalDepositFee())
+						.add(slip.getGstAmount()==null?ZERO:slip.getGstAmount());
+    }
 }

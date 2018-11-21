@@ -1,6 +1,7 @@
 package com.synlabs.ipsaa.view.fee;
 
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecord;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecordIpsaaClub;
 import com.synlabs.ipsaa.enums.PaymentMode;
 import com.synlabs.ipsaa.util.NumberToWordConverter;
 
@@ -16,6 +17,14 @@ public class FeePaymentRecordView
   private String paidAmountWords;
 
   public FeePaymentRecordView(StudentFeePaymentRecord payment)
+  {
+    paidAmount = payment.getPaidAmount();
+    paymentDate = payment.getPaymentDate();
+    paymentMode = payment.getPaymentMode();
+    paidAmountWords = NumberToWordConverter.convert(paidAmount.longValue());
+  }
+
+  public FeePaymentRecordView(StudentFeePaymentRecordIpsaaClub payment)
   {
     paidAmount = payment.getPaidAmount();
     paymentDate = payment.getPaymentDate();

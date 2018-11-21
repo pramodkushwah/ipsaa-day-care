@@ -28,9 +28,6 @@
 					</dependency>
 				</dependencies>
 			</dependencyManagement>
-
-
-
 		</profile>
 		<profile>
 			<id>default</id>
