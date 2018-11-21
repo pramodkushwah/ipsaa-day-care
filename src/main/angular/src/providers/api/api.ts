@@ -15,6 +15,8 @@ import 'rxjs/add/operator/catch';
 import {tap} from 'rxjs/operators';
 import 'rxjs/add/observable/throw';
 import { AlertService } from '../alert/alert.service';
+import { routerNgProbeToken } from '@angular/router/src/router_module';
+import { Router } from '@angular/router';
 
 /**
  * Api is a generic REST Api handler. Set your API url first.
@@ -23,7 +25,7 @@ import { AlertService } from '../alert/alert.service';
 export class Api {
   url: string = environment.api;
 
-  constructor(public http: HttpClient, public storage: StorageService, public alertService: AlertService) { }
+  constructor(public http: HttpClient, public storage: StorageService, public router: Router , public alertService: AlertService) { }
 
   getHeaders(optHeaders?: HttpHeaders) {
     let headers = new HttpHeaders();
@@ -118,8 +120,6 @@ export class Api {
   }
 
   extractData(response: HttpResponse<any>) {
-    console.log(response);
-    
     return response.body || response.status;
   }
 
@@ -128,6 +128,7 @@ export class Api {
       case 401:
         this.alertService.errorAlert(errorResponse.error.message);
         this.storage.clearData();
+        this.router.navigate(['/login']);
         break;
       case 0:
         this.alertService.errorAlert('You don\'t seem to have an active internet connection. Please connect and try again.');
