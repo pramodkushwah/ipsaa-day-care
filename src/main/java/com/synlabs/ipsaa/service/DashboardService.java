@@ -58,8 +58,6 @@ public class DashboardService extends BaseService
 
 	@Autowired
 	private EntityManager entityManager;
-	@Autowired
-	private EmployeeRepository employeeRepository;
 
 
 	@Autowired
