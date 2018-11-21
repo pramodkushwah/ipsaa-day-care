@@ -80,6 +80,7 @@ const misAppScripts = [
     'mis/app/controllers/program.controller.js',
     'mis/app/controllers/centerfeemanagement.controller.js',
     'mis/app/controllers/studentfeemanagement.controller.js',
+    'mis/app/controllers/ipsaaclubslip.controller.js',
     'mis/app/controllers/studentattendance.controller.js',
     'mis/app/controllers/feeslip.controller.js',
     'mis/app/controllers/feepayment.controller.js',
@@ -116,7 +117,9 @@ const misAppScripts = [
     'mis/app/controllers/staffattendancelogs.controller.js',
     'mis/app/controllers/staffleaves.controller.js',
     'mis/app/controllers/gallery/gallery.controller.js',
-    'mis/app/controllers/report/hdfcgatewayfeereport.controller.js'
+    'mis/app/controllers/report/hdfcgatewayfeereport.controller.js',
+    'mis/app/controllers/report/ipsaaclubreport.controller.js'
+
 ];
 const ppAppScripts = [
     'pp/app/app.js',

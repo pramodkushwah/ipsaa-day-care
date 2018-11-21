@@ -12,6 +12,11 @@ app.config(function ($stateProvider, $urlRouterProvider) {
             templateUrl: "views/checkout/checkout-details.html",
             controller: 'CheckoutController'
         })
+        .state('app.ipsaaclubcheckoutdetails', {
+            url: "/ipsaaclubcheckoutdetails/{slipId}/{parentId}",
+            templateUrl: "views/checkout/checkout-details.html",
+            controller: 'CheckoutController'
+        })
         .state('app.success', {
             url: "/success/{PGResponseId}",
             templateUrl: "views/checkout/success.html",

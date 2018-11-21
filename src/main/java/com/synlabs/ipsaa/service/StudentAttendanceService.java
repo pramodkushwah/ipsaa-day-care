@@ -540,4 +540,28 @@ public class StudentAttendanceService extends BaseService {
 		});
 		return true;
 	}
+
+    public Map<String,Integer> getAttendanceFromTo(Date lastGenerationDate, Date today,Student student) {
+		Map<String,Integer> counts=new HashMap<>();
+		int full=0;
+		int half=0;
+		List<StudentAttendance> list=attendanceRepository.findByAttendanceDateBetweenAndStudent(lastGenerationDate,today,student);
+		for(StudentAttendance att:list){
+			if(att.getCheckin()!=null && att.getCheckout()!=null){
+				double timeDiff=getmintusDiff(new DateTime(att.getCheckout()),new DateTime(att.getCheckin()));
+				double min=timeDiff/60;
+				if(min<=5){
+					half++;
+				}else{
+					full++;
+				}
+			}else if(att.getCheckout()!=null){
+				full++;
+			}
+		}
+		counts.put("halfday",half);
+		counts.put("fullday",full);
+		counts.put("total",half+full);
+		return counts;
+    }
 }

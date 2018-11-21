@@ -182,7 +182,10 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
         }
     }, 200, true);
 
+    $scope.isIpsaaclub = false;
+
     $scope.loadStudentFee = function (fee, mode) {
+        $scope.addstudentfee = false;
         if (fee && fee.id) {
             $http.post('/api/student/fee/get', {id: fee.id}).then(
                 function (response) {
@@ -194,7 +197,13 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
                     StudentFeeService.calculateGstFee($scope.insertStudentFee);
                     StudentFeeService.calculateFinalFee($scope.insertStudentFee);
                     $scope.addstudentfee = true;
-                    $('[data-toggle="tooltip"]').tooltip();   
+                    $('[data-toggle="tooltip"]').tooltip(); 
+                    if($scope.insertStudentFee.program.id === 72932732558618){
+                        $scope.isIpsaaclub = true;
+                        $scope.insertStudentFee.mode='Show'
+                    } else {
+                        $scope.isIpsaaclub = false;
+                    }
                 },
                 function (response) {
                     error(response.data.error)
@@ -235,17 +244,20 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
         });
     };
 
+    $scope.generateStudentFee = function(insertStudentFee) {
+        $http.post('/api/student/ipsaaclub/generate/' + insertStudentFee.studentId, {}).then(function (response){
+            ok('Student Fee generated');
+        },function(err){
+            error(err.data.error);
+        })
+    }
+
     function ok(message) {
-        swal({
-            title: 'Success',
-            text: message,
-            type: 'success',
-            buttonsStyling: false,
-            confirmButtonClass: "btn btn-warning"
+        swal({d
         });
     }
 
-    function error(message) {
+    function error(message){
         swal({
             title: 'Error',
             text: message,

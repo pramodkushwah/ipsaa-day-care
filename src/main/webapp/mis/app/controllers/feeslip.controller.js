@@ -254,6 +254,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
                 }
             }
         }
+
     };
 
     $scope.toggleOneSlip = function (slip) {
@@ -284,6 +285,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
             function (response) {
                 $scope.sendPaymentLinkDisable = false;
                 ok("Successfully sent emails");
+                $scope.showPanel = false;
             }, function (response) {
                 $scope.sendPaymentLinkDisable = false;
                 error(response.data.error);
@@ -319,6 +321,7 @@ app.controller('StudentFeeSlipController', function ($scope, $http) {
                     error(response.data.error);
                 }
             );
+
         }
     };
 

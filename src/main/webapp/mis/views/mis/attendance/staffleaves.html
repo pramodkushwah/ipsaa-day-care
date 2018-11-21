@@ -29,7 +29,9 @@
               <input type="text" class="form-control dropdown-toggle" data-toggle="dropdown" placeholder="Employee" ng-model="searchEmployee">
               <ul class="dropdown-menu dropdown-menu-right" role="menu" style="right: unset;max-height: 50vh;overflow-y: auto;;">
                 <li ng-repeat="staff in allStaff | filter: {name: searchEmployee}">
-                  <a ng-click="selectEmployee(staff)">{{staff.name}} <span ng-show="staff.designation">({{staff.designation}})</span></a>
+                  <a ng-click="selectEmployee(staff)">{{staff.name}}
+                    <span ng-show="staff.designation">({{staff.designation}})</span>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -51,7 +53,6 @@
                 </div>
               </div>
             </div>
-
             <div class="col-md-1">
               <div class="form-group">
                 <div class="checkbox" style="padding-top: 45px;">
@@ -182,9 +183,6 @@
                       <span ng-if="atten.actualOut">{{atten.actualOut}}</span>
                       <input ng-if="hrAdmin && !atten.actualOut && !atten.actualIn && atten.status != 'Holiday'" type="text" ng-model="atten.clockout">
                     </td>
-
-
-
                     <td>
                       <span class="label label-info">{{atten.leaveStatus}}</span>
                       <button class="btn btn-sm btn-primary" ng-show="atten.leaveStatus == 'Applied' || atten.leaveStatus == 'Rejected'" ng-click="approveLeave(atten)"
@@ -228,16 +226,22 @@
             <option value="">ALL</option>
           </select>
         </div>
+        <div class="col-md-2 col-sm-4 col-xs-6" ng-show="selectedMonthForEmployee">
+          <label class="control-label">Center:</label>
+          <select class="form-control" ng-model="selectedCenter" ng-options="center as center.name for center in centers" ng-change="filterLeavesByCenter(selectedCenter)">
+            <option value="">ALL</option>
+          </select>
+        </div>
       </div>
 
       <div class="card">
         <table class="table" id="accordion">
           <thead class="row" style="margin: 0px;font-weight: bold;">
             <tr>
-            <th>Eid</th>
-            <th>Name</th>
-            <th>Center</th>
-            <th>No of Leaves</th>
+              <th>Eid</th>
+              <th>Name</th>
+              <th>Center</th>
+              <th>No of Leaves</th>
             </tr>
           </thead>
           <tbody ng-repeat="summary in employeeLeaveSummary">
@@ -278,5 +282,4 @@
       </div>
     </div>
   </div>
-</div>
 </div>

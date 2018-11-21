@@ -54,6 +54,11 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             controller: 'StudentFeeManagementController',
             templateUrl: "views/mis/studentfeemanagement.html"
         })
+        .state('app.ipsaaclubslip', {
+            url: "/ipsaaclubslip",
+            controller: 'IpsaaclubslipController',
+            templateUrl: "views/mis/ipsaaclubslip.html"
+        })
         .state('app.feeslips', {
             url: "/feeslips",
             controller: 'StudentFeeSlipController',
@@ -176,6 +181,11 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             url: "/stdattendancereport",
             controller: 'StudentAttendanceReportController',
             templateUrl: "views/mis/report/stdattendancereport.html"
+        })
+        .state('app.ipsaaclubreport', {
+            url: "/ipsaaclubreport",
+            controller: 'IpsaaClubReportController',
+            templateUrl: "views/mis/report/ipsaaclubreport.html"
         })
         .state('app.staffattendancereport', {
             url: "/staffattendancereport",

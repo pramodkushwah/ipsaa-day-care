@@ -43,24 +43,6 @@ public class FeeReportExcel2
 
   public FeeReportExcel2(StudentFeePaymentRequest slip)
   {
-
-  //  this.slip=slip;
-   // this.extraHours=extraHours;
-
-    //  approvalstatus = student.getApprovalStatus();
-
-    //groupName = student.getGroupName();
-    //feeDuration = slip.getFeeDuration().toString();
-    // extra entry
-    //motherName=student.getMother().getFullName();
-    //FatherName=student.getFather().getFullName();
-
-
-    //month = FeeUtils.getMonthName(slip.getMonth());
-    //year = slip.getYear();
-    //quarter = FeeUtils.getFYQuarter(slip.getQuarter());
-
-
       StudentFee fee=null;
       isActive=slip.getStudent().isActive();
       Student student = slip.getStudent();

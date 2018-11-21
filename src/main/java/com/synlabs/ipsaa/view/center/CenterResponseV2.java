@@ -27,6 +27,7 @@ public class CenterResponseV2 extends CenterSummaryResponse
     this.zipcode=address.getZipcode();
     this.state=address.getState();
     this.zone = center.getZone().getName();
+    this.phone = address.getPhone();
   }
 
   public String getAddress() {

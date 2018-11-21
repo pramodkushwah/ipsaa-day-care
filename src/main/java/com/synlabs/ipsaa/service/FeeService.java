@@ -7,9 +7,7 @@ import com.synlabs.ipsaa.entity.fee.CenterProgramFee;
 import com.synlabs.ipsaa.entity.fee.Charge;
 import com.synlabs.ipsaa.entity.fee.HdfcResponse;
 import com.synlabs.ipsaa.entity.programs.Program;
-import com.synlabs.ipsaa.entity.student.Student;
-import com.synlabs.ipsaa.entity.student.StudentFee;
-import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.*;
 import com.synlabs.ipsaa.enums.PaymentStatus;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.ValidationException;
@@ -74,6 +72,9 @@ public class FeeService extends BaseService
 
   @Autowired
   private StudentFeePaymentRepository slipRepository;
+
+  @Autowired
+  private StudentFeePaymentRequestIpsaaClubRepository ipsaaClubSlipRepository;
 
   @Autowired
   private StudentRepository studentRepository;
@@ -375,6 +376,24 @@ public class FeeService extends BaseService
   public StudentFeePaymentRequest getSlip(Long id)
   {
     StudentFeePaymentRequest slip = slipRepository.findOne(id);
+    if (id == null)
+    {
+      throw new ValidationException("Slip id is required.");
+    }
+    if (slip == null)
+    {
+      throw new ValidationException(String.format("Cannot locate slip [id = %s ]", mask(id)));
+    }
+
+    if (!hasCenter(slip.getStudent().getCenter().getCode()))
+    {
+      throw new ValidationException(String.format("Unauthorized access to center[code=%s]", slip.getStudent().getCenter().getCode()));
+    }
+    return slip;
+  }
+  public StudentFeePaymentRequestIpsaaClub getIpsaaClubSlip(Long id)
+  {
+    StudentFeePaymentRequestIpsaaClub slip = ipsaaClubSlipRepository.findOne(id);
     if (id == null)
     {
       throw new ValidationException("Slip id is required.");
@@ -766,25 +785,40 @@ public class FeeService extends BaseService
   }
   public File collectionHdfcReport2(StudentFeeSlipRequest slipRequest) throws IOException
   {
+
     if (StringUtils.isEmpty(slipRequest.getPeriod()))
     {
       throw new ValidationException("Period is required.");
     }
-    List<HdfcResponse> hdfc = hdfcResponseRepository.findBySlipQuarterAndSlipYear(slipRequest.getQuarter(),slipRequest.getYear());
-    List<LinkedHashMap<String,Object>> list=new ArrayList<>();
+    List<HdfcResponse> hdfc=null;
+    if(slipRequest.getMonth()>0){
+      hdfc = hdfcResponseRepository.findByIpsaaClubSlipMonthAndIpsaaClubSlipYear(slipRequest.getMonth(),slipRequest.getYear());
+    }
+    else
+    hdfc = hdfcResponseRepository.findBySlipQuarterAndSlipYear(slipRequest.getQuarter(),slipRequest.getYear());
 
+    if(hdfc==null){
+      throw new ValidationException("no data found");
+    }
+
+    List<LinkedHashMap<String,Object>> list=new ArrayList<>();
     int count=1;
     for(HdfcResponse res:hdfc){
       LinkedHashMap<String,Object> row=new LinkedHashMap<>();
       row.put("s.id",count++);
-      row.put("student_name",res.getSlip().getStudent().getProfile().getFullName());
-      row.put("center",res.getSlip().getStudent().getCenterName());
-
-      row.put("program_name",res.getSlip().getStudent().getProgramName());
-
+      if(res.getSlip()==null){
+        row.put("student_name",res.getSlip().getStudent().getProfile().getFullName());
+        row.put("center",res.getSlip().getStudent().getCenterName());
+        row.put("program_name",res.getSlip().getStudent().getProgramName());
+        row.put("slip_id",res.getSlip().getId());
+      }else{
+        row.put("student_name",res.getIpsaaClubSlip().getStudent().getProfile().getFullName());
+        row.put("center",res.getIpsaaClubSlip().getStudent().getCenterName());
+        row.put("program_name",res.getIpsaaClubSlip().getStudent().getProgramName());
+        row.put("slip_id",res.getIpsaaClubSlip().getId());
+      }
       row.put("amount",res.getAmount());
       row.put("trans_date",res.getTransDate());
-      row.put("slip_id",res.getSlip().getId());
       row.put("type",res.getType());
       row.put("bank_ref_no",res.getBankRefNo());
       row.put("status_message",res.getStatusMessage());
@@ -795,13 +829,166 @@ public class FeeService extends BaseService
       list.add(row);
     }
     ExcelGenerater eg=new ExcelGenerater(list);
-    File file=eg.create(exportDir,"hdfc report");
-    //File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
+    return eg.create(exportDir,"hdfc report");
+  }
+  public File studentFeeSheetReport(StudentFeeSlipRequest slipRequest) throws IOException
+  {
 
-    return file;
+    // collection list
+    // center wise collection list
+    slipRequest.setCenterCode("All");
+    List<StudentFeePaymentRequest> slips=studentService.listFeeSlips2(slipRequest);
+
+    ExcelGenerater eg=new ExcelGenerater();
+    List<LinkedHashMap<String,Object>> slipList=new ArrayList<>();
+    int count=1;
+    for(StudentFeePaymentRequest res:slips){
+      LinkedHashMap<String,Object> row=new LinkedHashMap<>();
+      row.put("s.id",count++);
+      row.put("center",res.getStudent().getCenterName());
+      row.put("student Name",res.getStudent().getName());
+      row.put("StudentActive",res.getStudent().isActive());
+      row.put("groupName",res.getStudent().getGroupName());
+      row.put("program Name",res.getStudent().getProgramName());
+      row.put("total fee",res.getTotalFee());
+      row.put("paid amount",res.getPaidAmount());
+      row.put("unpaid amount",res.getTotalFee().subtract(res.getPaidAmount()));
+      row.put("payment status",res.getPaymentStatus().name());
+      slipList.add(row);
+    }
+
+    eg.createWithSheets("hdfc report",slipList);
+    for(Center centers:getUserCenters()){
+      slipList.clear();
+      List<StudentFeePaymentRequest> centerSlips= slips.stream()
+              .filter(s->s.getStudent().getCenter().getCode().equals(centers.getCode())).collect(Collectors.toList());
+
+      for(StudentFeePaymentRequest res:centerSlips){
+        LinkedHashMap<String,Object> row=new LinkedHashMap<>();
+        row.put("s.id",count++);
+        row.put("center",res.getStudent().getCenterName());
+        row.put("Admission Date",res.getStudent().getProfile().getAdmissionDate());
+        row.put("Last Modified date",res.getLastModifiedDate());
+        row.put("Student Name",res.getStudent().getName());
+        row.put("Student Active",res.getStudent().isActive());
+        row.put("Group name",res.getStudent().getGroupName());
+        row.put("Program name",res.getStudent().getProgramName());
+        row.put("base Fee",res.getFinalBaseFee());
+        row.put("Base Fee Discount",res.getFinalBaseFee());
+
+        row.put("Annual Fee",res.getFinalAnnualCharges());
+        row.put("Annual Fee Discount",res.getAnnualFeeDiscount());
+
+        row.put("Admission Fee",res.getFinalAdmissionFee());
+        row.put("Admission Fee Discount",res.getAddmissionFeeDiscount());
+
+        row.put("Security Deposite",res.getPaymentStatus().name());
+        row.put("Security Deposite Discount",res.getDepositFeeDiscount());
+
+        row.put("Monthly Transport Fee",res.getTransportFee());
+        row.put("Extra Charges",res.getExtraCharge());
+        row.put("Late Payment",res.getLatePaymentCharge());
+        row.put("Uniform Charges",res.getUniformCharges());
+        row.put("Stationary Charges",res.getStationary());
+        row.put("Total Fee",res.getTotalFee());
+        slipList.add(row);
+      }
+      eg.createWithSheets(centers.getCode(),slipList);
+    }
+    return eg.createWorkBook(exportDir);
   }
   //--------------------------------------shubham ---------------------------------------------------------------
+  // shubham for feeReport with extraout hours
+  public File FeeReportIpsaClub2(FeeReportRequest slipRequest) throws IOException
+  {
+    if(!slipRequest.getCenterCode().equals("All")){
+      Center center = centerRepository.findByCode(slipRequest.getCenterCode());
+      if (center == null)
+      {
+        throw new ValidationException(String.format("Cannot locate Center[code = %s]", slipRequest.getCenterCode()));
+      }
+      if (!hasCenter(slipRequest.getCenterCode()))
+      {
+        throw new ValidationException(String.format("Unauthorized access to center[code=%s] user[email=%s].", slipRequest.getCenterCode(), getUser().getEmail()));
+      }
+    }
+    List<StudentFeePaymentRequestIpsaaClub> slips = studentService.listFeeReportIpsaClub(slipRequest);
 
+    File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
+    if (!file.exists())
+    {
+      file.createNewFile();
+    }
+
+    List<LinkedHashMap<String,Object>> list=new ArrayList<>();
+    int count=0;
+    for (StudentFeePaymentRequestIpsaaClub slip : slips)
+    {
+      LinkedHashMap<String,Object> row=new LinkedHashMap<>();
+            row.put("s.id",count++);
+            row.put("student_name",slip.getStudent().getProfile().getFullName());
+            row.put("center",slip.getStudent().getCenterName());
+            row.put("program_name",slip.getStudent().getProgramName());
+            row.put("Invoice Date",slip.getInvoiceDate());
+            row.put("Gst",slip.getGstAmount());
+            row.put("Annual Fee",slip.getFinalAnnualFee());
+            row.put("Security",slip.getFinalDepositFee());
+            row.put("Raised Amount",slip.getTotalFee());
+            row.put("Extra Amount",slip.getExtraCharge());
+            row.put("Due Amount",slip.getTotalFee().subtract(slip.getPaidAmount()));
+            row.put("Payment Status",slip.getPaymentStatus());
+            row.put("Comment",slip.getComments());
+      list.add(row);
+    }
+    ExcelGenerater eg=new ExcelGenerater(list);
+    file=eg.create(exportDir,"ipsaa club fee report");
+    return file;
+  }
+  public File ipsaaCollectionFeeReport2(FeeReportRequest slipRequest) throws IOException
+  {
+
+    if(!slipRequest.getCenterCode().equals("All")){
+      Center center = centerRepository.findByCode(slipRequest.getCenterCode());
+      if (center == null)
+      {
+        throw new ValidationException(String.format("Cannot locate Center[code = %s]", slipRequest.getCenterCode()));
+      }
+      if (!hasCenter(slipRequest.getCenterCode()))
+      {
+        throw new ValidationException(String.format("Unauthorized access to center[code=%s] user[email=%s].", slipRequest.getCenterCode(), getUser().getEmail()));
+      }
+    }
+    List<StudentFeePaymentRequestIpsaaClub> slips = studentService.listFeeReportIpsaClub(slipRequest);
+
+    File file = new File(exportDir + UUID.randomUUID() + ".xlsx");
+    if (!file.exists())
+    {
+      file.createNewFile();
+    }
+
+    List<LinkedHashMap<String,Object>> list=new ArrayList<>();
+    int count=0;
+    for (StudentFeePaymentRequestIpsaaClub slip : slips)
+    {
+      for(StudentFeePaymentRecordIpsaaClub payment:slip.getPayments()){
+        LinkedHashMap<String,Object> row=new LinkedHashMap<>();
+        row.put("s.id",count++);
+        row.put("student_name",payment.getStudent().getProfile().getFullName());
+        row.put("center",payment.getStudent().getCenterName());
+        row.put("program_name",payment.getStudent().getProgramName());
+        row.put("Invoice Date",payment.getRequest().getInvoiceDate());
+        row.put("Expire Date",payment.getRequest().getExpireDate());
+        row.put("Paid Amount",payment.getPaidAmount());
+        row.put("Txnid",payment.getTxnid());
+        row.put("comment",payment.getComment()==null?"":payment.getComment());
+        row.put("confirmed",payment.getConfirmed()?"True":"False");
+        list.add(row);
+      }
+    }
+    ExcelGenerater eg=new ExcelGenerater(list);
+    file=eg.create(exportDir,"ipsaa club fee report");
+    return file;
+  }
   ///////////Avneet
   public List<Program> programByCenter(Long id){
     List<Program> list=new ArrayList<>();

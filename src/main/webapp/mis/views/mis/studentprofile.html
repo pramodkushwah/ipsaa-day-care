@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card" ng-show="workingStudent">
   <form name="StudentForm">
     <div class="card-header card-header-tabs" data-background-color="rose">
       <div class="nav-tabs-navigation">
@@ -680,7 +680,8 @@
                   ng-change="calculateDiscount('annualFee', 'finalAnnualFee', 'discountAnnualCharges')">
                 </div>
               </div>
-            
+            </div>
+            <div class="row" ng-hide="isIpsaaclub">
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label" ng-readonly="true">Admission Charges</label>
@@ -702,7 +703,8 @@
                   ng-change="calculateDiscount('admissionFee', 'finalAdmissionCharges', 'discountAdmissionCharges')">
                 </div>
               </div>
-            
+            </div>
+            <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label" ng-readonly="true">Monthly Program Fees</label>
@@ -725,7 +727,8 @@
                   ng-change="calculateDiscount('baseFee', 'finalBaseFee', 'discountBaseFee')">
                 </div>
               </div>
-            
+            </div>
+            <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label" ng-readonly="true">Security Deposit</label>
@@ -749,7 +752,7 @@
                 </div>
               </div>
             
-              <div class="col-md-6">
+              <div class="col-md-6" ng-hide="isIpsaaclub">
                 <div class="form-group">
                   <label class="control-label" ng-readonly="true">Monthly Transport Fees</label>
                   <input class="form-control" type="number" ng-model="workingStudent.fee.transportFee"
@@ -774,7 +777,7 @@
               </div>
             </div>
             
-            <div class="row">
+            <div class="row" ng-hide="isIpsaaclub">
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">Annual-GST-Fee</label>
@@ -800,9 +803,6 @@
                 </div>
               </div>
             </div>
-
-
-
           </div>
 
         </div>
@@ -814,8 +814,11 @@
             *Required Fields
           </div>
           <div class="form-footer text-right">
-            <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="hideSave"></i>
-            
+            <button class="btn btn-rose btn-fill" ng-click="generateStudentFee()" ng-disabled="disableGenerate" ng-show="isIpsaaclub && workingStudent.id">
+              <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="disableGenerate"></i>
+              Generate Fee
+            </button>
+            <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="hideSave"></i>            
             <button class="btn btn-success" ng-click="generatePdf(workingStudent.id)" ng-disabled="pdfGenerate" ng-show="workingStudent.mode=='Show'||workingStudent.mode=='Edit'">Generate PDF
               <i class="fa fa-spinner fa-fw fa-pulse fa-2x" ng-show="pdfGenerate"></i>
             </button>

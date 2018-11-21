@@ -122,11 +122,13 @@ public class StaffExcelReport {
 //			if (staffR.getEmployee().getCostCenter() != null && staffR.getEmployee().getCostCenter().getName() != null)
 //				cell.setCellValue(staffR.getEmployee().getCostCenter().getName());
 
+
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			if (staffR.getEmployee().getProfile().getBan() != null) {
 				//System.out.println(staffR.getEmployee().getProfile().getBan());
 				cell.setCellValue(staffR.getEmployee().getProfile().getBan());
 			}
+
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			if (staffR.getEmployee().getProfile().getHolderName() != null)
 				cell.setCellValue((staffR.getEmployee().getProfile().getHolderName()));
@@ -263,6 +265,7 @@ public class StaffExcelReport {
 			if (staffR.getExtraMonthlyAllowance() != null)
 				cell.setCellValue((staffR.getExtraMonthlyAllowance().intValue()));
 
+
 			cell = row.createCell(index++, Cell.CELL_TYPE_STRING);
 			if (staffR.getTds() != null)
 				cell.setCellValue((staffR.getTds().intValue()));
@@ -308,6 +311,7 @@ public class StaffExcelReport {
 //
 //		cell = row.createCell(5);
 //		cell.setCellValue("Cost Center");
+
 
 		cell = row.createCell(index++);
 		cell.setCellValue("Bank Account Number");
