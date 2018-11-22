@@ -198,31 +198,31 @@ export class StudentInfoComponent implements OnInit {
 
   getFee(programId: number) {
     if (programId && this.studentForm.controls['centerId'].value) {
-    this.adminService
-      .getProgramFee({
-        centerId: this.studentForm.controls['centerId'].value,
-        programId: programId
-      })
-      .subscribe((response: any) => {
-        this.programFee = response;
-        if (this.studentForm.contains('fee')) {
-          const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
-          feeControlForm.patchValue(response);
-          feeControlForm.controls['baseFee'].patchValue(response.fee); // Monthly Fees
-          feeControlForm.controls['finalBaseFee'].patchValue(response.fee); // Final Monthly Fees
-          feeControlForm.controls['finalAnnualFee'].patchValue(
-            response.annualFee
-          );
-          feeControlForm.controls['finalAdmissionCharges'].patchValue(
-            response.admissionFee
-          );
-          feeControlForm.controls['finalSecurityDeposit'].patchValue(
-            response.deposit
-          );
-          const sprogram = this.programs.find(program => program.id === programId);
-          this.groups = (sprogram) ? sprogram.groups : [];
-        }
-      });
+      this.adminService
+        .getProgramFee({
+          centerId: this.studentForm.controls['centerId'].value,
+          programId: programId
+        })
+        .subscribe((response: any) => {
+          this.programFee = response;
+          if (this.studentForm.contains('fee')) {
+            const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
+            feeControlForm.patchValue(response);
+            feeControlForm.controls['baseFee'].patchValue(response.fee); // Monthly Fees
+            feeControlForm.controls['finalBaseFee'].patchValue(response.fee); // Final Monthly Fees
+            feeControlForm.controls['finalAnnualFee'].patchValue(
+              response.annualFee
+            );
+            feeControlForm.controls['finalAdmissionCharges'].patchValue(
+              response.admissionFee
+            );
+            feeControlForm.controls['finalSecurityDeposit'].patchValue(
+              response.deposit
+            );
+            const sprogram = this.programs.find(program => program.id === programId);
+            this.groups = (sprogram) ? sprogram.groups : [];
+          }
+        });
     }
   }
 
@@ -257,7 +257,7 @@ export class StudentInfoComponent implements OnInit {
           this.adminService.viewPanel.next(false);
         });
     } else {
-            this.adminService
+      this.adminService
         .addStudent(this.studentForm.value)
         .subscribe((response: any) => {
           this.alertService.successAlert('Student Info Successfully added.');
@@ -421,7 +421,7 @@ export class StudentInfoComponent implements OnInit {
 
 
   selectedPaymentHistoryDetails(history) {
-   this.getPayReceiptHistory.emit(history);
-   this.adminService.viewPanelForFee.next(true);
+    this.getPayReceiptHistory.emit(history);
+    this.adminService.viewPanelForFee.next(true);
   }
 }

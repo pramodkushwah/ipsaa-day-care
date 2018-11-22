@@ -446,12 +446,25 @@ getSelectedCenterStaffApprovalCount(centerId: number) {
   return this.api.get('api/staff/approvals/' + centerId);
 }
 
+aproveStaff(staff_id) {
+  return this.api.get('api/staff/approve/' + staff_id  ) ;
+}
+
+rejectStaff(staff_id) {
+  return this.api.get('api/staff/reject/' + staff_id  ) ;
+}
 getAllCenterStudentsApprovalCount() {
   return this.api.get('api/student/approvals/count');
 }
 
 getSelectedCenterStudentsApprovalCount(centerId: number) {
   return this.api.get('api/student/approvals/' + centerId);
+}
+aproveStudent(student_id) {
+  return this.api.get('api/student/approve/' + student_id  ) ;
+}
+rejectStudent(student_id) {
+  return this.api.get('api/student/reject/' + student_id  ) ;
 }
 
 // center
