@@ -57,7 +57,7 @@ public class IpsaaClubFeeSerivce {
             allslips = studentFeePaymentRequestIpsaaClubRepository.findByIsExpireIsFalseOrderByCreatedDateDesc();
         return allslips;
     }
-    @Transactional
+
     public IpsaaClubSlipResponce generateSlip(Long studentID) {
         StudentFee fee = feeRepository.findByStudentId(studentID);
         if (fee == null)
@@ -106,8 +106,9 @@ public class IpsaaClubFeeSerivce {
             newslip.setTotalFee(newslip.getFinalFee().add(newslip.getBalance()));
             studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(newslip);
 
-            studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(lastSlip);
             lastSlip.setExpire(true);
+            studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(lastSlip);
+
         return newslip;
         } else
             throw new NotFoundException("student fee not found");
@@ -146,6 +147,7 @@ public class IpsaaClubFeeSerivce {
         return newSlip;
     }
 
+    @Transactional
     private StudentFeePaymentRequestIpsaaClub generateFirstSlip(StudentFee fee) {
 
         StudentFeePaymentRequestIpsaaClub newSlip= new StudentFeePaymentRequestIpsaaClub();
@@ -278,6 +280,7 @@ public class IpsaaClubFeeSerivce {
     }
 
     // use to confirm or reject payment
+    @Transactional
     public StudentFeePaymentRequestIpsaaClub updateSlip(StudentFeeSlipRequestV2 request) {
         StudentFeePaymentRequestIpsaaClub slip = studentFeePaymentRequestIpsaaClubRepository.findOne(request.getId());
         if (slip == null)
@@ -303,7 +306,9 @@ public class IpsaaClubFeeSerivce {
         }
         return studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(slip);
     }
+
     // use to confirm or reject payment
+    @Transactional
     public StudentFeePaymentRecordIpsaaClub updatePayFee(SaveFeeSlipRequest request) {
 
         if (request.getId() == null) {

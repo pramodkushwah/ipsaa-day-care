@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -669,6 +670,7 @@ public class DocumentService extends BaseService
 
 
   //----------------------------------ipsaa-------------------------------------------------------------------
+  @Transactional
   public String generateFeeReceiptPdfIpsaaClub(StudentFeePaymentRequestIpsaaClub feeRequest)
   {
     try
@@ -815,6 +817,7 @@ public class DocumentService extends BaseService
     return mergedPdfFile;
   }
 
+  @Transactional
   private Map<String, Object> fillSlipTemplateIpsaaClub(StudentFeePaymentRequestIpsaaClub slip, StudentFee studentFee, Map<String, Object> rootMap)
   {
     String serial = slip.getSlipSerial();
@@ -849,6 +852,8 @@ public class DocumentService extends BaseService
     {
       rootMap.put("balance", slip.getBalance());
     }
+    Object o=new Object();
+
 
 //    if (slip.getAdjust() != null && slip.getAdjust().intValue() != 0)
 //    {
@@ -887,6 +892,7 @@ public class DocumentService extends BaseService
 
     return rootMap;
   }
+  @Transactional
   private List<String> generateSlipPdfIpsaaClub(List<StudentFeePaymentRequestIpsaaClub> feeSlips) throws IOException
   {
     Template template = configuration.getTemplate("slip/ipsaaclub-slip.ftl");
@@ -933,6 +939,5 @@ public class DocumentService extends BaseService
     }
     return slipNames;
   }
-
 }
 

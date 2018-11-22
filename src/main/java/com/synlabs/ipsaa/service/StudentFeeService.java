@@ -744,6 +744,7 @@ public class StudentFeeService extends BaseService{
         }
     }
 
+    @Transactional
     public StudentFeePaymentRequest updateSlip(StudentFeeSlipRequestV2 request) {
         StudentFeePaymentRequest slip = feePaymentRepository.findOne(request.getId());
         if (slip == null)
@@ -1006,6 +1007,7 @@ public class StudentFeeService extends BaseService{
         return slip;
     }
 
+    @Transactional
     public StudentFeePaymentRecord updatePayFee(SaveFeeSlipRequest request) {
 
         if (request.getId() == null) {
@@ -1040,7 +1042,7 @@ public class StudentFeeService extends BaseService{
             }
             receipt.setComment(request.getComments());
             if(receipt.getPaymentMode().equals(PaymentMode.Cheque)){
-                slip.setTotalFee(slip.getTotalFee().subtract(slip.getExtraCharge()));
+                slip.setTotalFee(slip.getTotalFee().subtract(slip.getExtraCharge()==null?ZERO:slip.getExtraCharge()));
                 slip.setExtraCharge(slip.getExtraCharge().add(FeeUtilsV2.CHEQUE_BOUNCE_CHARGE));
                 if(slip.getAutoComments()==null)
                 slip.setAutoComments("200rs Cheque bounce charges added");
