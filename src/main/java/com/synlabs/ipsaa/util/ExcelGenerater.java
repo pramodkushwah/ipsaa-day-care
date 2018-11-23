@@ -1,5 +1,4 @@
 package com.synlabs.ipsaa.util;
-import javafx.util.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;

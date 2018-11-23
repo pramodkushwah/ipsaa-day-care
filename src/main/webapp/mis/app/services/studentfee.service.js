@@ -17,9 +17,15 @@ app.service('StudentFeeService', function ($http) {
 
     fee.baseFee = fee.baseFee || 0;
     fee.discountBaseFee = fee.discountBaseFee || 0;
-    fee.finalBaseFee = fee.discountBaseFee
-      ? (fee.finalBaseFee / 3).toFixed(2)
-      : fee.baseFee | 0;
+    if (fee.programId === 72932732558618) {
+      fee.finalBaseFee = fee.discountBaseFee
+        ? fee.finalBaseFee
+        : fee.baseFee | 0;
+    } else {
+      fee.finalBaseFee = fee.discountBaseFee
+        ? (fee.finalBaseFee / 3).toFixed(2)
+        : fee.baseFee | 0;
+    }
 
     fee.securityDeposit = fee.securityDeposit || 0;
     fee.discountSecurityDeposit = fee.discountSecurityDeposit || 0;
@@ -43,8 +49,12 @@ app.service('StudentFeeService', function ($http) {
     if (fee.finalAdmissionCharges > 0) {
       final += Number(fee.finalAdmissionCharges);
     }
-    if (fee.finalBaseFee > 0) {
-      final += Number(fee.finalBaseFee * 3);
+    if (fee.finalBaseFee > 0) {      
+      if (fee.programId === 72932732558618) {
+        final += fee.finalBaseFee;
+      } else {
+        final += Number(fee.finalBaseFee * 3);
+      }
     }
     if (fee.finalSecurityDeposit > 0) {
       final += Number(fee.finalSecurityDeposit);
@@ -91,7 +101,7 @@ app.service('StudentFeeService', function ($http) {
     fee.gstFee = 0;//annual-fee-gst
     fee.baseFeeGst = 0;
 
-    if(fee.programId == 622614691413790 || (typeof student!='undefined' && student.formalSchool) || fee.formalSchool) {
+    if (fee.programId == 622614691413790 || (typeof student != 'undefined' && student.formalSchool) || fee.formalSchool) {
       fee.gstFee = Number(((Number(fee.finalAnnualFee)) * 0.18).toFixed(2));//annual-fee-gst
       fee.baseFeeGst = Number((((Number(fee.finalBaseFee) * 3)) * 0.18).toFixed(2));
     }

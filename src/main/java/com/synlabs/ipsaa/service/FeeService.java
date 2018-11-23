@@ -21,7 +21,6 @@ import com.synlabs.ipsaa.view.fee.*;
 import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport;
 import com.synlabs.ipsaa.view.report.excel.FeeCollectionExcelReport2;
 import com.synlabs.ipsaa.view.report.excel.FeeReportExcel2;
-import javafx.util.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
