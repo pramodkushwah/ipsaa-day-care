@@ -922,13 +922,13 @@ public class StudentService extends BaseService {
         FeeDuration period = FeeDuration.valueOf(request.getPeriod());
         if (request.getCenterCode().equals("All")) {
             slips = feePaymentRepository
-                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
-                            period, request.getQuarter(), request.getYear());
+                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(
+                            period, request.getQuarter(), request.getYear(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
         } else {
             slips = feePaymentRepository
-                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
+                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(
                             period, request.getQuarter(), request.getYear(),
-                            request.getCenterCode());
+                            request.getCenterCode(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
         }
 
         if (slips != null && request.getConfirm() != null && request.getConfirm()) {
