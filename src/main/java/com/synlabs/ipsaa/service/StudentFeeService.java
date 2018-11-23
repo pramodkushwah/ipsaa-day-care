@@ -200,7 +200,7 @@ public class StudentFeeService extends BaseService{
         List<StudentFeePaymentRequest> allslips = new LinkedList<>();
         int requestQuarter = request.getQuarter();
         int requestYear = request.getYear();
-            allslips = feePaymentRepository. findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramId(FeeDuration.Quarterly, requestQuarter, requestYear,request.getCenterCode(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
+            allslips = feePaymentRepository. findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(FeeDuration.Quarterly, requestQuarter, requestYear,request.getCenterCode(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
         return allslips;
     }
 
