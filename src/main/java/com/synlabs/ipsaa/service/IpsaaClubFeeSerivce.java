@@ -79,7 +79,9 @@ public class IpsaaClubFeeSerivce {
     }
     @Transactional
     private StudentFeePaymentRequestIpsaaClub generateNewSlip(StudentFeePaymentRequestIpsaaClub lastSlip, StudentFee fee) {
-        if((lastSlip.getInvoiceDate().getTime()-(new Date()).getTime())/60/60/24<1)
+        Calendar cal=Calendar.getInstance();
+        cal.setTime(lastSlip.getInvoiceDate());
+        if((cal.get(Calendar.DATE)==Calendar.getInstance().get(Calendar.DATE)))
         {
             throw  new ValidationException("can not generate same day from last generate date");
         }
@@ -296,8 +298,11 @@ public class IpsaaClubFeeSerivce {
             throw new ValidationException("You can't update expire pay slip.");
         }
         slip.setComments(request.getComments());
+
         if(request.getBalance()!=null){
+            slip.setTotalFee(slip.getTotalFee().subtract(slip.getBalance()==null?ZERO:slip.getBalance()));
             slip.setBalance(request.getBalance());
+            slip.setTotalFee(slip.getTotalFee().add(slip.getBalance()));
         }
         if(request.getExtraCharge()!=null){
             slip.setTotalFee(slip.getTotalFee().subtract(slip.getExtraCharge()==null?ZERO:slip.getExtraCharge()));

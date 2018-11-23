@@ -50,6 +50,7 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
     if ($scope.selectedCenter) {
       $http.post('/api/student/ipsaaclub/slip/update', {
         extraCharge: $scope.selectedStudentFee.extraCharge,
+        balance: $scope.selectedStudentFee.balance,
         comments: $scope.selectedStudentFee.comments,
         id: slip.id
       }).then(function (response) {
@@ -131,7 +132,11 @@ app.controller('IpsaaclubslipController', function ($scope, $http, Auth) {
   $scope.addExtraCharges = function (){
     $scope.selectedStudentFee.totalFee = $scope.selectedStudentFee.finalFee + $scope.selectedStudentFee.balance;
     $scope.selectedStudentFee.totalFee += $scope.selectedStudentFee.extraCharge;
-    
+  }
+
+  $scope.addBalance = function (){
+    $scope.selectedStudentFee.totalFee = $scope.selectedStudentFee.finalFee + $scope.selectedStudentFee.extraCharge;
+    $scope.selectedStudentFee.totalFee += $scope.selectedStudentFee.balance;
   }
 
   $scope.downloadReceipt = function (receipt) {

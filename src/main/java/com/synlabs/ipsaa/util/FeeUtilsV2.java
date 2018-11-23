@@ -154,12 +154,14 @@ public class FeeUtilsV2 {
 		fee.setFinalAdmissionFee(calculateDiscountAmmount(fee.getAdmissionFee(), fee.getAddmissionFeeDiscount(),
 				fee.getFinalAdmissionFee(), "Addmission Fee"));
 
-		if (fee.getStudent().isFormalSchool()) {
+		if (centerProgramFee.getProgram().getId() == IPSAA_CLUB_PROGRAM_ID) {
+
+		}
+		else if (fee.getStudent().isFormalSchool()) {
 			fee.setIgst(new BigDecimal(18));
 			fee.setFinalFee(calculateFinalFee(fee, true));
-		} else if (centerProgramFee.getProgram().getId() == IPSAA_CLUB_PROGRAM_ID) {
-
-		}else if(centerProgramFee.getProgram().getId() == IPSAA_CLUB_REGULAR_PROGRAM_ID){
+		}
+		else if(centerProgramFee.getProgram().getId() == IPSAA_CLUB_REGULAR_PROGRAM_ID){
 			 fee.setIgst(new BigDecimal(18));
 			 fee.setFinalFee(calculateFinalFee(fee, true));
 		} else{

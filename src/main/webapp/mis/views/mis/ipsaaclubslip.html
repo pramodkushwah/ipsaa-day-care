@@ -108,7 +108,7 @@
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Balance</label>
-              <div class="form-control">{{selectedStudentFee.balance}}</div>
+              <input class="form-control" type="number" ng-model="selectedStudentFee.balance" ng-change="addBalance()">
             </div>
           </div>
           <div class="col-md-6">
