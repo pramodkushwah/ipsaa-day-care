@@ -199,7 +199,7 @@ app.controller('StudentController', function ($scope, $http, fileUpload, $localS
         $http.get('/api/student/' + student.id).then(function (response) {
             $scope.workingStudent = response.data;
             console.log(JSON.parse(JSON.stringify($scope.workingStudent)));
-            $scope.selectedStudent = JSON.parse(JSON.stringify($scope.workingStudent));     
+            $scope.selectedStudent = JSON.parse(JSON.stringify($scope.workingStudent));
             $scope.workingStudent.mode = "Edit";
             $scope.workingStudent.centerId = $scope.workingStudent.center.id + "";
             $scope.workingStudent.programId = $scope.workingStudent.program.id + "";
