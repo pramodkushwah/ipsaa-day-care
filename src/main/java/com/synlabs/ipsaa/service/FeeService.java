@@ -873,7 +873,7 @@ public class FeeService extends BaseService
         row.put("Group name",res.getStudent().getGroupName());
         row.put("Program name",res.getStudent().getProgramName());
         row.put("base Fee",res.getFinalBaseFee());
-        row.put("Base Fee Discount",res.getFinalBaseFee());
+        row.put("Base Fee Discount",res.getBaseFeeDiscount());
 
         row.put("Annual Fee",res.getFinalAnnualCharges());
         row.put("Annual Fee Discount",res.getAnnualFeeDiscount());
@@ -881,6 +881,7 @@ public class FeeService extends BaseService
         row.put("Admission Fee",res.getFinalAdmissionFee());
         row.put("Admission Fee Discount",res.getAddmissionFeeDiscount());
 
+        row.put("Gst",res.getGstAmount());
         row.put("Security Deposite",res.getPaymentStatus().name());
         row.put("Security Deposite Discount",res.getDepositFeeDiscount());
 
