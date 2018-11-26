@@ -301,7 +301,7 @@ public class FeeService extends BaseService
 
     fee = request.toEntity(fee);
     centerProgramFeeRepository.saveAndFlush(fee);
-    updateStudentFee(fee);
+    //updateStudentFee(fee);
     return fee;
   }
 

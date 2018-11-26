@@ -200,7 +200,7 @@
 
             <div class="form-group">
               <label class="control-label"> Admission Fee</label>
-              <input class="form-control" name="admissionFee" type="text" formControlName="admissionFee">
+              <input class="form-control" name="admissionFee" type="number" formControlName="admissionFee">
               <span class="material-input"></span>
               <div *ngIf="admissionFee.invalid && (admissionFee.dirty || admissionFee.touched)" class="text-danger position-absolute">
                 <div *ngIf="!!admissionFee.errors.required">Required</div>

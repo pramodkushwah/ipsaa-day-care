@@ -9,6 +9,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableAsync
@@ -22,4 +25,11 @@ public class IPSAAServer extends SpringBootServletInitializer
   protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
     return builder.sources(IPSAAServer.class);
   }
+
+  @PostConstruct
+  public void init(){
+    // Setting Spring Boot SetTimeZone
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Kolkata"));
+  }
+
 }

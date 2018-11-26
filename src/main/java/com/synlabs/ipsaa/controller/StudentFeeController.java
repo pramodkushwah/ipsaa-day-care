@@ -218,10 +218,4 @@ public class StudentFeeController
     {
         return new StudentFeePaymentResponse(studentFeeService.updatePayFee(request));
     }
-
-//    /////Avneet
-//    @PostMapping("expire")
-//    public void setExpire(){
-//      studentFeeService.setExpire();
-//    }
 }
