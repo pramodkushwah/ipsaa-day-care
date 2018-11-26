@@ -73,6 +73,7 @@ public class EmployeeService extends BaseService {
     return employeeSalaryRepository.findByEmployeeActiveTrueAndEmployeeCostCenterActiveTrueAndEmployeeCostCenterCode(request.getCenterCode(), request.getPageable());
   }
 
+  @Transactional
   public EmployeeSalary save(EmployeeSalaryRequest request) {
     return employeeSalaryRepository.saveAndFlush(validateRequest(request));
   }

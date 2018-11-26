@@ -15,6 +15,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.synlabs.ipsaa.view.report.excel.StaffAttendanceReport;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -104,7 +105,8 @@ public class ReportController {
 	@Secured(STAFF_ATTENDANCE_REPORT)
 	public void staffAttendanceReport(@RequestBody AttendanceReportRequest request, HttpServletResponse response)
 			throws IOException {
-		File file = staffAttendanceService.attendanceReport(request);
+		File file= staffAttendanceService.attendanceReport2(request);		///Avneet
+		//File file = staffAttendanceService.attendanceReport(request);
 		response.setContentType("application/octet-stream");
 		response.setHeader("Content-disposition", String.format("attachment; filename=Atten_Report_%s_%s_%s.xlsx",
 				request.getCenterCode(), request.getFrom(), request.getTo()));
@@ -295,7 +297,6 @@ public class ReportController {
 			throw new IOException("Could not delete temporary file after processing: " + file);
 		}
 	}
-
 
 
 	// TO BE REMOVED////Avneet - Read from Excel file and write into database

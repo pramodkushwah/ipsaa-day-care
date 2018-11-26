@@ -17,7 +17,7 @@ app.controller('StaffAttendanceReportController', function ($scope, $http) {
             return;
         }
         var request = {
-            centerId: center.id,
+            centerCode: center.code,
             from: $scope.from,
             to: $scope.to
         };
@@ -41,6 +41,7 @@ app.controller('StaffAttendanceReportController', function ($scope, $http) {
         $http.get('/api/center/').then(
             function (response) {
                 $scope.centers = response.data;
+                $scope.centers.unshift({id:"ALL", code:'ALL', name:'ALL'});
             }, function (response) {
                 error('Fail to centers.');
             }
