@@ -27,9 +27,9 @@
             <div class="input-group">
               <label class="control-label">*Employee:</label>
               <input type="text" class="form-control dropdown-toggle" data-toggle="dropdown" placeholder="Employee" ng-model="searchEmployee">
-              <ul class="dropdown-menu dropdown-menu-right" role="menu">
+              <ul class="dropdown-menu dropdown-menu-right" role="menu" style="right: unset;max-height: 50vh;overflow-y: auto;;">
                 <li ng-repeat="staff in allStaff | filter: {name: searchEmployee}">
-                  <a ng-click="selectEmployee(staff)">{{staff.name}}</a>
+                  <a ng-click="selectEmployee(staff)">{{staff.name}} <span ng-show="staff.designation">({{staff.designation}})</span></a>
                 </li>
               </ul>
             </div>
@@ -229,23 +229,26 @@
           </select>
         </div>
       </div>
+
       <div class="card">
-        <div style="border: 1px solid #ddd;" id="accordion">
-          <div class="row" style="margin: 0px;font-weight: bold;">
-            <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">Eid</div>
-            <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">Name</div>
-            <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">Center</div>
-            <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">No of Leaves</div>
-          </div>
-          <div ng-repeat="summary in employeeLeaveSummary">
-            <div class="row" style="margin: 0px;" ng-click="getEmployeeLeaves(summary)" data-toggle="collapse" ng-attr-data-target="{{'#' + summary.eid}}" data-parent="#accordion">
-              <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">{{summary.eid}}</div>
-              <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">{{summary.name}}</div>
-              <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">{{summary.center}}</div>
-              <div class="col-md-3" style="padding: 12px 8px;border: 1px solid #ddd;">{{summary.count}}</div>
-            </div>
-            <div class="collapse" style="margin: 0px;" ng-attr-id="{{summary.eid}}">
-              <div class="col-md-12" style="padding: 12px 8px;border: 1px solid #ddd;">
+        <table class="table" id="accordion">
+          <thead class="row" style="margin: 0px;font-weight: bold;">
+            <tr>
+            <th>Eid</th>
+            <th>Name</th>
+            <th>Center</th>
+            <th>No of Leaves</th>
+            </tr>
+          </thead>
+          <tbody ng-repeat="summary in employeeLeaveSummary">
+            <tr ng-click="getEmployeeLeaves(summary)" data-toggle="collapse" ng-attr-data-target="{{'#' + summary.eid}}" data-parent="#accordion">
+              <td>{{summary.eid}}</td>
+              <td>{{summary.name}}</td>
+              <td>{{summary.center}}</td>
+              <td>{{summary.count}}</td>
+            </tr>
+            <tr class="collapse" ng-attr-id="{{summary.eid}}">
+              <td colspan="4" style="background: gray;">
                 <table class="table table-bordered">
                   <tr>
                     <th>Date</th>
@@ -263,15 +266,15 @@
                     <td colspan="4" class="text-center">No Leaves</td>
                   </tr>
                 </table>
-              </div>
-            </div>
-          </div>
-          <div ng-hide="employeeLeaveSummary.length">
-            <div class="row" style="margin: 0px;">
-              <div class="col-md-12 text-center" style="padding: 8px">No Content</div>
-            </div>
-          </div>
-        </div>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot ng-hide="employeeLeaveSummary.length">
+            <tr>
+              <th colspan="4" class="text-center">No Content</th>
+            </tr>
+          </tfoot>
+        </table>
       </div>
     </div>
   </div>
