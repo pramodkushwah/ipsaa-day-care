@@ -125,15 +125,17 @@ export class FeeReceiptInfoComponent implements OnInit {
     this.adminService.payStudentFee(this.feePaymentForm.value)
       .subscribe((res) => {
         _.extend(this.updateReceipt, res);
+        this.feePaymentForm.get('paymentMode').reset();
+        this.feePaymentForm.get('txnid').reset();
+        this.feePaymentForm.get('paidAmount').reset();
 
         this.recordPayment = false;
         if (this.feePaymentForm.get('paidAmount').value > this.feePaymentForm.get('payableAmount').value) {
           this.alertService.successAlert('thank you for paying in advance');
-
         } else {
           this.alertService.successAlert('');
         }
-        this.feePaymentForm.reset();
+        this.feePaymentForm.patchValue(this.selectedStudentDetails);
         // this.hideSidePanel();
       }, (err) => {
         this.recordPayment = false;
@@ -189,7 +191,7 @@ export class FeeReceiptInfoComponent implements OnInit {
       this.adminService.studentPaymentConfirm(this.paymentUpdate)
         .subscribe((res: any) => {
           payment.disabled = false;
-          $('#queryReply').modal('hide');
+          $('#rejectReply').modal('hide');
           for (let i = 0; i < this.selectedStudentDetails.payments.length; i++) {
             if (this.selectedStudentDetails.payments[i].id === res.id) {
               _.extend(this.updateReceipt.payments[i], res);

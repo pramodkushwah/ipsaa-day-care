@@ -3,6 +3,7 @@ import { AdminService } from '../../../../providers/admin/admin.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlertService } from '../../../../providers/alert/alert.service';
 import * as FileSaver from 'file-saver';
+declare const $: any;
 
 @Component({
   selector: 'app-generate-fee-slip',
@@ -33,6 +34,7 @@ export class GenerateFeeSlipComponent implements OnInit {
   allItems: any;
   showtable = false;
   downloadinData: boolean;
+  regenrateSpecificDate: any;
   constructor(
     private adminService: AdminService,
     private fb: FormBuilder,
@@ -280,17 +282,35 @@ export class GenerateFeeSlipComponent implements OnInit {
 
       this.adminService.regenerateStudentsFeeSlips({ 'id': this.selectedStudentDetails.id }, 'regenerate')
         .subscribe((res: any) => {
-
+          $('#regenerateDatePopUp').modal('hide');
 
           this.regenerateSlip = false;
           this.alertService.successAlert('');
-
-
         }, (err) => {
           this.regenerateSlip = false;
           this.alertService.errorAlert(err);
         });
     }
+
+    if (value === 'SpecificDate') {
+      this.regenerateSlip = true;
+
+      this.adminService.regenerateStudentsFeeSlips( {
+         'id': this.selectedStudentDetails.id ,
+         'spaceifyRegenrationDate' : this.regenrateSpecificDate
+         }, 'regenerate')
+        .subscribe((res: any) => {
+          this.regenerateSlip = false;
+          $('#SpecificDate').modal('hide');
+
+          this.alertService.successAlert('');
+        }, (err) => {
+          this.regenerateSlip = false;
+          this.alertService.errorAlert(err);
+        });
+    }
+
+
 
   }
 

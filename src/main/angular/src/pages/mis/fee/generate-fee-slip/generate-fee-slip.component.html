@@ -449,14 +449,14 @@
               </div>
               <div *ngIf="!selectedStudentDetails.generateActive" class="form-footer text-right">
 
-                <button class="btn btn-sm btn-rose btn-fill" [disabled]="!regenerateSlipForm.valid" (click)="saveSlip('save')">
+                <button class="btn btn-sm btn-rose btn-fill"  (click)="saveSlip('save')">
                   <span *ngIf=" saveFeeSlip ;else save">
                     <i class="fa fa-spinner fa-spin"></i> Saving
                   </span>
                   <ng-template #save>Save</ng-template>
                 </button>
 
-                <button class="btn btn-sm btn-rose btn-fill" [disabled]="!regenerateSlipForm.valid " (click)="saveSlip('Regenerate')">
+                <button class="btn btn-sm btn-rose btn-fill" data-toggle="modal" data-target="#regenerateDatePopUp" >
                   <span *ngIf=" regenerateSlip ;else Regenerate">
                     <i class="fa fa-spinner fa-spin"></i> Regenerating
                   </span>
@@ -533,5 +533,55 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="regenerateDatePopUp" tabindex="-1" role="dialog" aria-labelledby="regenerateDatePopUp" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content card card-stats">
+      <div class="card-header card-header-danger card-header-icon">
+        <h2 style="text-align: center" class="card-title">Are You Sure</h2>
+        <h3 style="text-align: center" class="card-title">You Want To Regenerate Slip
+        </h3>
+      </div>
+      <div class="modal-body">
+        <div style="text-align: center">
+<button type="button" class="btn btn-primary" (click)="saveSlip('Regenerate')" >From Start Date</button>
+<button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#SpecificDate" >From Specific Date</button>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-rose" data-dismiss="modal">Cancle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="SpecificDate" tabindex="-1" role="dialog" aria-labelledby="SpecificDate" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content card card-stats">
+      <div class="card-header card-header-danger card-header-icon">
+        <h2 style="text-align: center" class="card-title">Specific Date </h2>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+            <label for="Specific">Specific Date:</label>
+            <input class="form-control" id="Specific" [(ngModel)]="regenrateSpecificDate" type="date"  name="Specific">
+            <span class="material-input"></span>
+          </div>       
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-rose"  (click)="saveSlip('SpecificDate')" >Submit</button>
+        <button type="button" class="btn btn-rose" data-dismiss="modal">Cancle</button>
+      </div>
+    </div>
   </div>
 </div>
