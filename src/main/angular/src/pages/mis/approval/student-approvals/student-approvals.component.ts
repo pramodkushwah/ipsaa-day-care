@@ -62,8 +62,33 @@ this.showSidePanel();
   showSidePanel() {
 
     this.adminService.viewPanel.next(true);
-    console.log(this.viewPanel);
   }
+
+
+  studentApprove(student) {
+    this.adminService.aproveStudent(student.id)
+      .subscribe((res: any) => {
+        this.getCenterStudentApprovelList();
+        this.studentAprrovelList = this.studentAprrovelList.filter(element => element.id !== student.id);
+          this.alertService.successAlert('Student Approve');
+      }, (err) => {
+        this.alertService.errorAlert(err);
+      });
+  }
+
+  studentReject(student) {
+    this.adminService.rejectStudent(student.id)
+      .subscribe((res: any) => {
+        this.getCenterStudentApprovelList();
+        this.studentAprrovelList = this.studentAprrovelList.filter(element => element.id !== student.id);
+        this.alertService.successAlert('Student Reject');
+
+      }, (err) => {
+        this.alertService.errorAlert(err);
+      });
+  }
+
+
 
 
   subscribSidePanel = () => {

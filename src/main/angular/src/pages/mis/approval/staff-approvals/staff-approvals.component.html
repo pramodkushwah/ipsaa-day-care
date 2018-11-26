@@ -32,17 +32,19 @@
         </div>
       </div>
       <div class="card-body">
-        <table class="table table-responsive">
+          <div class="table-responsive">
+
+        <table class=" table table-hover">
             <colgroup>
             
               <col width="10%">
-              <col width="10%">
-              <col width="10%">
-              <col width="15%">
               <col width="15%">
               <col width="10%">
+              <col width="15%">
               <col width="10%">
               <col width="10%">
+              <!-- <col width="10%"> -->
+              <col width="30%">
             </colgroup>
           <thead class="text-primary" >
               <!-- *ngIf=" staffAprrovelList ?.length >0"s -->
@@ -50,10 +52,12 @@
             <th>Name</th>
             <th>Designation</th>
             <th> Center Name</th>
-            <th>Center Code</th>
-            <th>Contact No</th>
+            <!-- <th>Center Code</th>
+            <th>Contact No</th> -->
             <th>Reporting Manager</th>
             <th>Link </th>
+            <th>Action </th>
+
           </thead>
           <tbody>
             <tr *ngFor="let staff of staffAprrovelList ; let i= index">
@@ -61,21 +65,30 @@
               <td>{{staff.name}}</td>
               <td>{{staff.designation}}</td>
               <td> {{staff.centerName}} </td>
-              <td> {{staff.centerCode}} </td>
-              <td> {{staff.mobile}} </td>
+              <!-- <td> {{staff.centerCode}} </td>
+              <td> {{staff.mobile}} </td> -->
               <td> {{staff.reportingManagerName}} </td>
               <td>
-                <button mat-raised-button class="btn btn-primary btn-sm" (click)="getSelectedStaffDetail(staff)">Approve
+                <button mat-raised-button class="btn btn-primary btn-sm" (click)="getSelectedStaffDetail(staff)">Show details
+                </button>
+             
+              </td>
+              <td>
+                <button mat-raised-button class="btn btn-warning btn-sm" (click)="staffApprove(staff)">Approve
+                </button>
+                <br>
+                <button mat-raised-button class="btn btn-rose btn-sm" (click)="staffReject(staff)">Reject
                 </button>
               </td>
             </tr>
           </tbody>
           <tfoot *ngIf="staffAprrovelList.length === 0" style="border: 1px groove #e8e8e8;">
-            <tr>
-              <td class="text-center">No Content</td>
+            <tr  >
+              <td colspan="7" class="text-center">No Content</td>
             </tr>
           </tfoot>
         </table>
+        </div>
       </div>
     </div>
   </div>

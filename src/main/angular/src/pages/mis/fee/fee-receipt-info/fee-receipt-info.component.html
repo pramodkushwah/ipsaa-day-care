@@ -134,7 +134,7 @@
               </button>
               <span *ngIf="payment.confirmed">Confirmed</span>
 
-              <button class="btn btn-sm" *ngIf="(payment.active && !payment.confirmed)" data-toggle="modal" data-target="#queryReply"
+              <button class="btn btn-sm" *ngIf="(payment.active && !payment.confirmed)" data-toggle="modal" data-target="#rejectReply"
                 (click)="rejectPayment(payment)">Reject</button>
               <span *ngIf="!payment.active">Rejected &nbsp;
                 <a data-toggle="tooltip" title="{{payment.comment}}">
@@ -246,7 +246,7 @@
 </div>
 
 
-<div class="modal fade" id="queryReply" tabindex="-1" role="dialog" aria-labelledby="queryReply" aria-hidden="true">
+<div class="modal fade" id="rejectReply" tabindex="-1" role="dialog" aria-labelledby="rejectReply" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content card card-stats">
       <div class="card-header card-header-danger card-header-icon">

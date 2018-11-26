@@ -161,8 +161,8 @@ export class StudentFeeInfoComponent implements OnInit {
     this.studentFeeForm.get('baseFeeGst').setValue((this.studentFeeForm.get('finalBaseFee').value * 3 * .18).toFixed(2));
     this.studentFeeForm.get('gstFee').setValue((this.studentFeeForm.get('finalAnnualFee').value * .18).toFixed(2)); // annual-fee-gst
 
-    const val = this.studentFeeForm.get('finalAnnualFee').value + this.studentFeeForm.get('finalAdmissionCharges').value +
-      this.studentFeeForm.get('finalSecurityDeposit').value + (this.studentFeeForm.get('finalBaseFee').value * 3) +
+    const val = (this.studentFeeForm.get('finalAnnualFee').value || 0) + (this.studentFeeForm.get('finalAdmissionCharges').value || 0 ) +
+      (this.studentFeeForm.get('finalSecurityDeposit').value || 0) + (this.studentFeeForm.get('finalBaseFee').value * 3) +
       (this.studentFeeForm.get('transportFee').value * 3 ) + Number(this.studentFeeForm.get('gstFee').value) +
       Number(this.studentFeeForm.get('baseFeeGst').value);
 
@@ -171,7 +171,7 @@ export class StudentFeeInfoComponent implements OnInit {
 
   setDiscount(base, targetDiscount, final) {
 
-
+    this.studentFeeForm.get(final).setValue(this.studentFeeForm.get(final).value || 0 );
 
     if (this.studentFeeForm.get(final).value === this.studentFeeForm.get(base).value) {
       if (this.studentFeeForm.get(base).value === 0) {

@@ -42,42 +42,50 @@
           <colgroup>
             
             <col width="10%">
-            <col width="15%">
-            <col width="15%">
+            <col width="10%">
             <col width="15%">
             <col width="15%">
             <col width="10%">
             <col width="10%">
+            <col width="30%">
             <!-- <col width="10%"> -->
           </colgroup>
-          <thead class="text-primary">
+          <thead  style="text-align: center" class="text-primary">
               <!-- *ngIf=" studentAprrovelList ?.length >0" -->
             <th> Sr.No</th>
             <th>Name</th>
             <th>Program</th>
             <th> Center </th>
-            <th> Group </th>
+            <!-- <th> Group </th> -->
             <th>Corporate</th>
             <th>Link </th>
+            <th>action</th>
           </thead>
           <tbody>
-            <tr *ngFor="let student of studentAprrovelList ; let i= index">
+            <tr style="text-align: center" *ngFor="let student of studentAprrovelList ; let i= index">
 
               <td>{{i+1}}</td>
               <td>{{student.fullName}}</td>
               <td> {{student.program.name}} </td>
               <td>{{student.center.name}}</td>
-              <td> {{student.group.name}} </td>
+              <!-- <td> {{student.group.name}} </td> -->
               <td> {{student.corporate}} </td>
               <td>
-                <button mat-raised-button class="btn btn-primary btn-sm" (click)="getSelectedStudentsDetail(student)">Approve
+                <button mat-raised-button class="btn btn-primary btn-sm" (click)="getSelectedStudentsDetail(student)">Show Details
                 </button>
+              </td>
+              <td>
+                  <button mat-raised-button class="btn btn-warning btn-sm" (click)="studentApprove(student)">Approve
+                    </button>
+                    <br>
+                    <button mat-raised-button class="btn btn-rose btn-sm" (click)="studentReject(student)">Reject
+                    </button>
               </td>
             </tr>
           </tbody>
           <tfoot *ngIf=" studentAprrovelList.length === 0" style="border: 1px groove #e8e8e8;">
             <tr>
-              <td class="text-center">No Content</td>
+              <td colspan="7" class="text-center">No Content</td>
             </tr>
           </tfoot>
         </table>
