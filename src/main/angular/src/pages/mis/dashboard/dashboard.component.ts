@@ -3,6 +3,8 @@ import { DashboardService } from '../../../providers/dashboard/dashboard.service
 import { Student } from '../../../modal/student';
 import { AdminService } from '../../../providers/admin/admin.service';
 import { AlertService } from '../../../providers/alert/alert.service';
+
+declare const $: any;
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -60,6 +62,8 @@ export class DashboardComponent implements OnInit {
   dashboardTabs: any[] = [];
   history: any;
   viewPanelForFee: boolean;
+
+  terget: any;
   constructor(private dashboardService: DashboardService, private alertService: AlertService, private adminService: AdminService) { }
 
   ngOnInit() {
@@ -195,6 +199,7 @@ export class DashboardComponent implements OnInit {
         'employer',
         'ctc'
       ];
+      this.scroll(this.terget);
     }, (err) => {
       this.alertService.loading.next(false);
 
@@ -219,6 +224,7 @@ export class DashboardComponent implements OnInit {
         'city',
         'zone'
       ];
+      this.scroll(this.terget);
     }, (err) => {
       this.alertService.loading.next(false);
 
@@ -308,11 +314,13 @@ export class DashboardComponent implements OnInit {
           });
           break;
       }
+
+      this.scroll(this.terget);
     }, (err) => {
       this.alertService.loading.next(false);
 
     });
-   }
+  }
 
   getStudentFee(feeDuration: any) {
     this.adminService.viewPanel.next(false);
@@ -347,6 +355,7 @@ export class DashboardComponent implements OnInit {
         'finalFee',
         'feeDuration'
       ];
+      this.scroll(this.terget);
     }, (err) => {
       this.alertService.loading.next(false);
 
@@ -370,6 +379,8 @@ export class DashboardComponent implements OnInit {
         'previousFollowUps',
         'todayFollowUps',
       ];
+
+      this.scroll(this.terget);
     }, (err) => {
       this.alertService.loading.next(false);
 
@@ -416,4 +427,14 @@ export class DashboardComponent implements OnInit {
   getHistory(history: any) {
     this.history = history;
   }
+
+
+scroll(el) {
+  console.log(el);
+this.terget = el;
+  el.scrollIntoView();
+
 }
+}
+
+
