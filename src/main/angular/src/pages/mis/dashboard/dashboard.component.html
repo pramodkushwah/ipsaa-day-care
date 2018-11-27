@@ -30,7 +30,7 @@
     </div>
   </div>
 </div>
-<div class="row">
+<div class="row ">
   <div class="col-md-4 col-sm-4" [hidden]="isAccessible('followup')">
     <div class="card card-stats">
       <div class="card-header card-header-warning card-header-icon">
@@ -43,7 +43,7 @@
       </div>
       <div class="card-footer">
         <div class="stats">
-          <a  (click)="getFolloups()" class="link"> Open: {{statsResult.openFollowups}} | Today : {{statsResult.todayFollowups}} | Due :
+          <a  (click)="getFolloups() ; scroll(target)"  id="goDown" class="link"> Open: {{statsResult.openFollowups}} | Today : {{statsResult.todayFollowups}} | Due :
             {{statsResult.previousFollowups}}</a>
         </div>
       </div>
@@ -61,7 +61,7 @@
       </div>
       <div class="card-footer" >
         <div class="stats">
-          <a (click)="getCenterList()" class="link">Capacity:{{statsResult.capacity}} | Utilization:{{statsResult.utilisation}} %</a>
+          <a (click)="getCenterList()  ; scroll(target)" class="link">Capacity:{{statsResult.capacity}} | Utilization:{{statsResult.utilisation}} %</a>
         </div>
       </div>
     </div>
@@ -78,7 +78,7 @@
         <p class="card-category">Staff Cost : {{statsResult.staffCost}}</p>
       </div>
       <div class="card-footer" >
-        <div (click)="getStaff()" class="stats">
+        <div (click)="getStaff() ; scroll(target) " class="stats">
           <a  class="link">Present
           : {{statsResult.staffPresent}} | </a> &nbsp; 
           <a class="link">New Joiners: {{statsResult.newJoinings}} | </a> &nbsp;
@@ -100,11 +100,11 @@
       </div>
       <div class="card-footer">
         <div class="stats">
-          <a class="link" (click)="getFilteredStudents('Present')"> Present : {{statsResult.studentPresent |
+          <a class="link" (click)="getFilteredStudents('Present') ; scroll(target)" > Present : {{statsResult.studentPresent |
           number}} | </a> &nbsp;
-          <a class="link" (click)="getFilteredStudents('Corporate')"> Corporate : {{statsResult.corporateStudents |
+          <a class="link" (click)="getFilteredStudents('Corporate') ; scroll(target)"> Corporate : {{statsResult.corporateStudents |
           number}} | </a> &nbsp;
-          <a class="link" (click)="getFilteredStudents('Non-corporate')"> Non-Corporate : {{(statsResult.students -
+          <a class="link" (click)="getFilteredStudents('Non-corporate') ; scroll(target)"> Non-Corporate : {{(statsResult.students -
           statsResult.corporateStudents) | number}} </a>
         </div>
       </div>
@@ -180,14 +180,14 @@
       </div>
       <div class="card-footer">
         <div class="stats">
-          <a class="link" *ngIf="quarterlyFee.collectedFee" (click)="getStudentFee(quarterly.feeDuration)">Collected :
+          <a class="link" *ngIf="quarterlyFee.collectedFee" (click)="getStudentFee(quarterly.feeDuration) ; scroll(target)">Collected :
             {{quarterlyFee.collectedFee.quarterly?quarterlyFee.collectedFee.quarterly:0}}</a>
         </div>
       </div>
     </div>
   </div>
 </div>
-<div class="row" *ngIf="tableTitle">
+<div class="row " *ngIf="tableTitle" >
   <div [class]="viewPanelForFee?'transition col-lg-8':'transition col-lg-12'" style="padding: 0px">
     <div class="row" style="margin: 0px">
       <div [class]="viewPanel?'transition col-lg-6':'transition col-lg-12'">
@@ -205,4 +205,7 @@
   <div class="col-lg-4" *ngIf="viewPanelForFee">
     <app-fee-receipt-info [studentReceipt]="history"></app-fee-receipt-info>
   </div>
+</div>
+<div #target >
+
 </div>
