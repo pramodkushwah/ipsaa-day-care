@@ -217,7 +217,7 @@ public class ReportController {
 	@Secured(COLLECTION_FEE_REPORT)
 	public void collectionFeeReportExcel(HttpServletResponse response, @RequestBody StudentFeeSlipRequest slipRequest)
 			throws IOException {
-		File file = feeService.studentFeeSheetReport(slipRequest);
+		File file = feeService.collectionFeeReport2(slipRequest);
 		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
 				slipRequest.getCenterCode(), slipRequest.getPeriod(), slipRequest.getYear()));
 		response.setHeader("fileName", String.format("%s_Month_%s_Year_%s.xlsx", slipRequest.getCenterCode(),
