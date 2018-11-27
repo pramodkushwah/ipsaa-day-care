@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames={"student_id", "attendanceDate"}))
 public class StudentAttendance extends BaseAttendance
 {
 

@@ -93,6 +93,7 @@ public class StudentAttendanceService extends BaseService {
 		return attendances;
 	}
 
+	@Transactional
 	public StudentAttendance clockin(StudentAttendanceRequest request) {
 
 		Student student = studentRepository.findByIdAndCenterIn(request.getStudentId(), userService.getUserCenters());
@@ -121,6 +122,7 @@ public class StudentAttendanceService extends BaseService {
 		return attendance;
 	}
 
+	@Transactional
 	public StudentAttendance clockout(StudentAttendanceRequest request) {
 
 		Student student = studentRepository.findByIdAndCenterIn(request.getStudentId(), userService.getUserCenters());
