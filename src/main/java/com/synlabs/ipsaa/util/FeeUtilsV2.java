@@ -315,16 +315,14 @@ public class FeeUtilsV2 {
 	}
 
 	public static int getQuarter(int month) {
-//		if (month >= 1 && month <= 3)
-//			return 1;
-//		else if (month >= 4 && month <= 6)
-//			return 2;
-//		else if (month >= 7 && month <= 9)
-//			return 3;
-//		else
-//			return 4;
-		return (month / 3) + 1;
-
+		if (month >= 1 && month <= 3)
+			return 1;
+		else if (month >= 4 && month <= 6)
+			return 2;
+		else if (month >= 7 && month <= 9)
+			return 3;
+		else
+			return 4;
 	}
 
 	public static BigDecimal calculateFeeRatioForQuarter(Date admissionDate,int quarter) {
