@@ -11,6 +11,7 @@ public class StateTaxResponse implements Response {
     private Long stateId;
     private BigDecimal min;
     private BigDecimal max;
+    private BigDecimal tax;
 
     public StateTaxResponse() {
     }
@@ -20,6 +21,8 @@ public class StateTaxResponse implements Response {
         this.stateId= mask(tax.getStates().getId());
         this.min=tax.getMin();
         this.max=tax.getMax();
+        this.tax= tax.getProfessionalTax();
+
     }
 
     public Long getId() { return id; }
@@ -37,4 +40,8 @@ public class StateTaxResponse implements Response {
     public BigDecimal getMax() { return max; }
 
     public void setMax(BigDecimal max) { this.max = max; }
+
+    public void setTax(BigDecimal tax) { this.tax = tax; }
+
+    public BigDecimal getTax() { return tax; }
 }
