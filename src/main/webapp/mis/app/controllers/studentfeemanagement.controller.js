@@ -253,7 +253,12 @@ app.controller('StudentFeeManagementController', function ($scope, $http, Auth, 
     }
 
     function ok(message) {
-        swal({d
+        swal({
+                          title: message,
+                          type: 'success',
+                          buttonsStyling: false,
+                          confirmButtonClass: "btn btn-warning"
+
         });
     }
 
