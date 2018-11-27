@@ -353,10 +353,11 @@ public class DashboardService extends BaseService
 		{
 			JPAQuery<BigDecimal> quarterlyquery = new JPAQuery<>(entityManager);
 			quarterlyquery.select(slip.totalFee.sum()).from(slip)
-					//.where(slip.student.active.isTrue())
+					.where(slip.student.active.isTrue())
 					.where(slip.student.corporate.isFalse())
 					// .where(slip.student.approvalStatus.eq(ApprovalStatus.Approved))
 					.where(slip.feeDuration.eq(FeeDuration.Quarterly))
+					.where(slip.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
 					.where(slip.year.eq(year))
 					.where(slip.quarter.eq(quarter))
 					.where(slip.student.center.in(centers));
@@ -427,7 +428,7 @@ public class DashboardService extends BaseService
 			quarterlyq.select(payment.paidAmount.sum()).from(payment)
 					.where(payment.student.active.isTrue())
 					.where(payment.student.corporate.isFalse())
-					.where(payment.student.approvalStatus.eq(ApprovalStatus.Approved))
+					//.where(payment.student.approvalStatus.eq(ApprovalStatus.Approved))
 					.where(payment.request.feeDuration.eq(FeeDuration.Quarterly))
 					.where(payment.request.year.eq(year))
 					.where(payment.request.quarter.eq(quarter))
