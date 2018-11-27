@@ -429,6 +429,7 @@ public class DashboardService extends BaseService
 					.where(payment.student.active.isTrue())
 					.where(payment.student.corporate.isFalse())
 					//.where(payment.student.approvalStatus.eq(ApprovalStatus.Approved))
+                    .where(payment.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
 					.where(payment.request.feeDuration.eq(FeeDuration.Quarterly))
 					.where(payment.request.year.eq(year))
 					.where(payment.request.quarter.eq(quarter))
