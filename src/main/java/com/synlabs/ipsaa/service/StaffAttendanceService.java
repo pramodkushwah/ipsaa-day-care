@@ -4,18 +4,19 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
+import com.synlabs.ipsaa.config.Local;
+import com.synlabs.ipsaa.jpa.*;
+import com.synlabs.ipsaa.view.report.excel.StaffAttendanceRegisterReport;
+import com.synlabs.ipsaa.view.report.excel.StaffAttendanceReport;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
@@ -25,6 +26,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,10 +47,6 @@ import com.synlabs.ipsaa.entity.staff.EmployeeLeave;
 import com.synlabs.ipsaa.enums.AttendanceStatus;
 import com.synlabs.ipsaa.ex.NotFoundException;
 import com.synlabs.ipsaa.ex.ValidationException;
-import com.synlabs.ipsaa.jpa.EmployeeAttendanceRepository;
-import com.synlabs.ipsaa.jpa.EmployeeLeaveRepository;
-import com.synlabs.ipsaa.jpa.EmployeeRepository;
-import com.synlabs.ipsaa.jpa.HolidayRepository;
 import com.synlabs.ipsaa.util.Utils;
 import com.synlabs.ipsaa.view.attendance.AttendanceReportRequest;
 import com.synlabs.ipsaa.view.attendance.EmployeeAttendanceFilterRequest;
@@ -80,6 +78,9 @@ public class StaffAttendanceService extends BaseService {
 
 	@Autowired
 	private EntityManager entityManager;
+
+	@Autowired
+	private CenterRepository centerRepository;
 
 	@Value("${ipsaa.export.directory}")
 	private String exportDir;
@@ -356,7 +357,7 @@ public class StaffAttendanceService extends BaseService {
 	}
 
 	private List<EmployeeAttendance> fillAbsent(AttendanceReportRequest request, Center center, Set<Employee> employees,
-			List<EmployeeAttendance> attendances, boolean includeSunday) {
+            List<EmployeeAttendance> attendances,boolean includeSunday){
 		// getting all dates between request.from and request.to excluding sunday
 		List<EmployeeAttendance> result = new ArrayList<>();
 
@@ -560,4 +561,103 @@ public class StaffAttendanceService extends BaseService {
 		}
 		return employeeAttendances;
 	}
+
+	public File attendanceReport2(AttendanceReportRequest request) throws IOException {
+
+		if (request.getCenterCode() == null) {
+			throw new ValidationException("Center is required.");
+		}
+		Center center;
+		List<Center> centers= new ArrayList<>();
+
+		if(request.getCenterCode().equals("ALL")) {
+            centers = getUserCenters();
+            request.setCenterCode("ALL");
+        }
+		else {
+            boolean isCenter = hasCenter(request.getCenterCode());
+            if (!isCenter) {
+                throw new ValidationException("Unauthorized access to Center.");
+            }
+            else{
+            	center= centerRepository.findByCode(request.getCenterCode());
+				centers.add(center);
+				request.setCenterCode(center.getCode());
+			}
+
+        }
+
+		Date from = request.getFrom();
+		Date to = request.getTo();
+
+		Set<Employee> employees = new HashSet<>(getEmployees(centers));
+		List<EmployeeAttendance> attendanceList= attendanceRepository.findByCenterInAndAttendanceDateBetween(centers,from,to);
+
+		List<StaffAttendanceReport> attendanceReports= new ArrayList<>();
+		StaffAttendanceReport report;
+		Map<Date,String> dateMap=new LinkedHashMap<>();
+
+		for(Employee emp:employees){
+			List<EmployeeAttendance> employeeAttendances=
+					attendanceList.stream().filter(a->a.getEmployee().equals(emp)).collect(Collectors.toList());
+
+			//generates attendance of employee in a month i.e, makes EmployeeAttendance(P,L,W,H,A)
+			List<EmployeeAttendance> attendances=
+					fillAbsent(from,to,emp,emp.getCostCenter(),employeeAttendances,true);
+
+			dateMap=generateDateMap(attendances,from,to); // attendance date and status
+
+			report= new StaffAttendanceReport(emp,dateMap);
+			report.calculate();
+			attendanceReports.add(report);
+		}
+
+		StaffAttendanceRegisterReport register= new StaffAttendanceRegisterReport(attendanceReports,exportDir,request);
+		return register.createExcel();
+	}
+
+
+    /// date map with date(naturalOrder) and attendance status of the employee
+	public Map<Date,String> generateDateMap(List<EmployeeAttendance> attendances,Date from , Date to) {
+
+		Set<Date> dates = Utils.datesBetween(from, to, true); //sorted dates
+		System.out.println(dates);
+		Map<Date, String> calendar = new TreeMap<>();
+		attendances.forEach(a -> {
+			calendar.computeIfAbsent(a.getAttendanceDate(), status(a));   //status returns attendance stats for that date
+		});
+
+		return calendar;
+	}
+
+	public Function<Date,String> status(EmployeeAttendance attendance){
+		String status;
+		switch (attendance.getStatus().toString()) {
+
+            case "Present":
+                status = "P";
+                break;
+
+            case "Holiday":
+                if (LocalDate.fromDateFields(attendance.getAttendanceDate()).getDayOfWeek() == DateTimeConstants.SUNDAY)
+                    status = "W";
+                else
+                    status = "H";
+
+                break;
+
+            case "Leave":
+                if (attendance.getHalfLeave())
+                    status = "HD";
+                else
+                    status = "L";
+
+                break;
+
+            default:
+                status = "A";
+        }
+		return (k)->status;
+	}
+
 }

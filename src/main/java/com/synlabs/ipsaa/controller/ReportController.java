@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -104,7 +103,8 @@ public class ReportController {
 	@Secured(STAFF_ATTENDANCE_REPORT)
 	public void staffAttendanceReport(@RequestBody AttendanceReportRequest request, HttpServletResponse response)
 			throws IOException {
-		File file = staffAttendanceService.attendanceReport(request);
+		File file = staffAttendanceService.attendanceReport2(request); /// Avneet
+		// File file = staffAttendanceService.attendanceReport(request);
 		response.setContentType("application/octet-stream");
 		response.setHeader("Content-disposition", String.format("attachment; filename=Atten_Report_%s_%s_%s.xlsx",
 				request.getCenterCode(), request.getFrom(), request.getTo()));
@@ -171,15 +171,12 @@ public class ReportController {
 		}
 	}
 
-
-
 	@PostMapping("studentfee")
 	@Secured(FEE_REPORT)
 	public List<StudentFeeSlipResponse3> FeeReport(@RequestBody FeeReportRequest request, HttpServletResponse response)
 			throws IOException {
 		return feeService.feeReportTable2(request);
 	}
-
 
 	@PostMapping("studentfee/excel")
 	@Secured(FEE_REPORT)
@@ -207,11 +204,6 @@ public class ReportController {
 			@RequestBody StudentFeeSlipRequest slipRequest) throws IOException {
 		return feeService.collectionFeeReportTable2(slipRequest);
 	}
-
-
-
-
-
 
 	@PostMapping("collectionfee/excel")
 	@Secured(COLLECTION_FEE_REPORT)
@@ -261,8 +253,8 @@ public class ReportController {
 
 		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
 				slipRequest.getCenterCode(), slipRequest.getPeriod(), slipRequest.getYear()));
-		response.setHeader("fileName", String.format("%s_Quarter_%s_Year.xlsx", slipRequest.getQuarter(),
-				 slipRequest.getYear()));
+		response.setHeader("fileName",
+				String.format("%s_Quarter_%s_Year.xlsx", slipRequest.getQuarter(), slipRequest.getYear()));
 		OutputStream out = response.getOutputStream();
 		FileInputStream in = new FileInputStream(file);
 		// copy from in to out
@@ -295,17 +287,17 @@ public class ReportController {
 			throw new IOException("Could not delete temporary file after processing: " + file);
 		}
 	}
+
 	@PostMapping("staff/excel")
 	@Secured(COLLECTION_FEE_REPORT)
 	public void staffExcel(HttpServletResponse response, @RequestBody StaffFilterRequest staffRequest)
 			throws IOException {
 		// modifiy by shubham
-		int month=staffRequest.getMonth();
-		//System.out.println(month);
-		////Avneet
-		File file = staffRequest.getMonth() != 0 ? staffService.getAllEmployees(staffRequest):
-												staffService.getEmployee(staffRequest);
-
+		int month = staffRequest.getMonth();
+		// System.out.println(month);
+		//// Avneet
+		File file = staffRequest.getMonth() != 0 ? staffService.getAllEmployees(staffRequest)
+				: staffService.getEmployee(staffRequest);
 
 		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
 				staffRequest.getEmployerCode(), staffRequest.getMonth(), staffRequest.getYear()));
@@ -322,13 +314,13 @@ public class ReportController {
 		}
 	}
 
-
-	//---------------------------ipsaa report------------------------------------------------------------
+	// ---------------------------ipsaa
+	// report------------------------------------------------------------
 
 	@PostMapping("ipsaaclub/collectionfee/excel")
 	@Secured(COLLECTION_FEE_REPORT)
-	public void ipsaaclubCollectionFeeReportExcel(HttpServletResponse response, @RequestBody FeeReportRequest slipRequest)
-			throws IOException {
+	public void ipsaaclubCollectionFeeReportExcel(HttpServletResponse response,
+			@RequestBody FeeReportRequest slipRequest) throws IOException {
 		File file = feeService.ipsaaCollectionFeeReport2(slipRequest);
 		response.setHeader("Content-disposition", String.format("attachment; filename=%s_Month_%s_Year_%s.xlsx",
 				slipRequest.getCenterCode(), slipRequest.getMonth(), slipRequest.getYear()));
@@ -347,7 +339,8 @@ public class ReportController {
 
 	@PostMapping("ipsaaclub/studentfee/excel")
 	@Secured(FEE_REPORT)
-	public void ipsaaClubFeeReportExcel(@RequestBody FeeReportRequest request, HttpServletResponse response) throws IOException {
+	public void ipsaaClubFeeReportExcel(@RequestBody FeeReportRequest request, HttpServletResponse response)
+			throws IOException {
 		File file = feeService.FeeReportIpsaClub2(request);
 
 		response.setContentType("application/octet-stream");

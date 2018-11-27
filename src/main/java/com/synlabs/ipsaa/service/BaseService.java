@@ -321,6 +321,16 @@ abstract public class BaseService
     return query.fetch();
   }
 
+  public List<Employee> getEmployees(List<Center> centers){
+      JPAQuery<Employee> query= new JPAQuery<>(entityManager);
+      QEmployee employees=QEmployee.employee;
+      query.select(employees).from(employees)
+              .where(employees.active.isTrue())
+              .where(employees.costCenter.in(centers));
+      return query.fetch();
+  }
+
+
   public boolean isHalfDayLeave(EmployeeLeave leave)
   {
     return leave.getHalfLeave() == null ? false : leave.getHalfLeave();
