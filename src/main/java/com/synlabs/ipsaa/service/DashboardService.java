@@ -255,11 +255,7 @@ public class DashboardService extends BaseService
 				.where(employee.active.isTrue())
 				.where(attendance.status.eq(AttendanceStatus.Present))
 				.where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
-				.where(attendance.checkout.isNull())
 				.where(attendance.center.in(centers));
-
-		
-		System.out.println("Count is "+query.fetchCount());
 		return (int) query.fetchCount();
 	}
 
