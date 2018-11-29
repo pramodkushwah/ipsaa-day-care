@@ -271,6 +271,8 @@ public class DashboardService extends BaseService {
 				.where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
 				.where(attendance.center.in(centers));
 
+		
+		System.out.println("Count is "+query.fetchCount());
 		return (int) query.fetchCount();
 	}
 
