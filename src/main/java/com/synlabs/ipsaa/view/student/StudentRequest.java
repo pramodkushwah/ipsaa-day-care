@@ -15,11 +15,13 @@ import com.synlabs.ipsaa.view.fee.StudentFeeRequest;
 import com.synlabs.ipsaa.view.fee.StudentFeeRequestV2;
 
 import java.text.ParseException;
-import java.time.LocalDate;
+import java.time.*;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class StudentRequest implements Request
 {
@@ -49,6 +51,7 @@ public class StudentRequest implements Request
   private String schoolName;
 
   private StudentFeeRequestV2 fee;
+
 
   @JsonFormat(pattern = "HH:mm", timezone = "IST")
   private Date expectedIn;
@@ -307,10 +310,15 @@ public class StudentRequest implements Request
 
   public Student toEntity(Student student) throws ParseException
   {
-    Calendar cal=Calendar.getInstance();
-    cal.setTime(expectedIn);
-    if(expectedIn.after(expectedOut) || cal.get(Calendar.HOUR_OF_DAY)<7){
+    Instant instant = Instant.ofEpochMilli(expectedIn.getTime());
+    LocalTime expIn = LocalDateTime.ofInstant(instant,ZoneId.systemDefault()).toLocalTime();
+    instant = Instant.ofEpochMilli(expectedOut.getTime());
+
+    if(expectedIn.after(expectedOut)){
       throw new ValidationException("please enter expected in/out in 24 hours system");
+    }
+    if(expIn.getHour()<7){
+      throw new ValidationException("expected in can not be less then 7");
     }
 
     student.setExpectedIn(expectedIn);

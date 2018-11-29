@@ -988,7 +988,7 @@ public class StudentFeeService {
         return slip;
     }
 
-    public StudentFeePaymentRecord updatePayFee(SaveFeeSlipRequest request) {
+    public StudentFeePaymentResponse updatePayFee(SaveFeeSlipRequest request) {
 
         if (request.getId() == null) {
             throw new ValidationException("Receipt id is required.");
@@ -1046,7 +1046,8 @@ public class StudentFeeService {
         //slip.setComments(request.getComments());
 
         feePaymentRepository.saveAndFlush(slip);
-        return receipt;
+
+        return new StudentFeePaymentResponse(receipt,slip);
     }
 
     public StudentFeePaymentRequest getStudentBalance(Student student) {

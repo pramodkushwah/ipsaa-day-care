@@ -140,8 +140,7 @@ public class CenterProgramFeeRequest implements Request
     fee.setCgst(this.cgst);
     fee.setSgst(this.sgst);
     fee.setIgst(this.igst);
-
-    fee.setAddmissionFee(new BigDecimal(this.admissionFee==null?this.admissionFee:0));
+    fee.setAddmissionFee(new BigDecimal(this.admissionFee==null?0:this.admissionFee));
     return fee;
   }
 

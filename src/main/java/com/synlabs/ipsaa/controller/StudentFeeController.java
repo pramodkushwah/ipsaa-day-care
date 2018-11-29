@@ -216,12 +216,6 @@ public class StudentFeeController
     //Confirm payment
     public StudentFeePaymentResponse updatePayFee(@RequestBody SaveFeeSlipRequest request)
     {
-        return new StudentFeePaymentResponse(studentFeeService.updatePayFee(request));
+        return studentFeeService.updatePayFee(request);
     }
-
-//    /////Avneet
-//    @PostMapping("expire")
-//    public void setExpire(){
-//      studentFeeService.setExpire();
-//    }
 }
