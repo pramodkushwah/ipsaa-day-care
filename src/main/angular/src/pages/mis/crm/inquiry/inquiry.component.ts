@@ -56,8 +56,7 @@ inquiryTypes = [
     'NotInterested',
     'Revisit'
 ];
-workingInquiry: any;
-inquiryNumbers = [];
+filterFollowUps = ['All', 'Due', 'Open', 'Today'];
     programs: Array<any>;
     groups = [];
     selectedCenter = {};

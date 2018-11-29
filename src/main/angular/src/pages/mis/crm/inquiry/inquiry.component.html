@@ -79,6 +79,19 @@
 
         <div id="FollowUps" class="tab-pane fade">
           <br>
+          <div class="form-group ipsaa-form-group col-md-4">
+            <!-- <div class="form-group ipsaa-form-group"> -->
+              <label class="control-label">Callback Number</label>
+              <input class="form-control dropdown-toggle" data-toggle="dropdown" name="callBackNumber" type="text">
+              <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                <li *ngFor=" let filterBy of filterFollowUps ">
+                  <a>{{filterBy}}</a>
+                </li>
+              </ul>
+            <!-- </div> -->
+          </div>
+          <br>
+
           <table class="table table-hover table-responsive ">
             <colgroup>
               <col width="20%">

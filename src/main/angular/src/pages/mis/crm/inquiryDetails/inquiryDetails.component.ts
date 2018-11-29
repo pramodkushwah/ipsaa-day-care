@@ -14,6 +14,7 @@ export class InquiryDetailsComponent implements OnInit {
 
     selectedInquiryDetials: any;
     induiryForm: FormGroup;
+    callBackDisposition: any;
     leadSources = [
         'BUILDING',
         'CORPORATE',
@@ -43,12 +44,12 @@ export class InquiryDetailsComponent implements OnInit {
         'Revisit'
     ];
     workingInquiry: any;
-    inquiryNumbers = [];
+    inquiryNumbers = ['9017697290', '1769720154', '545454545', '4848598'];
     centers: Array<any>;
     programs: Array<any>;
     groups = [];
     selectedCenter = {};
-    inquiryDetails: any = {};
+    inquiryDetails: any ;
     constructor(
         private fb: FormBuilder,
         private adminService: AdminService,
@@ -155,7 +156,7 @@ export class InquiryDetailsComponent implements OnInit {
         this.induiryForm.patchValue(inquiry);
         const address = <FormGroup>this.induiryForm.controls.address;
         address.controls.address.patchValue(inquiry.address.address);
-        console.log(this.induiryForm.controls.address);
+        // console.log(this.induiryForm.controls.address.value);
 
     }
 
