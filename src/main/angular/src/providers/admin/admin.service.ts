@@ -499,7 +499,16 @@ getFollowUps(date_Dispositions) {
   return this.api.post('api/inquiry/followUps/', date_Dispositions );
 }
 loadInquiryDetials(inquiry_Id) {
-  return this.api.get ('api/inquiry/' + inquiry_Id);
+  return this.api.get('api/inquiry/' + inquiry_Id);
+}
+
+addNewInquiry(inquiry_Details) {
+  return this.api.post('api/inquiry/' , inquiry_Details);
+}
+
+updateInquiry(updated_Inquiry_Details) {
+  return this.api.put('api/inquiry/' , updated_Inquiry_Details);
+
 }
 
 }

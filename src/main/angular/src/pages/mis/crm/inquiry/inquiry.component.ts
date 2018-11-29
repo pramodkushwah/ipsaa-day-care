@@ -22,12 +22,14 @@ export class InquiryComponent implements OnInit {
     date: '2018-11-13',
     dispositions: ['Callback', 'Followup', 'NewInquiry', 'Revisit']
   };
+
   centers: Array<any>;
   selectedCenterId: Array<any>;
   InquiresDteailsShow = false;
-  selectedInquiryDetials: any = {};
+  selectedInquiryDetialsId: any;
   induiryForm: FormGroup;
   induiryForm1: FormGroup;
+  currentDate: any;
   leadSources = [
     'BUILDING',
     'CORPORATE',
@@ -40,13 +42,13 @@ export class InquiryComponent implements OnInit {
     'ADWORD',
     'ORGANIC',
     'OTHERS'];
-inquiryTypes = [
+  inquiryTypes = [
     'Web',
     'Walkin',
     'Call',
     'Email',
     'Newspaper'];
-    dispositions = [
+  dispositions = [
     'NewInquiry',
     'Followup',
     'Callback',
@@ -55,17 +57,41 @@ inquiryTypes = [
     'Drop',
     'NotInterested',
     'Revisit'
-];
-filterFollowUps = ['All', 'Due', 'Open', 'Today'];
-    programs: Array<any>;
-    groups = [];
-    selectedCenter = {};
+  ];
+  filterFollowUps = [ {
+    date: 'jj',
+    name: 'ALL',
+    value: ''
+  },
+  // {
+  //   date: (this.currentDate | date: 'y-MM-dd'" ),
+  //   name: 'DUE',
+  //   value: ''
+  // },
+  {
+    date: 'jj',
+    name: 'OPEN',
+    value: ''
+  },
+  {
+    date: 'jj',
+    name: 'TODAY',
+    value: ''
+  },
+  'ALL', 'Due', 'Open', 'Today'];
+  programs: Array<any>;
+  groups = [];
+  selectedCenter = {};
   constructor(
     private fb: FormBuilder,
     private adminService: AdminService,
     private alertService: AlertService
-  ) { }
+  ) {
+    this.currentDate = (new Date());
+   }
   ngOnInit() {
+    console.log(this.selectedTab);
+// this.currentDate = new Date();
     this.getCenter();
     this.getFollowUps();
     this.getInquiries();
@@ -88,9 +114,22 @@ filterFollowUps = ['All', 'Due', 'Open', 'Today'];
       });
   }
 
-  getFollowUps() {
+  getFollowUps(CenterId?: number) {
 
-    // if (selectedCenterId) {
+    if (CenterId) {
+      this.followUpsFor['centerCodes'].push(CenterId);
+      //  = CenterId;
+
+  }
+        // today- date 0
+  // centerCodes= []
+  // 	due- to -1
+  // 	open- from +1
+  // 	all- "kuch nhi "
+
+    //   this.followUpsFor['centerCodes'] = [selectedCenterId];
+    //   this.followUpsFor['centerCodes'] = [selectedCenterId];
+    //   this.followUpsFor['centerCodes'] = [selectedCenterId];
     //   this.followUpsFor['centerCodes'] = [selectedCenterId];
     // }
     this.adminService.getFollowUps(this.followUpsFor)
@@ -104,22 +143,26 @@ filterFollowUps = ['All', 'Due', 'Open', 'Today'];
   }
 
   filterFeeByCenter(selectedCenterId) {
-    this.getInquiries(selectedCenterId);
+    if (selectedCenterId) {
+      this.getInquiries(selectedCenterId);
+      this.getFollowUps(selectedCenterId);
+    } else {
+      this.getInquiries();
+      this.getFollowUps();
+
+    }
   }
 
 
   changeTab(val) {
     this.selectedTab = val;
     this.InquiresDteailsShow = false;
+    console.log(this.selectedTab);
   }
 
 
-    loadInquiry(id) {
-      this.selectedInquiryDetials = id;
-          this.InquiresDteailsShow = true;
-  }
-
-  centerChanged(selectedCenterId) {
-
+  loadInquiry(id) {
+    this.selectedInquiryDetialsId = id;
+    this.InquiresDteailsShow = true;
   }
 }
