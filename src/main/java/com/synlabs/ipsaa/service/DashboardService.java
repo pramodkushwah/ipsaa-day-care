@@ -258,6 +258,8 @@ public class DashboardService extends BaseService
 				.where(attendance.checkout.isNull())
 				.where(attendance.center.in(centers));
 
+		
+		System.out.println("Count is "+query.fetchCount());
 		return (int) query.fetchCount();
 	}
 
