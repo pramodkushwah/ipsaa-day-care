@@ -117,7 +117,7 @@ export class StudentFeeInfoComponent implements OnInit {
   }
 
   modifyResponse(student) {
-    this.studentFeeForm.get('finalBaseFee').setValue(student.finalBaseFee / 3);
+    this.studentFeeForm.get('finalBaseFee').setValue(student.finalBaseFee );
 
     if (student.program.id === 622614691413790 || student.formalSchool) {
       this.studentFeeForm.get('gstFee').setValue((this.studentFeeForm.get('finalAnnualFee').value * .18).toFixed(2)); // annual-fee-gst
@@ -158,8 +158,13 @@ export class StudentFeeInfoComponent implements OnInit {
 
 
   updateDiscount() {
-    this.studentFeeForm.get('baseFeeGst').setValue((this.studentFeeForm.get('finalBaseFee').value * 3 * .18).toFixed(2));
-    this.studentFeeForm.get('gstFee').setValue((this.studentFeeForm.get('finalAnnualFee').value * .18).toFixed(2)); // annual-fee-gst
+
+    if (this.studentFeeForm.get('id').value === 622614691413790 || this.studentFeeForm.get('formalSchool').value) {
+      this.studentFeeForm.get('gstFee').setValue((this.studentFeeForm.get('finalAnnualFee').value * .18).toFixed(2)); // annual-fee-gst
+      this.studentFeeForm.get('baseFeeGst').setValue((this.studentFeeForm.get('finalBaseFee').value * 3 * .18).toFixed(2));
+    }
+    // this.studentFeeForm.get('baseFeeGst').setValue((this.studentFeeForm.get('finalBaseFee').value * 3 * .18).toFixed(2));
+    // this.studentFeeForm.get('gstFee').setValue((this.studentFeeForm.get('finalAnnualFee').value * .18).toFixed(2)); // annual-fee-gst
 
     const val = (this.studentFeeForm.get('finalAnnualFee').value || 0) + (this.studentFeeForm.get('finalAdmissionCharges').value || 0 ) +
       (this.studentFeeForm.get('finalSecurityDeposit').value || 0) + (this.studentFeeForm.get('finalBaseFee').value * 3) +

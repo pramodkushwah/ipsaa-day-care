@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from '../../../../providers/alert/alert.service';
 import { AdminService } from '../../../../providers/admin/admin.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-inquiry',
@@ -13,7 +14,7 @@ export class InquiryComponent implements OnInit {
   inquiries: Array<any>;
   followUps: Array<any>;
   viewPanel: boolean;
-  selectedTab: string;
+  selectedTab = 'Inquiry';
   inquiryTable = false;
   followUpsTable = false;
   editable: boolean;
@@ -23,26 +24,29 @@ export class InquiryComponent implements OnInit {
   };
   centers: Array<any>;
   selectedCenterId: Array<any>;
-
+  InquiresDteailsShow = false;
+  selectedInquiryDetials: any = {};
+  induiryForm: FormGroup;
+  induiryForm1: FormGroup;
   leadSources = [
-    'Building',
-    'Corporate',
-    'Advertisement',
-    'Reference',
-    'Website',
-    'Newspaper',
-    'Signboards',
-    'Facebook',
-    'Adword',
-    'Organic',
-    'Others'];
+    'BUILDING',
+    'CORPORATE',
+    'ADVERTISEMENT',
+    'WEBSITE',
+    'REFERENCE',
+    'NEWSPAPER',
+    'SIGNBOARDS',
+    'FACEBOOK',
+    'ADWORD',
+    'ORGANIC',
+    'OTHERS'];
 inquiryTypes = [
     'Web',
     'Walkin',
     'Call',
     'Email',
     'Newspaper'];
-dispositions = [
+    dispositions = [
     'NewInquiry',
     'Followup',
     'Callback',
@@ -52,12 +56,12 @@ dispositions = [
     'NotInterested',
     'Revisit'
 ];
-workingInquiry: any;
-inquiryNumbers = [];
+filterFollowUps = ['All', 'Due', 'Open', 'Today'];
     programs: Array<any>;
     groups = [];
     selectedCenter = {};
   constructor(
+    private fb: FormBuilder,
     private adminService: AdminService,
     private alertService: AlertService
   ) { }
@@ -65,20 +69,12 @@ inquiryNumbers = [];
     this.getCenter();
     this.getFollowUps();
     this.getInquiries();
-    this.getPrograms();
   }
 
   getCenter() {
     this.adminService.getProgramCenter()
       .subscribe((res) => {
         this.centers = res;
-      });
-  }
-
-  getPrograms() {
-    this.adminService.getPrograms()
-      .subscribe((res) => {
-        this.programs = res;
       });
   }
   getInquiries(CenterId?: number) {
@@ -94,10 +90,12 @@ inquiryNumbers = [];
 
   getFollowUps() {
 
+    // if (selectedCenterId) {
+    //   this.followUpsFor['centerCodes'] = [selectedCenterId];
+    // }
     this.adminService.getFollowUps(this.followUpsFor)
       .subscribe((res: any) => {
         this.followUps = res;
-
         this.inquiryTable = false;
         this.followUpsTable = true;
       }, (err) => {
@@ -112,29 +110,15 @@ inquiryNumbers = [];
 
   changeTab(val) {
     this.selectedTab = val;
-    if (val === 'Inquiry') {
-      this.inquiryTable = true;
-      this.followUpsTable = false;
-    } else {
-
-      this.inquiryTable = false;
-      this.followUpsTable = true;
-    }
+    this.InquiresDteailsShow = false;
   }
 
 
-  addInquiry() {
-
+    loadInquiry(id) {
+      this.selectedInquiryDetials = id;
+          this.InquiresDteailsShow = true;
   }
 
-  loadInquiry(InquiryId, val) {
-    this.viewPanel = true;
-  }
-
-
-  loadFollowup(followUpInquiryId) {
-    this.viewPanel = false;
-  }
   centerChanged(selectedCenterId) {
 
   }

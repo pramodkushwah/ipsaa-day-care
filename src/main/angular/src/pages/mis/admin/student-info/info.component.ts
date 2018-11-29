@@ -43,6 +43,7 @@ export class StudentInfoComponent implements OnInit {
         this.studentForm.controls['centerId'].patchValue(student.center.id);
         this.studentForm.controls['groupId'].patchValue(student.group.id);
         this.studentForm.controls['programId'].patchValue(student.program.id);
+        this.studentForm.controls['fee'].patchValue(student.fee);
         this.getPaymentHistory(student);
       });
     } else {
@@ -221,6 +222,7 @@ export class StudentInfoComponent implements OnInit {
             );
             const sprogram = this.programs.find(program => program.id === programId);
             this.groups = (sprogram) ? sprogram.groups : [];
+            this.calculateFinalFee(feeControlForm.value);
           }
         });
     }

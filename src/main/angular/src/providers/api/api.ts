@@ -15,7 +15,6 @@ import 'rxjs/add/operator/catch';
 import {tap} from 'rxjs/operators';
 import 'rxjs/add/observable/throw';
 import { AlertService } from '../alert/alert.service';
-import { routerNgProbeToken } from '@angular/router/src/router_module';
 import { Router } from '@angular/router';
 
 /**
@@ -126,15 +125,16 @@ export class Api {
   handleError = (errorResponse: HttpErrorResponse) => {
     switch (errorResponse.status) {
       case 401:
+        this.router.navigate(['/login']);
         this.alertService.errorAlert(errorResponse.error.message);
         this.storage.clearData();
-        this.router.navigate(['/login']);
         break;
       case 0:
         this.alertService.errorAlert('You don\'t seem to have an active internet connection. Please connect and try again.');
         break;
       default:
-        this.alertService.errorAlert(errorResponse.message);
+        this.alertService.errorAlert(errorResponse.error.message);
+
         break;
     }
     return Observable.throw(errorResponse);

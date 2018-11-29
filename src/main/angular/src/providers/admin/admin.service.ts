@@ -498,6 +498,8 @@ getInquiry(centerId?) {
 getFollowUps(date_Dispositions) {
   return this.api.post('api/inquiry/followUps/', date_Dispositions );
 }
-
+loadInquiryDetials(inquiry_Id) {
+  return this.api.get ('api/inquiry/' + inquiry_Id);
+}
 
 }
