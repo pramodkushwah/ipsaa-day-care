@@ -80,7 +80,7 @@
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Program : </label>
-                <select class="form-control" [class.readonly]="!editable" formControlName="programId" (ngModelChange)="getFee($event)">
+                <select class="form-control" [class.readonly]="!editable" formControlName="programId" (change)="getFee(programId)" [(ngModel)]="programId">
                   <option *ngFor="let program of programs;let c = index;" [ngValue]="program.id"> {{program.name}}</option>
                 </select>
               </div>
