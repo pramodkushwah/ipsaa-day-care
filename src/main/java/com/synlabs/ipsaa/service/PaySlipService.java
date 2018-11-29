@@ -181,8 +181,10 @@ public class PaySlipService extends BaseService {
 			return employeePaySlipRepository.findByMonthAndYear(month, year);
 
 		} else {
-			if (legalEntity != null)
-				return employeePaySlipRepository.findByEmployerIdAndMonthAndYear(legalEntity.getId(), month, year);
+            legalEntity=legalEntityRepository.findOne(unmask(Long.parseLong(employerId)));
+			if (legalEntity != null){
+                return employeePaySlipRepository.findByEmployerIdAndMonthAndYear(legalEntity.getId(), month, year);
+			}
 			else {
 				return null;
 			}
