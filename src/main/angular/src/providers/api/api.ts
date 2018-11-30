@@ -69,7 +69,7 @@ export class Api {
         observe: 'response',
         responseType: 'blob'
       })
-      .map(this.extractData)
+      .map(this.extractData1)
       .catch(this.handleError);
   }
 
@@ -119,7 +119,14 @@ export class Api {
   }
 
   extractData(response: HttpResponse<any>) {
+
     return response.body || response.status;
+  }
+
+  extractData1(response: HttpResponse<any>) {
+console.log(response.headers.get('fileName'));
+
+    return response;
   }
 
   handleError = (errorResponse: HttpErrorResponse) => {

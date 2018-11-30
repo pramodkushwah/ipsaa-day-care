@@ -61,7 +61,7 @@ selectedQuater: any;
       // });
 
       // FileSaver.saveAs(blob, res.headers('fileName'));
-      .subscribe((res: ArrayBuffer) => {
+      .subscribe((res: any) => {
         // const headers = res.headers;
         const blob = new Blob([res], {
         });

@@ -13,9 +13,8 @@ export class InquiryDetailsComponent implements OnInit {
 
 
     selectedInquiryDetials: any;
-    induiryForm: FormGroup;
-    callBackDisposition: any;
-    callBackNumber: any;
+    logvalidation: true;
+    inquiryForm: FormGroup;
     leadSources = [
         'BUILDING',
         'CORPORATE',
@@ -44,16 +43,30 @@ export class InquiryDetailsComponent implements OnInit {
         'NotInterested',
         'Revisit'
     ];
-    workingInquiry: any;
     inquiryNumbers = [];
     centers: Array<any>;
     programs: Array<any>;
     groups = [];
     selectedCenter = {};
     inquiryDetails: any;
-    newInquiry: any;
+    newInquiry: number;
     tab: string;
     inquiryDisable: boolean;
+    callBackDisposition: any;
+    callBackNumber: number;
+    callBackDate: string;
+    callBackTime: string;
+    callBackComment: string;
+    log = {
+        callBack: '',
+        callBackTime: '',
+        callBackDate: '',
+        callBackNumber: '',
+        callDisposition: '',
+        comment: '',
+    };
+
+
     constructor(
         private fb: FormBuilder,
         private adminService: AdminService,
@@ -61,7 +74,7 @@ export class InquiryDetailsComponent implements OnInit {
     ) { }
 
     @Input() set inquiryId(inquiryId: any) {
-        this.induiryForm = this.inquiryDetialForm();
+        this.inquiryForm = this.inquiryDetialForm();
         this.newInquiry = inquiryId;
         if (inquiryId) {
             this.loadInquiry(inquiryId);
@@ -149,9 +162,9 @@ export class InquiryDetailsComponent implements OnInit {
 
     getInquiryDetials(inquiry) {
 
-        this.induiryForm = this.inquiryDetialForm();
-        this.induiryForm.patchValue(inquiry);
-        const address = <FormGroup>this.induiryForm.controls.address;
+        this.inquiryForm = this.inquiryDetialForm();
+        this.inquiryForm.patchValue(inquiry);
+        const address = <FormGroup>this.inquiryForm.controls.address;
         address.controls.address.patchValue(inquiry.address.address);
     }
 
@@ -160,8 +173,8 @@ export class InquiryDetailsComponent implements OnInit {
             .subscribe((res: any) => {
                 this.selectedInquiryDetials = res;
                 this.getInquiryDetials(res);
-                 this.inquiryNumbers.push(res.fatherMobile);
-                 this.inquiryNumbers.push(res.motherMobile);
+                this.inquiryNumbers.push(res.fatherMobile);
+                this.inquiryNumbers.push(res.motherMobile);
                 this.inquiryDetails = res.logs;
             }, (err) => {
                 this.alertService.errorAlert(err);
@@ -171,23 +184,45 @@ export class InquiryDetailsComponent implements OnInit {
 
 
     selctedNumber(callBackNo) {
-this.callBackNumber = callBackNo;
+        this.log.callBackNumber = callBackNo;
     }
 
     saveForm() {
-        if (this.newInquiry) {
-            this.induiryForm.value['logs'] = this.inquiryDetails;
 
-this.adminService.updateInquiry(this.induiryForm.value)
-.subscribe((res: any) => {
-    this.alertService.successAlert('');
-}, (err) => {
-    this.alertService.errorAlert(err);
-});
+        console.log(this.newInquiry);
+
+        if (this.log.callDisposition) {
+            this.log.callBack = ' ' + this.log.callBackDate + ' ' + this.log.callBackTime + ' ' + 'IST';
+            this.inquiryForm.value['log'] = this.log;
+
+            console.log(this.log);
+        }
+
+
+
+
+
+        console.log(this.inquiryForm.value);
+        if (this.newInquiry) {
+            this.inquiryForm.value['logs'] = this.inquiryDetails;
+
+            this.adminService.updateInquiry(this.inquiryForm.value)
+                .subscribe((res: any) => {
+                    this.alertService.successAlert('');
+                }, (err) => {
+                    this.alertService.errorAlert(err);
+                });
 
         } else {
 
-                  }
+            this.adminService.addNewInquiry(this.inquiryForm.value)
+                .subscribe((res: any) => {
+                    this.alertService.successAlert('');
+                }, (err) => {
+                    this.alertService.errorAlert(err);
+                });
+
+        }
 
 
 

@@ -28,17 +28,17 @@
       <div class="row">
         <div class="form-group ipsaa-form-group col-lg-6 col-md-6">
           <label class="control-label" for="center">Center:</label>
-          <select class="form-control" id="center" [(ngModel)]="selectedCenterId" (ngModelChange)="filterFeeByCenter(selectedCenterId)">
+          <select class="form-control" id="center" [(ngModel)]="selectedCenter" (ngModelChange)="filterFeeByCenter(selectedCenter)">
             <option [ngValue]="null">All</option>
-            <option *ngFor="let center of centers;" [ngValue]="center.id">{{center.name}}</option>
+            <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
           </select>
         </div>
         <div *ngIf="selectedTab === 'FollowUps' " class="form-group ipsaa-form-group col-lg-6 col-md-6">
           <label class="control-label">Filter By:-</label>
-          <select class="form-control" id="center" name="center">
-            <option *ngFor=" let filterBy of filterFollowUps " [ngValue]="filterBy">{{filterBy}}</option>
+          <select class="form-control" id="filter" [(ngModel)]="filterBy" (ngModelChange)="getFollowUps()" name="filter">
+            <option *ngFor=" let filterBy of filterFollowUps " [ngValue]="filterBy">{{filterBy.name}}</option>
           </select>
-         
+  
       </div>
       </div>
     </div>

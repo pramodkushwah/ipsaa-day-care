@@ -54,12 +54,11 @@ export class InquiryReportComponent implements OnInit {
           //     type: 'application/octet-stream'
           // });
           // FileSaver.saveAs(blob, res.headers('fileName'));
-          .subscribe((res) => {
+          .subscribe((res: any) => {
             this.downloadData = false;
-            const blob = new Blob([res.data], {
+            const blob = new Blob([res], {
             });
-            const headers = res.headers('fileName');
-            FileSaver.saveAs(blob, headers);
+            FileSaver.saveAs(blob, res.headers.get('fileName'));
 
       }, (err) => {
         this.alertService.errorAlert(err);
