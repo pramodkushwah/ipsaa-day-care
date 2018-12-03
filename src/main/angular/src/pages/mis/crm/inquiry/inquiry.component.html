@@ -23,16 +23,23 @@
       <h3 class="card-title">
         {{selectedTab}}
         <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="!loader"></i>
-        <button class="btn btn-primary btn-sm pull-right" (click)="loadInquiry(null)" *ngIf="inquiryTable">New Inquiry</button>
+        <button class="btn btn-primary btn-sm pull-right" (click)="loadInquiry(null)" *ngIf="selectedTab !== 'FollowUps' ">New Inquiry</button>
       </h3>
       <div class="row">
-        <div class="form-group col-lg-4 col-md-6">
+        <div class="form-group ipsaa-form-group col-lg-6 col-md-6">
           <label class="control-label" for="center">Center:</label>
-          <select class="form-control" id="center" [(ngModel)]="selectedCenterId" (ngModelChange)="filterFeeByCenter(selectedCenterId)">
-            <option [ngValue]="'All'">Select Option</option>
-            <option *ngFor="let center of centers;" [ngValue]="center.id">{{center.name}}</option>
+          <select class="form-control" id="center" [(ngModel)]="selectedCenter" (ngModelChange)="filterFeeByCenter(selectedCenter)">
+            <option [ngValue]="null">All</option>
+            <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
           </select>
         </div>
+        <div *ngIf="selectedTab === 'FollowUps' " class="form-group ipsaa-form-group col-lg-6 col-md-6">
+          <label class="control-label">Filter By:-</label>
+          <select class="form-control" id="filter" [(ngModel)]="filterBy" (ngModelChange)="getFollowUps()" name="filter">
+            <option *ngFor=" let filterBy of filterFollowUps " [ngValue]="filterBy">{{filterBy.name}}</option>
+          </select>
+  
+      </div>
       </div>
     </div>
 
@@ -74,22 +81,11 @@
             </tbody>
           </table>
 
-
         </div>
 
         <div id="FollowUps" class="tab-pane fade">
           <br>
-          <div class="form-group ipsaa-form-group col-md-4">
-            <!-- <div class="form-group ipsaa-form-group"> -->
-              <label class="control-label">Callback Number</label>
-              <input class="form-control dropdown-toggle" data-toggle="dropdown" name="callBackNumber" type="text">
-              <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                <li *ngFor=" let filterBy of filterFollowUps ">
-                  <a>{{filterBy}}</a>
-                </li>
-              </ul>
-            <!-- </div> -->
-          </div>
+        
           <br>
 
           <table class="table table-hover table-responsive ">
@@ -129,7 +125,7 @@
 
 <div *ngIf="InquiresDteailsShow">
   
-  <app-inquirydetails [inquiryId]="selectedInquiryDetials" ></app-inquirydetails>
+  <app-inquirydetails [inquiryId]="selectedInquiryDetialsId" [currentTab]="selectedTab" ></app-inquirydetails>
 
 
 </div>

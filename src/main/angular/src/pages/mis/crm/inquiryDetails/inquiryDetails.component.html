@@ -6,7 +6,7 @@
     <h4> Inquiry</h4>
   </div>
   <div class="card-body">
-    <form id="induiryForm" [formGroup]="induiryForm">
+    <form id="inquiryForm" [formGroup]="inquiryForm">
       <div class="card-content">
         <button class="btn btn-sm">Back</button>
 
@@ -15,19 +15,19 @@
           <div class="form-group ipsaa-form-group col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Inquiry Number</label>
-              <input class="form-control" name="inquiryNumber" type="text" formControlName="inquiryNumber">
+              <input class="form-control" required name="inquiryNumber" type="text"  formControlName="inquiryNumber">
             </div>
           </div>
           <div class="form-group ipsaa-form-group col-md-2">
             <label class="control-label">Lead Source</label>
-            <select class="form-control" name="leadSource" formControlName="leadSource">
+            <select class="form-control" required name="leadSource"  formControlName="leadSource">
               <option selected="selected" value="">Select Source</option>
               <option *ngFor="let leadSource of leadSources;" [value]="leadSource">{{leadSource}}</option>
             </select>
           </div>
           <div class="form-group ipsaa-form-group col-md-2">
             <label class="control-label">Inquiry Type</label>
-            <select class="form-control" name="inquiryType" formControlName="inquiryType">
+            <select class="form-control" required name="inquiryType"  formControlName="inquiryType">
               <option selected="selected" value="">Select Type</option>
               <option *ngFor="let inquiryType of inquiryTypes;" [value]="inquiryType">{{inquiryType}}</option>
             </select>
@@ -35,21 +35,21 @@
 
           <div class="form-group ipsaa-form-group col-md-4">
             <label class="control-label">Center</label>
-            <select class="form-control" formControlName="centerCode">
+            <select class="form-control"  formControlName="centerCode">
               <option selected="selected" value="">Select Center</option>
               <option *ngFor="let center of centers;" [value]="center.code">{{center.name}}</option>
             </select>
           </div>
           <div class="form-group ipsaa-form-group col-md-2">
             <label class="control-label">Program</label>
-            <select class="form-control" formControlName="programCode">
+            <select class="form-control"  formControlName="programCode">
               <option selected="selected" value="">Select Program</option>
               <option *ngFor="let program of programs;" [value]="program.code">{{program.name}}</option>
             </select>
           </div>
           <div class="form-group ipsaa-form-group col-md-2">
             <label class="control-label">Group</label>
-            <select class="form-control" formControlName="groupId">
+            <select class="form-control"  formControlName="groupId">
               <option selected="selected" value="">Select Group</option>
               <option *ngFor="let group of groups ;" [value]="group.id">{{group.name}}</option>
             </select>
@@ -59,33 +59,33 @@
           <div class="form-group ipsaa-form-group col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Who Visited</label>
-              <input class="form-control" name="whoVisited" type="text" formControlName="whoVisited">
+              <input class="form-control" required name="whoVisited" type="text"  formControlName="whoVisited">
             </div>
           </div>
           <div class="form-group ipsaa-form-group col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">From Time</label>
-              <input class="form-control timepicker" name="fromTime" id="fromTime" type="text" formControlName="fromTime">
+              <input class="form-control timepicker" required name="fromTime" id="fromTime" type="text"  formControlName="fromTime">
             </div>
           </div>
           <div class="form-group ipsaa-form-group col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">To Time</label>
-              <input class="form-control timepicker" name="toTime" id="toTime" type="text" formControlName="toTime">
+              <input class="form-control timepicker" required name="toTime" id="toTime" type="text"  formControlName="toTime">
             </div>
           </div>
           <div class="form-group ipsaa-form-group col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Fees offer</label>
-              <input class="form-control" name="feeOffer" formControlName="feeOffer">
+              <input class="form-control" required name="feeOffer"  formControlName="feeOffer">
             </div>
           </div>
 
           <div class="form-group ipsaa-form-group col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Inquiry Date (YYYY-MM-DD)</label>
-              <input class="form-control datepicker" id="inquiryDate" name="workingInquiry.inquiryDate" type="text"
-                formControlName="inquiryDate">
+              <input class="form-control datepicker" id="inquiryDate" required name="inquiryDate" type="text"
+                 formControlName="inquiryDate">
             </div>
           </div>
 
@@ -100,19 +100,19 @@
           <div class="form-group ipsaa-form-group col-md-4">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">First Name</label>
-              <input class="form-control" name="childFirstName" type="text" formControlName="childFirstName">
+              <input class="form-control" required name="childFirstName" type="text"  formControlName="childFirstName">
             </div>
           </div>
           <div class="form-group ipsaa-form-group col-md-4">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Last Name</label>
-              <input class="form-control" name="childLastName" type="text" formControlName="childLastName">
+              <input class="form-control" required name="childLastName" type="text"  formControlName="childLastName">
             </div>
           </div>
           <div class="form-group ipsaa-form-group col-md-4">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">DOB(YYYY-MM-DD)</label>
-              <input class="form-control datepicker" id="childDob" name="childDob" type="text" formControlName="childDob">
+              <input class="form-control datepicker" id="childDob" required name="childDob" type="text"  formControlName="childDob">
             </div>
           </div>
         </div>
@@ -126,31 +126,31 @@
           <div class="col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Father's First Name</label>
-              <input class="form-control" name="fatherFirstName" type="text" formControlName="fatherFirstName">
+              <input class="form-control" required name="fatherFirstName" type="text"  formControlName="fatherFirstName">
             </div>
           </div>
           <div class="col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Father's Last Name</label>
-              <input class="form-control" name="fatherLastName" type="text" formControlName="fatherLastName">
+              <input class="form-control" required name="fatherLastName" type="text"  formControlName="fatherLastName">
             </div>
           </div>
           <div class="col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Father's Email</label>
-              <input class="form-control" name="fatherEmail" type="text" formControlName="fatherEmail">
+              <input class="form-control" required name="fatherEmail" type="text"  formControlName="fatherEmail">
             </div>
           </div>
           <div class="col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Father's Mobile</label>
-              <input class="form-control" name="fatherMobile" type="text" formControlName="fatherMobile">
+              <input class="form-control" required name="fatherMobile" type="text"  formControlName="fatherMobile">
             </div>
           </div>
           <div class="col-md-4">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Father's Company</label>
-              <input class="form-control" name="fatherCompanyName" type="text" formControlName="fatherCompanyName">
+              <input class="form-control" required name="fatherCompanyName" type="text"  formControlName="fatherCompanyName">
             </div>
           </div>
         </div>
@@ -159,31 +159,31 @@
           <div class="col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Mother's First Name</label>
-              <input class="form-control" name="motherFirstName" type="text" formControlName="motherFirstName">
+              <input class="form-control" required name="motherFirstName" type="text"  formControlName="motherFirstName">
             </div>
           </div>
           <div class="col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Mother's Last Name</label>
-              <input class="form-control" name="motherLastName" type="text" formControlName="motherLastName">
+              <input class="form-control" required name="motherLastName" type="text"  formControlName="motherLastName">
             </div>
           </div>
           <div class="col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Mother's Email</label>
-              <input class="form-control" name="motherEmail" type="text" formControlName="motherEmail">
+              <input class="form-control" required name="motherEmail" type="text"  formControlName="motherEmail">
             </div>
           </div>
           <div class="col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Mother's Mobile</label>
-              <input class="form-control" name="motherMobile" type="text" formControlName="motherMobile">
+              <input class="form-control" required name="motherMobile" type="text"  formControlName="motherMobile">
             </div>
           </div>
           <div class="col-md-4">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Mother's Company</label>
-              <input class="form-control" name="motherCompanyName" type="text" formControlName="motherCompanyName">
+              <input class="form-control" required name="motherCompanyName" type="text"  formControlName="motherCompanyName">
             </div>
           </div>
 
@@ -193,60 +193,63 @@
           <div class="col-md-4">
             <div class="form-group  ipsaa-form-group">
               <label class="control-label">Secondary Numbers</label>
-              <input class="form-control" type="text" formControlName="secondaryNumbers">
+              <input class="form-control" type="text"  formControlName="secondaryNumbers">
             </div>
           </div>
           <div class="col-md-8">
             <div formGroupName="address">
               <div class="form-group  ipsaa-form-group">
                 <label class="control-label">Address</label>
-                <input class="form-control" type="text" formControlName="address">
+                <input class="form-control" type="text"  formControlName="address">
               </div>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
-            <div class="form-group">
+            <div *ngIf="tab ==='Inquiry'" class="form-group">
               <legend>Call Log</legend>
+            </div>
+            <div *ngIf="tab ==='FollowUps'" class="form-group">
+              <legend>Follow Ups </legend>
             </div>
           </div>
 
 
           <div class="form-group ipsaa-form-group col-md-4">
             <label class="control-label">Disposition</label>
-            <select class="form-control" name="callDisposition" [ngModelOptions]="{standalone: true}" [(ngModel)]="callBackDisposition">
+            <select class="form-control" required name="callDisposition" [ngModelOptions]="{standalone: true}" [(ngModel)]="log.callDisposition">
               <option selected="selected" value="">Select Disposition</option>
               <option *ngFor="let disposition of dispositions;" [value]="disposition">{{disposition}}
               </option>
             </select>
           </div>
 
-          <div class="col-md-8" *ngIf="callBackDisposition ==='NewInquiry'|| 
-          callBackDisposition ==='Followup'|| 
-          callBackDisposition ==='Callback'||
-          callBackDisposition ==='ParentMessage'||
-          callBackDisposition ==='Revisit'">
+          <div class="col-md-8" *ngIf="log.callDisposition ==='NewInquiry'|| 
+          log.callDisposition ==='Followup'|| 
+          log.callDisposition ==='Callback'||
+          log.callDisposition ==='ParentMessage'||
+          log.callDisposition ==='Revisit'">
             <div class="row">
               <div class="form-group ipsaa-form-group col-md-4">
                 <div class="form-group ipsaa-form-group">
                   <label class="control-label">Callback Date (YYYY-MM-DD)</label>
-                  <input type="date" class="form-control datepicker" id="callBackDate" name="callBackDate">
+                  <input type="date" [ngModelOptions]="{standalone: true}" [(ngModel)]="log.callBackDate" class="form-control datepicker" id="callBackDate" required name="callBackDate">
                 </div>
               </div>
               <div class="form-group ipsaa-form-group col-md-4">
                 <div class="form-group ipsaa-form-group">
                   <label class="control-label">Callback Time (HH:MM)</label>
-                  <input class="form-control " id="callBackTime" name="callBackTime" type="text">
+                  <input class="form-control " [ngModelOptions]="{standalone: true}" [(ngModel)]="log.callBackTime" id="callBackTime" required name="callBackTime" type="text">
                 </div>
               </div>
               <div class="form-group ipsaa-form-group col-md-4">
                 <div class="form-group ipsaa-form-group">
                   <label class="control-label">Callback Number</label>
-                  <input class="form-control dropdown-toggle" data-toggle="dropdown" name="callBackNumber" type="text">
+                  <input class="form-control dropdown-toggle" data-toggle="dropdown" [ngModelOptions]="{standalone: true}" [(ngModel)]="log.callBackNumber" required name="callBackNumber" type="text">
                   <ul class="dropdown-menu dropdown-menu-right" role="menu">
                     <li *ngFor=" let number of inquiryNumbers ">
-                      <a>{{number}}</a>
+                      <a (click)="selctedNumber(number)" >{{number}}</a>
                     </li>
                   </ul>
                 </div>
@@ -260,7 +263,7 @@
           <div class="form-group ipsaa-form-group col-md-12">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Comment</label>
-              <textarea class="form-control" row="5" maxlength="500"></textarea>
+              <textarea class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="log.comment"  required name="callBackComment" id="callBackComment" row="5" maxlength="500"></textarea>
             </div>
           </div>
         </div>
@@ -294,14 +297,13 @@
             </div>
           </div>
         </div>
-        <!-- <app-followup [inquiryInfo] = "inquiryDetails">   </app-followup> -->
 
         <div class="tab-pane active" id="controls">
           <div class="category form-category">
             *Required Fields
           </div>
           <div class="form-footer text-right">
-            <button class="btn btn-rose btn-fill">Save</button>
+            <button class="btn btn-rose btn-fill" [disabled]="!this.inquiryForm.valid && logvalidation" (click)="saveForm()">Save</button>
             <button class="btn btn-default">Cancel</button>
           </div>
         </div>

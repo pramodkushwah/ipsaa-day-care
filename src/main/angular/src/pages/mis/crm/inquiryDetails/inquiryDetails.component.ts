@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { AdminService } from '../../../../providers/admin/admin.service';
 import { AlertService } from '../../../../providers/alert/alert.service';
 
@@ -13,8 +13,8 @@ export class InquiryDetailsComponent implements OnInit {
 
 
     selectedInquiryDetials: any;
-    induiryForm: FormGroup;
-    callBackDisposition: any;
+    logvalidation: true;
+    inquiryForm: FormGroup;
     leadSources = [
         'BUILDING',
         'CORPORATE',
@@ -43,29 +43,50 @@ export class InquiryDetailsComponent implements OnInit {
         'NotInterested',
         'Revisit'
     ];
-    workingInquiry: any;
-    inquiryNumbers = ['9017697290', '1769720154', '545454545', '4848598'];
+    inquiryNumbers = [];
     centers: Array<any>;
     programs: Array<any>;
     groups = [];
     selectedCenter = {};
-    inquiryDetails: any ;
+    inquiryDetails: any;
+    newInquiry: number;
+    tab: string;
+    inquiryDisable: boolean;
+    callBackDisposition: any;
+    callBackNumber: number;
+    callBackDate: string;
+    callBackTime: string;
+    callBackComment: string;
+    log = {
+        callBack: '',
+        callBackTime: '',
+        callBackDate: '',
+        callBackNumber: '',
+        callDisposition: '',
+        comment: '',
+    };
+
+
     constructor(
         private fb: FormBuilder,
         private adminService: AdminService,
         private alertService: AlertService
     ) { }
 
-
     @Input() set inquiryId(inquiryId: any) {
-        this.induiryForm = this.inquiryDetialForm();
-
+        this.inquiryForm = this.inquiryDetialForm();
+        this.newInquiry = inquiryId;
         if (inquiryId) {
             this.loadInquiry(inquiryId);
         } else {
             // this.getInquiryDetials({});
         }
     }
+    @Input() set currentTab(currentTab: any) {
+        this.tab = currentTab;
+
+    }
+
     ngOnInit() {
         this.getCenter();
         this.getPrograms();
@@ -125,17 +146,6 @@ export class InquiryDetailsComponent implements OnInit {
             motherEmail: [''],
             motherFirstName: [''],
             motherLastName: [''],
-            logs: this.fb.group({
-                description: [''],
-                id: [''],
-                name: [''],
-                schoolName: [''],
-                securityDeposit: [''],
-                callDisposition: [''],
-                studentId: [''],
-                transportFee: [''],
-            }),
-
             motherMobile: [''],
             programCode: [''],
             programId: [''],
@@ -152,12 +162,10 @@ export class InquiryDetailsComponent implements OnInit {
 
     getInquiryDetials(inquiry) {
 
-        this.induiryForm = this.inquiryDetialForm();
-        this.induiryForm.patchValue(inquiry);
-        const address = <FormGroup>this.induiryForm.controls.address;
+        this.inquiryForm = this.inquiryDetialForm();
+        this.inquiryForm.patchValue(inquiry);
+        const address = <FormGroup>this.inquiryForm.controls.address;
         address.controls.address.patchValue(inquiry.address.address);
-        // console.log(this.induiryForm.controls.address.value);
-
     }
 
     loadInquiry(InquiryId) {
@@ -165,10 +173,60 @@ export class InquiryDetailsComponent implements OnInit {
             .subscribe((res: any) => {
                 this.selectedInquiryDetials = res;
                 this.getInquiryDetials(res);
+                this.inquiryNumbers.push(res.fatherMobile);
+                this.inquiryNumbers.push(res.motherMobile);
                 this.inquiryDetails = res.logs;
             }, (err) => {
                 this.alertService.errorAlert(err);
             });
+    }
+
+
+
+    selctedNumber(callBackNo) {
+        this.log.callBackNumber = callBackNo;
+    }
+
+    saveForm() {
+
+        console.log(this.newInquiry);
+
+        if (this.log.callDisposition) {
+            this.log.callBack = ' ' + this.log.callBackDate + ' ' + this.log.callBackTime + ' ' + 'IST';
+            this.inquiryForm.value['log'] = this.log;
+
+            console.log(this.log);
+        }
+
+
+
+
+
+        console.log(this.inquiryForm.value);
+        if (this.newInquiry) {
+            this.inquiryForm.value['logs'] = this.inquiryDetails;
+
+            this.adminService.updateInquiry(this.inquiryForm.value)
+                .subscribe((res: any) => {
+                    this.alertService.successAlert('');
+                }, (err) => {
+                    this.alertService.errorAlert(err);
+                });
+
+        } else {
+
+            this.adminService.addNewInquiry(this.inquiryForm.value)
+                .subscribe((res: any) => {
+                    this.alertService.successAlert('');
+                }, (err) => {
+                    this.alertService.errorAlert(err);
+                });
+
+        }
+
+
+
+
     }
 
 }
