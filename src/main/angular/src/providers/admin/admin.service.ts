@@ -482,5 +482,9 @@ getFollowUps(date_Dispositions) {
   return this.api.post('api/inquiry/followUps/', date_Dispositions );
 }
 
+getIpsaaClubFeeSlips(code: string) {
+  return this.api.post('api/student/ipsaaclub/feeslip/list', {'centerCode': code});
+}
+
 
 }
