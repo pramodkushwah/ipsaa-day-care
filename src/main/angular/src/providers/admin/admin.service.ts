@@ -519,7 +519,27 @@ export class AdminService {
   }
 
   downloadIpsaaClubSlip(data) {
-    return this.api.post('api/student/ipsaaclub/feeslips/pdf', data);
+    return this.api.getPDF('api/student/ipsaaclub/feeslips/pdf', data);
+  }
+
+  downloadIpsaaClubReceipt(receiptId) {
+    return this.api.getPDFByGetMethod('api/student/download/ipsaaclub/receipt', receiptId);
+  }
+
+  emailToParentsOfIpsaaClubStudents(emailObject) {
+    return this.api.post('api/student/ipsaaclub/paymentLink/', emailObject);
+  }
+
+  payIpsaaClubFee(data) {
+    return this.api.post('api/student/ipsaaclub/payfee', data);
+  }
+
+  confirmIpsaaClubFee(data) {
+    return this.api.put('api/student/ipsaaclub/record/update', data);
+  }
+
+  rejectIpsaaClubFee(data) {
+    return this.api.put('api/student/ipsaaclub/record/update', data);
   }
 
 
