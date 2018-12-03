@@ -171,17 +171,19 @@ public class PaySlipService extends BaseService {
 		}
 		else{
 			System.out.println("Just Fetched not Generated");
-			throw new ValidationException("Just Fetched not Generated");
+			//throw new ValidationException("Just Fetched not Generated");
 		}
 
 		if(employerId.equals("ALL")){
 			List<EmployeePaySlip> pay=employeePaySlipRepository.findByMonthAndYear(month,year);
 			pay.stream().forEach(p->p.getEmployee().getEid());
-			System.out.println(pay.size());
-			System.out.println();
 			return employeePaySlipRepository.findByMonthAndYear(month, year);
 
 		} else {
+			legalEntity = legalEntityRepository.findOne(unmask(Long.parseLong(employerId)));
+			if (legalEntity == null) {
+				throw new ValidationException(String.format("Cannot locate Employer[id = %s]", mask(Long.parseLong(employerId))));
+			}
 			if (legalEntity != null)
 				return employeePaySlipRepository.findByEmployerIdAndMonthAndYear(legalEntity.getId(), month, year);
 			else {
