@@ -79,8 +79,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let student of studentFeeDetails let i = index;" class="staff-list-row" [hidden]="loadingFeeList"
-                (click)="getStudentFee(student)">
+              <tr *ngFor="let student of studentFeeDetails let i = index;" class="staff-list-row" [hidden]="loadingFeeList">
                 <td>{{i+1}}</td>
                 <td>{{student.fullName}}</td>
                 <td>{{student.program.description}}</td>
@@ -110,6 +109,6 @@
   <!-- student fee table ends -->
 
   <div class="col-lg-6" *ngIf="viewPanel">
-    <app-student-fee-info [studentFee]="selectedStudentDetails"></app-student-fee-info>
+    <app-student-fee-info [studentFee]="selectedStudentDetails" [update]="update"></app-student-fee-info>
   </div>
 </div>

@@ -21,7 +21,7 @@ export class StudentFeeComponent implements OnInit {
   viewPanel = false;
   loadingFeeList = false;
   allItems = [];
-
+update = true;
   constructor(
     private adminService: AdminService,
     private alertService: AlertService,
@@ -67,6 +67,8 @@ export class StudentFeeComponent implements OnInit {
   }
 
   getStudentFee(student) {
+    console.log(student);
+
     this.selectedStudentDetails = (student) ? student : {};
     this.showSidePanel();
 

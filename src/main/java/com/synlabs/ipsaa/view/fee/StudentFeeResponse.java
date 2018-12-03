@@ -6,6 +6,8 @@ import com.synlabs.ipsaa.view.student.StudentSummaryResponse;
 
 import java.math.BigDecimal;
 
+import static com.synlabs.ipsaa.util.BigDecimalUtils.THREE;
+
 public class StudentFeeResponse extends StudentSummaryResponse
 {
   private Long   id;
@@ -62,7 +64,7 @@ public class StudentFeeResponse extends StudentSummaryResponse
 
     this.finalAdmissionCharges=studentfee.getFinalAdmissionFee();
     this.finalAnnualFee=studentfee.getFinalAnnualCharges();
-    this.finalBaseFee=studentfee.getFinalBaseFee();
+    this.finalBaseFee=studentfee.getFinalBaseFee().divide(THREE); // chnage quaterly fee to monthly
     this.finalSecurityDeposit=studentfee.getFinalDepositFee();
 
     this.annualFee=studentfee.getAnnualCharges();

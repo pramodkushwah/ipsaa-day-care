@@ -15,6 +15,7 @@ export class StudentApprovalsComponent implements OnInit {
   selectedStudent: any = {};
   viewPanel = false;
   update  = false;
+  showTable = false;
   constructor(
     private alertService: AlertService,
     private adminService: AdminService,
@@ -34,12 +35,18 @@ this.centers = res;
   });
 }
   getStudentsList() {
-   console.log( this.selectedCenterId);
+    this.alertService.loading.next(true);
 this.adminService.getSelectedCenterStudentsApprovalCount(this.selectedCenterId)
 .subscribe((res: any) => {
   this.studentAprrovelList = res;
+  this.alertService.loading.next(false);
+  this.showTable = true;
+
     }, (err) => {
+      this.alertService.loading.next(false);
       this.alertService.errorAlert(err);
+      this.showTable = true;
+
     });
   }
 
@@ -55,8 +62,33 @@ this.showSidePanel();
   showSidePanel() {
 
     this.adminService.viewPanel.next(true);
-    console.log(this.viewPanel);
   }
+
+
+  studentApprove(student) {
+    this.adminService.aproveStudent(student.id)
+      .subscribe((res: any) => {
+        this.getCenterStudentApprovelList();
+        this.studentAprrovelList = this.studentAprrovelList.filter(element => element.id !== student.id);
+          this.alertService.successAlert('Student Approve');
+      }, (err) => {
+        this.alertService.errorAlert(err);
+      });
+  }
+
+  studentReject(student) {
+    this.adminService.rejectStudent(student.id)
+      .subscribe((res: any) => {
+        this.getCenterStudentApprovelList();
+        this.studentAprrovelList = this.studentAprrovelList.filter(element => element.id !== student.id);
+        this.alertService.successAlert('Student Reject');
+
+      }, (err) => {
+        this.alertService.errorAlert(err);
+      });
+  }
+
+
 
 
   subscribSidePanel = () => {

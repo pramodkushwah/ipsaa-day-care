@@ -24,7 +24,7 @@
         <h3 class="card-title">
           {{selectedTab}}
           <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="!loader"></i>
-          <button class="btn btn-primary btn-sm pull-right" *ngIf="tableShow || selectedTab ==='Charge'" [disabled]="(selectedTab ==='Additional Charges') " (click)="showSidePanel(true,null)">New</button>
+          <button class="btn btn-primary btn-sm pull-right" *ngIf="tableShow || selectedTab ==='Charge'" [disabled]="(selectedTab ==='Additional Charges') " (click)="showSidePanel(true,null)">Add New</button>
         </h3>
         <div class="row">
           <div class="form-group col-lg-4 col-md-6">
@@ -200,7 +200,7 @@
 
             <div class="form-group">
               <label class="control-label"> Admission Fee</label>
-              <input class="form-control" name="admissionFee" type="text" formControlName="admissionFee">
+              <input class="form-control" name="admissionFee" type="number" formControlName="admissionFee">
               <span class="material-input"></span>
               <div *ngIf="admissionFee.invalid && (admissionFee.dirty || admissionFee.touched)" class="text-danger position-absolute">
                 <div *ngIf="!!admissionFee.errors.required">Required</div>

@@ -73,7 +73,8 @@
           <div class="col-lg-6 col-md-6 col-sm-6">
             <div class="form-group">
               <label class="control-label"> Reference</label>
-              <input class="form-control" [required]="feePaymentForm.get('paymentMode').value!='Cash'" name="txnid" formControlName="txnid">
+              <input class="form-control" [required]="feePaymentForm.get('paymentMode').value!='Cash'" name="txnid"
+                formControlName="txnid">
               <span class="material-input"></span>
             </div>
           </div>
@@ -108,7 +109,47 @@
         </div>
       </div>
     </form>
+    <!-- <div class="tab-pane active"> -->
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead class="text-primary">
+          <tr>
+            <th>TxnId</th>
+            <th>Mode</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let payment of selectedStudentDetails.payments">
+            <td>{{payment.txnid}}</td>
+            <td>{{payment.paymentMode}}</td>
+            <td>{{payment.paidAmount}}</td>
+            <td>{{payment.paymentDate}}</td>
+            <td>
+              <button class="btn btn-sm" [ngClass]="payment.confirmed? 'btn-success': 'btn-rose'" (click)="payment.confirmed?null:upDatePayment(payment , 'confirm')"
+                [disabled]="payment.disabled" *ngIf="(payment.active && !payment.confirmed)">
+                <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="payment.disabled"> </i>Confirm
+              </button>
+              <span *ngIf="payment.confirmed">Confirmed</span>
+
+              <button class="btn btn-sm" *ngIf="(payment.active && !payment.confirmed)" data-toggle="modal" data-target="#rejectReply"
+                (click)="rejectPayment(payment)">Reject</button>
+              <span *ngIf="!payment.active">Rejected &nbsp;
+                <a data-toggle="tooltip" title="{{payment.comment}}">
+                  <i class="fa fa-info"></i>
+                </a>
+              </span>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- </div> -->
   </div>
+
   <div *ngIf="mailPanel" class="card-body">
 
     <table class="table  table-hover table-bordered">
@@ -175,7 +216,8 @@
           <th scope="row">Late Payment </th>
           <td>{{selectedStudentDetails.latePaymentCharge}}</td>
           <td rowspan="5">{{selectedStudentDetails.totalOtherPaidAmount}}</td>
-          <td rowspan="5">{{ selectedStudentDetails.adjust + selectedStudentDetails.balance + selectedStudentDetails.latePaymentCharge +
+          <td rowspan="5">{{ selectedStudentDetails.adjust + selectedStudentDetails.balance +
+            selectedStudentDetails.latePaymentCharge +
             selectedStudentDetails.gstAmount- selectedStudentDetails.totalOtherPaidAmount }}</td>
 
         </tr>
@@ -200,5 +242,29 @@
         </tr>
       </tbody>
     </table>
+  </div>
+</div>
+
+
+<div class="modal fade" id="rejectReply" tabindex="-1" role="dialog" aria-labelledby="rejectReply" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content card card-stats">
+      <div class="card-header card-header-danger card-header-icon">
+        <h2 style="text-align: center" class="card-title">Confirm</h2>
+        <h3 style="text-align: center" class="card-title">Please submit a comment to decline transaction
+        </h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="reply"> description</label>
+          <textarea class="form-control " style="border: 1px solid #d9d4d4;" rows="5" [(ngModel)]="replyText" name="reply"
+            id="reply"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="upDatePayment(selectedPayment, 'reject')">Okay</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancle</button>
+      </div>
+    </div>
   </div>
 </div>

@@ -1,94 +1,106 @@
 <div class="row">
-  <div class="col-md-12">
+  <div [class]="showSupport?'col-lg-6':'col-lg-12'">
     <div class="card">
-      <div class="card-header">
-        <h3 class="card-title" >SUPPORT</h3>
-      </div>
-      <div class="card-content">
-        <div *ngIf="showSupport">
-
-          <button class="btn btn-rose btn-round btn-sm" data-toggle="modal" data-target="#queryReply" >REPLY</button>
-          <button class="btn btn-default btn-round btn-sm" (click)="closeQuery(selectedQuery)">Close</button>
-          <a (click)="hideSupport()">Back</a>
-          <ul class="timeline timeline-simple">
-            <li class="timeline-inverted">
-              <div class="timeline-badge success">
-                <i class="material-icons">face</i>
-              </div>
-              <div class="timeline-panel">
-                <div class="timeline-heading">
-                  <h4><span class="btn btn-rose btn-round btn-sm">{{selectedQuery.status}}</span>{{selectedQuery.title}}</h4>
-                </div>
-                <div class="timeline-body">
-                  <p>{{selectedQuery.description}}</p>
-                </div>
-                <h6>
-                  <i class="ti-time"><span class="label label-success">{{selectedQuery.raisedBy}}</span>
-                    {{selectedQuery.created}}</i>
-                </h6>
-              </div>
-            </li>
-            <li class="timeline-inverted" *ngFor=" let reply of selectedQuery.replies">
-              <div class="timeline-badge success">
-                <i class="material-icons">cached</i>
-              </div>
-              <div class="timeline-panel">
-                <div class="timeline-body">
-                  <p>{{reply.description}}</p>
-                </div>
-                <h6>
-                  <i class="ti-time"><span class="label label-success">{{reply.repliedBy}}</span> {{reply.created}}</i>
-                </h6>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title">Queries</h3>
-        <input type="checkbox" name="queries" id="queries" [(ngModel)]="showClosed" (ngModelChange)="parentQueries()">Show
-        closed
-      </div>
-      <div class="card-content">
+      <div class="card-header card-header-warning card-header-icon">
         <div class="row">
           <div class="col-md-12">
-            <div class="table-responsive">
-              <table class="table table-condensed table-striped table-hover">
-                <thead class="text-primary">
-                  <tr>
-                    <th>Center</th>
-                    <th>Student</th>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Raised By</th>
-                    <th>Created At</th>
-                    <th>Last Action</th>
-                  </tr>
-                </thead>
-                <tr *ngFor="let query of queries" (click)="viewcase(query)">
-                  <td>{{query.center}}</td>
-                  <td>{{query.studentName}}</td>
-                  <td>{{query.title}}</td>
-                  <td><span class="label label-info">{{query.status}}</span></td>
-                  <td>{{query.raisedBy}}</td>
-                  <td>{{query.created}}</td>
-                  <td>{{query.lastAction}}</td>
-                </tr>
-              </table>
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
             </div>
+            <h3 class="card-title">Queries</h3>
+            <input type="checkbox" name="queries" id="queries" [(ngModel)]="showClosed" (ngModelChange)="parentQueries()">Show
+            closed
           </div>
         </div>
       </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table  table-hover">
+            <thead class="text-primary">
+              <tr>
+                <th>Center</th>
+                <th>Student</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Raised By</th>
+                <th>Created At</th>
+                <th>Last Action</th>
+              </tr>
+            </thead>
+            <tr *ngFor="let query of queries" (click)="viewcase(query)">
+              <td>{{query.center}}</td>
+              <td>{{query.studentName}}</td>
+              <td>{{query.title}}</td>
+              <td><span class="label label-info">{{query.status}}</span></td>
+              <td>{{query.raisedBy}}</td>
+              <td>{{query.created}}</td>
+              <td>{{query.lastAction}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6" *ngIf="showSupport">
+    <div class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
+            </div>
+            <button type="button" class="close" aria-label="Close" (click)="hideSupport()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h3 class="card-title">SUPPORT</h3>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+
+
+        <ul class="timeline timeline-simple">
+          <li class="timeline-inverted">
+            <div class="timeline-badge success">
+              <i class="material-icons">face</i>
+            </div>
+            <div class="timeline-panel">
+              <div class="timeline-heading">
+                <h4><span class="btn btn-rose btn-round btn-sm">{{selectedQuery.status}}</span>{{selectedQuery.title}}</h4>
+              </div>
+              <div class="timeline-body">
+                <p>{{selectedQuery.description}}</p>
+              </div>
+              <h6>
+                <i class="ti-time"><span class="label label-success">{{selectedQuery.raisedBy}}</span>
+                  {{selectedQuery.created}}</i>
+              </h6>
+            </div>
+          </li>
+          <li class="timeline-inverted" *ngFor=" let reply of selectedQuery.replies">
+            <div class="timeline-badge success">
+              <i class="material-icons">cached</i>
+            </div>
+            <div class="timeline-panel">
+              <div class="timeline-body">
+                <p>{{reply.description}}</p>
+              </div>
+              <h6>
+                <i class="ti-time"><span class="label label-success">{{reply.repliedBy}}</span> {{reply.created}}</i>
+              </h6>
+            </div>
+          </li>
+        </ul>
+        <div class="card-footer">
+          <button class="btn btn-rose btn-round btn-sm" data-toggle="modal" data-target="#queryReply">REPLY</button>
+          <button class="btn btn-default btn-round btn-sm" [disabled]=" selectedQuery.status ==='Closed'" (click)="closeQuery(selectedQuery)">Close</button>
+          <button class="btn btn-default btn-round btn-sm" (click)="hideSupport()">cancel</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-
 <div class="modal fade" id="queryReply" tabindex="-1" role="dialog" aria-labelledby="queryReply" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content card card-stats">
@@ -96,14 +108,15 @@
         <h3 style="text-align: center" class="card-title">Reply</h3>
       </div>
       <div class="modal-body">
-            <div class="form-group">
-              <label for="reply" > description</label>
-              <textarea class="form-control " style="border: 1px solid #d9d4d4;" rows="5" [(ngModel)]="replyText" name="reply" id="reply"></textarea>
-            </div>
-          </div>
-        <div style="text-align: center">
-          <button type="button" class="btn btn-default" [disabled]="!replyText" (click)="replyToQuery(selectedQuery)">Okay</button>
+        <div class="form-group">
+          <label for="reply"> description</label>
+          <textarea class="form-control " style="border: 1px solid #d9d4d4;" rows="5" [(ngModel)]="replyText" name="reply"
+            id="reply"></textarea>
         </div>
+      </div>
+      <div style="text-align: center">
+        <button type="button" class="btn btn-default" [disabled]="!replyText" (click)="replyToQuery(selectedQuery)">Okay</button>
+      </div>
     </div>
   </div>
 </div>

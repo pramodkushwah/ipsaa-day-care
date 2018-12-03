@@ -171,6 +171,7 @@ public class PaySlipService extends BaseService {
 		}
 		else{
 			System.out.println("Just Fetched not Generated");
+			throw new ValidationException("Just Fetched not Generated");
 		}
 
 		if(employerId.equals("ALL")){

@@ -5,6 +5,7 @@ import { AlertService } from '../../../../providers/alert/alert.service';
 import * as FileSaver from 'file-saver';
 import * as _ from 'underscore';
 
+declare const $: any;
 
 @Component({
   selector: 'app-fee-receipt-info',
@@ -28,7 +29,10 @@ export class FeeReceiptInfoComponent implements OnInit {
   allItems: any;
   showtable = false;
   downloadinData: boolean;
+  replyText: string;
   updateReceipt: any = {};
+  paymentUpdate: any = {};
+  selectedPayment: any;
   constructor(
     private adminService: AdminService,
     private fb: FormBuilder,
@@ -46,6 +50,7 @@ export class FeeReceiptInfoComponent implements OnInit {
     this.feePaymentForm.patchValue(this.selectedStudentDetails);
   }
   ngOnInit() {
+    console.log(this.selectedStudentDetails);
 
   }
 
@@ -87,7 +92,7 @@ export class FeeReceiptInfoComponent implements OnInit {
       invoiceDate: [{ value: '', disabled: false }],
       latePaymentCharge: [{ value: '', disabled: false }],
       month: [{ value: '', disabled: false }],
-      payableAmount: [{ value: '', disabled: false }],
+      payableAmount: [{ value: '', disabled: true }],
       payments: [{ value: '', disabled: false }],
       program: [{ value: '', disabled: false }],
       programPaidAmountTotal: [{ value: '', disabled: false }],
@@ -97,7 +102,7 @@ export class FeeReceiptInfoComponent implements OnInit {
       stationaryPaidAmountTotal: [{ value: '', disabled: false }],
       status: [{ value: '', disabled: false }],
       paymentDate: [{ value: this.currentDate.toISOString().split('T')[0], disabled: false }],
-      totalFee: [{ value: '', disabled: false }],
+      totalFee: [{ value: '', disabled: true }],
       totalOtherPaidAmount: [{ value: '', disabled: false }],
       totalOtherRemainningAmount: [{ value: '', disabled: false }],
       totalPaidAmount: [{ value: '', disabled: false }],
@@ -120,16 +125,18 @@ export class FeeReceiptInfoComponent implements OnInit {
     this.adminService.payStudentFee(this.feePaymentForm.value)
       .subscribe((res) => {
         _.extend(this.updateReceipt, res);
+        this.feePaymentForm.get('paymentMode').reset();
+        this.feePaymentForm.get('txnid').reset();
+        this.feePaymentForm.get('paidAmount').reset();
 
         this.recordPayment = false;
         if (this.feePaymentForm.get('paidAmount').value > this.feePaymentForm.get('payableAmount').value) {
           this.alertService.successAlert('thank you for paying in advance');
-
         } else {
           this.alertService.successAlert('');
         }
-        this.feePaymentForm.reset();
-        this.hideSidePanel();
+        this.feePaymentForm.patchValue(this.selectedStudentDetails);
+        // this.hideSidePanel();
       }, (err) => {
         this.recordPayment = false;
         this.alertService.errorAlert(err);
@@ -166,4 +173,41 @@ export class FeeReceiptInfoComponent implements OnInit {
     this.adminService.viewPanelForFee.next(false);
   }
 
+  upDatePayment(payment, val) {
+    this.paymentUpdate = {};
+    this.paymentUpdate['id'] = payment.id;
+
+    if (val === 'confirm') {
+      this.paymentUpdate['confirmed'] = true;
+
+    } else {
+      this.paymentUpdate['confirmed'] = false;
+      this.paymentUpdate['comments'] = this.replyText;
+
+    }
+
+    if (payment && payment.id) {
+      payment.disabled = true;
+      this.adminService.studentPaymentConfirm(this.paymentUpdate)
+        .subscribe((res: any) => {
+          payment.disabled = false;
+          $('#rejectReply').modal('hide');
+          for (let i = 0; i < this.selectedStudentDetails.payments.length; i++) {
+            if (this.selectedStudentDetails.payments[i].id === res.id) {
+              _.extend(this.updateReceipt.payments[i], res);
+              this.selectedStudentDetails.payments[i] = res;
+
+            }
+          }
+          this.paymentUpdate = {};
+        }, (err) => {
+
+          payment.disabled = false;
+        });
+    }
+  }
+
+  rejectPayment(payments) {
+    this.selectedPayment = payments;
+  }
 }

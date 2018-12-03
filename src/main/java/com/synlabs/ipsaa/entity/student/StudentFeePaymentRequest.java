@@ -583,4 +583,9 @@ public void setGenerateActive(boolean generateActive) {
     }
     return paidAmount;
   }
+  @Transient
+  public BigDecimal getPayableAmount()
+  {
+    return this.getTotalFee().subtract(this.getPaidAmount());
+  }
 }

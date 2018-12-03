@@ -43,6 +43,7 @@ export class StudentInfoComponent implements OnInit {
         this.studentForm.controls['centerId'].patchValue(student.center.id);
         this.studentForm.controls['groupId'].patchValue(student.group.id);
         this.studentForm.controls['programId'].patchValue(student.program.id);
+        this.studentForm.controls['fee'].patchValue(student.fee);
         this.getPaymentHistory(student);
       });
     } else {
@@ -149,6 +150,7 @@ export class StudentInfoComponent implements OnInit {
 
   getFeeField() {
     return this.fb.group({
+      id: [''],
       annualFee: [0],
       discountAnnualCharges: [0],
       finalAnnualFee: [0],
@@ -197,31 +199,32 @@ export class StudentInfoComponent implements OnInit {
 
   getFee(programId: number) {
     if (programId && this.studentForm.controls['centerId'].value) {
-    this.adminService
-      .getProgramFee({
-        centerId: this.studentForm.controls['centerId'].value,
-        programId: programId
-      })
-      .subscribe((response: any) => {
-        this.programFee = response;
-        if (this.studentForm.contains('fee')) {
-          const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
-          feeControlForm.patchValue(response);
-          feeControlForm.controls['baseFee'].patchValue(response.fee); // Monthly Fees
-          feeControlForm.controls['finalBaseFee'].patchValue(response.fee); // Final Monthly Fees
-          feeControlForm.controls['finalAnnualFee'].patchValue(
-            response.annualFee
-          );
-          feeControlForm.controls['finalAdmissionCharges'].patchValue(
-            response.admissionFee
-          );
-          feeControlForm.controls['finalSecurityDeposit'].patchValue(
-            response.deposit
-          );
-          const sprogram = this.programs.find(program => program.id === programId);
-          this.groups = (sprogram) ? sprogram.groups : [];
-        }
-      });
+      this.adminService
+        .getProgramFee({
+          centerId: this.studentForm.controls['centerId'].value,
+          programId: programId
+        })
+        .subscribe((response: any) => {
+          this.programFee = response;
+          if (this.studentForm.contains('fee')) {
+            const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
+            feeControlForm.patchValue(response);
+            feeControlForm.controls['baseFee'].patchValue(response.fee); // Monthly Fees
+            feeControlForm.controls['finalBaseFee'].patchValue(response.fee); // Final Monthly Fees
+            feeControlForm.controls['finalAnnualFee'].patchValue(
+              response.annualFee
+            );
+            feeControlForm.controls['finalAdmissionCharges'].patchValue(
+              response.admissionFee
+            );
+            feeControlForm.controls['finalSecurityDeposit'].patchValue(
+              response.deposit
+            );
+            const sprogram = this.programs.find(program => program.id === programId);
+            this.groups = (sprogram) ? sprogram.groups : [];
+            this.calculateFinalFee(feeControlForm.value);
+          }
+        });
     }
   }
 
@@ -247,7 +250,7 @@ export class StudentInfoComponent implements OnInit {
 
   saveStudent() {
     this.studentForm.value['dob'] = this.datePipe.transform(this.studentForm.controls['dob'].value, 'yyyy-MM-dd');
-    if (this.editable) {
+    if (this.studentForm.controls['id'].value) {
       this.adminService
         .updateStudent(this.studentForm.value)
         .subscribe((response: any) => {
@@ -256,7 +259,7 @@ export class StudentInfoComponent implements OnInit {
           this.adminService.viewPanel.next(false);
         });
     } else {
-            this.adminService
+      this.adminService
         .addStudent(this.studentForm.value)
         .subscribe((response: any) => {
           this.alertService.successAlert('Student Info Successfully added.');
@@ -354,7 +357,6 @@ export class StudentInfoComponent implements OnInit {
     if (fee.baseFeeGst > 0) {
       final += Number(fee.baseFeeGst);
     }
-
     feeControlForm.controls['finalFee'].patchValue(Number(final.toFixed(2)));
   }
 
@@ -421,7 +423,7 @@ export class StudentInfoComponent implements OnInit {
 
 
   selectedPaymentHistoryDetails(history) {
-   this.getPayReceiptHistory.emit(history);
-   this.adminService.viewPanelForFee.next(true);
+    this.getPayReceiptHistory.emit(history);
+    this.adminService.viewPanelForFee.next(true);
   }
 }

@@ -39,7 +39,7 @@ export class StaffApprovalsComponent implements OnInit {
     this.adminService.getSelectedCenterStaffApprovalCount(this.selectedCenterId)
       .subscribe((res: any) => {
         this.alertService.loading.next(false);
-this.showTable = true;
+        this.showTable = true;
         this.staffAprrovelList = res;
       }, (err) => {
         this.alertService.loading.next(false);
@@ -62,6 +62,32 @@ this.showTable = true;
 
     this.adminService.viewPanel.next(true);
     console.log(this.viewPanel);
+  }
+
+
+
+  staffApprove(staff) {
+    this.adminService.aproveStaff(staff.id)
+      .subscribe((res: any) => {
+        this.getCenterStaffApprovelList();
+
+        this.staffAprrovelList = this.staffAprrovelList.filter(element => element.id !== staff.id);
+          this.alertService.successAlert('Staff Approve');
+      }, (err) => {
+        this.alertService.errorAlert(err);
+      });
+  }
+
+  staffReject(staff) {
+    this.adminService.rejectStaff(staff.id)
+      .subscribe((res: any) => {
+        this.getCenterStaffApprovelList();
+        this.staffAprrovelList = this.staffAprrovelList.filter(element => element.id !== staff.id);
+        this.alertService.successAlert('Staff Reject');
+
+      }, (err) => {
+        this.alertService.errorAlert(err);
+      });
   }
 
 

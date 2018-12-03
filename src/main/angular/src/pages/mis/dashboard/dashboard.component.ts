@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { DashboardService } from '../../../providers/dashboard/dashboard.service';
 import { Student } from '../../../modal/student';
 import { AdminService } from '../../../providers/admin/admin.service';
+import { AlertService } from '../../../providers/alert/alert.service';
+
+declare const $: any;
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -59,7 +62,9 @@ export class DashboardComponent implements OnInit {
   dashboardTabs: any[] = [];
   history: any;
   viewPanelForFee: boolean;
-  constructor(private dashboardService: DashboardService, private adminService: AdminService) { }
+
+  terget: any;
+  constructor(private dashboardService: DashboardService, private alertService: AlertService, private adminService: AdminService) { }
 
   ngOnInit() {
     this.getDashboardTabs();
@@ -171,16 +176,20 @@ export class DashboardComponent implements OnInit {
 
   getStaff() {
     const object = {
-      center : this.selectedCenter.code,
-      city : this.selectedCity.name,
-      zone : this.selectedZone.name
+      center: this.selectedCenter.code,
+      city: this.selectedCity.name,
+      zone: this.selectedZone.name
     };
     this.adminService.viewPanel.next(false);
+    this.alertService.loading.next(true);
+
     this.tableFor = 'staff';
     this.tableTitle = 'Staff';
     this.tableData = [];
     this.dashboardService.getStaff(object).subscribe((response: any) => {
       this.tableData = response;
+      this.alertService.loading.next(false);
+
       this.tableColumn = [
         'eid',
         'name',
@@ -190,16 +199,22 @@ export class DashboardComponent implements OnInit {
         'employer',
         'ctc'
       ];
+      this.scroll(this.terget);
+    }, (err) => {
+      this.alertService.loading.next(false);
+
     });
   }
 
   getCenterList() {
     this.adminService.viewPanel.next(false);
+    this.alertService.loading.next(true);
     this.tableFor = 'center';
     this.tableTitle = 'Centers';
     this.tableData = [];
     this.dashboardService.getCenterList().subscribe((response: any) => {
       this.tableData = response;
+      this.alertService.loading.next(false);
       this.tableColumn = [
         'code',
         'capacity',
@@ -209,16 +224,22 @@ export class DashboardComponent implements OnInit {
         'city',
         'zone'
       ];
+      this.scroll(this.terget);
+    }, (err) => {
+      this.alertService.loading.next(false);
+
     });
   }
 
   getFilteredStudents(filterType: any) {
     const object = {
-      center : this.selectedCenter.code,
-      city : this.selectedCity.name,
-      zone : this.selectedZone.name,
+      center: this.selectedCenter.code,
+      city: this.selectedCity.name,
+      zone: this.selectedZone.name,
       status: 'new request'
     };
+    this.alertService.loading.next(true);
+
     this.adminService.viewPanel.next(false);
     this.tableFor = 'student';
     this.tableTitle = filterType + ' Students';
@@ -226,6 +247,8 @@ export class DashboardComponent implements OnInit {
     this.tableColumn = [];
     this.dashboardService.getStudents(object).subscribe((response: any) => {
       this.students = response;
+      this.alertService.loading.next(false);
+
       switch (filterType) {
         case 'Present':
           this.tableColumn = [
@@ -291,11 +314,18 @@ export class DashboardComponent implements OnInit {
           });
           break;
       }
+
+      this.scroll(this.terget);
+    }, (err) => {
+      this.alertService.loading.next(false);
+
     });
   }
 
   getStudentFee(feeDuration: any) {
     this.adminService.viewPanel.next(false);
+    this.alertService.loading.next(true);
+
     this.tableFor = '';
     const object: any = {};
     this.tableTitle = 'Students Fee';
@@ -313,6 +343,8 @@ export class DashboardComponent implements OnInit {
     }
     this.dashboardService.getStudentFee(object).subscribe((response: any) => {
       this.tableData = response;
+      this.alertService.loading.next(false);
+
       this.tableColumn = [
         'name',
         'program',
@@ -323,23 +355,35 @@ export class DashboardComponent implements OnInit {
         'finalFee',
         'feeDuration'
       ];
+      this.scroll(this.terget);
+    }, (err) => {
+      this.alertService.loading.next(false);
+
     });
   }
 
   getFolloups() {
     this.adminService.viewPanel.next(false);
+    this.alertService.loading.next(true);
     this.tableFor = '';
     this.tableTitle = 'Followup Report';
     this.tableData = [];
     this.tableColumn = [];
     this.dashboardService.getFollowups().subscribe((response: any) => {
       this.tableData = response;
+      this.alertService.loading.next(false);
+
       this.tableColumn = [
         'centerName',
         'openFollowUps',
         'previousFollowUps',
         'todayFollowUps',
       ];
+
+      this.scroll(this.terget);
+    }, (err) => {
+      this.alertService.loading.next(false);
+
     });
   }
 
@@ -383,4 +427,14 @@ export class DashboardComponent implements OnInit {
   getHistory(history: any) {
     this.history = history;
   }
+
+
+scroll(el) {
+  console.log(el);
+this.terget = el;
+  el.scrollIntoView();
+
 }
+}
+
+

@@ -33,7 +33,6 @@ export class LoginComponent implements OnInit {
       },
       (error: any) => {
         this.logging = false;
-        this.onError(error);
       }
     );
   }

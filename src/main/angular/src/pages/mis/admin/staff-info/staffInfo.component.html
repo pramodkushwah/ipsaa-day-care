@@ -48,13 +48,13 @@
             <div class="col-md-4" [hidden]="newStaff || editable">
               <div class="form-group">
                 <label class="control-label">Employee ID : </label>
-                <input class="form-control" value="" formControlName="eid" >
+                <input class="form-control" [readonly]="!editable" value="" formControlName="eid" >
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">First Name : <sup>*</sup></label>
-                <input class="form-control" value="" formControlName="firstName" >
+                <input class="form-control" value="" [readonly]="!editable" formControlName="firstName" >
                 <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="text-danger position-absolute">
                   <div *ngIf="firstName.errors.required">Required</div>
                 </div>
@@ -63,7 +63,7 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Last Name : <sup>*</sup></label>
-                <input class="form-control" value="" formControlName="lastName" >
+                <input class="form-control" value="" [readonly]="!editable" formControlName="lastName" >
                 <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="text-danger position-absolute">
                   <div *ngIf="lastName.errors.required">Required</div>
                 </div>
@@ -74,8 +74,8 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Email : <sup>*</sup></label>
-                <input class="form-control" value="" formControlName="email">
-                <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger position-absolute">
+                <input class="form-control" value="" [readonly]="!editable" formControlName="email">
+                <div *ngIf="email.invalid && (email.dirty || email.touched)"  class="text-danger position-absolute">
                   <div *ngIf="email.errors.required">Required</div>
                   <div *ngIf="email.errors.email">Invalid Email</div>
                 </div>
@@ -123,7 +123,7 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">DOJ : <sup>*</sup></label>
-                <input type="date" class="form-control" value="" formControlName="doj" placeholder="YYYY-MM-DD">
+                <input type="date" class="form-control" value="" formControlName="doj"  [readonly]="!editable"placeholder="YYYY-MM-DD">
                 <div *ngIf="doj.invalid && (doj.dirty || doj.touched)" class="text-danger position-absolute">
                   <div *ngIf="doj.errors.required">Required</div>
                 </div>
@@ -132,13 +132,13 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">DOL : </label>
-                <input type="date" class="form-control" value="" formControlName="dol" placeholder="YYYY-MM-DD">
+                <input type="date" class="form-control" value="" [readonly]="!editable" formControlName="dol" placeholder="YYYY-MM-DD">
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">DOB : <sup>*</sup></label>
-                <input type="date" class="form-control" value="" formControlName="dob" placeholder="YYYY-MM-DD">
+                <input type="date" class="form-control" value="" formControlName="dob" [readonly]="!editable" placeholder="YYYY-MM-DD">
                 <div *ngIf="dob.invalid && (dob.dirty || dob.touched)" class="text-danger position-absolute">
                   <div *ngIf="dob.errors.required">Required</div>
                 </div>
