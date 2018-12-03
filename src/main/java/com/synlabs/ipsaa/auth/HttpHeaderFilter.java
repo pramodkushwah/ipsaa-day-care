@@ -17,6 +17,7 @@ public class HttpHeaderFilter extends GenericFilterBean
     HttpServletResponse httpResp = (HttpServletResponse) resp;
     httpResp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     httpResp.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
+    httpResp.setHeader("Access-Control-Expose-Headers", "fileName");
     httpResp.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization,fileName");
     httpResp.setHeader("Access-Control-Allow-Origin", "*");
     chain.doFilter(req, resp);
