@@ -1491,7 +1491,7 @@ public class StudentService extends BaseService {
          * if (request.getExtraCharge() != null) { total =
          * total.add(request.getExtraCharge()); } if (request.getLatePaymentCharge() !=
          * null) { total = total.add(request.getLatePaymentCharge()); } if
-         * (request.getDeposit() != null) { total = total.add(request.getDeposit()); }
+         * (request.getSecurityDeposit() != null) { total = total.add(request.getSecurityDeposit()); }
          * if (request.getAnnualFee() != null) { total =
          * total.add(request.getAnnualFee()); }
          */

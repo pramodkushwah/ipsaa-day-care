@@ -83,7 +83,7 @@ public class StudentFeeSlipResponse2 implements Response
     return payableAmount;
   }
 
-//  public BigDecimal getDeposit()
+//  public BigDecimal getSecurityDeposit()
 //  {
 //    return deposit;
 //  }
