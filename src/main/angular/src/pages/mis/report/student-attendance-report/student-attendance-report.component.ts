@@ -47,15 +47,9 @@ console.log(this.studentAttendanceFor);
 
 this.adminService.studentsAttendanceReportDownload(this.studentAttendanceFor)
 .subscribe((res) => {
-  // const blob = new Blob([res], {
-    // type: 'application/octet-stream'
-  // });
-  // FileSaver.saveAs(blob, res.headers.get('fileName'));
-// .subscribe((res: ArrayBuffer) => {
-//   // const headers = res.headers;
-//   const blob = new Blob([res], {
-//   });
-//   FileSaver.saveAs(blob, 'Fee_Attendance_Report.pdf');
+  const blob = new Blob([res.body], {
+  });
+  FileSaver.saveAs(blob, res.headers.get('fileName'));
 
   this.downloadData = false;
   this.studentAttendanceFor = {};

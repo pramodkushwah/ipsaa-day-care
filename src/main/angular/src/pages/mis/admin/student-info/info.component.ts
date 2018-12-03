@@ -154,13 +154,13 @@ export class StudentInfoComponent implements OnInit {
       annualFee: [0],
       discountAnnualCharges: [0],
       finalAnnualFee: [0],
-      admissionFee: [0],
+      admissionCharges: [0],
       discountAdmissionCharges: [0],
       finalAdmissionCharges: [0],
       baseFee: [0],
       discountBaseFee: [0],
       finalBaseFee: [0],
-      deposit: [0],
+      securityDeposit: [0],
       discountSecurityDeposit: [0],
       finalSecurityDeposit: [0],
       transportFee: [0],
@@ -215,10 +215,10 @@ export class StudentInfoComponent implements OnInit {
               response.annualFee
             );
             feeControlForm.controls['finalAdmissionCharges'].patchValue(
-              response.admissionFee
+              response.admissionCharges
             );
             feeControlForm.controls['finalSecurityDeposit'].patchValue(
-              response.deposit
+              response.securityDeposit
             );
             const sprogram = this.programs.find(program => program.id === programId);
             this.groups = (sprogram) ? sprogram.groups : [];

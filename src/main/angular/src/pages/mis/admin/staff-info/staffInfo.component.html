@@ -213,7 +213,7 @@
             </div>
             <div class="col-md-4">
               <div class="form-group">
-                <label class="control-label">Employee Hours : <sup>*</sup></label>
+                <label class="control-label">Expected Hours : <sup>*</sup></label>
                 <input class="form-control" value="" formControlName="expectedHours" [readonly]="!editable" type="number">
                 <div *ngIf="expectedHours.invalid && (expectedHours.dirty || expectedHours.touched)" class="text-danger position-absolute">
                   <div *ngIf="expectedHours.errors.required">Required</div>

@@ -49,14 +49,9 @@ export class InquiryReportComponent implements OnInit {
     this.inquiryFor['from'] = this.formDate;
       this.inquiryFor['to'] = this.toDate;
       this.adminService.inquiryReportDownload(this.inquiryFor)
-      // .subscribe((res) => {
-        //   const blob = new Blob([res.data], {
-          //     type: 'application/octet-stream'
-          // });
-          // FileSaver.saveAs(blob, res.headers('fileName'));
           .subscribe((res: any) => {
             this.downloadData = false;
-            const blob = new Blob([res], {
+            const blob = new Blob([res.body], {
             });
             FileSaver.saveAs(blob, res.headers.get('fileName'));
 

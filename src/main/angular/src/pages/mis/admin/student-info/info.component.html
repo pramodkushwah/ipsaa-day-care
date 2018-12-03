@@ -46,7 +46,15 @@
           <br>
           <div class="row" *ngIf="!newStudent">
             <div class="col-lg-6">
-              <label class="control-label">Admission Number : </label> {{student.admissionNumber}}</div>
+              <label class="control-label">Admission Number : </label> {{student.admissionNumber}}
+            </div>
+
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="control-label">Admission Date : </label> 
+                <input class="form-control" [readonly]="!editable"  formControlName="admissionDate">
+              </div>
+            </div>
           </div>
           <div class="row">
             <div class="col-lg-4">
@@ -80,7 +88,8 @@
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Program : </label>
-                <select class="form-control" [class.readonly]="!editable" formControlName="programId" (change)="getFee(programId)" [(ngModel)]="programId">
+                <select class="form-control" [class.readonly]="!editable" formControlName="programId" (change)="getFee(programId)"
+                  [(ngModel)]="programId">
                   <option *ngFor="let program of programs;let c = index;" [ngValue]="program.id"> {{program.name}}</option>
                 </select>
               </div>
@@ -397,7 +406,7 @@
             </div>
           </div>
         </ng-container>
-        <div id="feeTab" class="container tab-pane"  *ngIf="studentForm.controls.fee">
+        <div id="feeTab" class="container tab-pane" *ngIf="studentForm.controls.fee">
           <div formGroupName="fee">
             <div class="row">
               <div class="col-md-4">
@@ -425,7 +434,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Admission Charges</label>
-                  <input class="form-control" type="number" formControlName="admissionFee" readonly>
+                  <input class="form-control" type="number" formControlName="admissionCharges" readonly>
                 </div>
               </div>
               <div class="col-md-4">
@@ -440,8 +449,8 @@
                 <div class="form-group">
                   <label class="control-label">Final Admission Charges</label>
                   <input class="form-control" type="number" [readonly]="!editable" formControlName="finalAdmissionCharges"
-                    required min="0" (ngModelChange)="calculateDiscount('admissionFee', 'finalAdmissionCharges', 'discountAdmissionCharges')"
-                    [disabled]="!studentForm.controls.fee.controls.admissionFee.value">
+                    required min="0" (ngModelChange)="calculateDiscount('admissionCharges', 'finalAdmissionCharges', 'discountAdmissionCharges')"
+                    [disabled]="!studentForm.controls.fee.controls.admissionCharges.value">
                 </div>
               </div>
 
@@ -472,7 +481,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Security Deposit</label>
-                  <input class="form-control" type="number" formControlName="deposit" readonly>
+                  <input class="form-control" type="number" formControlName="securityDeposit" readonly>
                 </div>
               </div>
 
@@ -489,7 +498,7 @@
                 <div class="form-group">
                   <label class="control-label">Final Security Deposit Fees</label>
                   <input class="form-control" type="number" [readonly]="!editable" formControlName="finalSecurityDeposit"
-                    required [disabled]="!studentForm.controls.fee.controls.deposit.value" min="0" (ngModelChange)="calculateDiscount('deposit', 'finalSecurityDeposit', 'discountSecurityDeposit')">
+                    required [disabled]="!studentForm.controls.fee.controls.securityDeposit.value" min="0" (ngModelChange)="calculateDiscount('securityDeposit', 'finalSecurityDeposit', 'discountSecurityDeposit')">
                 </div>
               </div>
 

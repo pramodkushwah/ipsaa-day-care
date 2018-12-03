@@ -46,15 +46,9 @@ console.log(this.staffAttendanceFor);
 
     this.adminService.staffsAttendanceReportDownload(this.staffAttendanceFor)
       .subscribe((res) => {
-        // const blob = new Blob([res.data], {
-        //   type: 'application/octet-stream'
-        // });
-        // FileSaver.saveAs(blob, res.headers('fileName'));
-      // .subscribe((res: ArrayBuffer) => {
-      //   // const headers = res.headers;
-      //   const blob = new Blob([res], {
-      //   });
-      //   FileSaver.saveAs(blob, 'Staff_Attendance_Report.pdf');
+          const blob = new Blob([res.body], {
+          });
+          FileSaver.saveAs(blob, res.headers.get('fileName'));
 
         this.downloadData = false;
         this.staffAttendanceFor = {};

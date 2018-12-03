@@ -55,16 +55,10 @@ export class StaffSalaryMonthlyReportComponent implements OnInit {
     this.staffSalaryMonthlyReportFor['month'] = this.selectedMonth;
 
     this.adminService.staffSalaryMonthlyReportDownload(this.staffSalaryMonthlyReportFor)
-      .subscribe((res) => {
-      //   const blob = new Blob([res.data], {
-      //     type: 'application/octet-stream'
-      // });
-      // FileSaver.saveAs(blob, res.headers('fileName'));
-      // .subscribe((res: ArrayBuffer) => {
-        // const headers = res.headers;
-        // const blob = new Blob([res], {
-        // });
-        // FileSaver.saveAs(blob, 'Staff_Salary_Monthly_Report.pdf');
+    .subscribe((res) => {
+      const blob = new Blob([res.body], {
+      });
+      FileSaver.saveAs(blob, res.headers.get('fileName'));
 
         this.downloadData = false;
       }, (err) => {

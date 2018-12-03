@@ -38,6 +38,7 @@ export class UserInfoComponent implements OnInit {
       this.userForm.patchValue(user);
       this.selectedRoles = JSON.parse(JSON.stringify(user.roles));
       this.selectedCenters = JSON.parse(JSON.stringify(user.centers));
+      console.log(user);
     } else {
       this.selectedUser = {};
       this.userForm.reset();

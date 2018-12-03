@@ -25,6 +25,7 @@ export class UserComponent implements OnInit {
   getUsers() {
     this.adminService.getUsers().subscribe((response: any[]) => {
       this.users = response;
+      console.log(response);
       this.usersCopy = JSON.parse(JSON.stringify(response));
     });
   }

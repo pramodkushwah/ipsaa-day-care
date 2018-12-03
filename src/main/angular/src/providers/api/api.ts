@@ -81,8 +81,7 @@ export class Api {
         observe: 'response',
         responseType: 'arraybuffer'
       })
-      .pipe(tap((res: any) => console.log('response', res)))
-      .map(this.extractData)
+      .map(this.extractData1)
       .catch(this.handleError);
   }
   put(endpoint: string, body: any, optHeaders?: HttpHeaders) {
