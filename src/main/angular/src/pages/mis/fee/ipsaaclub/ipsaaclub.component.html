@@ -13,7 +13,7 @@
 
 <div class="row">
   <div class="col-md-6">
-    <table class="table table-condensed table-striped table-hover" ng-show="selectedCenter">
+    <table class="table table-condensed table-striped table-hover" *ngIf="selectedCenter">
       <thead class="text-primary">
         <tr>
           <th>
@@ -38,7 +38,154 @@
           <td (click)="loadStudentFee(studentfee)">{{studentfee.paymentStatus}}</td>
         </tr>
       </tbody>
-
     </table>
+  </div>
+  <div class="col-md-6" *ngIf="selectedStudentFee">
+    <div class="card">
+      <div class="card-header card-header-icon" data-background-color="rose">
+        <i class="material-icons">chrome_reader_mode</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">{{selectedStudentFee.name}}</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Invoice Date</label>
+              <div class="form-control">{{selectedStudentFee.invoiceDate}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Base Fee</label>
+              <div class="form-control">{{selectedStudentFee.finalBaseFee}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Annual Fee</label>
+              <div class="form-control">{{selectedStudentFee.annualFee}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Security Fee</label>
+              <div class="form-control">{{selectedStudentFee.deposit}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Full Days</label>
+              <div class="form-control">{{selectedStudentFee.noOfFullDays}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Half Day</label>
+              <div class="form-control">{{selectedStudentFee.noOfHalfDays}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Total Days Fee</label>
+              <div class="form-control">{{selectedStudentFee.totalDaysFee}}</div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Gst</label>
+              <div class="form-control">{{selectedStudentFee.gstAmount}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Balance</label>
+              <input class="form-control" type="number" [(ngModel)]="selectedStudentFee.balance" (change)="addBalance()">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Extra Charge</label>
+              <input class="form-control" type="number" [(ngModel)]="selectedStudentFee.extraCharge" (change)="addExtraCharges()">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Total Fee</label>
+              <div class="form-control">{{selectedStudentFee.totalFee}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Comments*</label>
+              <textarea class="form-control" type="text" row="2" required [(ngModel)]="selectedStudentFee.comments" ng-readonly="selectedStudentFee.status=='Paid'"></textarea>
+            </div>
+          </div>
+          <div class="col-md-12" *ngIf="selectedStudentFee.autoComments">
+            <div class="form-group">
+              <label class="control-label">Auto Comments*</label>
+              <textarea class="form-control" type="text" row="2" required [(ngModel)]="selectedStudentFee.autoComments" readonly></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="clearfix">
+        <button type="button" class="btn btn-rose" (click)="saveSlip(selectedStudentFee)">Save</button>
+        <button type="button" class="btn btn-rose" (click)="showPayNow(selectedStudentFee)" data-toggle="modal" data-target="#myModal" [disabled]="selectedStudentFee.paymentStatus=='Paid'">Pay Now</button>
+        <button type="button" class="btn btn-rose" (click)="downloadSlip(selectedStudentFee)" [disabled]="disabledSlipDownload">
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disabledSlipDownload"></i>Download Slip
+        </button>
+        <button class="btn btn-rose btn-fill" (click)="downloadReceipt(selectedStudentFee)" [disabled]="selectedStudentFee.status=='Raised'|| disabledReceiptDownload" *ngIf="selectedStudentFee.paymentStatus!='Raised'">
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disabledReceiptDownload"></i>
+          Download Receipt
+        </button>
+      </div>
+    </div>
+    <div class="card" *ngIf="selectedStudentFee.payments.length">
+      <div class="card-content">
+        <h4 class="card-title">Student Fee Records</h4>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>TxnId</th>
+              <th>Mode</th>
+              <th>Amount</th>
+              <th>Date</th>
+              <th *ngIf="STUDENTFEE_WRITE">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="payment in selectedStudentFee.payments">
+              <td>{{payment.txnid}}</td>
+              <td>{{payment.paymentMode}}</td>
+              <td>{{payment.paidAmount}}</td>
+              <td>{{payment.paymentDate}}</td>
+              <td *ngIf="STUDENTFEE_RECEIPT_CONFIRM">
+                <button class="btn btn-sm" [ngClass]="payment.confirmed?'btn-success':'btn-rose'" (click)="payment.confirmed?null:confirm(payment)"
+                  [disabled]="payment.disabled" *ngIf="payment.active&&!payment.confirmed">
+                  <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="payment.disabled"></i>Confirm
+                </button>
+                <span *ngIf="payment.confirmed">Confirmed</span>
+
+                <button class="btn btn-sm" *ngIf="!payment.confirmed || payment.active" (click)="showCommentField(payment)">Reject</button>
+                <span *ngIf="!payment.active">Rejected &nbsp;
+                  <a href="#" data-toggle="tooltip" title="{{payment.comment}}">
+                    <i class="fa fa-info"></i>
+                  </a>
+                </span>
+              </td>
+              <td *ngIf="!STUDENTFEE_RECEIPT_CONFIRM">
+                <span *ngIf="!(payment.confirmed || payment.active)">Rejected</span>
+                <span *ngIf="payment.confirmed && payment.active">Confirmed</span>
+                <span *ngIf="payment.active&&!payment.confirmed">Pending</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>

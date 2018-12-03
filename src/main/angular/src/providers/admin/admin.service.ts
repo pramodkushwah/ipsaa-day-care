@@ -514,5 +514,13 @@ export class AdminService {
     return this.api.post('api/student/ipsaaclub/feeslip/list', { 'centerCode': code });
   }
 
+  updateIpsaaClubSlip(data) {
+    return this.api.post('api/student/ipsaaclub/slip/update', data);
+  }
+
+  downloadIpsaaClubSlip(data) {
+    return this.api.post('api/student/ipsaaclub/feeslips/pdf', data);
+  }
+
 
 }
