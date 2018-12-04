@@ -345,9 +345,11 @@ public class DashboardService extends BaseService {
 		// 3. add monthly fee for this month removed
 		if (feeDuration == null || feeDuration == FeeDuration.Monthly) {
 			JPAQuery<BigDecimal> ipssaQuery = new JPAQuery<>(entityManager);
+
 			ipssaQuery.select(ipsaaSlip.totalFee.sum()).from(ipsaaSlip).where(ipsaaSlip.student.active.isTrue())
-					.where(ipsaaSlip.student.corporate.isFalse()).where(ipsaaSlip.year.eq(year))
-					.where(ipsaaSlip.month.eq(month)).where(ipsaaSlip.student.center.in(centers));
+					.where(ipsaaSlip.student.corporate.isFalse()).where(ipsaaSlip.isExpire.isFalse())
+					.where(ipsaaSlip.year.eq(year)).where(ipsaaSlip.month.eq(month))
+					.where(ipsaaSlip.student.center.in(centers));
 			BigDecimal totalSum = ipssaQuery.fetchFirst();
 			total += totalSum == null ? 0 : totalSum.intValue();
 			feeStatsResponse.setIpssaFee(totalSum == null ? 0 : totalSum.intValue());

@@ -430,8 +430,9 @@ public class StudentFeeService extends BaseService{
             thisQuarterSlip.setFeeRatio(baseFeeRatio);
             // to check is it new addmission
             if(slipCount==1){
-                    baseFeeRatio=FeeUtilsV2.calculateFeeRatioForQuarter(thisQuarterSlip.getStudent().getProfile().getAdmissionDate(),thisQuarterSlip.getQuarter());
-                    thisQuarterSlip.setFeeRatio(baseFeeRatio);
+                // if its a new students
+                // find the ratio using its admission date
+                    baseFeeRatio=FeeUtilsV2.calculateFeeRatioForQuarter(thisQuarterSlip.getStudent().getProfile().getAdmissionDate(),thisQuarterSlip.getQuarter());thisQuarterSlip.setFeeRatio(baseFeeRatio);
                  thisQuarterSlip.setAdmissionFee(fee.getAdmissionFee()==null?ZERO:fee.getAdmissionFee());
                  thisQuarterSlip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
                  thisQuarterSlip.setFinalAdmissionFee(fee.getFinalAdmissionFee()==null?ZERO:fee.getFinalAdmissionFee());
@@ -591,7 +592,6 @@ public class StudentFeeService extends BaseService{
         int year=cal.get(Calendar.YEAR);
         return this.generateFeeSlip(slipId,quarter,year,true);
     }
-
     public List<StudentFeePaymentRequest> generateFeeSlips(StudentFeeSlipRequest request) {
         validateQuarter(request);
         QStudentFee qStudentFee = QStudentFee.studentFee;
