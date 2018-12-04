@@ -383,7 +383,7 @@ export class AdminService {
   }
 
   feeCollectionReportDownload(centerId_and_range) {
-    return this.api.getPDF('api/report/inquiry/', centerId_and_range);
+    return this.api.getPDF('api/report/collectionfee/excel/', centerId_and_range);
 
   }
 
