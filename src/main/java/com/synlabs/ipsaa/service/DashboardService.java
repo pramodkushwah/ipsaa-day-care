@@ -339,6 +339,7 @@ public class DashboardService extends BaseService
 					.from(ipsaaSlip)
 					.where(ipsaaSlip.student.active.isTrue())
 					.where(ipsaaSlip.student.corporate.isFalse())
+					.where(ipsaaSlip.isExpire.isFalse())
 					.where(ipsaaSlip.year.eq(year))
 					.where(ipsaaSlip.month.eq(month))
 					.where(ipsaaSlip.student.center.in(centers));
