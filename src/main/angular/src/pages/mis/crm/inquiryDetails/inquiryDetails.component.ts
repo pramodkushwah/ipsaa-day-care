@@ -197,11 +197,6 @@ export class InquiryDetailsComponent implements OnInit {
 
             console.log(this.log);
         }
-
-
-
-
-
         console.log(this.inquiryForm.value);
         if (this.newInquiry) {
             this.inquiryForm.value['logs'] = this.inquiryDetails;
@@ -215,12 +210,37 @@ export class InquiryDetailsComponent implements OnInit {
 
         } else {
 
-            this.adminService.addNewInquiry(this.inquiryForm.value)
-                .subscribe((res: any) => {
-                    this.alertService.successAlert('');
-                }, (err) => {
-                    this.alertService.errorAlert(err);
-                });
+        this.centers.forEach(element => {
+            if (element.code === this.inquiryForm.controls.centerCode.value) {
+                this.inquiryForm.controls.centerId.setValue(element.id);
+                this.inquiryForm.controls.centerName.setValue(element.name);
+
+            }
+        });
+
+        this.programs.forEach(element => {
+            if (element.code === this.inquiryForm.controls.programCode.value) {
+                this.inquiryForm.controls.programId.setValue(element.id);
+                this.inquiryForm.controls.programName.setValue(element.name);
+
+            }
+        });
+
+        this.groups.forEach(element => {
+            if (element.id === Number(this.inquiryForm.controls.groupId.value)) {
+                this.inquiryForm.controls.groupName.setValue(element.name);
+
+            }
+        });
+
+        console.log(this.inquiryForm.value);
+
+            // this.adminService.addNewInquiry(this.inquiryForm.value)
+            //     .subscribe((res: any) => {
+            //         this.alertService.successAlert('');
+            //     }, (err) => {
+            //         this.alertService.errorAlert(err);
+            //     });
 
         }
 

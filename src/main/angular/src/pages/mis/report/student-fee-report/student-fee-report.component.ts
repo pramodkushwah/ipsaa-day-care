@@ -55,17 +55,10 @@ selectedQuater: any;
       console.log(this.studentFeeReport);
 
     this.adminService.studentsFeeReportdownload(this.studentFeeReport)
-      // .subscribe((res) => {
-      //   const blob = new Blob([res.data], {
-      //     type: 'application/octet-stream'
-      // });
-
-      // FileSaver.saveAs(blob, res.headers('fileName'));
-      .subscribe((res: any) => {
-        // const headers = res.headers;
-        const blob = new Blob([res], {
-        });
-        FileSaver.saveAs(blob, 'Fee_Report.pdf');
+    .subscribe((res) => {
+      const blob = new Blob([res.body], {
+      });
+      FileSaver.saveAs(blob, res.headers.get('fileName'));
 
         this.downloadData = false;
       }, (err) => {

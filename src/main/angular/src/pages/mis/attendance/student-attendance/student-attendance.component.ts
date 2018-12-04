@@ -112,4 +112,16 @@ export class StudentAttendanceComponent implements OnInit {
     });
   }
 
+
+
+  searchEmployee(event: any) {
+  const val = event.target.value.toLowerCase();
+  if (val && val.trim() !== '') {
+    this.attendance = this.attendance.filter(student => {
+      return student.fullName.toLowerCase().startsWith(val);
+    });
+
+  }
+
+  }
 }

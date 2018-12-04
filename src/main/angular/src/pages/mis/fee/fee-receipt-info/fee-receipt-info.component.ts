@@ -148,11 +148,11 @@ export class FeeReceiptInfoComponent implements OnInit {
 
     this.downloadReceipt = true;
     this.adminService.downloadReceipt(this.selectedStudentDetails.id)
-      .subscribe((res: any) => {
-        // const headers = res.headers;
-        const blob = new Blob([res.body], {
-        });
-        FileSaver.saveAs(blob, res.fileName);
+    .subscribe((res) => {
+      const blob = new Blob([res.body], {
+      });
+      FileSaver.saveAs(blob, res.headers.get('fileName'));
+
         this.alertService.successAlert('');
         this.downloadReceipt = false;
       }, (err) => {

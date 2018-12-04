@@ -135,7 +135,7 @@ export class GenerateMonthlySalaryComponent implements OnInit {
 
   updatePaySlip() {
     this.saving = true;
-    this.adminService.updatePaySlip(this.selectedSalary).subscribe((response: any) => {
+    this.adminService.updatePaySlip(this.salaryPayslipForm.value).subscribe((response: any) => {
       this.saving = false;
       _.extend(this.selectedSalary, response);
       this.alertService.successAlert('Payslip updated successfully.');
@@ -146,10 +146,11 @@ export class GenerateMonthlySalaryComponent implements OnInit {
 
   downloadPaySlip(salary: any) {
     this.adminService.downloadPaySlip(salary).subscribe((response: any) => {
-      const blob = new Blob([response.data], {
-        type: 'application/octet-stream'
+      const blob = new Blob([response.body], {
+        // type: 'application/octet-stream'
     });
-    FileSaver.saveAs(blob, response.headers('fileName'));
+    FileSaver.saveAs(blob, response.headers.get('fileName'));
+
     });
   }
 

@@ -134,10 +134,10 @@ export class StudentComponent implements OnInit {
 
   searchStudent(event: any) {
     this.searchKey = event;
-    const val = event.target.value;
+    const val = event.target.value.toLowerCase();
     if (val && val.trim() !== '') {
       this.allItems = this.students.filter(student => {
-        return student.fullName.startsWith(val);
+        return student.fullName.toLowerCase().startsWith(val);
       });
       this.setPage(1);
     } else {

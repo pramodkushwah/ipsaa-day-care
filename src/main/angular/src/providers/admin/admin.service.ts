@@ -201,7 +201,7 @@ export class AdminService {
   }
 
   downloadPaySlip(salary: any) {
-    return this.api.get('api/employee/payslip/pdf/' + salary.id);
+    return this.api.getPDFByGetMethod('api/employee/payslip/pdf/' + salary.id);
   }
 
   regeneratePaySlip(salary: any) {
@@ -240,7 +240,7 @@ export class AdminService {
   }
 
   clockInStaff(staff: any) {
-    return this.api.post('api/attendance/staff/clockin/', { staffId: staff.id });
+    return this.api.post('api/attendance/staff/clockin/', { employeeId: staff.id });
   }
 
   clockOutStaff(staff: any) {
@@ -383,7 +383,7 @@ export class AdminService {
   }
 
   feeCollectionReportDownload(centerId_and_range) {
-    return this.api.getPDF('api/report/inquiry/', centerId_and_range);
+    return this.api.getPDF('api/report/collectionfee/excel/', centerId_and_range);
 
   }
 
