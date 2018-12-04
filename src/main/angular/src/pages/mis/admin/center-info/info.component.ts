@@ -113,4 +113,13 @@ export class CenterInfoComponent {
         });
     }
   }
+
+  setState(city) {
+    const cty: any = this.cities.find(element => {
+      return element.name === city;
+    });
+    if (cty) {
+      this.centerForm.controls['state'].patchValue(cty.state);
+    }
+  }
 }

@@ -24,6 +24,10 @@ export class AdminService {
     return this.api.get('api/center/');
   }
 
+  getStates() {
+    return this.api.get('api/state/all');
+  }
+
   getCostCenter() {
     return this.api.get('api/le/');
   }
@@ -100,12 +104,20 @@ export class AdminService {
     return this.api.post('api/city/', city);
   }
 
+  saveState(state: any) {
+    return this.api.post('api/state/', state);
+  }
+
   updateZone(zone: any) {
     return this.api.put('api/zone/', zone);
   }
 
   updateCity(city: any) {
     return this.api.put('api/city/', city);
+  }
+
+  updateState(state: any) {
+    return this.api.put('api/state/', state);
   }
 
   deleteZone(zoneId: any) {
@@ -118,6 +130,10 @@ export class AdminService {
 
   deleteCity(cityId: any) {
     return this.api.delete('api/city/' + cityId);
+  }
+
+  deleteState(stateId: any) {
+    return this.api.delete('api/state/' + stateId);
   }
 
   saveCenter(center) {

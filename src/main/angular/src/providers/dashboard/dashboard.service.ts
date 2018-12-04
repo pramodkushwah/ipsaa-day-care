@@ -26,6 +26,10 @@ export class DashboardService {
     return this.api.get('api/city/');
   }
 
+  getStates() {
+    return this.api.get('api/state/all');
+  }
+
   getCenters() {
     return this.api.get('api/center/');
   }
