@@ -422,6 +422,8 @@
                     required min="0" (ngModelChange)="calculateDiscount('annualFee','finalAnnualFee', 'discountAnnualCharges')">
                 </div>
               </div>
+              </div>
+              <div class="row" *ngIf="!isIpsaaclub">
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Admission Charges</label>
@@ -444,7 +446,9 @@
                     [disabled]="!studentForm.controls.fee.controls.admissionFee.value">
                 </div>
               </div>
+              </div>
 
+              <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Monthly Program Fees</label>
@@ -493,7 +497,7 @@
                 </div>
               </div>
 
-              <div class="col-md-6">
+              <div class="col-md-6" *ngIf="!isIpsaaclub">
                 <div class="form-group">
                   <label class="control-label">Monthly Transport Fees</label>
                   <input class="form-control" type="number" [readonly]="!editable" formControlName="transportFee"
@@ -527,7 +531,7 @@
               </div>
             </div>
 
-            <div class="row">
+            <div class="row" *ngIf="!isIpsaaclub">
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="control-label">Annual-GST-Fee</label>
@@ -580,6 +584,10 @@
 
   <div *ngIf="editable" class="card-footer">
     <div class="stats padding-left-right-30">
+      <button class="btn btn-rose btn-fill" (click)="generateStudentFee()" [disabled]="disableGenerate" *ngIf="isIpsaaclub && student.id">
+        <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disableGenerate"></i>
+        Generate Fee
+      </button>
       <button mat-raised-button class="btn btn-primary" (click)="saveStudent()" [disabled]="!studentForm.valid">Save</button>
       <button mat-raised-button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>
     </div>

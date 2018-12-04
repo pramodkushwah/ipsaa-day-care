@@ -542,5 +542,9 @@ export class AdminService {
     return this.api.put('api/student/ipsaaclub/record/update', data);
   }
 
+  generateIpsaaclubStudentFee(studentId, data) {
+    return this.api.post('api/student/ipsaaclub/generate/' + studentId, data);
+  }
+
 
 }
