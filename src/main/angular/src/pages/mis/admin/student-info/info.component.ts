@@ -162,13 +162,13 @@ export class StudentInfoComponent implements OnInit {
       annualFee: [0],
       discountAnnualCharges: [0],
       finalAnnualFee: [0],
-      admissionFee: [0],
+      admissionCharges: [0],
       discountAdmissionCharges: [0],
       finalAdmissionCharges: [0],
       baseFee: [0],
       discountBaseFee: [0],
       finalBaseFee: [0],
-      deposit: [0],
+      securityDeposit: [0],
       discountSecurityDeposit: [0],
       finalSecurityDeposit: [0],
       transportFee: [0],
@@ -212,7 +212,7 @@ export class StudentInfoComponent implements OnInit {
       } else {
         this.isIpsaaclub = false;
       }
-      if (programId === this.student.program.id) {
+      if (!this.newStudent && programId === this.student.program.id) {
         this.studentForm.controls['fee'].patchValue(this.student.fee);
         return;
       }
@@ -225,18 +225,13 @@ export class StudentInfoComponent implements OnInit {
           this.programFee = response;
           if (this.studentForm.contains('fee')) {
             const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
+            feeControlForm.reset();
             feeControlForm.patchValue(response);
             feeControlForm.controls['baseFee'].patchValue(response.fee); // Monthly Fees
             feeControlForm.controls['finalBaseFee'].patchValue(response.fee); // Final Monthly Fees
-            feeControlForm.controls['finalAnnualFee'].patchValue(
-              response.annualFee
-            );
-            feeControlForm.controls['finalAdmissionCharges'].patchValue(
-              response.admissionFee
-            );
-            feeControlForm.controls['finalSecurityDeposit'].patchValue(
-              response.deposit
-            );
+            feeControlForm.controls['finalAnnualFee'].patchValue(response.annualFee);
+            feeControlForm.controls['finalAdmissionCharges'].patchValue(response.admissionCharges);
+            feeControlForm.controls['finalSecurityDeposit'].patchValue(response.securityDeposit);
             const sprogram = this.programs.find(program => program.id === programId);
             this.groups = (sprogram) ? sprogram.groups : [];
             this.calculateFinalFee(feeControlForm.value);
@@ -311,6 +306,8 @@ export class StudentInfoComponent implements OnInit {
       } else {
         feeControlForm.controls[targetDiscount].patchValue(0);
       }
+    } else {
+        feeControlForm.controls[targetDiscount].patchValue(0);
     }
 
     this.calculateGstFee(fee, this.studentForm.value);
