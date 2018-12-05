@@ -29,4 +29,8 @@ public interface EmployeeSalaryRepository extends JpaRepository<EmployeeSalary, 
 
   //////Avneet
   List<EmployeeSalary> findByEmployeeIn(List<Employee> employee);
+
+  //////Avneet
+  List<EmployeeSalary> findByEmployeeIn(List<Employee> employee);
+  EmployeeSalary findByEmployeeNotIn(List<Employee> employee);
 }

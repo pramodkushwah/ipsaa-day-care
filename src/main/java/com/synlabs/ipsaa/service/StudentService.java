@@ -490,6 +490,9 @@ public class StudentService extends BaseService {
 //				}
 //			}
 //		}
+		if(dbStudent.getApprovalStatus().equals(ApprovalStatus.Pending))
+			dbStudent.setApprovalStatus(ApprovalStatus.NewApproval);
+
         studentRepository.saveAndFlush(dbStudent);
         return dbStudent;
     }
@@ -594,6 +597,40 @@ public class StudentService extends BaseService {
         student.getProfile().getFullName();
         communicationService.sendStudentDeleteEmail(student);
     }
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+	@Transactional
+	public void deleteStudentForced(StudentRequest request) {
+		Student student = studentRepository.findOne(request.getId());
+		if (student == null) {
+			throw new NotFoundException(String.format("Cannot locate student with id %s", request.getId()));
+		}
+		student.setActive(false);
+		studentRepository.saveAndFlush(student);
+		logger.info("Student deactivated " + student.getName());
+		List<StudentParent> parents = student.getParents();
+		for (StudentParent parent : parents) {
+			if (parent.isAccount()) {
+				List<Student> students = parent.getStudents();
+				boolean flag = true;
+				for (Student s : students) {
+					if (s.isActive()) {
+						flag = false;
+						break;
+					}
+				}
+				if (flag) {
+					User user = userRepository.findOneByParent(parent);
+					user.setActive(false);
+					userRepository.saveAndFlush(user);
+				}
+			}
+		}
+		student.getCenter().getName();
+		student.getProgram().getName();
+		student.getGroup().getName();
+		student.getProfile().getFullName();
+		communicationService.sendStudentDeleteEmail(student);
+	}
 
     public StudentFee getStudentFee(StudentRequest request) {
         return feeRepository.findByStudentId(request.getId());
@@ -922,13 +959,13 @@ public class StudentService extends BaseService {
         FeeDuration period = FeeDuration.valueOf(request.getPeriod());
         if (request.getCenterCode().equals("All")) {
             slips = feePaymentRepository
-                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
-                            period, request.getQuarter(), request.getYear());
+                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(
+                            period, request.getQuarter(), request.getYear(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
         } else {
             slips = feePaymentRepository
-                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
+                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(
                             period, request.getQuarter(), request.getYear(),
-                            request.getCenterCode());
+                            request.getCenterCode(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
         }
 
         if (slips != null && request.getConfirm() != null && request.getConfirm()) {
@@ -1535,7 +1572,7 @@ public class StudentService extends BaseService {
             throw new ValidationException(
                     String.format("Unauthorized access to center[%s] user[%s]", request.getMaskId(), user.getEmail()));
         }
-        return studentRepository.findByActiveTrueAndApprovalStatusAndCenter(ApprovalStatus.NewApproval, center);
+        return studentRepository.findByActiveTrueAndApprovalStatusInAndCenter(Arrays.asList(ApprovalStatus.NewApproval,ApprovalStatus.Pending), center);
     }
 
     public void approve(StudentRequest request) {
@@ -1567,7 +1604,10 @@ public class StudentService extends BaseService {
         if (!centers.contains(student.getCenter())) {
             throw new ValidationException("Unauthorized access: student is not in user's centers");
         }
-        student.setApprovalStatus(ApprovalStatus.Rejected);
+		student.setRejectionReason(request.getRejectionReason()==null?"":request.getRejectionReason());
+        student.setApprovalStatus(ApprovalStatus.Pending);
+        // sending mail to created user thats y it should writen before save
+		communicationService.sendStudentRejectEmail(student);
         studentRepository.saveAndFlush(student);
     }
 

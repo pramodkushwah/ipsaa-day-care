@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -75,6 +76,7 @@ public class HdfcHelper extends BaseService
 
   private static final Logger logger = LoggerFactory.getLogger(HdfcHelper.class);
 
+  @Transactional
   public Long recordPaymentSuccess(String encResp, String orderNumber)
   {
     //decrypt response
@@ -195,6 +197,7 @@ public class HdfcHelper extends BaseService
 
   }
 
+  @Transactional
   public Long recordPaymentFailure(String encResp, String orderNumber)
   {
 
@@ -304,6 +307,8 @@ public class HdfcHelper extends BaseService
 
     return details;
   }
+
+  @Transactional
   public HdfcCheckoutDetails getCheckoutDetailsIpsaaclub(Long slipId, Long parentId)
   {
     StudentParent parent = parentRepository.findOne(parentId);
@@ -371,6 +376,7 @@ public class HdfcHelper extends BaseService
     {
       for (StudentFeePaymentRecord receipt : receipts)
       {
+        if(receipt.getActive())
         payableAmount = payableAmount.subtract(receipt.getPaidAmount());
       }
     }
@@ -384,6 +390,7 @@ public class HdfcHelper extends BaseService
     {
       for (StudentFeePaymentRecordIpsaaClub receipt : receipts)
       {
+        if(receipt.getActive())
         payableAmount = payableAmount.subtract(receipt.getPaidAmount());
       }
     }

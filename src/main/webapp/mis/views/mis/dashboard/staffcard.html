@@ -1,0 +1,51 @@
+<div class="col-lg-3 col-md-4 col-sm-4">
+  <div class="card card-stats" style="height:250px;">
+    <div class="card-header" data-background-color="orange">
+      <i class="material-icons">person_pin</i>
+    </div>
+    <div class="card-content">
+      <a ng-click="showPanel('stafflist', 'all')" href="#">
+        <p class="category ">Staff</p>
+        <h3 class="card-title">{{stats.staffCount | number}}</h3>
+      </a>
+      <p style="margin: 0;text-align:left;">
+        <a href="#" ng-click="showPanel('stafflist', 'newjoinings')">New Joinee</a>
+        : {{stats.newJoinings | number}}
+      </p>
+      <p style="margin: 0;text-align:left;">
+        <a href="#" ng-click="showPanel('stafflist', 'newleavings')">Resignee</a>
+        : {{stats.newLeavings | number}} &nbsp;&nbsp;&nbsp;
+      </p>
+      <p style="margin: 0;text-align:left;">
+        <a href="#" ng-click="showPanel('stafflist', 'recruitmentHeadCountList')">Active Headcount</a>
+        : {{stats.recruitmentCount | number}} &nbsp;&nbsp;&nbsp;
+      </p>
+      <p style="margin: 0;text-align:left;">
+        <a href="#" ng-click="showPanel('stafflist', 'presentStaff')">Presents</a>
+        : {{stats.staffPresent | number}} &nbsp;&nbsp;&nbsp;
+      </p>
+      <p style="margin: 0;text-align:left;">
+        <a href="#" ng-click="showPanel('stafflist', 'absentStaff')">Absent</a>
+        : {{stats.staffAbsent | number}} &nbsp;&nbsp;&nbsp;
+      </p>
+      <p style="margin: 0;text-align:left;">
+        <a href="#" ng-click="showPanel('stafflist', 'onLeaveStaff')">On Leave</a>
+        : {{stats.staffOnLeave | number}} &nbsp;&nbsp;&nbsp;
+      </p>
+    </div>
+    <div class="card-footer footer-bottom">
+      <div class="stats">
+        <!-- <span>Present:{{stats.staffPresent | number}}</span> -->
+        <!-- <span>Absent:{{stats.staffCount-stats.staffPresent | number}}</span> -->
+
+        <!-- <p style="margin: 0">
+            <a href="#" ng-click="showPanel('stafflist', 'present')">Present</a>
+            : {{stats.staffPresent | number}}
+          </p> -->
+
+        <span>Staff Cost: {{stats.staffCost | number}}</span>
+
+      </div>
+    </div>
+  </div>
+</div>
