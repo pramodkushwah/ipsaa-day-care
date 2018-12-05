@@ -227,10 +227,6 @@ export class StudentInfoComponent implements OnInit {
           if (this.studentForm.contains('fee')) {
             const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
             feeControlForm.reset();
-<<<<<<< HEAD
-            feeControlForm.patchValue(this.getFeeField());
-=======
->>>>>>> 672bf4666be0d0b494d01b0de28ea20fd627c1c2
             feeControlForm.patchValue(response);
             console.log(feeControlForm.value);
             // feeControlForm.controls['baseFee'].patchValue(response.fee); // Monthly Fees
