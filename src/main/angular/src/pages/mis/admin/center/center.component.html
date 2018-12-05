@@ -212,7 +212,7 @@
           </div>
           <div class="form-footer text-right">
             <button class="btn btn-rose btn-fill" (click)="saveZone()">Save</button>
-            <button class="btn btn-default" >Cancel</button>
+            <button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>
           </div>
         </form>
       </div>
@@ -240,7 +240,7 @@
           </div>
           <div class="form-footer text-right">
             <button class="btn btn-rose btn-fill" (click)="saveCity()">Save</button>
-            <button class="btn btn-default">Cancel</button>
+            <button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>
           </div>
         </form>
       </div>
@@ -256,13 +256,13 @@
           </div>
           <div class="form-footer text-right">
             <button class="btn btn-rose btn-fill" (click)="saveState()">Save</button>
-            <button class="btn btn-default">Cancel</button>
+            <button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>
           </div>
         </form>
       </div>
     </div>
     <ng-template #centerTab>
-      <app-center-info [center]="selectedCenter" [update]="editable"></app-center-info>
+      <app-center-info [center]="selectedCenter" [update]="editable" (addCenter)="pushCenter($event)"></app-center-info>
     </ng-template>
   </div>
 </div>

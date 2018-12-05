@@ -45,14 +45,14 @@
         <div class="col-lg-3">
           <div class="form-group">
             <label class="control-label">Ctc*</label>
-            <input class="form-control" name="ctc" type="number" formControlName="ctc" (ngModelChange)="onChange()">
+            <input class="form-control" name="ctc" type="number" formControlName="ctc" (ngModelChange)="onChange();calculateBasic(salaryForm.value)">
             <span class="material-input"></span>
           </div>
         </div>
         <div class="col-lg-3">
           <div class="form-group">
             <label class="control-label">Basic*</label>
-            <input class="form-control" name="basic" type="number" formControlName="basic" readonly>
+            <input class="form-control" name="basic" type="number" formControlName="basic" (ngModelChange)="onChange()">
             <span class="material-input"></span>
           </div>
         </div>
@@ -103,7 +103,7 @@
             <label class="control-label">
               <b>Gross Salary</b>
             </label>
-            <input class="form-control" name="earning" type="number" formControlName="grossSalary" readonly>
+            <input class="form-control" name="earning" type="number" formControlName="grossSalary" readonly >
             <span class="material-input"></span>
           </div>
         </div>
@@ -113,7 +113,7 @@
           <div class="form-group">
             <input type="checkbox" name="esid" formControlName="esid" (ngModelChange)="onChange()">
             <label class="control-label">ESI*</label>
-            <input class="form-control" name="esi" type="number" ng-disabled="!runningSalary.esid" formControlName="esi"
+            <input class="form-control" name="esi" type="number" [disabled]="!salaryForm.controls.esid.value" formControlName="esi"
               readonly>
             <span class="material-input"></span>
           </div>
@@ -122,7 +122,7 @@
           <div class="form-group">
             <input type="checkbox" name="pfd" formControlName="pfd" (ngModelChange)="onChange()">
             <label class="control-label">PF*(employee)</label>
-            <input class="form-control" name="pf" type="number" ng-disabled="!runningSalary.pfd" formControlName="pfe"
+            <input class="form-control" name="pf" type="number" [disabled]="!salaryForm.controls.pfd.value" formControlName="pfe"
               readonly>
             <span class="material-input"></span>
           </div>
@@ -131,7 +131,7 @@
           <div class="form-group">
             <input type="checkbox" name="esid" formControlName="pfd" (ngModelChange)="onChange()">
             <label class="control-label">PF*</label>
-            <input class="form-control" name="pf" type="number" ng-disabled="!runningSalary.pfd" formControlName="pfr"
+            <input class="form-control" name="pf" type="number" [disabled]="!salaryForm.controls.pfd.value" formControlName="pfr"
               readonly>
             <span class="material-input"></span>
           </div>
@@ -139,9 +139,9 @@
     
         <div class="col-lg-3">
           <div class="form-group">
-            <input type="checkbox" name="pftax" formControlName="profd" (ngModelChange)="onChange()">
+            <input type="checkbox" name="pftax" formControlName="profd" disabled>
             <label class="control-label">Professional Tax*</label>
-            <input class="form-control" name="pf" type="number" ng-disabled="!runningSalary.profd" formControlName="professionalTax"
+            <input class="form-control" name="pf" type="number" [disabled]="!salaryForm.controls.profd.value" formControlName="professionalTax"
               readonly>
             <span class="material-input"></span>
           </div>
@@ -179,7 +179,7 @@
           </span>
           <ng-template #save>Save</ng-template>
         </button>
-        <button class="btn btn-default">Cancel</button>
+        <button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>
       </div>
     </form>
   </div>
