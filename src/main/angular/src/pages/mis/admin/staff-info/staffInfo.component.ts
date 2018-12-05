@@ -37,6 +37,7 @@ export class StaffInfoComponent implements OnInit {
     'Dec'
   ];
   salary: any;
+  states: any;
   constructor(
     private adminService: AdminService,
     private payrollService: PayrollService,
@@ -48,6 +49,7 @@ export class StaffInfoComponent implements OnInit {
   ngOnInit() {
     this.staffForm = this.getStaffForm();
     this.getCenters();
+    this.getStates();
     this.getCostCenters();
     this.getReportingManagers();
   }
@@ -91,6 +93,12 @@ export class StaffInfoComponent implements OnInit {
   getCenters() {
     this.adminService.getCenters().subscribe(res => {
       this.centers = res;
+    });
+  }
+
+  getStates() {
+    this.adminService.getStates().subscribe(response => {
+      this.states = response;
     });
   }
 
@@ -209,7 +217,8 @@ export class StaffInfoComponent implements OnInit {
       ifscCode: [''],
       bankName: [''],
       branchName: [''],
-      holderName: ['']
+      holderName: [''],
+      pState: ['']
     });
   }
 

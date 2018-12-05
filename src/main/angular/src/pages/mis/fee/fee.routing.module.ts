@@ -4,6 +4,7 @@ import { StudentFeeComponent } from './student-fee/student-fee.component';
 import { CenterFeeComponent } from './center-fee/center-fee.component';
 import { GenerateFeeSlipComponent } from './generate-fee-slip/generate-fee-slip.component';
 import { GenerateFeeReceiptComponent } from './generate-fee-receipt/generate-fee-receipt.component';
+import { IpsaaclubComponent } from './ipsaaclub/ipsaaclub.component';
 const feeRoutes: Routes = [
   {
     path: 'centerfeemanagement',
@@ -20,6 +21,10 @@ const feeRoutes: Routes = [
   {
     path: 'feepayment',
     component: GenerateFeeReceiptComponent
+  },
+  {
+    path: 'ipsaaclub',
+    component: IpsaaclubComponent
   }
 ];
 

@@ -154,7 +154,6 @@ export class FeeReceiptInfoComponent implements OnInit {
       FileSaver.saveAs(blob, res.headers.get('fileName'));
 
         this.alertService.successAlert('');
-        console.log(res);
         this.downloadReceipt = false;
       }, (err) => {
         this.downloadReceipt = false;

@@ -3,18 +3,13 @@ package com.synlabs.ipsaa.util;
 import com.synlabs.ipsaa.ccavenue.AesCryptUtil;
 import com.synlabs.ipsaa.entity.fee.HdfcResponse;
 import com.synlabs.ipsaa.entity.hdfc.HdfcApiDetails;
-import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecord;
-import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
-import com.synlabs.ipsaa.entity.student.StudentParent;
+import com.synlabs.ipsaa.entity.student.*;
 import com.synlabs.ipsaa.enums.HdfcResponseType;
 import com.synlabs.ipsaa.enums.HdfcStatus;
 import com.synlabs.ipsaa.enums.PaymentMode;
 import com.synlabs.ipsaa.enums.PaymentStatus;
 import com.synlabs.ipsaa.ex.ValidationException;
-import com.synlabs.ipsaa.jpa.HdfcResponseRepository;
-import com.synlabs.ipsaa.jpa.StudentFeePaymentRecordRepository;
-import com.synlabs.ipsaa.jpa.StudentFeePaymentRepository;
-import com.synlabs.ipsaa.jpa.StudentParentRepository;
+import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.service.BaseService;
 import com.synlabs.ipsaa.service.HdfcApiDetailService;
 import com.synlabs.ipsaa.view.fee.HdfcCheckoutDetails;
@@ -64,9 +59,13 @@ public class HdfcHelper extends BaseService
 
   @Autowired
   private StudentFeePaymentRepository slipRepository;
+  @Autowired
+  private StudentFeePaymentRequestIpsaaClubRepository ipsaaclubSlipRepository;
 
   @Autowired
   private StudentFeePaymentRecordRepository receiptRepository;
+  @Autowired
+  private StudentFeePaymentRecordIpsaaClubRepository ipsaaclubReceiptRepository;
 
   @Autowired
   private StudentParentRepository parentRepository;
@@ -93,7 +92,7 @@ public class HdfcHelper extends BaseService
       throw new ValidationException("Unable to decrypt success gateway response");
     }
 
-    //saving pg response to database
+   // saving pg response to database
     hdfcResponse.putDetails(resp);
     hdfcResponseRepository.saveAndFlush(hdfcResponse);
 
@@ -104,54 +103,96 @@ public class HdfcHelper extends BaseService
       throw new ValidationException(String.format("Transaction Failed: %s", hdfcResponse.getStatusMessage()));
     }
 
-    StudentFeePaymentRequest slip = null;
-    if (!StringUtils.isEmpty(hdfcResponse.getMerchantParam5()))
-    {
-      slip = slipRepository.findOne(Long.parseLong(hdfcResponse.getMerchantParam5()));
+//    if (!StringUtils.isEmpty(hdfcResponse.getMerchantParam5()))
+//    {
+//      StudentFeePaymentRequest studentSlip;
+//      studentSlip = slipRepository.findOne(Long.parseLong(hdfcResponse.getMerchantParam5()));
+//    }
+//    if {
+    StudentFeePaymentRequestIpsaaClub ipsaaClubSlip=null;
+    StudentFeePaymentRequest studentSlip = slipRepository.findOneByTnxid(orderNumber);
+    if(studentSlip==null){
+      ipsaaClubSlip=ipsaaclubSlipRepository.findOneByTnxid(orderNumber);
     }
-    else
-    {
-      slip = slipRepository.findOneByTnxid(orderNumber);
-    }
-    if (slip == null)
+
+    if (studentSlip == null && ipsaaClubSlip==null)
     {
       hdfcResponse.setStatus(HdfcStatus.MissingSlip);
       hdfcResponseRepository.saveAndFlush(hdfcResponse);
       throw new ValidationException("Cannot locate fee slip.");
     }
-    hdfcResponse.setSlip(slip);
-    hdfcResponse.setStatus(HdfcStatus.NotRecorded);
-    hdfcResponseRepository.saveAndFlush(hdfcResponse);
+    if(studentSlip!=null){
+      hdfcResponse.setSlip(studentSlip);
+      hdfcResponse.setStatus(HdfcStatus.NotRecorded);
+      hdfcResponseRepository.saveAndFlush(hdfcResponse);
 
-    //recording payment
-    BigDecimal paidAmount = new BigDecimal(hdfcResponse.getAmount());
-    BigDecimal payableAmount = getPayableAmount(slip);
-    StudentFeePaymentRecord receipt = new StudentFeePaymentRecord();
-    receipt.setPaymentMode(PaymentMode.Hdfc);
-    receipt.setPaymentDate(new Date());
-    receipt.setRequest(slip);
-    receipt.setStudent(slip.getStudent());
-    receipt.setPaidAmount(paidAmount);
-    //TODO : set transaction as order_id or tracking_id from response.
-    receipt.setTxnid(hdfcResponse.getTrackingId());
-    if (payableAmount.intValue() == paidAmount.intValue())
-    {
-      receipt.setPaymentStatus(PaymentStatus.Paid);
-      slip.setPaymentStatus(PaymentStatus.Paid);
+      //recording payment
+      BigDecimal paidAmount = new BigDecimal(hdfcResponse.getAmount());
+      BigDecimal payableAmount = getPayableAmount(studentSlip);
+      StudentFeePaymentRecord receipt = new StudentFeePaymentRecord();
       receipt.setPaymentMode(PaymentMode.Hdfc);
-    }
-    else
-    {
-      receipt.setPaymentStatus(PaymentStatus.PartiallyPaid);
-      slip.setPaymentStatus(PaymentStatus.PartiallyPaid);
-      receipt.setPaymentMode(PaymentMode.Hdfc);
-    }
-    receiptRepository.saveAndFlush(receipt);
-    slipRepository.saveAndFlush(slip);
-    hdfcResponse.setStatus(HdfcStatus.Success);
-    hdfcResponseRepository.saveAndFlush(hdfcResponse);
+      receipt.setPaymentDate(new Date());
+      receipt.setRequest(studentSlip);
+      receipt.setStudent(studentSlip.getStudent());
+      receipt.setPaidAmount(paidAmount);
+      //TODO : set transaction as order_id or tracking_id from response.
+      receipt.setTxnid(hdfcResponse.getTrackingId());
+      if (payableAmount.intValue() == paidAmount.intValue())
+      {
+        receipt.setPaymentStatus(PaymentStatus.Paid);
+        studentSlip.setPaymentStatus(PaymentStatus.Paid);
+        receipt.setPaymentMode(PaymentMode.Hdfc);
+      }
+      else
+      {
+        receipt.setPaymentStatus(PaymentStatus.PartiallyPaid);
+        studentSlip.setPaymentStatus(PaymentStatus.PartiallyPaid);
+        receipt.setPaymentMode(PaymentMode.Hdfc);
+      }
+      receiptRepository.saveAndFlush(receipt);
+      slipRepository.saveAndFlush(studentSlip);
+      hdfcResponse.setStatus(HdfcStatus.Success);
+      hdfcResponseRepository.saveAndFlush(hdfcResponse);
+      return hdfcResponse.getId();
+    }else{
+      hdfcResponse.setSlip(ipsaaClubSlip);
+      hdfcResponse.setStatus(HdfcStatus.NotRecorded);
+      hdfcResponseRepository.saveAndFlush(hdfcResponse);
 
-    return hdfcResponse.getId();
+      //recording payment
+      BigDecimal paidAmount = new BigDecimal(hdfcResponse.getAmount());
+      BigDecimal payableAmount = getPayableAmount(ipsaaClubSlip);
+      StudentFeePaymentRecordIpsaaClub receipt = new StudentFeePaymentRecordIpsaaClub();
+      receipt.setPaymentMode(PaymentMode.Hdfc);
+      receipt.setPaymentDate(new Date());
+      receipt.setRequest(ipsaaClubSlip);
+      receipt.setStudent(ipsaaClubSlip.getStudent());
+      receipt.setPaidAmount(paidAmount);
+      //TODO : set transaction as order_id or tracking_id from response.
+      receipt.setTxnid(hdfcResponse.getTrackingId());
+      if (payableAmount.intValue() == paidAmount.intValue())
+      {
+        receipt.setPaymentStatus(PaymentStatus.Paid);
+        ipsaaClubSlip.setPaymentStatus(PaymentStatus.Paid);
+        receipt.setPaymentMode(PaymentMode.Hdfc);
+      }
+      else
+      {
+        receipt.setPaymentStatus(PaymentStatus.PartiallyPaid);
+        ipsaaClubSlip.setPaymentStatus(PaymentStatus.PartiallyPaid);
+        receipt.setPaymentMode(PaymentMode.Hdfc);
+      }
+      ipsaaclubReceiptRepository.saveAndFlush(receipt);
+      ipsaaclubSlipRepository.saveAndFlush(ipsaaClubSlip);
+      hdfcResponse.setStatus(HdfcStatus.Success);
+      hdfcResponseRepository.saveAndFlush(hdfcResponse);
+      return hdfcResponse.getId();
+    }
+
+
+
+
+
   }
 
   public Long recordPaymentFailure(String encResp, String orderNumber)
@@ -263,7 +304,65 @@ public class HdfcHelper extends BaseService
 
     return details;
   }
+  public HdfcCheckoutDetails getCheckoutDetailsIpsaaclub(Long slipId, Long parentId)
+  {
+    StudentParent parent = parentRepository.findOne(parentId);
+    if (parent == null)
+    {
+      throw new ValidationException("Cannot load parent details.");
+    }
 
+    StudentFeePaymentRequestIpsaaClub slip = ipsaaclubSlipRepository.findOne(slipId);
+    if (slip == null)
+    {
+      throw new ValidationException("Missing checkout details.");
+    }
+    if(slip.isExpire()){
+      throw new ValidationException("This slip is expired ! Please contact tech support.");
+    }
+
+    HdfcApiDetails hdfcApiDetails=hdfcApiDetailService.getDetailsByCenter(slip.getStudent().getCenter());
+
+    if(hdfcApiDetails==null){
+      hdfcApiDetails=hdfcApiDetailService.findDefaultOne();
+      if(hdfcApiDetails==null)
+        throw new ValidationException("Can not find gateway details for this center! contact tech support.");
+    }
+
+    HdfcCheckoutDetails details = new HdfcCheckoutDetails();
+
+    String tnxid = slip.getTnxid();
+    tnxid = RandomStringUtils.randomNumeric(16);
+    slip.setTnxid(tnxid);
+    ipsaaclubSlipRepository.saveAndFlush(slip);
+    details.setTnxId(tnxid);
+    details.setOrderId(tnxid);
+    details.setAccessCode(hdfcApiDetails.getAccessCode());
+    details.setMerchantId(hdfcApiDetails.getVsa());
+    details.setCheckoutDetailsUrl(checkoutBaseUrl);
+
+    details.setSlipDetails(slip);
+    details.setParentDetails(parent);
+    details.setTransactionUrl(baseurl);
+    details.setFeeAmount(getPayableAmount(slip));
+
+    StringBuilder params = new StringBuilder();
+    Map<String, String> map = putBillingDetails(null, details);
+    map.put("slip_id", slip.getId() + "");
+    map.forEach((k, v) -> {
+      params.append(k)
+              .append("=")
+              .append(v)
+              .append("&");
+    });
+    params.deleteCharAt(params.length() - 1);
+
+    AesCryptUtil aesUtil = new AesCryptUtil(hdfcApiDetails.getWorkingKey());
+    String encryptedParams = aesUtil.encrypt(params.toString());
+    details.setEncRequest(encryptedParams);
+
+    return details;
+  }
   private BigDecimal getPayableAmount(StudentFeePaymentRequest slip)
   {
     List<StudentFeePaymentRecord> receipts = receiptRepository.findByRequest(slip);
@@ -271,6 +370,19 @@ public class HdfcHelper extends BaseService
     if (!CollectionUtils.isEmpty(receipts))
     {
       for (StudentFeePaymentRecord receipt : receipts)
+      {
+        payableAmount = payableAmount.subtract(receipt.getPaidAmount());
+      }
+    }
+    return payableAmount;
+  }
+  private BigDecimal getPayableAmount(StudentFeePaymentRequestIpsaaClub slip)
+  {
+    List<StudentFeePaymentRecordIpsaaClub> receipts = ipsaaclubReceiptRepository.findByRequest(slip);
+    BigDecimal payableAmount = slip.getTotalFee().add(BigDecimal.ZERO);
+    if (!CollectionUtils.isEmpty(receipts))
+    {
+      for (StudentFeePaymentRecordIpsaaClub receipt : receipts)
       {
         payableAmount = payableAmount.subtract(receipt.getPaidAmount());
       }

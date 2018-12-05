@@ -34,6 +34,8 @@ export class StudentInfoComponent implements OnInit {
   siblingGroup: any = {};
   paymentHistory: any[] = [];
   programId: any;
+  isIpsaaclub: boolean;
+  disableGenerate: boolean;
   @Input()
   set id(id: number) {
     if (id) {
@@ -45,10 +47,16 @@ export class StudentInfoComponent implements OnInit {
         this.studentForm.controls['groupId'].patchValue(student.group.id);
         this.studentForm.controls['programId'].patchValue(student.program.id);
         this.studentForm.controls['fee'].patchValue(student.fee);
+        if (this.student.program.id === 72932732558618) {
+          this.isIpsaaclub = true;
+        } else {
+          this.isIpsaaclub = false;
+        }
         this.getPaymentHistory(student);
       });
     } else {
       this.newStudent = true;
+      this.isIpsaaclub = false;
       this.studentForm = this.getStudentForm();
     }
   }
@@ -200,6 +208,15 @@ export class StudentInfoComponent implements OnInit {
 
   getFee(programId: number) {
     if (programId && this.studentForm.controls['centerId'].value) {
+      if (programId === 72932732558618) {
+        this.isIpsaaclub = true;
+      } else {
+        this.isIpsaaclub = false;
+      }
+      if (!this.newStudent && programId === this.student.program.id) {
+        this.studentForm.controls['fee'].patchValue(this.student.fee);
+        return;
+      }
       this.adminService
         .getProgramFee({
           centerId: this.studentForm.controls['centerId'].value,
@@ -210,20 +227,17 @@ export class StudentInfoComponent implements OnInit {
           if (this.studentForm.contains('fee')) {
             const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
             feeControlForm.reset();
+<<<<<<< HEAD
             feeControlForm.patchValue(this.getFeeField());
+=======
+>>>>>>> 672bf4666be0d0b494d01b0de28ea20fd627c1c2
             feeControlForm.patchValue(response);
             console.log(feeControlForm.value);
             // feeControlForm.controls['baseFee'].patchValue(response.fee); // Monthly Fees
             feeControlForm.controls['finalBaseFee'].patchValue(response.fee); // Final Monthly Fees
-            feeControlForm.controls['finalAnnualFee'].patchValue(
-              response.annualFee
-            );
-            feeControlForm.controls['finalAdmissionCharges'].patchValue(
-              response.admissionCharges
-            );
-            feeControlForm.controls['finalSecurityDeposit'].patchValue(
-              response.securityDeposit
-            );
+            feeControlForm.controls['finalAnnualFee'].patchValue(response.annualFee);
+            feeControlForm.controls['finalAdmissionCharges'].patchValue(response.admissionCharges);
+            feeControlForm.controls['finalSecurityDeposit'].patchValue(response.securityDeposit);
             const sprogram = this.programs.find(program => program.id === programId);
             this.groups = (sprogram) ? sprogram.groups : [];
             this.calculateFinalFee(feeControlForm.value);
@@ -300,7 +314,6 @@ export class StudentInfoComponent implements OnInit {
         feeControlForm.controls[final].setValue(fee[base]);
         return;
       }
-
     }
 
 
@@ -445,5 +458,15 @@ export class StudentInfoComponent implements OnInit {
   selectedPaymentHistoryDetails(history) {
     this.getPayReceiptHistory.emit(history);
     this.adminService.viewPanelForFee.next(true);
+  }
+
+  generateStudentFee() {
+    this.disableGenerate = true;
+    this.adminService.generateIpsaaclubStudentFee(this.student.id, {}).subscribe(response => {
+      this.disableGenerate = false;
+      this.alertService.successAlert('Student Fee generated');
+    }, error => {
+      this.disableGenerate = false;
+    });
   }
 }

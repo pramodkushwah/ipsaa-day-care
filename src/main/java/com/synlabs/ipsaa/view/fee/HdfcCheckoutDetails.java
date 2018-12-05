@@ -3,6 +3,7 @@ package com.synlabs.ipsaa.view.fee;
 import com.synlabs.ipsaa.entity.common.Address;
 import com.synlabs.ipsaa.entity.student.Student;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequestIpsaaClub;
 import com.synlabs.ipsaa.entity.student.StudentParent;
 import com.synlabs.ipsaa.enums.FeeDuration;
 import com.synlabs.ipsaa.enums.PaymentStatus;
@@ -57,6 +58,20 @@ public class HdfcCheckoutDetails implements Response
   }
 
   public void setSlipDetails(StudentFeePaymentRequest slip)
+  {
+    slipId = slip.getId() + "";
+    feeAmount = slip.getTotalFee();
+    paymentStatus = slip.getPaymentStatus();
+    duration = slip.getFeeDuration();
+    period = FeeUtils.getMonth(slip);
+
+    Student student = slip.getStudent();
+    studentName = student.getName();
+    centerName = student.getCenterName();
+    programName = student.getProgramName();
+    groupName = student.getGroupName();
+  }
+  public void setSlipDetails(StudentFeePaymentRequestIpsaaClub slip)
   {
     slipId = slip.getId() + "";
     feeAmount = slip.getTotalFee();

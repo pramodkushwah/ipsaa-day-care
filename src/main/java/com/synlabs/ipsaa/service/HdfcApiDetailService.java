@@ -2,11 +2,11 @@ package com.synlabs.ipsaa.service;
 
 import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.hdfc.HdfcApiDetails;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecordIpsaaClub;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequestIpsaaClub;
 import com.synlabs.ipsaa.entity.student.StudentParent;
-import com.synlabs.ipsaa.jpa.CenterRepository;
-import com.synlabs.ipsaa.jpa.HdfcApiDetailRepository;
-import com.synlabs.ipsaa.jpa.StudentFeePaymentRepository;
+import com.synlabs.ipsaa.jpa.*;
 import com.synlabs.ipsaa.view.hdfcGateWayDetails.HdfcApiDetailRequest;
 import com.synlabs.ipsaa.view.hdfcGateWayDetails.HdfcApiDetailResponce;
 import org.apache.poi.ss.usermodel.*;
@@ -27,6 +27,8 @@ public class HdfcApiDetailService {
     @Autowired
     private StudentFeePaymentRepository slipRepository;
     @Autowired
+    private StudentFeePaymentRequestIpsaaClubRepository IpsaaSlipRepository;
+    @Autowired
     private CenterRepository centerRepository;
 
     private long DEFULT_GATEWAY_ID=33;
@@ -36,7 +38,12 @@ public class HdfcApiDetailService {
     }
     public HdfcApiDetails findByOrderId(String orderId){
         StudentFeePaymentRequest request= slipRepository.findOneByTnxid(orderId);
-        return getDetailsByCenter(request.getStudent().getCenter());
+        if(request==null){
+
+            StudentFeePaymentRequestIpsaaClub req=IpsaaSlipRepository.findOneByTnxid(orderId);
+            return getDetailsByCenter(req.getStudent().getCenter());
+        }else
+            return getDetailsByCenter(request.getStudent().getCenter());
     }
 
     @Transactional
