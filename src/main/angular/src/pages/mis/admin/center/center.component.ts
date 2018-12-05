@@ -274,7 +274,7 @@ export class CenterComponent implements OnInit {
   filterCenter(searchKey) {
     const val = searchKey.toLowerCase();
     if (val && val.trim() !== '') {
-      this.centers = this.centersCopy.filter((center: any) => {
+      this.tableData = this.centersCopy.filter((center: any) => {
         return center.code.toLowerCase().startsWith(val);
       });
     }

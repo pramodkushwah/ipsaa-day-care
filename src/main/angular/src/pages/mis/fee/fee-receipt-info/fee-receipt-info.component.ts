@@ -139,7 +139,6 @@ export class FeeReceiptInfoComponent implements OnInit {
         // this.hideSidePanel();
       }, (err) => {
         this.recordPayment = false;
-        this.alertService.errorAlert(err);
       });
 
   }
@@ -158,7 +157,6 @@ export class FeeReceiptInfoComponent implements OnInit {
         this.downloadReceipt = false;
       }, (err) => {
         this.downloadReceipt = false;
-        // this.alertService.errorAlert(err);
       });
   }
 
@@ -201,7 +199,6 @@ export class FeeReceiptInfoComponent implements OnInit {
           }
           this.paymentUpdate = {};
         }, (err) => {
-
           payment.disabled = false;
         });
     }

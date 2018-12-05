@@ -41,8 +41,6 @@ selectedQuater: any;
     this.adminService.getCenters()
       .subscribe((res: any) => {
         this.centerList = res;
-      }, (err) => {
-        this.alertService.errorAlert(err);
       });
   }
   studentFeeCollectionReportdownload() {
@@ -60,7 +58,6 @@ selectedQuater: any;
 
         this.downloadData = false;
       }, (err) => {
-        this.alertService.errorAlert(err);
         this.downloadData = false;
       });
   }

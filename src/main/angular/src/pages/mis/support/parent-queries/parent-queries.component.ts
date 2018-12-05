@@ -38,8 +38,6 @@ export class ParentQueriesComponent implements OnInit {
       .subscribe((res: any) => {
         this.queries = res;
         console.log(res);
-      }, (err) => {
-        this.alertService.errorAlert(err);
       });
   }
 
@@ -49,8 +47,6 @@ export class ParentQueriesComponent implements OnInit {
         this.showSupport = true;
         this.selectedQuery = res;
         console.log(res);
-      }, (err) => {
-        this.alertService.errorAlert(err);
       });
   }
 
@@ -62,8 +58,6 @@ export class ParentQueriesComponent implements OnInit {
         this.filterQueries(res);
         this.closeReplyModel();
         this.alertService.successAlert('');
-      }, (err) => {
-        this.alertService.errorAlert(err);
       });
   }
   closeQuery(query) {
@@ -74,8 +68,6 @@ export class ParentQueriesComponent implements OnInit {
         this.selectedQuery = res;
         // this.showSupport = false;
         this.alertService.successAlert('');
-      }, (err) => {
-        this.alertService.errorAlert(err);
       });
   }
 

@@ -34,6 +34,7 @@ export class StaffAttendanceComponent implements OnInit {
     staff.clockinDisabled = true;
     this.adminService.clockInStaff(staff).subscribe((response: any) => {
       staff.clockinDisabled = false;
+      staff.status = 'Present';
       this.alertService.successAlert('Clock in OK');
     }, error => {
       staff.clockinDisabled = false;
@@ -44,6 +45,8 @@ export class StaffAttendanceComponent implements OnInit {
     staff.clockoutDisabled = true;
     this.adminService.clockOutStaff(staff).subscribe((response: any) => {
       staff.clockoutDisabled = false;
+      staff.status = '';
+
       this.alertService.successAlert('Clock out OK');
     }, error => {
       staff.clockoutDisabled = false;

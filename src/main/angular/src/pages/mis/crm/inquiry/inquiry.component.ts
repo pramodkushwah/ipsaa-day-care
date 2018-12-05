@@ -94,7 +94,6 @@ export class InquiryComponent implements OnInit {
       }, (err) => {
         this.alertService.loading.next(false);
 
-        this.alertService.errorAlert(err);
 
       });
   }
@@ -135,7 +134,6 @@ console.log(this.filterBy);
         this.inquiryTable = false;
         this.followUpsTable = true;
       }, (err) => {
-        this.alertService.errorAlert(err);
         this.alertService.loading.next(false);
 
       });

@@ -304,7 +304,6 @@ export class CenterFeeComponent implements OnInit {
 
             this.saving = false;
 
-            this.alertService.errorAlert(err);
           });
 
 
@@ -324,7 +323,6 @@ export class CenterFeeComponent implements OnInit {
 
             this.saving = false;
 
-            this.alertService.errorAlert(err);
           });
 
 
@@ -360,9 +358,6 @@ export class CenterFeeComponent implements OnInit {
 
           }, (err) => {
             this.saving = false;
-
-            this.alertService.errorAlert('sorry can not be edit');
-
           });
       } else {
 
@@ -388,8 +383,6 @@ export class CenterFeeComponent implements OnInit {
 
           }, (err) => {
             this.saving = false;
-
-            this.alertService.errorAlert('error on new');
           });
       }
 
@@ -415,7 +408,6 @@ export class CenterFeeComponent implements OnInit {
           }, (err) => {
             this.saving = false;
 
-            this.alertService.errorAlert(err);
           });
 
       } else {
@@ -430,8 +422,6 @@ export class CenterFeeComponent implements OnInit {
             this.alertService.successAlert('Edit successfuly');
 
             this.chargeListForm.reset();
-          }, (err) => {
-            this.alertService.errorAlert(err);
           });
 
       }
@@ -454,8 +444,6 @@ export class CenterFeeComponent implements OnInit {
         .subscribe((res: any) => {
           this.selectedCenterDetails = this.selectedCenterDetails.filter(center => center.id !== id);
           this.alertService.successAlert('delete successfuly');
-        }, (err) => {
-          this.alertService.errorAlert(err);
         });
     }
 
@@ -465,8 +453,6 @@ export class CenterFeeComponent implements OnInit {
         .subscribe((res: any) => {
           this.additionCharge = this.additionCharge.filter(addCharge => addCharge.id !== id);
           this.alertService.successAlert('delete successfuly');
-        }, (err) => {
-          this.alertService.errorAlert(err);
         });
     }
   }

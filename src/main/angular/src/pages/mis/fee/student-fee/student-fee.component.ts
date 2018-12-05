@@ -51,7 +51,6 @@ update = true;
         this.loadingFeeList = false;
       }, (err) => {
         this.alertService.loading.next(false);
-        this.alertService.errorAlert(err);
       });
   }
 
