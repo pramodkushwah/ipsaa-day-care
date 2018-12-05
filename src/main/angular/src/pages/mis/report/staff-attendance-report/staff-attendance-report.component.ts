@@ -32,8 +32,6 @@ export class StaffAttendanceReportComponent implements OnInit {
     this.adminService.getCenters()
       .subscribe((res: any) => {
         this.centerList = res;
-      }, (err) => {
-        this.alertService.errorAlert(err);
       });
   }
   staffAttendanceReportDownload() {
@@ -53,7 +51,6 @@ console.log(this.staffAttendanceFor);
         this.downloadData = false;
         this.staffAttendanceFor = {};
       }, (err) => {
-        this.alertService.errorAlert(err);
         this.downloadData = false;
       });
   }

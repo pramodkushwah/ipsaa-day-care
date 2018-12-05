@@ -264,7 +264,7 @@ export class AdminService {
   }
 
   clockOutStaff(staff: any) {
-    return this.api.post('api/attendance/staff/clockout/', { staffId: staff.id });
+    return this.api.post('api/attendance/staff/clockout/', { employeeId: staff.id });
   }
 
   staffFullLeave(eid: any) {

@@ -429,12 +429,45 @@ export class DashboardComponent implements OnInit {
   }
 
 
-scroll(el) {
-  console.log(el);
-this.terget = el;
-  el.scrollIntoView();
+  scroll(el) {
+    console.log(el);
+    this.terget = el;
+    el.scrollIntoView();
 
-}
+  }
+
+
+  getFilterStaff(fitlterBy) {
+
+    this.adminService.viewPanel.next(false);
+    this.alertService.loading.next(true);
+
+    this.tableFor = 'staff';
+    this.tableTitle = 'Staff';
+    this.tableData = [];
+
+
+    this.dashboardService.getFilterStaff(fitlterBy)
+      .subscribe((res: any) => {
+
+        this.tableData = res;
+        this.alertService.loading.next(false);
+
+        this.tableColumn = [
+          'eid',
+          'name',
+          'designation',
+          'mobile',
+          'center',
+          'employer',
+          'ctc'
+        ];
+        this.scroll(this.terget);
+
+      }, (err) => {
+        this.alertService.errorAlert(err);
+      });
+  }
 }
 
 

@@ -85,4 +85,10 @@ export class DashboardService {
   getFollowups() {
     return this.api.post('api/dash/followupreport', {});
   }
+
+
+
+  getFilterStaff(filterBy) {
+return this.api.post('api/dash/' + filterBy , {});
+  }
 }

@@ -85,6 +85,6 @@
     </div>
   </div>
   <div class="col-lg-6" *ngIf="viewPanel">
-    <app-student-info [id]="selectedStudent.id" [update]="update"></app-student-info>
+    <app-student-info [id]="selectedStudent.id" [update]="update" (addStudent)= "pushNewStudent($event)"></app-student-info>
   </div>
 </div>

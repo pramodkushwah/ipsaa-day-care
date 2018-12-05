@@ -32,8 +32,6 @@ export class InquiryReportComponent implements OnInit {
     this.adminService.getCenters()
       .subscribe((res: any) => {
         this.centerList = res;
-      }, (err) => {
-        this.alertService.errorAlert(err);
       });
   }
   downloadReport() {
@@ -56,7 +54,6 @@ export class InquiryReportComponent implements OnInit {
             FileSaver.saveAs(blob, res.headers.get('fileName'));
 
       }, (err) => {
-        this.alertService.errorAlert(err);
         this.downloadData = false;
       });
   }

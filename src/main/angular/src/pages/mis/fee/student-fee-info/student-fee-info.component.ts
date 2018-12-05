@@ -131,8 +131,6 @@ export class StudentFeeInfoComponent implements OnInit {
       .subscribe((res: any) => {
         _.extend(this.updateFee, res);
         this.alertService.successAlert(' ');
-      }, (err) => {
-        this.alertService.errorAlert(err);
       });
   }
 

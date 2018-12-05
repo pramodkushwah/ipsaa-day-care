@@ -55,8 +55,6 @@ export class HolidaysComponent implements OnInit {
       .subscribe((res: any) => {
         this.zones = res;
         console.log(res);
-      }, (err) => {
-        this.alertService.errorAlert(err);
       });
   }
 
@@ -64,8 +62,6 @@ export class HolidaysComponent implements OnInit {
     this.adminService.getStatesByZone(zoneId)
       .subscribe((res: any) => {
         this.states = res;
-      }, (err) => {
-        this.alertService.errorAlert(err);
       });
   }
 
@@ -73,8 +69,6 @@ export class HolidaysComponent implements OnInit {
     this.adminService.getCitiesByStateByZone(stateId)
       .subscribe((res: any) => {
         this.cities = res;
-      }, (err) => {
-        this.alertService.errorAlert(err);
       });
   }
 
@@ -98,7 +92,6 @@ export class HolidaysComponent implements OnInit {
         this.downloadinData = true;
         this.showtable = true;
         this.alertService.loading.next(false);
-        this.alertService.errorAlert(err);
       });
 
 

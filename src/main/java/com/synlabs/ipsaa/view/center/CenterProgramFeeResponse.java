@@ -13,7 +13,7 @@ public class CenterProgramFeeResponse implements Response
   private ProgramResponse program;
   private CenterResponse  center;
 
-  private Integer fee;
+  private Integer baseFee;
   private Integer securityDeposit;
   private Integer annualFee;
   private Integer admissionCharges;
@@ -28,7 +28,7 @@ public class CenterProgramFeeResponse implements Response
     {
       return;
     }
-    fee = centerProgramFee.getFee();
+    baseFee = centerProgramFee.getFee();
     admissionCharges =centerProgramFee.getAddmissionFee()==null?0:centerProgramFee.getAddmissionFee().intValue();
     securityDeposit = centerProgramFee.getDeposit();
     annualFee = centerProgramFee.getAnnualFee();
@@ -92,14 +92,14 @@ public class CenterProgramFeeResponse implements Response
     this.center = center;
   }
 
-  public Integer getFee()
+  public Integer getBaseFee()
   {
-    return fee;
+    return baseFee;
   }
 
-  public void setFee(Integer fee)
+  public void setBaseFee(Integer baseFee)
   {
-    this.fee = fee;
+    this.baseFee = baseFee;
   }
 
   public Integer getSecurityDeposit()

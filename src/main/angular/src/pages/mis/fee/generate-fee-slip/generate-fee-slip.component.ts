@@ -92,7 +92,6 @@ export class GenerateFeeSlipComponent implements OnInit {
         this.downloadinData = true;
         this.showtable = true;
 
-        this.alertService.errorAlert(err);
       });
 
   }
@@ -274,7 +273,6 @@ export class GenerateFeeSlipComponent implements OnInit {
           this.alertService.successAlert('');
         }, (err) => {
           this.saveFeeSlip = false;
-          this.alertService.errorAlert(err);
         });
     }
     if (value === 'Regenerate') {
@@ -288,7 +286,6 @@ export class GenerateFeeSlipComponent implements OnInit {
           this.alertService.successAlert('');
         }, (err) => {
           this.regenerateSlip = false;
-          this.alertService.errorAlert(err);
         });
     }
 
@@ -306,7 +303,6 @@ export class GenerateFeeSlipComponent implements OnInit {
           this.alertService.successAlert('');
         }, (err) => {
           this.regenerateSlip = false;
-          this.alertService.errorAlert(err);
         });
     }
 
@@ -327,7 +323,6 @@ export class GenerateFeeSlipComponent implements OnInit {
         this.alertService.successAlert('');
       }, (err) => {
         this.downloadingSlips = false;
-        // this.alertService.errorAlert(err);
       }
       );
   }
@@ -342,7 +337,6 @@ export class GenerateFeeSlipComponent implements OnInit {
         this.alertService.successAlert('');
       }, (err) => {
         this.lockSlip = false;
-        this.alertService.errorAlert(err);
       });
   }
 
@@ -359,7 +353,6 @@ export class GenerateFeeSlipComponent implements OnInit {
 
       }, (err) => {
         this.regeneratingSlip = false;
-        this.alertService.errorAlert(err);
       });
   }
 
@@ -377,9 +370,7 @@ export class GenerateFeeSlipComponent implements OnInit {
         this.eMailForm.reset();
         this.alertService.successAlert('');
 this.showSidePanel(false, null);
-      }, (err) => {
-        this.alertService.errorAlert(err);
-      });
+   });
   }
 
 

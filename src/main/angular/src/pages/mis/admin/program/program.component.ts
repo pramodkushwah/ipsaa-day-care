@@ -53,9 +53,9 @@ export class ProgramComponent implements OnInit {
     this.viewPanel = true;
     this.selectedGroups = [];
     if (this.selectedTab === 'Program') {
-      this.selectedGroup = (object) ? object : {};
+      this.selectedProgram = (object) ? object : {};
       this.programForm = this.getProgramForm();
-      this.programForm.patchValue(this.selectedGroup);
+      this.programForm.patchValue(this.selectedProgram);
       (object) ? this.selectedGroups = JSON.parse(JSON.stringify(object.groups)) : this.selectedGroups = [];
     } else {
       this.selectedGroup = (object) ? object : {};
