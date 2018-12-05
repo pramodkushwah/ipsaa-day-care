@@ -207,7 +207,8 @@ export class StudentInfoComponent implements OnInit {
         .subscribe((response: any) => {
           this.programFee = response;
           if (this.studentForm.contains('fee')) {
-            const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
+            let feeControlForm = <FormGroup>this.studentForm.controls['fee'];
+            feeControlForm = this.getFeeField();
             feeControlForm.patchValue(response);
             feeControlForm.controls['baseFee'].patchValue(response.fee); // Monthly Fees
             feeControlForm.controls['finalBaseFee'].patchValue(response.fee); // Final Monthly Fees
@@ -286,15 +287,38 @@ export class StudentInfoComponent implements OnInit {
   calculateDiscount(base: string, final: string, targetDiscount: string) {
     const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
     const fee = feeControlForm.value;
-    if (fee[base] > 0 && fee[final]) {
-      if (fee[base] - fee[final] > 0) {
-        feeControlForm.controls[targetDiscount].patchValue(
-          Number((((fee[base] - fee[final]) / fee[base]) * 100).toFixed(2))
+    // if (fee[targetDiscount] !== 0) {
+
+    //   feeControlForm.controls[targetDiscount].setValue(fee[targetDiscount]);
+    // } else {
+    //   feeControlForm.controls[targetDiscount].setValue(0);
+
+    // }
+
+    if (fee[final] === fee[base]) {
+      if (fee[base] === 0) {
+        return;
+      } else {
+        feeControlForm.controls[targetDiscount].setValue(0);
+        feeControlForm.controls[final].setValue(fee[base]);
+        return;
+      }
+
+    }
+
+
+    const finalChange = fee[final] || 0;
+
+    if (fee[base] - finalChange > 0) {
+      // if (fee[base] - fee[final] > 0) {
+        feeControlForm.controls[targetDiscount].setValue(
+          Number((((fee[base] - finalChange) / fee[base]) * 100).toFixed(2))
         );
       } else {
-        feeControlForm.controls[targetDiscount].patchValue(0);
+        feeControlForm.controls[targetDiscount].setValue(0);
+        feeControlForm.controls[final].setValue(fee[base]);
+
       }
-    }
 
     this.calculateGstFee(fee, this.studentForm.value);
     this.calculateFinalFee(fee);

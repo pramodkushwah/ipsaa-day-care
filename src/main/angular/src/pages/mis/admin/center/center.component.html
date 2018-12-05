@@ -124,10 +124,10 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let row of tableData;let i = index;">
-                    <td *ngFor="let col of tableColumn;">{{row[col]}}</td>
+                    <td *ngFor="let col of tableColumn;"> {{row[col]}}</td>
                     <td>
                       <button mat-raised-button class="btn btn-primary btn-sm" (click)="showSidePanel(true,row)"> Edit</button>
-                      <button mat-raised-button class="btn btn-danger btn-sm" (click)="delete">Delete</button>
+                      <button mat-raised-button class="btn btn-danger btn-sm" (click)="deleteCity(row)">Delete</button>
                     </td>
                   </tr>
                   <tr *ngIf="tableColumn.length && !tableData.length">

@@ -428,7 +428,7 @@
                   <label class="control-label">Final Annual Charges
                   </label>
                   <input class="form-control" type="number" [readonly]="!editable" formControlName="finalAnnualFee"
-                    required min="0" (ngModelChange)="calculateDiscount('annualFee','finalAnnualFee', 'discountAnnualCharges')">
+                    required min="0" (keyup)="calculateDiscount('annualFee','finalAnnualFee', 'discountAnnualCharges')">
                 </div>
               </div>
               <div class="col-md-4">
@@ -449,7 +449,7 @@
                 <div class="form-group">
                   <label class="control-label">Final Admission Charges</label>
                   <input class="form-control" type="number" [readonly]="!editable" formControlName="finalAdmissionCharges"
-                    required min="0" (ngModelChange)="calculateDiscount('admissionCharges', 'finalAdmissionCharges', 'discountAdmissionCharges')"
+                    required min="0" (keyup)="calculateDiscount('admissionCharges', 'finalAdmissionCharges', 'discountAdmissionCharges')"
                     [disabled]="!studentForm.controls.fee.controls.admissionCharges.value">
                 </div>
               </div>
@@ -474,7 +474,7 @@
                 <div class="form-group">
                   <label class="control-label">Final Monthly Fees Amount</label>
                   <input class="form-control" type="text" [readonly]="!editable" formControlName="finalBaseFee"
-                    required [disabled]="!studentForm.controls.fee.controls.baseFee.value" min="0" (ngModelChange)="calculateDiscount('baseFee', 'finalBaseFee', 'discountBaseFee')">
+                    required [disabled]="!studentForm.controls.fee.controls.baseFee.value" min="0" (keyup)="calculateDiscount('baseFee', 'finalBaseFee', 'discountBaseFee')">
                 </div>
               </div>
 
@@ -498,7 +498,7 @@
                 <div class="form-group">
                   <label class="control-label">Final Security Deposit Fees</label>
                   <input class="form-control" type="number" [readonly]="!editable" formControlName="finalSecurityDeposit"
-                    required [disabled]="!studentForm.controls.fee.controls.securityDeposit.value" min="0" (ngModelChange)="calculateDiscount('securityDeposit', 'finalSecurityDeposit', 'discountSecurityDeposit')">
+                    required [disabled]="!studentForm.controls.fee.controls.securityDeposit.value" min="0" (keyup)="calculateDiscount('securityDeposit', 'finalSecurityDeposit', 'discountSecurityDeposit')">
                 </div>
               </div>
 

@@ -1,34 +1,41 @@
-  <div class="row">
+<div class="row">
     <div class="col-md-3">
       <div class="form-group">
         <label for="center">Center:</label>
-        <select class="form-control" [(ngModel)]="SelectedCenter">
-          <option value="All" disabled="true">All</option>
-          <option *ngFor="let center of centerList;" [value]="center">{{center.name}}</option>
+        <select class="form-control" id="center" name="center" [(ngModel)]="SelectedCenter">
+          <option value="" disabled="true">Select Center</option>
+          <option value="All" >All</option>
+          <option *ngFor="let center of centerList;" [ngValue]="center.code">{{center.name}}</option>
         </select>
         <span class="material-input"></span>
       </div>
     </div>
     <div class="col-md-3">
       <div class="form-group">
-        <label for="From">From:</label>
-        <input class="form-control" id="From" [(ngModel)]="formDate" type="date" [value] = "currentDate" name="date">
+        <label for="Quater">Quater:</label>
+        <select class="form-control" [(ngModel)]="selectedQuater">
+          <option value="" disabled="true">Select Quater</option>
+          <option *ngFor="let quater of quaters;" [value]="quater.id">{{quater.Qtype}}</option>
+        </select>
         <span class="material-input"></span>
       </div>
     </div>
     <div class="col-md-3">
       <div class="form-group">
-        <label for="To">To:</label>
-        <input class="form-control" id="To"  [(ngModel)]="toDate" type="date" value = "currentDate" name="date">
+        <label for="year">Year:</label>
+        <select class="form-control" [(ngModel)]="selectedYear">
+          <option value="" disabled="true">Select Year</option>
+          <option *ngFor="let year of years" [value]="year">{{year}}</option>
+        </select>
         <span class="material-input"></span>
       </div>
     </div>
     <div class="col-md-3">
-      <button type="submit" class="btn btn-warning btn-md" (click)="downloadFeeCollectionReport()" [disabled]="downloadData">
+      <button type="submit" class="btn btn-warning btn-md" (click)="studentFeeCollectionReportdownload()" [disabled]="!(SelectedCenter && selectedYear && selectedQuater)">
         <span *ngIf=" downloadData ;else save">
           <i class="fa fa-spinner fa-spin"></i> Downloading
         </span>
         <ng-template #save>Download</ng-template>
       </button>
     </div>
-
+  </div>
