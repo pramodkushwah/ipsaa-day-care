@@ -303,7 +303,7 @@
             *Required Fields
           </div>
           <div class="form-footer text-right">
-            <button class="btn btn-rose btn-fill" [disabled]="(this.inquiryForm.valid)" (click)="saveForm()">Save</button>
+            <button class="btn btn-rose btn-fill" [disabled]="!(this.inquiryForm.valid)" (click)="saveForm()">Save</button>
             <button class="btn btn-default">Cancel</button>
           </div>
         </div>

@@ -11,6 +11,7 @@ export class StaffAttendanceComponent implements OnInit {
 
   attendance: any[] = [];
   imgLaod: boolean[] = [];
+  attendanceCopy: any[];
 
   constructor(private adminService: AdminService, private alertService: AlertService) { }
 
@@ -22,6 +23,7 @@ export class StaffAttendanceComponent implements OnInit {
     this.alertService.loading.next(true);
     this.adminService.getStaffAttendance().subscribe((response: any[]) => {
       this.attendance = response;
+      this.attendanceCopy = response;
       this.alertService.loading.next(false);
     }, error => {
       this.alertService.loading.next(false);
@@ -69,6 +71,22 @@ export class StaffAttendanceComponent implements OnInit {
       }, error => {
         staff.fullLeave = false;
       });
+    }
+  }
+
+
+
+  searchEmployee(event: any) {
+    const val = event.target.value.toLowerCase();
+    if (val && val.trim() !== '') {
+      this.attendance = this.attendanceCopy.filter(staff => {
+        return (
+          staff.fullName.toLowerCase().startsWith(val) ||
+          (staff.eid && staff.eid.toLowerCase().startsWith(val)) ||
+          (staff.center && staff.center.toLowerCase().startsWith(val)));
+      });
+    } else {
+      this.attendance = this.attendanceCopy;
     }
   }
 }
