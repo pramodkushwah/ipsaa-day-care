@@ -12,5 +12,6 @@ public interface HdfcResponseRepository extends JpaRepository<HdfcResponse, Long
 {
 
     List<HdfcResponse> findBySlipQuarterAndSlipYear(int quarter,int year);
+    List<HdfcResponse> findByIpsaaClubSlipMonthAndIpsaaClubSlipYear(int month,int year);
 
 }

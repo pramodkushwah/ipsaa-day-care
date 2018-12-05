@@ -165,7 +165,6 @@ public class StudentFeePaymentRecord extends BaseEntity
   {
     this.request = request;
   }
-
   public Date getPaymentDate()
   {
     return paymentDate;

@@ -123,8 +123,6 @@ export class Api {
   }
 
   extractData1(response: HttpResponse<any>) {
-console.log(response.headers.get('fileName'));
-
     return response;
   }
 

@@ -222,7 +222,6 @@
             </div>
           </div>
           <div class="row">
-
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Cost Center : <sup>*</sup></label>
@@ -322,6 +321,14 @@
                   <input class="form-control" value="" formControlName="branchName" [readonly]="!editable">
                 </div>
               </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label">PState : <sup>*</sup></label>
+                  <select class="form-control" formControlName="pState" required>
+                    <option *ngFor="let state of states;" [ngValue]="state.name">{{state.name}}</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
           </div>
@@ -379,8 +386,6 @@
               </div>
             </div>
           </div>
-
-
         </div>
         <div class="tab-pane container mt-2" id="address2" formGroupName="profile">
           <div formGroupName="permanentAddress">

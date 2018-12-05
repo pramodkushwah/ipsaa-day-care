@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import com.synlabs.ipsaa.entity.staff.*;
+import com.synlabs.ipsaa.entity.student.*;
+import com.synlabs.ipsaa.enums.*;
+import com.synlabs.ipsaa.jpa.EmployeeRepository;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,10 +74,14 @@ import com.synlabs.ipsaa.view.student.DashStudentResponse;
 import com.synlabs.ipsaa.view.student.ParentSummaryResponse;
 
 @Service
-public class DashboardService extends BaseService {
+public class DashboardService extends BaseService
+{
 
 	@Autowired
 	private EntityManager entityManager;
+	@Autowired
+	private EmployeeRepository employeeRepository;
+
 
 	@Autowired
 	private UserService userService;
@@ -84,10 +92,8 @@ public class DashboardService extends BaseService {
 	@Autowired
 	private InquiryEventLogRepository eventLogRepository;
 
-	@Autowired
-	EmployeeRepository employeeRepository;
-
-	public StatsResponse getFeeStats(DashboardRequest request) {
+	public StatsResponse getFeeStats(DashboardRequest request)
+	{
 		StatsResponse response = new StatsResponse();
 		List<Center> centers = getCenters(request);
 		FeeStatsResponse expectedFee = getExpectedFee(centers, request);
@@ -331,48 +337,45 @@ public class DashboardService extends BaseService {
 
 		// 1 find current month and quarter and year
 		LocalDate today = LocalDate.now();
-		Integer month = feeDuration == null ? today.getMonthOfYear()
-				: request.getMonth() == null ? today.getMonthOfYear() : request.getMonth();
-		Integer year = feeDuration == null ? today.getYear()
-				: request.getYear() == null ? today.getYear() : request.getYear();
-		Integer quarter = feeDuration == null ? (month / 3) + 1
-				: request.getQuarter() == null ? (month / 3) + 1 : request.getQuarter();
+		Integer month = feeDuration == null ? today.getMonthOfYear() : request.getMonth() == null ? today.getMonthOfYear() : request.getMonth();
+		Integer year = feeDuration == null ? today.getYear() : request.getYear() == null ? today.getYear() : request.getYear();
+		Integer quarter = feeDuration == null ? (month / 3) + 1 : request.getQuarter() == null ? (month / 3) + 1 : request.getQuarter();
 		feeStatsResponse.setYear(today.getYear());
 		feeStatsResponse.setMonth(month);
 
 		QStudentFeePaymentRequest slip = QStudentFeePaymentRequest.studentFeePaymentRequest;
+		QStudentFeePaymentRequestIpsaaClub ipsaaSlip=QStudentFeePaymentRequestIpsaaClub.studentFeePaymentRequestIpsaaClub;
 		int total = 0;
 
-		// 3. add monthly fee for this month
-		// if (feeDuration == null || feeDuration == FeeDuration.Monthly)
-		// {
-		// JPAQuery<BigDecimal> monthlyquery = new JPAQuery<>(entityManager);
-		// monthlyquery.select(slip.totalFee.sum()).from(slip)
-		// .where(slip.student.active.isTrue())
-		// .where(slip.student.corporate.isFalse())
-		// //.where(slip.student.approvalStatus.eq(ApprovalStatus.Approved))
-		// //.where(slip.feeDuration.eq(FeeDuration.Monthly))
-		// .where(slip.year.eq(year))
-		// .where(slip.month.eq(month))
-		// .where(slip.student.center.in(centers));
-		//
-		// BigDecimal monthly = monthlyquery.fetchFirst();
-		// total += monthly == null ? 0 : monthly.intValue();
-		// feeStatsResponse.setMonthly(monthly == null ? 0 : monthly.intValue());
-		// }
+		// 3. add monthly fee for this month removed
+		if (feeDuration == null || feeDuration == FeeDuration.Monthly)
+		{
+			JPAQuery<BigDecimal> ipssaQuery = new JPAQuery<>(entityManager);
+			ipssaQuery.select(ipsaaSlip.totalFee.sum())
+					.from(ipsaaSlip)
+					.where(ipsaaSlip.student.active.isTrue())
+					.where(ipsaaSlip.student.corporate.isFalse())
+					.where(ipsaaSlip.year.eq(year))
+					.where(ipsaaSlip.month.eq(month))
+					.where(ipsaaSlip.student.center.in(centers));
+			BigDecimal totalSum = ipssaQuery.fetchFirst();
+			total += totalSum == null ? 0 : totalSum.intValue();
+			feeStatsResponse.setIpssaFee(totalSum == null ? 0 : totalSum.intValue());
+		}
 
-		// if start of quarter
+		//if start of quarter
 		// 2. add quarterly fee for quarter in quarter start
-		if (feeDuration == FeeDuration.Quarterly
-				|| (feeDuration == null && (month == 1 || month == 4 || month == 7 || month == 10))) {
+		if (feeDuration == FeeDuration.Quarterly || (feeDuration == null && (month == 1 || month == 4 || month == 7 || month == 10)))
+		{
 			JPAQuery<BigDecimal> quarterlyquery = new JPAQuery<>(entityManager);
 			quarterlyquery.select(slip.totalFee.sum()).from(slip)
-					// .where(slip.student.active.isTrue())
+					//.where(slip.student.active.isTrue())
 					.where(slip.student.corporate.isFalse())
 					// .where(slip.student.approvalStatus.eq(ApprovalStatus.Approved))
 					.where(slip.feeDuration.eq(FeeDuration.Quarterly))
-					.where(slip.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID)).where(slip.year.eq(year))
-					.where(slip.quarter.eq(quarter)).where(slip.student.center.in(centers));
+					.where(slip.year.eq(year))
+					.where(slip.quarter.eq(quarter))
+					.where(slip.student.center.in(centers));
 
 			BigDecimal quarterly = quarterlyquery.fetchFirst();
 			total += quarterly == null ? 0 : quarterly.intValue();
@@ -380,14 +383,17 @@ public class DashboardService extends BaseService {
 			feeStatsResponse.setQuarterly(quarterly == null ? 0 : quarterly.intValue());
 		}
 
-		// if start of year
+		//if start of year
 		// 1. add yearly fee for year in jan
-		if (feeDuration == FeeDuration.Yearly || (feeDuration == null && (month == 1))) {
+		if (feeDuration == FeeDuration.Yearly || (feeDuration == null && (month == 1)))
+		{
 			JPAQuery<BigDecimal> yearlyquery = new JPAQuery<>(entityManager);
-			yearlyquery.select(slip.totalFee.sum()).from(slip).where(slip.student.active.isTrue())
+			yearlyquery.select(slip.totalFee.sum()).from(slip)
+					.where(slip.student.active.isTrue())
 					.where(slip.student.corporate.isFalse())
 					.where(slip.student.approvalStatus.eq(ApprovalStatus.Approved))
-					.where(slip.feeDuration.eq(FeeDuration.Yearly)).where(slip.year.eq(year))
+					.where(slip.feeDuration.eq(FeeDuration.Yearly))
+					.where(slip.year.eq(year))
 					.where(slip.student.center.in(centers));
 
 			BigDecimal yearly = yearlyquery.fetchFirst();
@@ -399,45 +405,49 @@ public class DashboardService extends BaseService {
 		return feeStatsResponse;
 	}
 
-	private FeeStatsResponse getCollectedFee(List<Center> centers, DashboardRequest request) {
+	private FeeStatsResponse getCollectedFee(List<Center> centers, DashboardRequest request)
+	{
 		FeeDuration feeDuration = request.getFeeDuration();
 		FeeStatsResponse feeStatsResponse = new FeeStatsResponse();
 		LocalDate today = LocalDate.now();
-		Integer month = feeDuration == null ? today.getMonthOfYear()
-				: request.getMonth() == null ? today.getMonthOfYear() : request.getMonth();
-		Integer year = feeDuration == null ? today.getYear()
-				: request.getYear() == null ? today.getYear() : request.getYear();
-		Integer quarter = feeDuration == null ? (month / 3) + 1
-				: request.getQuarter() == null ? (month / 3) + 1 : request.getQuarter();
+		Integer month = feeDuration == null ? today.getMonthOfYear() : request.getMonth() == null ? today.getMonthOfYear() : request.getMonth();
+		Integer year = feeDuration == null ? today.getYear() : request.getYear() == null ? today.getYear() : request.getYear();
+		Integer quarter = feeDuration == null ? (month / 3) + 1 : request.getQuarter() == null ? (month / 3) + 1 : request.getQuarter();
 		int total = 0;
 
-		JPAQuery<BigDecimal> monthlyq = new JPAQuery<>(entityManager);
+		JPAQuery<BigDecimal> ipsaaClubq = new JPAQuery<>(entityManager);
 		QStudentFeePaymentRecord payment = QStudentFeePaymentRecord.studentFeePaymentRecord;
+		QStudentFeePaymentRecordIpsaaClub records=QStudentFeePaymentRecordIpsaaClub.studentFeePaymentRecordIpsaaClub;
 
-		if (feeDuration == null || feeDuration == FeeDuration.Monthly) {
-			monthlyq.select(payment.paidAmount.sum()).from(payment).where(payment.student.active.isTrue())
-					.where(payment.student.corporate.isFalse())
-					.where(payment.student.approvalStatus.eq(ApprovalStatus.Approved))
-					.where(payment.request.feeDuration.eq(FeeDuration.Monthly)).where(payment.request.year.eq(year))
-					.where(payment.request.month.eq(month)).where(payment.paymentStatus.eq(PaymentStatus.Paid))
-					.where(payment.student.center.in(centers));
 
-			BigDecimal monthly = monthlyq.fetchFirst();
+		if (feeDuration == null || feeDuration == FeeDuration.Monthly)
+		{
+			ipsaaClubq.select(records.paidAmount.sum()).from(records)
+					.where(records.student.active.isTrue())
+					.where(records.active.isTrue())
+					.where(records.student.corporate.isFalse())
+					.where(records.request.year.eq(year))
+					.where(records.request.month.eq(month))
+					.where(records.student.center.in(centers));
+
+			BigDecimal monthly = ipsaaClubq.fetchFirst();
 			total += monthly == null ? 0 : monthly.intValue();
-			feeStatsResponse.setMonth(month);
-			feeStatsResponse.setMonthly(monthly == null ? 0 : monthly.intValue());
+			feeStatsResponse.setIpssaFee(monthly==null?0:monthly.intValue());
 		}
-		// if start of quarter
+		//if start of quarter
 		// 2. add quarterly fee for quarter in quarter start
-		if (feeDuration == FeeDuration.Quarterly
-				|| (feeDuration == null && (month == 1 || month == 4 || month == 7 || month == 10))) {
+		if (feeDuration == FeeDuration.Quarterly ||
+				(feeDuration == null && (month == 1 || month == 4 || month == 7 || month == 10)))
+		{
 			JPAQuery<BigDecimal> quarterlyq = new JPAQuery<>(entityManager);
-			quarterlyq.select(payment.paidAmount.sum()).from(payment).where(payment.student.active.isTrue())
+			quarterlyq.select(payment.paidAmount.sum()).from(payment)
+					.where(payment.student.active.isTrue())
 					.where(payment.student.corporate.isFalse())
-					.where(payment.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
 					.where(payment.student.approvalStatus.eq(ApprovalStatus.Approved))
-					.where(payment.request.feeDuration.eq(FeeDuration.Quarterly)).where(payment.request.year.eq(year))
-					.where(payment.request.quarter.eq(quarter)).where(payment.paymentStatus.eq(PaymentStatus.Paid))
+					.where(payment.request.feeDuration.eq(FeeDuration.Quarterly))
+					.where(payment.request.year.eq(year))
+					.where(payment.request.quarter.eq(quarter))
+					.where(payment.paymentStatus.eq(PaymentStatus.Paid))
 					.where(payment.student.center.in(centers));
 
 			BigDecimal quarterly = quarterlyq.fetchFirst();
@@ -446,13 +456,16 @@ public class DashboardService extends BaseService {
 			feeStatsResponse.setQuarterly(quarterly == null ? 0 : quarterly.intValue());
 		}
 
-		if (feeDuration == FeeDuration.Yearly || (feeDuration == null && (month == 1))) {
+		if (feeDuration == FeeDuration.Yearly || (feeDuration == null && (month == 1)))
+		{
 			JPAQuery<BigDecimal> yearlyq = new JPAQuery<>(entityManager);
-			yearlyq.select(payment.paidAmount.sum()).from(payment).where(payment.student.active.isTrue())
+			yearlyq.select(payment.paidAmount.sum()).from(payment)
+					.where(payment.student.active.isTrue())
 					.where(payment.student.corporate.isFalse())
 					.where(payment.request.feeDuration.eq(FeeDuration.Yearly))
 					.where(payment.student.approvalStatus.eq(ApprovalStatus.Approved))
-					.where(payment.request.year.eq(year)).where(payment.paymentStatus.eq(PaymentStatus.Paid))
+					.where(payment.request.year.eq(year))
+					.where(payment.paymentStatus.eq(PaymentStatus.Paid))
 					.where(payment.student.center.in(centers));
 
 			BigDecimal yearly = yearlyq.fetchFirst();

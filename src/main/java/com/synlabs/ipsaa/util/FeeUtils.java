@@ -1,7 +1,6 @@
 package com.synlabs.ipsaa.util;
 
-import com.synlabs.ipsaa.entity.student.StudentFee;
-import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.*;
 import com.synlabs.ipsaa.enums.FeeDuration;
 import com.synlabs.ipsaa.enums.GST;
 import com.synlabs.ipsaa.ex.ValidationException;
@@ -61,6 +60,12 @@ public class FeeUtils
         }
     }
     return "";
+  }
+  public static String getMonth(StudentFeePaymentRequestIpsaaClub studentFeePaymentRequest)
+  {
+    if(studentFeePaymentRequest.getExpireDate()!=null)
+    return studentFeePaymentRequest.getInvoiceDate()+" from "+studentFeePaymentRequest.getExpireDate();
+    else return "";
   }
 
   public static int quarterStartMonth(int quarter)

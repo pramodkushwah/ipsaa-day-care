@@ -9,6 +9,7 @@ import { GenerateFeeSlipComponent } from './generate-fee-slip/generate-fee-slip.
 import { GenerateFeeReceiptComponent } from './generate-fee-receipt/generate-fee-receipt.component';
 import { StudentFeeInfoComponent } from './student-fee-info/student-fee-info.component';
 import { FeeReceiptInfoComponent } from './fee-receipt-info/fee-receipt-info.component';
+import { IpsaaclubComponent } from './ipsaaclub/ipsaaclub.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -21,7 +22,8 @@ import { FeeReceiptInfoComponent } from './fee-receipt-info/fee-receipt-info.com
   declarations: [StudentFeeComponent,
     CenterFeeComponent, GenerateFeeSlipComponent,
     GenerateFeeReceiptComponent, StudentFeeInfoComponent,
-    FeeReceiptInfoComponent],
+    FeeReceiptInfoComponent,
+    IpsaaclubComponent],
   exports: [FeeReceiptInfoComponent]
 
 })

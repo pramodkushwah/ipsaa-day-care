@@ -2,7 +2,7 @@ import 'rxjs/add/operator/toPromise';
 import { Injectable } from '@angular/core';
 import { Api } from '../api/api';
 import { Student } from '../../modal/student';
-import {  Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
@@ -22,6 +22,10 @@ export class AdminService {
 
   getCenters() {
     return this.api.get('api/center/');
+  }
+
+  getStates() {
+    return this.api.get('api/state/all');
   }
 
   getCostCenter() {
@@ -100,12 +104,20 @@ export class AdminService {
     return this.api.post('api/city/', city);
   }
 
+  saveState(state: any) {
+    return this.api.post('api/state/', state);
+  }
+
   updateZone(zone: any) {
     return this.api.put('api/zone/', zone);
   }
 
   updateCity(city: any) {
     return this.api.put('api/city/', city);
+  }
+
+  updateState(state: any) {
+    return this.api.put('api/state/', state);
   }
 
   deleteZone(zoneId: any) {
@@ -118,6 +130,10 @@ export class AdminService {
 
   deleteCity(cityId: any) {
     return this.api.delete('api/city/' + cityId);
+  }
+
+  deleteState(stateId: any) {
+    return this.api.delete('api/state/' + stateId);
   }
 
   saveCenter(center) {
@@ -417,98 +433,134 @@ export class AdminService {
   getParentsQueries(ForAll?: string) {
     if (ForAll) {
 
-      return this.api.get('api/support/all/' );
+      return this.api.get('api/support/all/');
     } else {
-      return this.api.get('api/support/' );
+      return this.api.get('api/support/');
 
     }
   }
 
   getSelectedParentQueries(ParentId) {
-    return this.api.get('api/support/' + ParentId );
+    return this.api.get('api/support/' + ParentId);
 
   }
 
   closeQuery(queryId) {
-    return this.api.post('api/support/' + queryId + '/close' , {});
+    return this.api.post('api/support/' + queryId + '/close', {});
   }
 
-  replyToQuery(queryId , replyText) {
-    return this.api.post('api/support/' + queryId + '/reply' , replyText);
+  replyToQuery(queryId, replyText) {
+    return this.api.post('api/support/' + queryId + '/reply', replyText);
 
   }
 
-getAllCenterStaffApprovalCount() {
-  return this.api.get('api/staff/approvals/count');
-}
-
-getSelectedCenterStaffApprovalCount(centerId: number) {
-  return this.api.get('api/staff/approvals/' + centerId);
-}
-
-aproveStaff(staff_id) {
-  return this.api.get('api/staff/approve/' + staff_id  ) ;
-}
-
-rejectStaff(staff_id) {
-  return this.api.get('api/staff/reject/' + staff_id  ) ;
-}
-getAllCenterStudentsApprovalCount() {
-  return this.api.get('api/student/approvals/count');
-}
-
-getSelectedCenterStudentsApprovalCount(centerId: number) {
-  return this.api.get('api/student/approvals/' + centerId);
-}
-aproveStudent(student_id) {
-  return this.api.get('api/student/approve/' + student_id  ) ;
-}
-rejectStudent(student_id) {
-  return this.api.get('api/student/reject/' + student_id  ) ;
-}
-
-// center
-
-getZones() {
-  return this.api.get('/api/zone/');
-}
-
-
-getStatesByZone(zoneId) {
-  return this.api.get('/api/state/zone/' + zoneId + '/');
-}
-getCitiesByStateByZone(stateId) {
-  return this.api.get('/api/ctty/state/' + stateId + '/');
-}
-
-
-
-
-// crm
-
-
-getInquiry(centerId?) {
-  if (centerId) {
-    return this.api.get('/api/inquiry/?centerId=' + centerId);
-  } else {
-    return this.api.get('/api/inquiry/');
+  getAllCenterStaffApprovalCount() {
+    return this.api.get('api/staff/approvals/count');
   }
-}
 
-getFollowUps(date_Dispositions) {
-  return this.api.post('api/inquiry/followUps/', date_Dispositions );
-}
-loadInquiryDetials(inquiry_Id) {
-  return this.api.get('api/inquiry/' + inquiry_Id);
-}
+  getSelectedCenterStaffApprovalCount(centerId: number) {
+    return this.api.get('api/staff/approvals/' + centerId);
+  }
 
-addNewInquiry(inquiry_Details) {
-  return this.api.post('api/inquiry/' , inquiry_Details);
-}
+  aproveStaff(staff_id) {
+    return this.api.get('api/staff/approve/' + staff_id);
+  }
 
-updateInquiry(updated_Inquiry_Details) {
-  return this.api.put('api/inquiry/' , updated_Inquiry_Details);
+  rejectStaff(staff_id) {
+    return this.api.get('api/staff/reject/' + staff_id);
+  }
+  getAllCenterStudentsApprovalCount() {
+    return this.api.get('api/student/approvals/count');
+  }
 
-}
+  getSelectedCenterStudentsApprovalCount(centerId: number) {
+    return this.api.get('api/student/approvals/' + centerId);
+  }
+  aproveStudent(student_id) {
+    return this.api.get('api/student/approve/' + student_id);
+  }
+  rejectStudent(student_id) {
+    return this.api.get('api/student/reject/' + student_id);
+  }
+
+  // center
+
+  getZones() {
+    return this.api.get('/api/zone/');
+  }
+
+
+  getStatesByZone(zoneId) {
+    return this.api.get('/api/state/zone/' + zoneId + '/');
+  }
+  getCitiesByStateByZone(stateId) {
+    return this.api.get('/api/ctty/state/' + stateId + '/');
+  }
+
+
+
+
+  // crm
+
+
+  getInquiry(centerId?) {
+    if (centerId) {
+      return this.api.get('/api/inquiry/?centerId=' + centerId);
+    } else {
+      return this.api.get('/api/inquiry/');
+    }
+  }
+
+  getFollowUps(date_Dispositions) {
+    return this.api.post('api/inquiry/followUps/', date_Dispositions);
+  }
+  loadInquiryDetials(inquiry_Id) {
+    return this.api.get('api/inquiry/' + inquiry_Id);
+  }
+
+  addNewInquiry(inquiry_Details) {
+    return this.api.post('api/inquiry/', inquiry_Details);
+  }
+
+  updateInquiry(updated_Inquiry_Details) {
+    return this.api.put('api/inquiry/', updated_Inquiry_Details);
+  }
+
+  getIpsaaClubFeeSlips(code: string) {
+    return this.api.post('api/student/ipsaaclub/feeslip/list', { 'centerCode': code });
+  }
+
+  updateIpsaaClubSlip(data) {
+    return this.api.post('api/student/ipsaaclub/slip/update', data);
+  }
+
+  downloadIpsaaClubSlip(data) {
+    return this.api.getPDF('api/student/ipsaaclub/feeslips/pdf', data);
+  }
+
+  downloadIpsaaClubReceipt(receiptId) {
+    return this.api.getPDFByGetMethod('api/student/download/ipsaaclub/receipt', receiptId);
+  }
+
+  emailToParentsOfIpsaaClubStudents(emailObject) {
+    return this.api.post('api/student/ipsaaclub/paymentLink/', emailObject);
+  }
+
+  payIpsaaClubFee(data) {
+    return this.api.post('api/student/ipsaaclub/payfee', data);
+  }
+
+  confirmIpsaaClubFee(data) {
+    return this.api.put('api/student/ipsaaclub/record/update', data);
+  }
+
+  rejectIpsaaClubFee(data) {
+    return this.api.put('api/student/ipsaaclub/record/update', data);
+  }
+
+  generateIpsaaclubStudentFee(studentId, data) {
+    return this.api.post('api/student/ipsaaclub/generate/' + studentId, data);
+  }
+
 
 }

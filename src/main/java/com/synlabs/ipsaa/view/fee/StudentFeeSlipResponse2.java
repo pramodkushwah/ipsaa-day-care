@@ -1,11 +1,16 @@
 package com.synlabs.ipsaa.view.fee;
 
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRecordIpsaaClub;
 import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequestIpsaaClub;
 import com.synlabs.ipsaa.view.common.Response;
+import com.synlabs.ipsaa.view.student.IpsaaClubRecordResponce;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.synlabs.ipsaa.util.BigDecimalUtils.ZERO;
 
 public class StudentFeeSlipResponse2 implements Response
 {
@@ -25,6 +30,7 @@ public class StudentFeeSlipResponse2 implements Response
   private boolean generateActive;
 
   private List<StudentFeePaymentResponse> payments;
+  private List<IpsaaClubRecordResponce> ipsaaPayments;
 
 
   public StudentFeeSlipResponse2(StudentFeePaymentRequest slip)
@@ -57,6 +63,43 @@ public class StudentFeeSlipResponse2 implements Response
      //   System.out.println("break");
       });
     }
+  }
+
+  public StudentFeeSlipResponse2(StudentFeePaymentRequestIpsaaClub slip)
+  {
+    this.id = slip.getId();
+    this.motherName=slip.getStudent().getMother().getFullName();
+    this.fatherName=slip.getStudent().getFather().getFullName();
+    this.fullName = slip.getStudent().getProfile().getFullName();
+    this.group = slip.getStudent().getGroup().getName();
+    this.program = slip.getStudent().getProgram().getName();
+
+    this.extraCharge = slip.getExtraCharge();
+    this.totalFee = slip.getTotalFee();
+    this.fee = slip.getBaseFee();
+    this.status = slip.getPaymentStatus().name();
+    this.payableAmount = this.totalFee;
+    this.balance = slip.getBalance();
+    this.adjust = ZERO;
+    this.generateActive = slip.isGenerateActive();
+
+    this.balance = this.balance == null ? BigDecimal.ZERO : this.balance;
+    //this.autoComments = slip.getAutoComments();
+    if (slip.getPayments() != null && !slip.getPayments().isEmpty())
+    {
+      ipsaaPayments = new ArrayList<>(slip.getPayments().size());
+      slip.getPayments().forEach(payment -> {
+        ipsaaPayments.add(new IpsaaClubRecordResponce(payment));
+        this.payableAmount = this.payableAmount.subtract(payment.getPaidAmount());
+      });
+    }
+  }
+  public List<IpsaaClubRecordResponce> getIpsaaPayments() {
+    return ipsaaPayments;
+  }
+
+  public void setIpsaaPayments(List<IpsaaClubRecordResponce> ipsaaPayments) {
+    this.ipsaaPayments = ipsaaPayments;
   }
 
   public boolean isGenerateActive() {

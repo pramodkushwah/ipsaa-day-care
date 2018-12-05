@@ -46,7 +46,7 @@ import static java.math.BigDecimal.ZERO;
 
 
 @Service
-public class StudentFeeService {
+public class StudentFeeService extends BaseService{
 
     private static final Logger logger = LoggerFactory.getLogger(StudentFeeService.class);
     @Autowired
@@ -71,6 +71,9 @@ public class StudentFeeService {
 
     @Autowired
     private StudentFeePaymentRecordRepository paymentRecordRepository;
+
+    @Autowired
+    private StudentFeePaymentRequestIpsaaClubRepository paymentIpsaaRequestRepository;
 
     @Autowired
     private StudentFeePaymentRepository feePaymentRepository;
@@ -197,7 +200,6 @@ public class StudentFeeService {
         List<StudentFeePaymentRequest> allslips = new LinkedList<>();
         int requestQuarter = request.getQuarter();
         int requestYear = request.getYear();
-
             allslips = feePaymentRepository. findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(FeeDuration.Quarterly, requestQuarter, requestYear,request.getCenterCode());
         return allslips;
     }
@@ -800,7 +802,24 @@ public class StudentFeeService {
         slip.setTotalFee(slip.getTotalFee().add(slip.getBalance()));
         return feePaymentRepository.saveAndFlush(slip);
     }
+    public StudentFeePaymentRequestIpsaaClub getSlip(Long id)
+    {
+        StudentFeePaymentRequestIpsaaClub slip = paymentIpsaaRequestRepository.findOne(id);
+        if (id == null)
+        {
+            throw new ValidationException("Slip id is required.");
+        }
+        if (slip == null)
+        {
+            throw new ValidationException(String.format("Cannot locate slip [id = %s ]", mask(id)));
+        }
 
+        if (!hasCenter(slip.getStudent().getCenter().getCode()))
+        {
+            throw new ValidationException(String.format("Unauthorized access to center[code=%s]", slip.getStudent().getCenter().getCode()));
+        }
+        return slip;
+    }
     @Transactional
     public StudentFeePaymentRequest payFee(SaveFeeSlipRequest request)
     {
