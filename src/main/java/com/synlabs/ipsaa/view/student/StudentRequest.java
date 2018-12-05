@@ -28,6 +28,7 @@ public class StudentRequest implements Request
   private String firstName;
   private String lastName;
   private String nickName;
+  private String rejectionReason;
 
   private String admissionDate;
   private String dob;
@@ -55,6 +56,14 @@ public class StudentRequest implements Request
   @JsonFormat(pattern = "HH:mm", timezone = "IST")
   private Date expectedOut;
 
+
+  public String getRejectionReason() {
+    return rejectionReason;
+  }
+
+  public void setRejectionReason(String rejectionReason) {
+    this.rejectionReason = rejectionReason;
+  }
 
   public StudentFeeRequestV2 getFee()
   {
