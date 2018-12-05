@@ -114,13 +114,21 @@ export class StudentAttendanceComponent implements OnInit {
 
 
 
-  searchEmployee(event: any) {
+  searchStudent(event: any) {
   const val = event.target.value.toLowerCase();
   if (val && val.trim() !== '') {
-    this.attendance = this.attendance.filter(student => {
-      return student.fullName.toLowerCase().startsWith(val);
+    this.attendance = this.attendanceCopy.filter(student => {
+      return (
+        student.fullName.toLowerCase().startsWith(val) ||
+        (student.program && student.program.toLowerCase().startsWith(val)) ||
+        (student.group && student.group.toLowerCase().startsWith(val)) ||
+        (student.center && student.center.toLowerCase().startsWith(val)) ||
+        (student.status && student.status.toString().startsWith(val))
+      );
     });
 
+  } else {
+    this.attendance = this.attendanceCopy;
   }
 
   }

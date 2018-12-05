@@ -117,10 +117,10 @@ export class StaffMessageComponent implements OnInit {
 
   searchStaff(event: any) {
     this.searchKey = event;
-    const val = event.target.value;
+    const val = event.target.value.toLowerCase();
     if (val && val.trim() !== '') {
       this.allItems = this.staffs.filter(staff => {
-        return staff.fullName.startsWith(val);
+        return staff.name.toLowerCase().startsWith(val);
       });
       this.setPage(1);
     } else {

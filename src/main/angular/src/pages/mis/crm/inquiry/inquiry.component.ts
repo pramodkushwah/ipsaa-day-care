@@ -51,6 +51,8 @@ export class InquiryComponent implements OnInit {
   programs: Array<any>;
   groups = [];
   selectedCenter = {};
+  followUpsCoppy: any;
+  inquiriesCoppy: any;
 
   constructor(
     private fb: FormBuilder,
@@ -87,6 +89,7 @@ export class InquiryComponent implements OnInit {
         this.alertService.loading.next(false);
 
         this.inquiries = res;
+        this.inquiriesCoppy = res;
         this.inquiryTable = true;
       }, (err) => {
         this.alertService.loading.next(false);
@@ -127,6 +130,8 @@ console.log(this.filterBy);
 
         this.followUpsFor = {};
         this.followUps = res;
+        this.followUpsCoppy = res;
+
         this.inquiryTable = false;
         this.followUpsTable = true;
       }, (err) => {
@@ -150,9 +155,6 @@ console.log(this.filterBy);
     }
   }
 
-  // filterFeeByDate(filter) {
-  //   this.getFollowUps(fil)
-  // }
 
   changeTab(val) {
     this.selectedTab = val;
@@ -165,4 +167,29 @@ console.log(this.filterBy);
     this.selectedInquiryDetialsId = id;
     this.InquiresDteailsShow = true;
   }
+
+
+
+  searchStudent(event: any) {
+    const val = event.target.value.toLowerCase();
+    if (this.selectedTab === 'Inquiry') {
+      if (val && val.trim() !== '') {
+        this.inquiries = this.inquiriesCoppy.filter(inquiry => {
+          return inquiry.childName.toLowerCase().startsWith(val);
+        });
+    }  else {
+      this.inquiries = this.inquiriesCoppy;
+    }
+  } else {
+      if (val && val.trim() !== '') {
+        this.followUps = this.followUpsCoppy.filter(follow => {
+          return follow.inquiryNumber.toLowerCase().startsWith(val);
+        });
+         }  else {
+          this.followUps = this.followUpsCoppy;
+         }
+        }
+  }
+
+
 }
