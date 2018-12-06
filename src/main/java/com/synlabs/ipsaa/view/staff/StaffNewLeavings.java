@@ -14,10 +14,11 @@ public class StaffNewLeavings  implements Response {
     private String mobile;
     private String center;
     private boolean isActive;
-
+private long id;
     private String employer;
 
     public StaffNewLeavings(Employee employee) {
+        id=mask(employee.getId());
        center= employee.getCostCenter().getName();
        name=employee.getName();
        designation=employee.getDesignation();
@@ -25,6 +26,14 @@ public class StaffNewLeavings  implements Response {
        mobile=employee.getMobile();
         this.isActive=employee.isActive();
         this.employer=employee.getEmployer().getName();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getEmployer() {

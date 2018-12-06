@@ -361,6 +361,18 @@ public class StudentAttendanceService extends BaseService {
 		List<StudentAttendance> list = calculateList(students, studentAttendance);
 		return list;
 	}
+	// list of present and absent Students
+	public List<StudentAttendance> studentAttendanceList(String centerCode) {
+
+		List<Student> students = studentRepository.findByCenterCodeAndActiveOrderByIdAsc(centerCode,
+				true);
+
+		List<StudentAttendance> studentAttendance = attendanceRepository
+				.findByStudentInAndAttendanceDateOrderByStudentIdAsc(students, LocalDate.now().toDate());
+
+		List<StudentAttendance> list = calculateList(students, studentAttendance);
+		return list;
+	}
 
 	// list of students that are prsent in the moment
 	public List<StudentAttendance> listOfPresentStudents() {
