@@ -13,6 +13,9 @@ export class StudentMessageComponent implements OnInit {
   centers: any[];
   groups: any[];
   programs: any[];
+  selectedCenter: any = 'all';
+  selectedProgram: any = 'all';
+  selectedGroup: any = 'all';
   students: any[];
   studentIds: any = {};
   loader: boolean;
@@ -21,7 +24,7 @@ export class StudentMessageComponent implements OnInit {
   pageSize: any;
   pageNumber: any;
   searchKey: any;
-  pager: any =  {};
+  pager: any = {};
   pagedItems: any;
   viewPanel: boolean;
   smsCard: boolean;
@@ -41,7 +44,7 @@ export class StudentMessageComponent implements OnInit {
     private pagerService: PagerService,
     private smsService: SmsService,
     private alertService: AlertService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.getStudents();
@@ -96,6 +99,90 @@ export class StudentMessageComponent implements OnInit {
     });
   }
 
+  // resetProgramAndGroup(center?, program?) {
+
+  //   if (center) {
+  //     if (this.selectedCenter === 'all') {
+  //       this.allItems = this.students;
+  //           } else {
+  //             this.allItems = this.students.filter(student => {
+  //               return student.center.name === this.selectedCenter.name;
+  //             });
+  //           }
+  //   } else {
+
+  //     if (program) {
+  //       this.selectedGroup = 'all';
+  //       if (this.selectedProgram === 'all') {
+  //         this.allItems = this.students;
+  //             } else {
+  //               this.allItems = this.students.filter(student => {
+  //                 return student.center.name === this.selectedCenter.name && student.program.code === this.selectedProgram.code ;
+  //               });
+  //             }
+
+  //     } else {
+  //     }
+
+  //   }
+  //   this.setPage(1);
+  // }
+
+
+  filterByCenter() {
+    this.selectedProgram = 'all';
+    this.selectedGroup = 'all';
+    if (this.selectedCenter === 'all') {
+      this.allItems = this.students;
+          } else {
+            this.allItems = this.students.filter(student => {
+              return student.center.name === this.selectedCenter.name;
+            });
+          }
+          this.setPage(1);
+
+  }
+
+filterByProgram() {
+  this.selectedGroup = 'all';
+  this.filterProgram();
+this.setPage(1);
+
+}
+
+filterProgram() {
+  if (this.selectedCenter === 'all') {
+    this.allItems = this.students.filter(student => {
+      return student.program.code === this.selectedProgram.code;
+    });
+} else {
+  if (this.selectedProgram ==='all') {
+  } else {
+    this.allItems = this.students.filter(student => {
+      return student.center.name === this.selectedCenter.name && student.program.code === this.selectedProgram.code;
+    });
+  }
+
+}
+return this.allItems;
+
+}
+filterByGroup() {
+
+
+  if (this.selectedGroup === 'all') {
+    this.allItems = this.filterProgram();
+  } else {
+
+this.allItems = this.filterProgram().filter(student => {
+  return student.group.name === this.selectedGroup.name;
+});
+  }
+console.log('group');
+this.setPage(1);
+
+}
+
   searchStudent(event: any) {
     this.searchKey = event;
     const val = event.target.value;
@@ -128,7 +215,7 @@ export class StudentMessageComponent implements OnInit {
   }
 
   selectAll(isChecked: boolean) {
-    if ( isChecked ) {
+    if (isChecked) {
       this.students.forEach(student => {
         this.studentIds[student.id] = true;
       });
@@ -148,7 +235,7 @@ export class StudentMessageComponent implements OnInit {
   }
 
   smsApi() {
-    const object = {ids: this.ids, smscontent: this.smsContent};
+    const object = { ids: this.ids, smscontent: this.smsContent };
     this.sending = true;
     this.smsService.sendStudentSMS(object).subscribe((response: any) => {
       this.sending = false;
@@ -163,9 +250,9 @@ export class StudentMessageComponent implements OnInit {
 
   emailApi() {
     const object = {
-    'ids': this.ids,
-    'subject': this.emailsubject,
-    'emailcontent': this.emailcontent
+      'ids': this.ids,
+      'subject': this.emailsubject,
+      'emailcontent': this.emailcontent
     };
     // this.files.forEach(element => {
     //   object['files'] = element;
@@ -184,7 +271,6 @@ export class StudentMessageComponent implements OnInit {
     this.emailData.images.forEach(image => {
       formData.append('images', image);
     });
-    
     this.sending = true;
     this.smsService.sendStudentEmail(formData).subscribe((response: any) => {
       this.sending = false;
@@ -207,7 +293,7 @@ export class StudentMessageComponent implements OnInit {
   selectStudents() {
     this.ids = [];
     Object.keys(this.studentIds).forEach(id => {
-      if ( this.studentIds[id] ) {
+      if (this.studentIds[id]) {
         this.ids.push(id);
       }
     });
