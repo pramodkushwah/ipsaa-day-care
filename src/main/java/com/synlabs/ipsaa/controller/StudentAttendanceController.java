@@ -31,6 +31,11 @@ public class StudentAttendanceController
   public List<StudentAttendanceResponse> list() {
     return attendanceService.studentAttendanceList().stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
   }
+  @GetMapping(path="centerCode")
+  @Secured(STUDENT_READ)
+  public List<StudentAttendanceResponse> listByCente(@PathVariable("centerCode") String centerCode) {
+    return attendanceService.studentAttendanceList(centerCode).stream().map(StudentAttendanceResponse::new).collect(Collectors.toList());
+  }
 
   @Secured(STUDENT_CLOCKINOUT)
   @PostMapping("clockin")

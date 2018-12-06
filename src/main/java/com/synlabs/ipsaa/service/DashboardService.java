@@ -79,8 +79,6 @@ public class DashboardService extends BaseService
 
 	@Autowired
 	private EntityManager entityManager;
-	@Autowired
-	private EmployeeRepository employeeRepository;
 
 
 	@Autowired
@@ -92,8 +90,10 @@ public class DashboardService extends BaseService
 	@Autowired
 	private InquiryEventLogRepository eventLogRepository;
 
-	public StatsResponse getFeeStats(DashboardRequest request)
-	{
+	@Autowired
+	EmployeeRepository employeeRepository;
+
+	public StatsResponse getFeeStats(DashboardRequest request) {
 		StatsResponse response = new StatsResponse();
 		List<Center> centers = getCenters(request);
 		FeeStatsResponse expectedFee = getExpectedFee(centers, request);
@@ -272,9 +272,11 @@ public class DashboardService extends BaseService
 		JPAQuery<Employee> query = new JPAQuery<>(entityManager);
 		QEmployeeAttendance attendance = QEmployeeAttendance.employeeAttendance;
 		QEmployee employee = QEmployee.employee;
-		query.select(attendance).from(attendance).where(employee.active.isTrue())
+		query.select(attendance).from(attendance)
+				.where(employee.active.isTrue())
 				.where(attendance.status.eq(AttendanceStatus.Present))
-				.where(attendance.attendanceDate.eq(LocalDate.now().toDate())).where(attendance.checkout.isNull())
+				.where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
+				.where(attendance.checkout.isNull())
 				.where(attendance.center.in(centers));
 
 		return (int) query.fetchCount();
@@ -337,9 +339,12 @@ public class DashboardService extends BaseService
 
 		// 1 find current month and quarter and year
 		LocalDate today = LocalDate.now();
-		Integer month = feeDuration == null ? today.getMonthOfYear() : request.getMonth() == null ? today.getMonthOfYear() : request.getMonth();
-		Integer year = feeDuration == null ? today.getYear() : request.getYear() == null ? today.getYear() : request.getYear();
-		Integer quarter = feeDuration == null ? (month / 3) + 1 : request.getQuarter() == null ? (month / 3) + 1 : request.getQuarter();
+		Integer month = feeDuration == null ? today.getMonthOfYear()
+				: request.getMonth() == null ? today.getMonthOfYear() : request.getMonth();
+		Integer year = feeDuration == null ? today.getYear()
+				: request.getYear() == null ? today.getYear() : request.getYear();
+		Integer quarter = feeDuration == null ? (month / 3) + 1
+				: request.getQuarter() == null ? (month / 3) + 1 : request.getQuarter();
 		feeStatsResponse.setYear(today.getYear());
 		feeStatsResponse.setMonth(month);
 
@@ -355,6 +360,7 @@ public class DashboardService extends BaseService
 					.from(ipsaaSlip)
 					.where(ipsaaSlip.student.active.isTrue())
 					.where(ipsaaSlip.student.corporate.isFalse())
+					.where(ipsaaSlip.isExpire.isFalse())
 					.where(ipsaaSlip.year.eq(year))
 					.where(ipsaaSlip.month.eq(month))
 					.where(ipsaaSlip.student.center.in(centers));
@@ -369,10 +375,11 @@ public class DashboardService extends BaseService
 		{
 			JPAQuery<BigDecimal> quarterlyquery = new JPAQuery<>(entityManager);
 			quarterlyquery.select(slip.totalFee.sum()).from(slip)
-					//.where(slip.student.active.isTrue())
+					.where(slip.student.active.isTrue())
 					.where(slip.student.corporate.isFalse())
 					// .where(slip.student.approvalStatus.eq(ApprovalStatus.Approved))
 					.where(slip.feeDuration.eq(FeeDuration.Quarterly))
+					.where(slip.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
 					.where(slip.year.eq(year))
 					.where(slip.quarter.eq(quarter))
 					.where(slip.student.center.in(centers));
@@ -443,7 +450,8 @@ public class DashboardService extends BaseService
 			quarterlyq.select(payment.paidAmount.sum()).from(payment)
 					.where(payment.student.active.isTrue())
 					.where(payment.student.corporate.isFalse())
-					.where(payment.student.approvalStatus.eq(ApprovalStatus.Approved))
+					//.where(payment.student.approvalStatus.eq(ApprovalStatus.Approved))
+                    .where(payment.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
 					.where(payment.request.feeDuration.eq(FeeDuration.Quarterly))
 					.where(payment.request.year.eq(year))
 					.where(payment.request.quarter.eq(quarter))
@@ -597,8 +605,14 @@ public class DashboardService extends BaseService
 		query.select(studentfee).from(studentfee).where(studentfee.student.active.isTrue())
 				.where(studentfee.student.center.in(centers));
 
+
 		if (request.getFeeDuration() != null) {
-			query.where(studentfee.feeDuration.eq(request.getFeeDuration()));
+			if(request.getFeeDuration().equals(FeeDuration.Monthly)){
+				query.where(studentfee.student.program.id.eq(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID));
+			}else{
+				query.where(studentfee.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID));
+				query.where(studentfee.feeDuration.eq(request.getFeeDuration()));
+			}
 		}
 
 		List<StudentFee> fees = query.fetch();
@@ -873,7 +887,7 @@ public class DashboardService extends BaseService
 		// QEmployee employee=QEmployee.employee;
 
 		query.select(attendance).from(attendance).where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
-				.where(attendance.status.eq(AttendanceStatus.Present)).where(attendance.checkout.isNull())
+				.where(attendance.status.eq(AttendanceStatus.Present))
 				.where(attendance.center.in(centers));
 
 		List<EmployeeAttendance> attendances = query.fetch();
@@ -886,15 +900,6 @@ public class DashboardService extends BaseService
 	public List<Employee> absentStaff(DashboardRequest request) {
 
 		List<Center> centers = getCenters(request);
-//
-//		JPAQuery<EmployeeAttendance> query = new JPAQuery<>(entityManager);
-//		QEmployeeAttendance attendance = QEmployeeAttendance.employeeAttendance;
-//		// QEmployee employee=QEmployee.employee;
-//
-//		List<EmployeeAttendance> employees = query.select(attendance).from(attendance)
-//				.where(attendance.attendanceDate.eq(LocalDate.now().toDate()))
-//				.where(attendance.status.eq(AttendanceStatus.Present)).where(attendance.checkout.isNull())
-//				.where(attendance.center.in(centers)).orderBy(attendance.employee.id.asc()).fetch();
 
 		List<Employee> employeeList = employeeRepository.findByActiveTrueAndCostCenterInOrderByIdAsc(centers);
 

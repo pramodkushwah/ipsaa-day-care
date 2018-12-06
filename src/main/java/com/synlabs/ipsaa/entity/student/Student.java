@@ -50,6 +50,8 @@ public class Student extends BaseEntity
 
   private String schoolName;
 
+  private String rejectionReason;
+
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
       name = "std_parent",
@@ -61,6 +63,14 @@ public class Student extends BaseEntity
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
   private ApprovalStatus approvalStatus;
+
+  public String getRejectionReason() {
+    return rejectionReason;
+  }
+
+  public void setRejectionReason(String rejectionReason) {
+    this.rejectionReason = rejectionReason;
+  }
 
   public boolean isCorporate()
   {

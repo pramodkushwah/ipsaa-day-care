@@ -62,7 +62,7 @@ public class User extends BaseEntity
       name = "user_center",
       joinColumns = { @JoinColumn(name = "USER_ID") },
       inverseJoinColumns = { @JoinColumn(name = "CENTER_ID") })
-  @OrderBy("address.city,code")
+  @OrderBy("name")
   private List<Center> centers;
 
   public String getEmail()

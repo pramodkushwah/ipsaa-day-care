@@ -19,6 +19,7 @@ import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Iterator;
+import java.util.List;
 
 @Service
 public class HdfcApiDetailService {
@@ -103,5 +104,9 @@ public class HdfcApiDetailService {
 
     public HdfcApiDetails findDefaultOne() {
         return hdfcApiDetailRepository.findOne(DEFULT_GATEWAY_ID);
+    }
+
+    public List<HdfcApiDetails> findAll() {
+        return hdfcApiDetailRepository.findAll();
     }
 }

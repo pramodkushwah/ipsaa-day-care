@@ -32,5 +32,7 @@ public interface IEmailSender
 
   Boolean sendStudentDeleteEmail(Student student);
 
+  Boolean sendStudentRejectionEmail(Student student);
+
   Boolean sendStaffDeleteEmail(Employee employee);
 }
