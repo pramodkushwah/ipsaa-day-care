@@ -321,7 +321,6 @@ public class IpsaaClubFeeSerivce {
         }
 
         StudentFeePaymentRecordIpsaaClub receipt = studentFeePaymentRecordIpsaaClubRepository.findOne(request.getId());
-        StudentFeePaymentRequestIpsaaClub slip =receipt.getRequest();
         if (receipt == null) {
             throw new ValidationException(String.format("Cannot locate Receipt[id = %s]", mask(request.getId())));
         }
@@ -341,6 +340,9 @@ public class IpsaaClubFeeSerivce {
                 throw new ValidationException("Comment is missing");
             }
             receipt.setComment(request.getComments());
+            studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(receipt);
+
+            StudentFeePaymentRequestIpsaaClub slip =studentFeePaymentRequestIpsaaClubRepository.findOne(receipt.getRequest().getId());
             if(receipt.getPaymentMode().equals(PaymentMode.Cheque)){
                 slip.setTotalFee(slip.getTotalFee().subtract(slip.getExtraCharge()));
                 slip.setExtraCharge(slip.getExtraCharge().add(FeeUtilsV2.CHEQUE_BOUNCE_CHARGE));
@@ -352,17 +354,18 @@ public class IpsaaClubFeeSerivce {
                 slip.setTotalFee(slip.getTotalFee().add(slip.getExtraCharge()));
             }
 
-            if (slip.getTotalFee().intValue() <= receipt.getRequest().getPaidAmount().intValue()) {
-                receipt.setPaymentStatus(PaymentStatus.Paid);
-            } else if (receipt.getRequest().getPaidAmount().intValue() == 0) {
-                receipt.setPaymentStatus(PaymentStatus.Raised);
+
+            if (slip.getTotalFee().intValue() <= slip.getPaidAmount().intValue()) {
+                slip.setPaymentStatus(PaymentStatus.Paid);
+            } else if (slip.getPaidAmount().intValue() == 0) {
+                slip.setPaymentStatus(PaymentStatus.Raised);
             } else {
-                receipt.setPaymentStatus(PaymentStatus.PartiallyPaid);
+                slip.setPaymentStatus(PaymentStatus.PartiallyPaid);
             }
 
+            studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(slip);
             logger.info(String.format("Student Fee payment rejected .%s",receipt.getId()));
         }
-        studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(receipt);
         return receipt;
     }
 }

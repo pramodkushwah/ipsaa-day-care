@@ -111,6 +111,14 @@ public class StudentController
     request.setId(id);
     studentService.deleteStudent(request);
   }
+  @DeleteMapping(path = "{id}/forced")
+  @Secured(STUDENT_DELETE)
+  public void deleteStudentForced(@PathVariable Long id)
+  {
+    StudentRequest request = new StudentRequest();
+    request.setId(id);
+    studentService.deleteStudentForced(request);
+  }
 
   @PostMapping("/{studentId}/profile-pic")
   @Secured(STUDENT_WRITE)
@@ -214,6 +222,8 @@ public class StudentController
   @Secured(STUDENT_APPROVAL_WRITE)
   public void rejectStudent(@PathVariable("studentId") Long studentId){
     StudentRequest request=new StudentRequest();
+    // comment filed is pending from front end but implemented in backed
+    //request.setRejectionReason(comment);
     request.setId(studentId);
     studentService.reject(request);
   }

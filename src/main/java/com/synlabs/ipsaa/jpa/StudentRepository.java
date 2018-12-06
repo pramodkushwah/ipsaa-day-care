@@ -23,6 +23,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>
   List<Student> findByApprovalStatusAndCenterIn(ApprovalStatus new_approval, List<Center> centers);
 
   List<Student> findByActiveTrueAndApprovalStatusAndCenter(ApprovalStatus new_approval, Center center);
+  List<Student> findByActiveTrueAndApprovalStatusInAndCenter(List<ApprovalStatus> new_approval, Center center);
 
   List<Student> findByCenterAndProgram(Center center, Program program);
 

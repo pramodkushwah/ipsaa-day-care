@@ -375,10 +375,10 @@ public class CenterService extends BaseService
     List<Tuple> fetch = query.select(student.center, student.count())
                              .from(student)
                              .where(student.active.isTrue())
-                             .where(student.approvalStatus.eq(ApprovalStatus.NewApproval))
+                             .where(student.approvalStatus.eq(ApprovalStatus.NewApproval)
+                                     .or(student.approvalStatus.eq(ApprovalStatus.Pending)))
                              .groupBy(student.center)
                              .fetch();
-
 //    3. update approval count in map
     for (Tuple tuple : fetch)
     {
