@@ -139,13 +139,8 @@ export class SalaryInfoComponent implements OnInit {
         grossSalary: this.salaryForm.controls.grossSalary.value
     };
     this.adminService.getProfessionalTax(object).subscribe(response => {
-      if (response) {
         this.salaryForm.controls.profd.patchValue(true);
-        this.salaryForm.controls.professionalTax.patchValue(response);
-      } else {
-        this.salaryForm.controls.profd.patchValue(false);
-        this.salaryForm.controls.professionalTax.patchValue(0);
-      }
+        this.salaryForm.controls.professionalTax.patchValue(response.professionalTax);
     }, error => {});
 
   }

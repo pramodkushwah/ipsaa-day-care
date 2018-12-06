@@ -258,7 +258,7 @@
     <div class="modal-content" *ngIf="selected">
       <div class="modal-header">
         <h4 class="card-title">Fee Slip - {{selected.name}}</h4>
-        <span class="label label-info">{{selected.center.name}}</span>
+        <!-- <span class="label label-info">{{selected.center.name}}</span> -->
         <!-- <span class="label label-info">{{selected.program.name}}</span>
         <span class="label label-info">{{selected.group.name}}</span> -->
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -301,13 +301,13 @@
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Payment Date (YYYY-MM-DD)</label>
-              <input class="form-control" type="text" required [(ngModel)]="selected.paymentDate" [attr.readonly]="selected.status=='Paid'" value="{{currentDate}}">
+              <input class="form-control" type="text" required [(ngModel)]="selected.paymentDate" value="{{currentDate}}">
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label">Reference</label>
-              <input class="form-control" type="text" required [(ngModel)]="selected.txnid" [attr.readonly]="selected.status=='Paid'">
+              <input class="form-control" type="text" required [(ngModel)]="selected.txnid">
             </div>
           </div>
         </div>
@@ -315,7 +315,7 @@
           <div class="col-md-12">
             <div class="form-group">
               <label class="control-label">Comments*</label>
-              <textarea class="form-control" type="text" required [(ngModel)]="selected.comments" [attr.readonly]="selected.status=='Paid'"></textarea>
+              <textarea class="form-control" type="text" required [(ngModel)]="selected.comments"></textarea>
             </div>
           </div>
         </div>
@@ -329,8 +329,7 @@
               <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disabledRecordPayment"></i>
               Record Payment
             </button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancelStudentSlip()">Cancel</button>
-            <!-- <button class="btn btn-default" (click)="cancelStudentSlip()">Cancel</button> -->
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
           </div>
         </div>
       </div>

@@ -543,7 +543,7 @@ export class AdminService {
   }
 
   downloadIpsaaClubReceipt(receiptId) {
-    return this.api.getPDFByGetMethod('api/student/download/ipsaaclub/receipt', receiptId);
+    return this.api.getPDFByGetMethod('api/student/download/ipsaaclub/receipt/' + receiptId);
   }
 
   emailToParentsOfIpsaaClubStudents(emailObject) {

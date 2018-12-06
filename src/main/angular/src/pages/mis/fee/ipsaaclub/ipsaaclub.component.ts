@@ -47,6 +47,8 @@ export class IpsaaclubComponent implements OnInit {
     if (center) {
       this.adminService.getIpsaaClubFeeSlips(center.code).subscribe(response => {
         this.generatedFeeSlips = response;
+        this.selectedStudentFee = null;
+        this.selected = {};
       });
     }
   }
@@ -221,7 +223,7 @@ export class IpsaaclubComponent implements OnInit {
       $('#myModal').modal('toggle');
       this.selected.payableAmount = this.selected.payableAmount - this.selected.paidAmount;
       this.selected.paidAmount = 0;
-      this.selectedStudentFee.payments.push(response.data);
+      this.selectedStudentFee.payments.push(response);
       this.disabledRecordPayment = false;
       this.alertService.successAlert('Successfully applied payment');
       this.getGeneratedFeeSlips(this.selectedCenter);
@@ -232,7 +234,7 @@ export class IpsaaclubComponent implements OnInit {
   }
 
   cancelStudentSlip() {
-    this.showPanel = '';
+    // this.showPanel = '';
     this.selected = {};
   }
 
