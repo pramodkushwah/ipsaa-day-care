@@ -1009,7 +1009,7 @@ public class StudentFeeService extends BaseService{
     }
 
     @Transactional
-    public StudentFeePaymentRecord updatePayFee(SaveFeeSlipRequest request) {
+    public StudentFeePaymentResponse updatePayFee(SaveFeeSlipRequest request) {
 
         if (request.getId() == null) {
             throw new ValidationException("Receipt id is required.");

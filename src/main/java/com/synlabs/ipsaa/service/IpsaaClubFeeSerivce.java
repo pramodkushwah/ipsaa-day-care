@@ -339,8 +339,6 @@ public class IpsaaClubFeeSerivce {
             if(request.getComments()==null){
                 throw new ValidationException("Comment is missing");
             }
-            studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(receipt);
-            StudentFeePaymentRequestIpsaaClub slip =studentFeePaymentRequestIpsaaClubRepository.findOne(receipt.getRequest().getId());
 
             receipt.setComment(request.getComments());
             studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(receipt);
