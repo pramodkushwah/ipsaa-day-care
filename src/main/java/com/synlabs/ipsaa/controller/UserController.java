@@ -43,15 +43,6 @@ public class UserController
   }
 
 
-  // only use for angular 2
-  @GetMapping("menus")
-  @Secured(SELF_READ)
-  public Menu getMenus()
-  {
-    return userService.getCurrentUserMenuV2();
-  }
-
-
   @DeleteMapping("{userId}")
   @Secured(USER_WRITE)
   public void deleteUser(@PathVariable Long userId)
