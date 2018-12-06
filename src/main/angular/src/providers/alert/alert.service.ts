@@ -24,10 +24,10 @@ export class AlertService {
     });
   }
 
-  public errorAlert(msg: string) {
+  public errorAlert(message: any) {
     swal({
       title: 'Error',
-      text: msg,
+      text: message,
       icon: 'error'
     });
   }

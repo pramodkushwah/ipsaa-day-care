@@ -35,7 +35,7 @@ export class StudentComponent implements OnInit {
     private adminService: AdminService,
     private pagerService: PagerService,
     private alertService: AlertService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.getStudents();
@@ -144,5 +144,10 @@ export class StudentComponent implements OnInit {
       this.allItems = this.studentsCopy;
       this.setPage(1);
     }
+  }
+  pushNewStudent(student) {
+    this.students.push(student);
+    this.studentsCopy.push(student);
+    this.setPage(1);
   }
 }

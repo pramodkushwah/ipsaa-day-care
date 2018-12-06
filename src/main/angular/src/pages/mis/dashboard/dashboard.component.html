@@ -73,8 +73,15 @@
           <i class="material-icons">content_copy</i>
         </div>
         <p class="card-category">Staff</p>
-        <h3 class="card-title" (click)="getStaff()" >{{statsResult.staffCount}}
-        </h3>
+        
+          
+         
+          <h3 class="card-title">
+              <a class="link" (click)="getStaff()" >
+                {{statsResult.staffCount}}
+              </a>
+            </h3>
+        
         <p class="card-category">Staff Cost : {{statsResult.staffCost}}</p>
       </div>
       <div class="card-footer" >

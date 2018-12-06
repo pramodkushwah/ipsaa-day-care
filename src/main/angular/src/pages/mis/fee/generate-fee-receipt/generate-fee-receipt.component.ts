@@ -76,7 +76,6 @@ export class GenerateFeeReceiptComponent implements OnInit {
         this.downloadinData = true;
         this.showtable = true;
         this.alertService.loading.next(false);
-        this.alertService.errorAlert(err);
       });
 
   }

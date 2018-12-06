@@ -176,8 +176,6 @@ export class InquiryDetailsComponent implements OnInit {
                 this.inquiryNumbers.push(res.fatherMobile);
                 this.inquiryNumbers.push(res.motherMobile);
                 this.inquiryDetails = res.logs;
-            }, (err) => {
-                this.alertService.errorAlert(err);
             });
     }
 
@@ -204,8 +202,6 @@ export class InquiryDetailsComponent implements OnInit {
             this.adminService.updateInquiry(this.inquiryForm.value)
                 .subscribe((res: any) => {
                     this.alertService.successAlert('');
-                }, (err) => {
-                    this.alertService.errorAlert(err);
                 });
 
         } else {
@@ -238,8 +234,6 @@ export class InquiryDetailsComponent implements OnInit {
             // this.adminService.addNewInquiry(this.inquiryForm.value)
             //     .subscribe((res: any) => {
             //         this.alertService.successAlert('');
-            //     }, (err) => {
-            //         this.alertService.errorAlert(err);
             //     });
 
         }

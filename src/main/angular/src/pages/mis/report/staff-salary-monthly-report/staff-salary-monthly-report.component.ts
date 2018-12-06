@@ -39,8 +39,6 @@ export class StaffSalaryMonthlyReportComponent implements OnInit {
     this.adminService.getEmployeeForSalaryReport()
       .subscribe((res: any) => {
         this.employeeList = res;
-      }, (err) => {
-        this.alertService.errorAlert(err);
       });
   }
   staffSalaryMonthlyReportForDownload() {
@@ -62,7 +60,6 @@ export class StaffSalaryMonthlyReportComponent implements OnInit {
 
         this.downloadData = false;
       }, (err) => {
-        this.alertService.errorAlert(err);
         this.downloadData = false;
       });
   }
