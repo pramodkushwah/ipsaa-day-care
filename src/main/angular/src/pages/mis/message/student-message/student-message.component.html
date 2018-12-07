@@ -1,11 +1,5 @@
 <div class="row">
-  <div class="col-md-3">
-    <div class="form-group">
-      <label for="exampleFormControlInput1">Search</label>
-      <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Search by Student Name.."
-        (keyup)="searchStudent($event)">
-    </div>
-  </div>
+
   <div class="col-md-3">
     <div class="form-group">
       <label for="sel3">Center:</label>
@@ -34,6 +28,13 @@
         <option *ngFor="let group of groups;" [ngValue]="group">{{group.name}}</option>
       </select>
       <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="form-group">
+      <label for="exampleFormControlInput1">Search</label>
+      <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Search by Student Name.."
+        (keyup)="searchStudent($event)">
     </div>
   </div>
 </div>
@@ -144,6 +145,21 @@
         </h4>
       </div>
       <div class="card-body">
+
+        <div class="form-group">
+          <label class="control-label" for="cc">CC</label>
+          <input class="form-control" name="ccemail"  required  
+           pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" id="cc" type="email" [(ngModel)]="ccEmail" #cc="ngModel">
+          <button class="btn btn-rose btn-xm " (click)="addCcEmail()" [disabled]="!cc.valid" > ADD<i  class="material-icons" >add</i>
+            </button>
+        </div>
+        <div class="form-group">
+              <button class="btn btn-info btn-sm btn-round" *ngFor="let email of emailList ,let i = index">
+                  {{email}}<i (click)="removeCcEmail(i)"  class="material-icons" >close</i>
+                </button>
+        </div>
+
+
         <div class="form-group">
           <label class="control-label">Subject*</label>
           <input class="form-control" [(ngModel)]="emailsubject">

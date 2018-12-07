@@ -19,6 +19,7 @@ export class StaffInfoComponent implements OnInit {
   staffForm: FormGroup;
   newStaff: boolean;
   centers = [];
+  formSave: boolean;
   costCenters = [];
   allReportingManagers = [];
   martialStatusOptions = ['Married', 'Unmarried', 'Widowed', 'Divorced'];
@@ -252,6 +253,7 @@ export class StaffInfoComponent implements OnInit {
   get phone2() { return this.staffForm.get('profile').get('permanentAddress').get('phone'); }
 
   saveStaff() {
+    this.formSave = true;
     if (this.newStaff) {
       // for new staff add request
       console.log(this.staffForm.value);
@@ -274,8 +276,11 @@ export class StaffInfoComponent implements OnInit {
 
       this.adminService.addStaff(this.staffForm.value).subscribe(res => {
         if (res.error) {
+          this.formSave = false;
           this.alertService.errorAlert(res.error);
         } else {
+          this.formSave = false;
+this.staffForm.reset();
           this.alertService.successAlert('New Staff Added');
         }
       });
@@ -284,8 +289,12 @@ export class StaffInfoComponent implements OnInit {
       this.staffForm.controls['mode'].patchValue('Edit');
       this.adminService.updateStaff(this.staffForm.value).subscribe(res => {
         if (res.error) {
+          this.formSave = false;
+
           this.alertService.errorAlert(res.error);
         } else {
+          this.formSave = false;
+
           this.alertService.successAlert('Staff Details Updated');
         }
         this.id = null;

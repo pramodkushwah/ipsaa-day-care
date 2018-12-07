@@ -55,6 +55,8 @@ export class StaffMessageComponent implements OnInit {
   selectAllStaff: boolean;
   sending: boolean;
   emailData: any;
+  ccEmail: string ;
+  emailList: any = [];
 
   constructor(
     private adminService: AdminService,
@@ -211,6 +213,11 @@ this.allItems = this.staffs;
     this.emailData.images.forEach(image => {
       formData.append('images', image);
     });
+    this.emailList.forEach(element => {
+formData.append('cc', element);
+    });
+    console.log(this.emailList);
+
     this.sending = true;
     this.smsService.sendStaffEmail(formData).subscribe((response: any) => {
       this.sending = false;
@@ -253,4 +260,15 @@ this.allItems = this.staffs;
     this.emailData = event;
     this.emailcontent = event.textContent;
   }
+
+
+
+
+  addCcEmail() {
+    this.emailList.push(this.ccEmail);
+    this.ccEmail = '';
+      }
+    removeCcEmail(i) {
+    this.emailList.splice(i, 1);
+    }
 }

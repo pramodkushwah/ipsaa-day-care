@@ -38,7 +38,9 @@ export class StudentMessageComponent implements OnInit {
   selectAllStudent: boolean;
   sending: boolean;
   emailData: any;
-
+  ccEmail: string ;
+emailList: any = [];
+  searchArray: any = [];
   constructor(
     private adminService: AdminService,
     private pagerService: PagerService,
@@ -99,34 +101,6 @@ export class StudentMessageComponent implements OnInit {
     });
   }
 
-  // resetProgramAndGroup(center?, program?) {
-
-  //   if (center) {
-  //     if (this.selectedCenter === 'all') {
-  //       this.allItems = this.students;
-  //           } else {
-  //             this.allItems = this.students.filter(student => {
-  //               return student.center.name === this.selectedCenter.name;
-  //             });
-  //           }
-  //   } else {
-
-  //     if (program) {
-  //       this.selectedGroup = 'all';
-  //       if (this.selectedProgram === 'all') {
-  //         this.allItems = this.students;
-  //             } else {
-  //               this.allItems = this.students.filter(student => {
-  //                 return student.center.name === this.selectedCenter.name && student.program.code === this.selectedProgram.code ;
-  //               });
-  //             }
-
-  //     } else {
-  //     }
-
-  //   }
-  //   this.setPage(1);
-  // }
 
 
   filterByCenter() {
@@ -134,66 +108,86 @@ export class StudentMessageComponent implements OnInit {
     this.selectedGroup = 'all';
     if (this.selectedCenter === 'all') {
       this.allItems = this.students;
-          } else {
-            this.allItems = this.students.filter(student => {
-              return student.center.name === this.selectedCenter.name;
-            });
-          }
-          this.setPage(1);
+    } else {
+      this.allItems = this.students.filter(student => {
+        return student.center.name === this.selectedCenter.name;
+      });
+    }
+
+    this.searchArray = this.allItems.slice();
+    this.setPage(1);
 
   }
 
-filterByProgram() {
-  this.selectedGroup = 'all';
-  this.filterProgram();
-this.setPage(1);
+  filterByProgram() {
+    this.selectedGroup = 'all';
+    this.filterProgram();
+    this.searchArray = this.allItems.slice();
 
-}
+    this.setPage(1);
 
-filterProgram() {
-  if (this.selectedCenter === 'all') {
-    this.allItems = this.students.filter(student => {
-      return student.program.code === this.selectedProgram.code;
-    });
-} else {
-  if (this.selectedProgram ==='all') {
-  } else {
-    this.allItems = this.students.filter(student => {
-      return student.center.name === this.selectedCenter.name && student.program.code === this.selectedProgram.code;
-    });
   }
 
-}
-return this.allItems;
+  filterProgram() {
+    if (this.selectedCenter === 'all') {
+      this.allItems = this.students.filter(student => {
+        return student.program.code === this.selectedProgram.code;
+      });
+    } else {
+      if (this.selectedProgram === 'all') {
+        this.allItems = this.students.filter(student => {
+          return student.center.name === this.selectedCenter.name;
+        });
+      } else {
+        this.allItems = this.students.filter(student => {
+          return student.center.name === this.selectedCenter.name && student.program.code === this.selectedProgram.code;
+        });
+      }
 
-}
-filterByGroup() {
+    }
+    return this.allItems;
 
-
-  if (this.selectedGroup === 'all') {
-    this.allItems = this.filterProgram();
-  } else {
-
-this.allItems = this.filterProgram().filter(student => {
-  return student.group.name === this.selectedGroup.name;
-});
   }
-console.log('group');
-this.setPage(1);
+  filterByGroup() {
 
-}
+
+    if (this.selectedGroup === 'all') {
+      this.allItems = this.filterProgram();
+    } else {
+
+      this.allItems = this.filterProgram().filter(student => {
+        return student.group.name === this.selectedGroup.name;
+      });
+    }
+    this.searchArray = this.allItems.slice();
+    this.setPage(1);
+
+  }
 
   searchStudent(event: any) {
     this.searchKey = event;
-    const val = event.target.value;
-    if (val && val.trim() !== '') {
-      this.allItems = this.students.filter(student => {
-        return student.fullName.startsWith(val);
-      });
-      this.setPage(1);
+    const val = event.target.value.toLowerCase();
+
+    if ((this.selectedCenter !== 'all' || this.selectedProgram !== 'all' || this.selectedGroup !== 'all')) {
+      if (val && val.trim() !== '') {
+        this.allItems = this.searchArray.filter(student => {
+          return student.fullName.toLowerCase().startsWith(val);
+        });
+        this.setPage(1);
+      } else {
+        this.allItems = this.searchArray;
+        this.setPage(1);
+      }
     } else {
-      this.allItems = this.studentsCopy;
-      this.setPage(1);
+      if (val && val.trim() !== '') {
+        this.allItems = this.students.filter(student => {
+          return student.fullName.toLowerCase().startsWith(val);
+        });
+        this.setPage(1);
+      } else {
+        this.allItems = this.studentsCopy;
+        this.setPage(1);
+      }
     }
   }
 
@@ -271,6 +265,9 @@ this.setPage(1);
     this.emailData.images.forEach(image => {
       formData.append('images', image);
     });
+    this.emailList.forEach(element => {
+      formData.append('cc', element);
+          });
     this.sending = true;
     this.smsService.sendStudentEmail(formData).subscribe((response: any) => {
       this.sending = false;
@@ -314,4 +311,13 @@ this.setPage(1);
     this.emailData = event;
     this.emailcontent = event.textContent;
   }
+
+
+  addCcEmail() {
+this.emailList.push(this.ccEmail);
+this.ccEmail = '';
+  }
+removeCcEmail(i) {
+this.emailList.splice(i, 1);
+}
 }

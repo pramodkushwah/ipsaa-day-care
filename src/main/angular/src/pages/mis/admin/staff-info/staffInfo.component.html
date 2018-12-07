@@ -480,7 +480,15 @@
 
   <div class="card-footer">
     <div class="stats padding-left-right-30">
-      <button mat-raised-button class="btn btn-primary" [disabled]="staffForm.invalid" (click)="saveStaff()" [hidden]="!newStaff && !editable">Save</button>
+      <button mat-raised-button class="btn btn-primary" [disabled]="staffForm.invalid " (click)="saveStaff()" [hidden]="!newStaff && !editable">
+     
+        <span *ngIf=" formSave ;else save">
+          <i class="fa fa-spinner fa-spin"></i> Saving
+        </span>
+        <ng-template #save>Save</ng-template>
+      </button>
+     
+     
       <button mat-raised-button class="btn btn-default" (click)="hideViewPanel()" [hidden]="!newStaff && !editable">Cancel</button>
     </div>
   </div>
