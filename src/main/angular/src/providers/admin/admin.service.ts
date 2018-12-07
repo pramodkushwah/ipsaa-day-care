@@ -68,6 +68,8 @@ export class AdminService {
     return this.api.post('api/staff/filter', filter);
   }
   deleteStaffById(staffId) {
+    console.log(staffId);
+    
     return this.api.delete('api/staff/' + staffId);
   }
   addStaff(reqBody) {
@@ -409,6 +411,11 @@ export class AdminService {
 
   studentsFeeReportdownload(centerId_and_range) {
     return this.api.getPDF('api/report/studentfee/excel/', centerId_and_range);
+
+  }
+
+  hdfcGatewayReportdownload(centerId_and_range) {
+    return this.api.getPDF('api/report/collectionfee/hdfc/', centerId_and_range);
 
   }
 

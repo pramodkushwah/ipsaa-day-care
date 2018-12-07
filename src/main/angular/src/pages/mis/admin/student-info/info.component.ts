@@ -362,6 +362,8 @@ export class StudentInfoComponent implements OnInit {
   }
 
   calculateDiscount(base: string, final: string, targetDiscount: string) {
+    this.subscribeToCalculateDiscount();
+
     const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
     const fee = feeControlForm.value;
 
