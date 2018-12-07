@@ -32,6 +32,7 @@ export class StaffMessageComponent implements OnInit {
   centers: any[];
   groups: any[];
   programs: any[];
+  selectedCenter: any = 'all';
   staffs: any[];
   staffIds: any = {};
   loader: boolean;
@@ -115,6 +116,16 @@ export class StaffMessageComponent implements OnInit {
     });
   }
 
+  filterByCenter(center) {
+    if (center === 'all') {
+this.allItems = this.staffs;
+    } else {
+      this.allItems = this.staffs.filter(staff => {
+        return staff.centerName === center.name;
+      });
+    }
+    this.setPage(1);
+  }
   searchStaff(event: any) {
     this.searchKey = event;
     const val = event.target.value.toLowerCase();
