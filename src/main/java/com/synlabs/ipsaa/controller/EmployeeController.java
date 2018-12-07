@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -170,9 +171,11 @@ public class EmployeeController
 
   //////Avneet
   @PostMapping("stateTax")
-  public BigDecimal calculatePFTax(@RequestBody StateTaxRequest request){
+  public Map<String,BigDecimal> calculatePFTax(@RequestBody StateTaxRequest request){
     BigDecimal tax=employeeService.calculatePfTax(request);
-    return tax;
+    Map<String,BigDecimal> ptTax= new HashMap<>();
+    ptTax.put("professionalTax",tax);
+    return ptTax;
   }
 
   @PutMapping("updateCTC")

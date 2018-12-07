@@ -35,22 +35,12 @@ public class UserController
     return userService.list().stream().map(UserResponse::new).collect(Collectors.toList());
   }
 
-  @GetMapping("menu")
+  @GetMapping("menus")
   @Secured(SELF_READ)
   public Menu getMenu()
   {
     return userService.getCurrentUserMenu();
   }
-
-
-  // only use for angular 2
-  @GetMapping("menus")
-  @Secured(SELF_READ)
-  public Menu getMenus()
-  {
-    return userService.getCurrentUserMenuV2();
-  }
-
 
   @DeleteMapping("{userId}")
   @Secured(USER_WRITE)

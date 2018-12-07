@@ -118,7 +118,6 @@ export class Api {
   }
 
   extractData(response: HttpResponse<any>) {
-
     return response.body || response.status;
   }
 
@@ -129,8 +128,9 @@ export class Api {
   handleError = (errorResponse: HttpErrorResponse) => {
     switch (errorResponse.status) {
       case 401:
-        this.router.navigate(['/login']);
-        this.alertService.errorAlert(errorResponse.error.message);
+        this.router.navigate(['/login']).then(() => {
+          this.alertService.errorAlert(errorResponse.error.message);
+        });
         this.storage.clearData();
         break;
       case 0:
@@ -138,8 +138,6 @@ export class Api {
         break;
       default:
         this.alertService.errorAlert(errorResponse.error.message);
-
-
         break;
     }
     return Observable.throw(errorResponse);

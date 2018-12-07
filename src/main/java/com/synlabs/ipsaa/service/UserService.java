@@ -291,17 +291,6 @@ public class UserService extends BaseService implements UserDetailsService
     return menu;
   }
 
-  public Menu getCurrentUserMenuV2()
-  {
-    User user = getUser();
-    Menu menu = menuCache.getIfPresent(user.getEmail());
-    //if (menu == null)
-    //{
-      menu = menuBuilder.buildForUserV2(user);
-      menuCache.put(user.getEmail(), menu);
-    //}
-    return menu;
-  }
   public Role saveRole(RoleRequest request)
   {
     Role role = request.toEntity();
