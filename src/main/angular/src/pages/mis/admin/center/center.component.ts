@@ -235,16 +235,13 @@ export class CenterComponent implements OnInit {
             _.extend(this.selectedZone, response);
             this.alertService.successAlert('You have updated zone!');
             this.adminService.viewPanel.next(false);
-          }, (error: any) => {
-            this.alertService.errorAlert(error);
           });
         }
       });
     } else {
       this.adminService.saveZone(this.zoneForm.value).subscribe((response: any) => {
+        this.zones.push(response);
         this.alertService.successAlert('You have added new zone!');
-      }, (error: any) => {
-        this.alertService.errorAlert(error);
       });
     }
   }
@@ -257,17 +254,14 @@ export class CenterComponent implements OnInit {
             _.extend(this.selectedCity, response);
             this.alertService.successAlert('You have updated city!');
             this.adminService.viewPanel.next(false);
-          }, (error: any) => {
-            this.alertService.errorAlert(error);
           });
         }
       });
     } else {
       this.adminService.saveCity(this.cityForm.value).subscribe((response: any) => {
+        this.cities.push(response);
         this.alertService.successAlert('You have added new city!');
         this.adminService.viewPanel.next(false);
-      }, (error: any) => {
-        this.alertService.errorAlert(error);
       });
     }
   }
@@ -280,17 +274,14 @@ export class CenterComponent implements OnInit {
             _.extend(this.selectedState, response);
             this.alertService.successAlert('You have updated state!');
             this.adminService.viewPanel.next(false);
-          }, (error: any) => {
-            this.alertService.errorAlert(error);
           });
         }
       });
     } else {
       this.adminService.saveState(this.stateForm.value).subscribe((response: any) => {
+        this.states.push(response);
         this.alertService.successAlert('You have added new State!');
         this.adminService.viewPanel.next(false);
-      }, (error: any) => {
-        this.alertService.errorAlert(error);
       });
     }
   }
@@ -344,11 +335,10 @@ export class CenterComponent implements OnInit {
     }
   }
 
-  editState(state) {
-
-  }
-
-  removeState(state) {
-
+  pushCenter(center) {
+    console.log(center);
+    if (center) {
+      this.centers.push(center);
+    }
   }
 }

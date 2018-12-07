@@ -9,5 +9,5 @@ export const environment = {
   api: 'http://ipsaa-dev.ap-south-1.elasticbeanstalk.com' // development backend url
   // api: 'http://localhost:8080'
   // api: 'http://ipsaa-dev2.ap-south-1.elasticbeanstalk.com'
-// api: window.location.origin
+  api: window.location.origin
 };

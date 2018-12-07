@@ -204,6 +204,10 @@ export class AdminService {
     return this.api.post('api/employee/salary/update', salary);
   }
 
+  getProfessionalTax(data) {
+    return this.api.post('api/employee/stateTax', data);
+  }
+
   getNewEmployees() {
     return this.api.get('api/staff/new');
   }

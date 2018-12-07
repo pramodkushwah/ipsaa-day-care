@@ -200,7 +200,7 @@ public class StudentFeeService extends BaseService{
         List<StudentFeePaymentRequest> allslips = new LinkedList<>();
         int requestQuarter = request.getQuarter();
         int requestYear = request.getYear();
-            allslips = feePaymentRepository. findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(FeeDuration.Quarterly, requestQuarter, requestYear,request.getCenterCode());
+            allslips = feePaymentRepository. findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(FeeDuration.Quarterly, requestQuarter, requestYear,request.getCenterCode(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
         return allslips;
     }
 
@@ -430,8 +430,9 @@ public class StudentFeeService extends BaseService{
             thisQuarterSlip.setFeeRatio(baseFeeRatio);
             // to check is it new addmission
             if(slipCount==1){
-                    baseFeeRatio=FeeUtilsV2.calculateFeeRatioForQuarter(thisQuarterSlip.getStudent().getProfile().getAdmissionDate(),thisQuarterSlip.getQuarter());
-                    thisQuarterSlip.setFeeRatio(baseFeeRatio);
+                // if its a new students
+                // find the ratio using its admission date
+                    baseFeeRatio=FeeUtilsV2.calculateFeeRatioForQuarter(thisQuarterSlip.getStudent().getProfile().getAdmissionDate(),thisQuarterSlip.getQuarter());thisQuarterSlip.setFeeRatio(baseFeeRatio);
                  thisQuarterSlip.setAdmissionFee(fee.getAdmissionFee()==null?ZERO:fee.getAdmissionFee());
                  thisQuarterSlip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
                  thisQuarterSlip.setFinalAdmissionFee(fee.getFinalAdmissionFee()==null?ZERO:fee.getFinalAdmissionFee());
@@ -591,7 +592,6 @@ public class StudentFeeService extends BaseService{
         int year=cal.get(Calendar.YEAR);
         return this.generateFeeSlip(slipId,quarter,year,true);
     }
-
     public List<StudentFeePaymentRequest> generateFeeSlips(StudentFeeSlipRequest request) {
         validateQuarter(request);
         QStudentFee qStudentFee = QStudentFee.studentFee;
@@ -744,6 +744,7 @@ public class StudentFeeService extends BaseService{
         }
     }
 
+    @Transactional
     public StudentFeePaymentRequest updateSlip(StudentFeeSlipRequestV2 request) {
         StudentFeePaymentRequest slip = feePaymentRepository.findOne(request.getId());
         if (slip == null)
@@ -1007,6 +1008,7 @@ public class StudentFeeService extends BaseService{
         return slip;
     }
 
+    @Transactional
     public StudentFeePaymentResponse updatePayFee(SaveFeeSlipRequest request) {
 
         if (request.getId() == null) {
@@ -1041,7 +1043,7 @@ public class StudentFeeService extends BaseService{
             }
             receipt.setComment(request.getComments());
             if(receipt.getPaymentMode().equals(PaymentMode.Cheque)){
-                slip.setTotalFee(slip.getTotalFee().subtract(slip.getExtraCharge()));
+                slip.setTotalFee(slip.getTotalFee().subtract(slip.getExtraCharge()==null?ZERO:slip.getExtraCharge()));
                 slip.setExtraCharge(slip.getExtraCharge().add(FeeUtilsV2.CHEQUE_BOUNCE_CHARGE));
                 if(slip.getAutoComments()==null)
                 slip.setAutoComments("200rs Cheque bounce charges added");

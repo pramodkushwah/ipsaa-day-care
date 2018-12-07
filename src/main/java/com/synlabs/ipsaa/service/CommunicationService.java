@@ -459,6 +459,12 @@ public class CommunicationService
     emailSender.sendStudentDeleteEmail(student);
   }
 
+  public void sendStudentRejectEmail(Student student)
+  {
+    emailSender.sendStudentRejectionEmail(student);
+  }
+
+
   public void sendStaffDeleteEmail(Employee employee)
   {
     emailSender.sendStaffDeleteEmail(employee);

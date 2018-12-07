@@ -127,14 +127,14 @@
       </div>
     </div>
   </div>
-  <!-- <div class="col-md-4 col-sm-4">
+  <div class="col-md-4 col-sm-4">
     <div class="card card-stats">
       <div class="card-header card-header-warning card-header-icon">
         <div class="card-icon">
           <i class="material-icons">content_copy</i>
         </div>
-        <p class="card-category">Monthly Fee</p>
-        <h3 class="card-title" *ngIf="monthlyFee.expectedFee">{{monthlyFee.expectedFee.monthly ? monthlyFee.expectedFee.monthly : 0}}
+        <p class="card-category">Ipsaaclub Fee</p>
+        <h3 class="card-title" *ngIf="monthlyFee.expectedFee">{{monthlyFee.expectedFee.ipssaFee ? monthlyFee.expectedFee.ipssaFee : 0}}
         </h3>
         <div class="row">
           <div class="col-md-6">
@@ -159,11 +159,13 @@
       </div>
       <div class="card-footer">
         <div class="stats">
-          <a class="link" *ngIf="monthlyFee.collectedFee" (click)="getStudentFee(monthly.feeDuration)">Collected : {{monthlyFee.collectedFee.quarterly?monthlyFee.collectedFee.quarterly:0}}</a>
+          <a class="link" *ngIf="monthlyFee.collectedFee" (click)="getStudentFee(monthly.feeDuration)">Collected : {{monthlyFee.collectedFee.ipssaFee?monthlyFee.collectedFee.ipssaFee:0}}</a>
         </div>
       </div>
     </div>
-  </div> -->
+  </div>
+
+  
   <div class="col-md-4 col-sm-4" [hidden]="isAccessible('fee')">
     <div class="card card-stats">
       <div class="card-header card-header-warning card-header-icon">
