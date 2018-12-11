@@ -37,8 +37,8 @@
           <td>{{staff.employer}}</td>
           <!-- <td>{{staff.email}}</td>
           <td ng-if="SALARY_READ">{{staff.basicSalary}}</td> -->
-          <td ng-hide="staffPage.filter=='newjoinings' || staffPage.filter== 'newleavings' || staffPage.filter== 'all' || staffPage.filter== 'recruitmentHeadCountList'">{{staff.checkin}}</td>
-          <td ng-hide="staffPage.filter=='newleavings' || staffPage.filter== 'newjoinings' || staffPage.filter== 'all' || staffPage.filter== 'recruitmentHeadCountList'">{{staff.expectedOut}}</td>
+          <td ng-hide="staffPage.filter=='newjoinings' || staffPage.filter== 'newleavings' || staffPage.filter== 'all' || staffPage.filter== 'recruitmentHeadCountList'">{{staff.checkIn}}</td>
+          <td ng-hide="staffPage.filter=='newleavings' || staffPage.filter== 'newjoinings' || staffPage.filter== 'all' || staffPage.filter== 'recruitmentHeadCountList'">{{staff.checkOut}}</td>
           <td ng-show="staffPage.filter=='newjoinings'">{{staff.doj}}</td>
           <td ng-show="staffPage.filter=='newleavings' || staffPage.filter== 'recruitmentHeadCountList'">{{staff.dol}}</td>
           <td ng-show="staffPage.filter=='all'">{{staff.ctc}}</td>
