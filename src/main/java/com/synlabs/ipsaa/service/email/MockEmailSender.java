@@ -209,6 +209,36 @@ public class MockEmailSender implements IEmailSender
     return false;
   }
 
+  // sending mail to student last modified user
+  @Override
+  public Boolean sendStudentRejectionEmail(Student student) {
+    try
+    {
+      Response response = new Response()
+      {
+      };
+      //new template for rejction
+      Template template = configuration.getTemplate("email_student_reject.ftl");
+      Map<String, Object> rootMap = new HashMap<>();
+      rootMap.put("student", student);
+      rootMap.put("maskedId", response.mask(student.getId()));
+      rootMap.put("baseURL", baseURL);
+      Writer out = new StringWriter();
+      template.process(rootMap, out);
+      String body = out.toString();
+//      sendEmail(body, "Student approval", null,
+//              notificationEmailService.notificationEmailList(EmailNotificationType.StudentApproval));
+      sendEmail(body, "Student approval", null,student.getCreatedBy().getEmail());
+      return true;
+    }
+    catch (Exception ex)
+    {
+      ex.printStackTrace();
+      logger.error("Error sending mail!", ex);
+    }
+    return false;
+  }
+
   @Override
   public Boolean sendStaffDeleteEmail(Employee employee)
   {

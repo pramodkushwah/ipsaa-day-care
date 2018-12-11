@@ -5,5 +5,5 @@ package com.synlabs.ipsaa.enums;
  */
 public enum ApprovalStatus
 {
-  Approved,Rejected, NewApproval
+  Approved,Rejected, NewApproval,Pending
 }
