@@ -177,7 +177,7 @@ public class StaffAttendanceRegisterReport {
             cell.setCellValue(report.getHalfdays().intValue());
 
             cell= row.createCell(index++,Cell.CELL_TYPE_NUMERIC);
-            cell.setCellValue(report.getPresents().floatValue());   // Total paid days
+            cell.setCellValue(report.getPaidDays().floatValue());   // Total paid days
 
 //            cell= row.createCell(index++,Cell.CELL_TYPE_NUMERIC);
 //            cell.setCellValue(report.getOverTime().longValue());

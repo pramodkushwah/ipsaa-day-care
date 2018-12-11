@@ -67,7 +67,7 @@ app.controller('HolidayController', function ($scope, $http, $rootScope, $filter
     };
 
 
-    $http.get('/api/center/').then(function (response) {
+    $http.get('/api/center/all').then(function (response) {
         $scope.centerList = response.data;
         $scope.centerList.unshift({id:'All',name:'All',code:'All',zone:{},address:{}});
         $scope.centerListCopy = angular.copy($scope.centerList);
@@ -105,7 +105,7 @@ app.controller('HolidayController', function ($scope, $http, $rootScope, $filter
 
     function filterCenterByState(name){
         $scope.centerList = $scope.centerListCopy.filter(element => {
-            return (element.address.state == name || element.name == 'All');
+            return (element.state == name || element.name == 'All');
         });
         $scope.selectedCity = '';
     }

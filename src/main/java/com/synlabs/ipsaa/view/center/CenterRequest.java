@@ -5,50 +5,19 @@ import com.synlabs.ipsaa.entity.common.Address;
 import com.synlabs.ipsaa.enums.AddressType;
 import com.synlabs.ipsaa.enums.CenterType;
 import com.synlabs.ipsaa.view.common.Request;
-import org.hibernate.validator.constraints.NotBlank;
-
-import javax.validation.constraints.Size;
 
 public class CenterRequest implements Request
 {
   private Long id;
-
-  @NotBlank
-  @Size(min = 2,max = 20)
   private String code;
-
-  @NotBlank
-  @Size(min = 2,max = 50)
   private String name;
-
-  @NotBlank
-  @Size(min = 2,max = 20)
   private String type;
-
   private int capacity;
-
-  @NotBlank
-  @Size(min = 2,max = 20)
   private String zone;
-
-  @NotBlank
-  @Size(min = 2,max = 200)
   private String address;
-
-  @NotBlank
-  @Size(min = 2,max = 20)
   private String city;
-
-  @NotBlank
-  @Size(min = 2,max = 20)
   private String state;
-
-  @NotBlank
-  @Size(min = 2,max = 20)
   private String zipcode;
-
-  @NotBlank
-  @Size(min = 2,max = 20)
   private String phone;
 
   public Center toEntity() {
