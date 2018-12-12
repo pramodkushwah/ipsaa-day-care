@@ -1,5 +1,7 @@
 package com.synlabs.ipsaa.view.staff;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.synlabs.ipsaa.entity.attendance.EmployeeAttendance;
 import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.staff.Employee;
 import com.synlabs.ipsaa.view.common.Request;
@@ -17,6 +19,12 @@ public class StaffNewJoinings  implements Response {
     private boolean isActive;
     private long id;
 
+    @JsonFormat(pattern = "HH:mm", timezone = "IST")
+    private Date checkIn;
+
+    @JsonFormat(pattern = "HH:mm", timezone = "IST")
+    private Date checkOut;
+
     private String employer;
     public StaffNewJoinings(Employee employee) {
         id=mask(employee.getId());
@@ -29,6 +37,7 @@ public class StaffNewJoinings  implements Response {
        this.employer=employee.getEmployer().getName();
     }
 
+<<<<<<< HEAD
     public long getId() {
         return id;
     }
@@ -37,6 +46,20 @@ public class StaffNewJoinings  implements Response {
         this.id = id;
     }
 
+=======
+    ///For Attendance----- Avneet
+    public StaffNewJoinings(EmployeeAttendance attendance){
+        center= attendance.getEmployee().getCostCenter().getName();
+        name=attendance.getEmployee().getName();
+        designation=attendance.getEmployee().getDesignation();
+        doj=attendance.getEmployee().getProfile().getDoj();
+        mobile=attendance.getEmployee().getMobile();
+        this.isActive=attendance.getEmployee().isActive();
+        this.employer=attendance.getEmployee().getEmployer().getName();
+        checkIn=attendance.getCheckin();
+        checkOut=attendance.getCheckout();
+    }
+>>>>>>> bc3d296b30dcf99f05890aa2dc0ea4ef72375f91
     public String getEmployer() {
         return employer;
     }
@@ -92,4 +115,12 @@ public class StaffNewJoinings  implements Response {
     public void setCenter(String center) {
         this.center = center;
     }
+
+    public Date getCheckIn() { return checkIn; }
+
+    public void setCheckIn(Date checkIn) { this.checkIn = checkIn; }
+
+    public Date getCheckOut() { return checkOut;}
+
+    public void setCheckOut(Date checkOut) { this.checkOut = checkOut; }
 }

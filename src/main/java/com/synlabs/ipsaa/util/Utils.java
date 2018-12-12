@@ -9,12 +9,13 @@ import org.springframework.util.StringUtils;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class Utils
 {
   public static Set<Date> datesBetween(Date from, Date to, boolean includeSunday)
   {
-    Set<Date> dates = new HashSet<>();
+    Set<Date> dates = new TreeSet<>();
     LocalDate f = LocalDate.fromDateFields(from);
     LocalDate t = LocalDate.fromDateFields(to);
     if (f.isAfter(t))

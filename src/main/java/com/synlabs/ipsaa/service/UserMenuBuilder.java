@@ -28,7 +28,6 @@ public class UserMenuBuilder
   private Map<String, MenuItem> submannuMap = new HashMap<>();
   private Map<String, MenuItem> mannuMap = new HashMap<>();
 
-
   private ObjectMapper jsonMapper = new ObjectMapper();
 
   @PostConstruct

@@ -187,8 +187,10 @@ public class StaffService extends BaseService
   // shubham
   public File getEmployee(StaffFilterRequest staffRequest){
     List<Employee> list=null;
+
     if(staffRequest.getEmployerCode().equals("All") || staffRequest.getEmployerCode().equals("ALL"))
-    list= employeeRepository.findByActiveTrueAndCostCenterIn(getUserCenters());
+      list= employeeRepository.findByActiveTrueAndCostCenterIn(getUserCenters());
+
     else{
        list=employeeRepository.findByActiveTrueAndCostCenterInAndEmployerCode(getUserCenters(),staffRequest.getEmployerCode());
     }

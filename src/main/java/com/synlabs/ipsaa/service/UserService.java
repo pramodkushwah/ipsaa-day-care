@@ -290,7 +290,10 @@ public class UserService extends BaseService implements UserDetailsService
     }
     return menu;
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> bc3d296b30dcf99f05890aa2dc0ea4ef72375f91
   public Role saveRole(RoleRequest request)
   {
     Role role = request.toEntity();

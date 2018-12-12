@@ -465,9 +465,16 @@ public class StaffLeaveService extends BaseService {
 
   public List<EmployeeLeaveSummaryResponse> getLeavesByMonth(int month) {
 
-    if (month == 0)
-      throw new ValidationException("Month is required");
-    JPAQuery<EmployeeLeaveSummary> query = new JPAQuery<>(entityManager);
+    List<EmployeeLeaveSummaryResponse> list = new ArrayList<>();
+    JPAQuery<EmployeeLeave> query = new JPAQuery<>(entityManager);
+    EmployeeLeaveSummaryResponse summaryResponse;
+    QEmployeeLeave leave = QEmployeeLeave.employeeLeave;
+    List<EmployeeLeave> leaves= new ArrayList<>();
+    Map<Employee, BigDecimal> leaveCount = new HashMap<>();
+
+//    if (month == 0)
+//      throw new ValidationException("Month is required");
+
 //      QEmployeeLeaveSummary leaveSummary=QEmployeeLeaveSummary.employeeLeaveSummary;
 //
 //      List<Tuple> fetch=query.select(leaveSummary.employee,leaveSummary.count.sum()).from(leaveSummary)
@@ -476,8 +483,7 @@ public class StaffLeaveService extends BaseService {
 //              .groupBy(leaveSummary.employee)
 //              .fetch();
 
-    List<EmployeeLeaveSummaryResponse> list = new ArrayList<>();
-    EmployeeLeaveSummaryResponse summaryResponse;
+
 //
 //      for(Tuple row: fetch){
 //        summaryResponse= new EmployeeLeaveSummaryResponse();
@@ -492,12 +498,21 @@ public class StaffLeaveService extends BaseService {
 //
 //      }
 
-    Map<Employee, BigDecimal> leaveCount = new HashMap<>();
-    QEmployeeLeave leave = QEmployeeLeave.employeeLeave;
-    List<EmployeeLeave> leaves = query.select(leave).from(leave)
-            .where(leave.date.month().eq(month).and(leave.employee.active.isTrue()))
-            .orderBy(leave.employee.id.asc())
-            .fetch();
+     if(month == 0) {
+       leaves= query.select(leave).from(leave)
+               .where(leave.date.month().between(1,12).and(leave.date.year().eq(LocalDate.now().getYear())))
+               .where(leave.employee.active.isTrue())
+               .orderBy(leave.employee.id.asc())
+               .fetch();
+
+     }
+     else{
+             leaves = query.select(leave).from(leave)
+                  .where(leave.date.month().eq(month).and(leave.date.year().eq(LocalDate.now().getYear())))
+                  .where(leave.employee.active.isTrue())
+                  .orderBy(leave.employee.id.asc())
+                  .fetch();
+     }
 
     for (EmployeeLeave l : leaves){
       System.out.println(l.getEmployee().getName()+ " ");
@@ -527,18 +542,27 @@ public class StaffLeaveService extends BaseService {
 
     public List<EmployeeLeave> employeeLeavesMonthly (String eid,int month){
 
-      if (month == 0)
-        throw new ValidationException("Month is mandatory.");
       if (eid == null)
         throw new ValidationException("Employee id is required!");
 
       JPAQuery<EmployeeLeave> query = new JPAQuery<>(entityManager);
       QEmployeeLeave employeeLeave = QEmployeeLeave.employeeLeave;
 
-      List<EmployeeLeave> leaves = query.select(employeeLeave).from(employeeLeave)
-              .where(employeeLeave.employee.eid.eq(eid).and(employeeLeave.date.month().eq(month)))
-              .fetch();
+      List<EmployeeLeave> leaves = new ArrayList<>();
 
+      if(month == 0){
+        leaves= query.select(employeeLeave).from(employeeLeave)
+                .where(employeeLeave.employee.eid.eq(eid).and(employeeLeave.date.month().between(1,12)))
+                .where(employeeLeave.date.year().eq(LocalDate.now().getYear()))
+                .orderBy(employeeLeave.date.asc())
+                .fetch();
+      }else {
+        leaves = query.select(employeeLeave).from(employeeLeave)
+                .where(employeeLeave.date.month().eq(month).and(employeeLeave.date.year().eq(LocalDate.now().getYear())))
+                .where(employeeLeave.employee.eid.eq(eid))
+                .orderBy(employeeLeave.date.asc())
+                .fetch();
+      }
       return leaves;
     }
 
