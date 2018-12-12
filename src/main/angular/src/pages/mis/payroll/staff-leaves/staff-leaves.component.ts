@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from '../../../../providers/alert/alert.service';
 import { PayrollService } from '../../../../providers/payroll/payroll.service';
-
+import { AdminService } from '../../../../providers/admin/admin.service';
 @Component({
   selector: 'app-staff-leaves',
   templateUrl: './staff-leaves.component.html',
@@ -21,7 +21,7 @@ export class StaffLeavesComponent implements OnInit {
   { 'month': 'September', 'id': 9 },
   { 'month': 'October', 'id': 10 },
   { 'month': 'November', 'id': 11 },
-  { 'month': 'December', 'id': 12 }, ];
+  { 'month': 'December', 'id': 12 }];
   leaveMonth: string;
   currentYear: number;
   years = [];
@@ -30,6 +30,7 @@ export class StaffLeavesComponent implements OnInit {
   selectedLeaveType: any;
   leaveList = ['SICK', 'CASUAL', 'PAID', 'UNPAID', 'ADOPTION', 'MATERNITY', 'BEREAVEMENT'];
   selectedId: number;
+  summaryMonth: number;
   rowColour: string;
   selectedMonth: any;
   selectedYear: any;
@@ -42,6 +43,8 @@ export class StaffLeavesComponent implements OnInit {
   apllyLeaveSuccessful = true;
   showDetails = false;
   employeeList: Array<any>;
+  employeeListCopy: Array<any>;
+
   currentDate: Date;
   totalLeave = 0;
   selectedEmployeeAttendanceDetails: Array<any>;
@@ -49,9 +52,22 @@ export class StaffLeavesComponent implements OnInit {
   leaveType: string;
   totalMonthly = 0;
   disableApprove = false;
+  disableDelete = false;
+  disableSave = false;
 
+  attenClockin: string;
+  attenClockOut: string;
+
+  attenDetails: any = {};
+  centers: any;
+  employeeLeaveSummary: any = [];
+  employeeLeaveSummaryCopy: any = [];
+  monthlyLeaves: any = [];
+  filterCenter = 'All';
   constructor(
-    private payrollService: PayrollService, private alertService: AlertService
+    private payrollService: PayrollService,
+    private alertService: AlertService,
+    private adminService: AdminService,
   ) {
     this.currentDate = new Date();
     this.currentDate.setDate(this.currentDate.getDate());
@@ -64,16 +80,31 @@ export class StaffLeavesComponent implements OnInit {
 
   ngOnInit() {
     this.getEmployees();
+    this.getCenters();
   }
 
+  getCenters() {
+    this.adminService.getCenters()
+      .subscribe((res: any) => {
+        this.centers = res;
+      });
+  }
   getEmployees() {
     this.payrollService.getEmployee()
       .subscribe((res: any) => {
         this.employeeList = res;
+
+        this.employeeListCopy = res;
       }, (err) => {
         this.alertService.errorAlert(err);
       });
   }
+
+  selctedEmpId(id) {
+    this.selectedId = id;
+    this.getEmployeeAttendance();
+  }
+
   getEmployeeAttendance() {
     this.alertService.loading.next(true);
     this.applyLeavDetails = {};
@@ -123,7 +154,7 @@ export class StaffLeavesComponent implements OnInit {
   }
 
   apllyLeave() {
-    this.apllyLeaveSuccessful = false ;
+    this.apllyLeaveSuccessful = false;
     this.applyLeavDetails['eid'] = this.eId;
     this.applyLeavDetails['fromDate'] = this.fromDate;
     this.applyLeavDetails['leaveType'] = this.selectedLeaveType;
@@ -236,4 +267,84 @@ export class StaffLeavesComponent implements OnInit {
     console.log(this.leaveMonth);
   }
 
+
+
+
+  delete(attendanceDetails) {
+    this.disableDelete = true;
+    this.payrollService.deleteLeave(attendanceDetails.attendanceId)
+      .subscribe((res: any) => {
+        this.disableDelete = false;
+        this.getEmployeeAttendance();
+        // this.selectedEmployeeAttendanceDetails.forEach(element => {
+        //   if (element.id === attendanceDetails.id) {
+        //     element.status = 'Absent';
+        //   }
+        // });
+      }, (err) => {
+        this.disableDelete = false;
+      });
+  }
+
+
+  saveAttendance(attendanceDetails) {
+    this.disableSave = true;
+    this.attenDetails['clockin'] = attendanceDetails.attenClockin;
+    this.attenDetails['clockout'] = attendanceDetails.attenClockOut;
+    this.attenDetails['date'] = attendanceDetails.date;
+    this.attenDetails['employeeId'] = attendanceDetails.id;
+    this.payrollService.saveLeave(this.attenDetails)
+      .subscribe((res: any) => {
+        this.disableSave = false;
+        this.getEmployeeAttendance();
+      }, (err) => {
+        this.disableSave = false;
+      });
+  }
+
+
+  getMonthlyEmployee(id) {
+    this.payrollService.getEmployeeAttendance(id)
+      .subscribe((res: any) => {
+        console.log(res);
+        this.employeeLeaveSummary = res;
+        this.employeeLeaveSummaryCopy = res;
+        this.filterEmployeeList();
+      });
+  }
+
+
+  filterEmployeeList() {
+    console.log();
+
+    if (this.filterCenter === 'All') {
+      this.employeeLeaveSummary = this.employeeLeaveSummaryCopy;
+    } else {
+
+      this.employeeLeaveSummary = this.employeeLeaveSummaryCopy.filter(elem => {
+        return (elem.center === this.filterCenter);
+      });
+    }
+
+  }
+
+  searchStudent(event: any) {
+    const val = event.target.value.toLowerCase();
+      if (val && val.trim() !== '') {
+        this.employeeList = this.employeeListCopy.filter(employee => {
+          return employee.name.toLowerCase().startsWith(val);
+        });
+    }  else {
+      this.employeeList = this.employeeListCopy;
+    }
+  }
+  getEmployeeLeaves(eid) {
+    this.monthlyLeaves = [];
+
+    this.payrollService.getAttendanvceSummry(eid, this.summaryMonth)
+      .subscribe((res: any) => {
+        console.log(res);
+this.monthlyLeaves = res;
+      });
+  }
 }

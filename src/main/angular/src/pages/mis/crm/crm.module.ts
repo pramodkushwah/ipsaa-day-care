@@ -6,7 +6,6 @@ import { InquiryComponent } from './inquiry/inquiry.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportModule } from '../report/report.module';
 import { InquiryDetailsComponent } from './inquiryDetails/inquiryDetails.component';
-import { FollowUpComponent } from './followUp/followUp.component';
 
 @NgModule({
   imports: [
@@ -18,7 +17,6 @@ import { FollowUpComponent } from './followUp/followUp.component';
   ],
   declarations: [ReportComponent,
     InquiryDetailsComponent,
-    FollowUpComponent,
      InquiryComponent]
 })
 export class CrmModule { }
