@@ -12,6 +12,7 @@ public interface CenterRepository extends JpaRepository<Center, Long>
   Center findByCode(String code);
 
   List<Center> findByIdIn(List<Long> codes);
+  List<Center> findByActiveIsTrue();
 
   long countByCode(String code);
 }

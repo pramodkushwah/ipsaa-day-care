@@ -405,11 +405,11 @@ public class StudentService extends BaseService {
 			parent.setSmsEnabled(false);
 			studentParentRepository.saveAndFlush(parent);
 		}
+		center.setEnrollmentCount(center.getEnrollmentCount()+1);
+		centerRepository.save(center);
 		studentRepository.saveAndFlush(student);
 		communicationService.sendStudentApprovalEmail(student);
-
 		StudentResponse response = new StudentResponse(student);
-
 		if (request.getFee() != null && !request.getFee().isEmpty()) {
 			request.getFee().setCenterId(mask(center.getId()));
 			request.getFee().setStudentId(mask(student.getId()));
@@ -440,6 +440,9 @@ public class StudentService extends BaseService {
 			throw new NotFoundException(String.format("Cannot locate group with id %s", request.getGroupId()));
 		}
 
+		if(!center.equals(dbStudent.getCenter())){
+			updateCenterEnrollmentCount(center,dbStudent.getCenter());
+		}
 		updateParents(dbStudent, request);
 
 		boolean feeChange = !(dbStudent.getProgram().equals(program) && dbStudent.getCenter().equals(center));
@@ -497,7 +500,15 @@ public class StudentService extends BaseService {
         return dbStudent;
     }
 
-    private void updateParents(Student dbStudent, StudentRequest request) {
+    @Transactional
+	private void updateCenterEnrollmentCount(Center old, Center current) {
+		old.setEnrollmentCount(old.getEnrollmentCount()-1);
+		centerRepository.save(old);
+		current.setEnrollmentCount(current.getEnrollmentCount()+1);
+		centerRepository.save(current);
+	}
+
+	private void updateParents(Student dbStudent, StudentRequest request) {
         List<ParentRequest> parents = request.getParents();
         for (ParentRequest parentRequest : parents) {
             if (!Relationship.matches(parentRequest.getRelationship())) {

@@ -14,6 +14,7 @@ public class CenterResponseV2 extends CenterSummaryResponse
   private String state;
   private String zipcode;
   private String phone;
+  private int enrollmentCount;
   private AddressType addressType;
   private String zone;
 
@@ -23,11 +24,20 @@ public class CenterResponseV2 extends CenterSummaryResponse
     AddressResponse address = new AddressResponse(center.getAddress());
     this.address=address.getAddress();
     this.city=address.getCity();
+    this.enrollmentCount=center.getEnrollmentCount();
     this.addressType=address.getAddressType();
     this.zipcode=address.getZipcode();
     this.state=address.getState();
     this.zone = center.getZone().getName();
     this.phone = address.getPhone();
+  }
+
+  public int getEnrollmentCount() {
+    return enrollmentCount;
+  }
+
+  public void setEnrollmentCount(int enrollmentCount) {
+    this.enrollmentCount = enrollmentCount;
   }
 
   public String getAddress() {
