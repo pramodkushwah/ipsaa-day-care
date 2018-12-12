@@ -163,8 +163,8 @@ public class StudentFeeRequestV2 implements Request
       studentFee.setAnnualCharges(new BigDecimal(fee.getAnnualFee()));
       studentFee.setDepositFee(new BigDecimal(fee.getDeposit()));
     }else{
-        if(securityDeposit==null)
-        securityDeposit=deposit;
+        if(securityDeposit==null || securityDeposit.intValue()==0)
+            securityDeposit=deposit==null?ZERO:deposit;
 
         studentFee.setDepositFee(securityDeposit==null?ZERO:securityDeposit);
         studentFee.setBaseFee(baseFee==null?ZERO:baseFee);
