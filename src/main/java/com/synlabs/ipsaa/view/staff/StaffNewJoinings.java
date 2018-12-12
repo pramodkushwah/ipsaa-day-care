@@ -37,7 +37,6 @@ public class StaffNewJoinings  implements Response {
        this.employer=employee.getEmployer().getName();
     }
 
-<<<<<<< HEAD
     public long getId() {
         return id;
     }
@@ -46,7 +45,6 @@ public class StaffNewJoinings  implements Response {
         this.id = id;
     }
 
-=======
     ///For Attendance----- Avneet
     public StaffNewJoinings(EmployeeAttendance attendance){
         center= attendance.getEmployee().getCostCenter().getName();
@@ -59,7 +57,6 @@ public class StaffNewJoinings  implements Response {
         checkIn=attendance.getCheckin();
         checkOut=attendance.getCheckout();
     }
->>>>>>> bc3d296b30dcf99f05890aa2dc0ea4ef72375f91
     public String getEmployer() {
         return employer;
     }
