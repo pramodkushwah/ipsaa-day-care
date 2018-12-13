@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { User } from '../../providers/user/user';
 import { AlertService } from '../../providers/alert/alert.service';
+import { StorageService } from '../../providers/localstorage/storage';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private userService: User,
     private router: Router,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private storage: StorageService
   ) {}
 
   ngOnInit() {}
@@ -39,6 +41,15 @@ export class LoginComponent implements OnInit {
 
   onSuccess() {
     const user: any = this.userService.getUser();
+
+    // const pvlges = this.storage.getData('ngStorage-token');
+    // if (typeof pvlges !== 'undefined') {
+    //   this.router.navigate(['mis']);
+
+    // } else {
+    //   this.router.navigate(['pp']);
+
+    // }
 
     if (user.domain === '/pp/') {
       this.router.navigate(['pp']);
