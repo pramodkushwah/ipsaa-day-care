@@ -68,8 +68,6 @@ export class AdminService {
     return this.api.post('api/staff/filter', filter);
   }
   deleteStaffById(staffId) {
-    console.log(staffId);
-    
     return this.api.delete('api/staff/' + staffId);
   }
   addStaff(reqBody) {
@@ -505,10 +503,21 @@ export class AdminService {
     return this.api.get('/api/state/zone/' + zoneId + '/');
   }
   getCitiesByStateByZone(stateId) {
-    return this.api.get('/api/ctty/state/' + stateId + '/');
+    return this.api.get('/api/city/state/' + stateId + '/');
   }
 
+  getHolidaysList(currentYearMonth) {
+    return this.api.post('/api/holiday/' , currentYearMonth);
+  }
 
+  AddNewHolliday(holliday_Details) {
+    return this.api.post('/api/holiday/save' , holliday_Details);
+  }
+
+  deleteHoliday(holidayId) {
+    return this.api.delete('/api/holiday/' + holidayId);
+
+  }
 
 
   // crm

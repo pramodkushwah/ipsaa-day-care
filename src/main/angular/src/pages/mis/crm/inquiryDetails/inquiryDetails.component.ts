@@ -65,7 +65,8 @@ export class InquiryDetailsComponent implements OnInit {
         callDisposition: '',
         comment: '',
     };
-    today: any;
+    today: Date;
+    time: any;
 
 
     constructor(
@@ -75,13 +76,17 @@ export class InquiryDetailsComponent implements OnInit {
     ) { }
 
     @Input() set inquiryId(inquiryId: any) {
+        this.today = new Date();
+
         this.inquiryForm = this.inquiryDetialForm();
         this.newInquiry = inquiryId;
         if (inquiryId) {
             this.loadInquiry(inquiryId);
         } else {
-            // this.getInquiryDetials({});
-        }
+this.inquiryForm.get('inquiryDate').setValue(this.today);
+this.inquiryForm.get('toTime').setValue(this.today.getHours() + ':' +  this.today.getMinutes());
+this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' +  this.today.getMinutes());
+}
     }
     @Input() set currentTab(currentTab: any) {
         this.tab = currentTab;
@@ -91,8 +96,8 @@ export class InquiryDetailsComponent implements OnInit {
     ngOnInit() {
         this.getCenter();
         this.getPrograms();
-        this.today = new Date();
-        this.today.setDate(this.today.getDate());
+        // this.today.setDate(this.today.getDate());
+        // console.log(this.today);
     }
 
     getCenter() {
