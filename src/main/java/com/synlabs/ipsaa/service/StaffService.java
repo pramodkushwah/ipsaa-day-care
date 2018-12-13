@@ -932,11 +932,11 @@ public class StaffService extends BaseService
             e.getProfile().setBankName(bankName);
             e.getProfile().setBranchName(branch);
             e.getProfile().setIfscCode(ifsc);
-          System.out.println(String.format("EmployeeId details added [%s] ",eid));
+          //System.out.println(String.format("EmployeeId details added [%s] ",eid));
             employeeRepository.saveAndFlush(e);
         }
         else{
-          System.out.println(String.format("EmployeeId not found [%s] ",eid));
+          //System.out.println(String.format("EmployeeId not found [%s] ",eid));
         }
       }
 

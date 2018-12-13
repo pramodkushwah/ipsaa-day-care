@@ -1076,7 +1076,7 @@ public class StudentFeeService extends BaseService{
             @Override
             public void accept(StudentFeePaymentRequest studentFeePaymentRequest) {
                 double extraHours=attendanceService.getLastQuarterExtraHours(studentFeePaymentRequest.getStudent(),4,2018);
-                System.out.println("from "+studentFeePaymentRequest.getExtraHours() +" to "+ extraHours);
+                //System.out.println("from "+studentFeePaymentRequest.getExtraHours() +" to "+ extraHours);
                 studentFeePaymentRequest.setExtraHours(new BigDecimal(extraHours));
                 feePaymentRepository.saveAndFlush(studentFeePaymentRequest);
             }
