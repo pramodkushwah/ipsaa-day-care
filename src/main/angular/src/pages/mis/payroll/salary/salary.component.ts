@@ -20,6 +20,7 @@ export class SalaryComponent implements OnInit {
   searchKey: any;
   centers: any[];
   salaries: any[] = [];
+  SALARY_WRITE: boolean;
 
   constructor(
     private payrollService: PayrollService,
@@ -28,6 +29,7 @@ export class SalaryComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.SALARY_WRITE = this.adminService.hasPrivilage('SALARY_WRITE');
     this.adminService.viewPanel.subscribe((val: boolean) => {
       this.viewPanel = val;
     });

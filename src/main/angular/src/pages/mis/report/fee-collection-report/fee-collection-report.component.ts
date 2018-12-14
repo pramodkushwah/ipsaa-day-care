@@ -14,19 +14,19 @@ export class FeeCollectionReportComponent implements OnInit {
   quaters = [{ Qtype: 'FYQ1', id: 2 }, { Qtype: 'FYQ2', id: 3 }, { Qtype: 'FYQ3', id: 4 }, { Qtype: 'FYQ4', id: 1 }];
   currentYear: number;
   years = [];
-selectedYear: any;
-selectedQuater: any;
+  selectedYear: any;
+  selectedQuater: any;
 
   studentFeeReport = {};
   currentDate: Date;
   downloadData = false;
+  STUDENTFEE_RECEIPT_CONFIRM: boolean;
   constructor(
     private alertService: AlertService,
     private adminService: AdminService,
   ) {
 
     this.currentYear = (new Date()).getFullYear();
-
     this.years.push(this.currentYear - 1);
     this.years.push(this.currentYear);
     this.years.push(this.currentYear + 1);
@@ -34,6 +34,7 @@ selectedQuater: any;
   }
 
   ngOnInit() {
+    this.STUDENTFEE_RECEIPT_CONFIRM = this.adminService.hasPrivilage('STUDENTFEE_RECEIPT_CONFIRM');
     this.getCenter();
   }
 

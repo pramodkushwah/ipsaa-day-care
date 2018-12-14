@@ -15,7 +15,7 @@ export class GenerateFeeReceiptComponent implements OnInit {
   centers: Array<any>;
   quaters = [{ Qtype: 'FYQ1', id: 2 }, { Qtype: 'FYQ2', id: 3 }, { Qtype: 'FYQ3', id: 4 }, { Qtype: 'FYQ4', id: 1 }];
   currentYear: number;
-
+  STUDENTFEE_RECEIPT_CONFIRM: boolean;
   years = [];
 
   studentDetails: Array<any>;
@@ -111,6 +111,7 @@ this.showSidePanel();
     });
   }
   ngOnInit() {
+    this.STUDENTFEE_RECEIPT_CONFIRM = this.adminService.hasPrivilage('STUDENTFEE_RECEIPT_CONFIRM');
     this.getCenter();
     this.subscribSidePanel();
   }

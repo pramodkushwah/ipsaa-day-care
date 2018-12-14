@@ -31,8 +31,8 @@ export class IpsaaclubComponent implements OnInit {
   constructor(private adminService: AdminService, private fb: FormBuilder, private alertService: AlertService) { }
 
   ngOnInit() {
-    this.STUDENTFEE_WRITE = true;
-    this.STUDENTFEE_RECEIPT_CONFIRM = true;
+    this.STUDENTFEE_WRITE = this.adminService.hasPrivilage('STUDENTFEE_WRITE');
+    this.STUDENTFEE_RECEIPT_CONFIRM = this.adminService.hasPrivilage('STUDENTFEE_RECEIPT_CONFIRM');
     this.getCenter();
   }
 

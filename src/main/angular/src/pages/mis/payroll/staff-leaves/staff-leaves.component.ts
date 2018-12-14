@@ -64,6 +64,7 @@ export class StaffLeavesComponent implements OnInit {
   employeeLeaveSummaryCopy: any = [];
   monthlyLeaves: any = [];
   filterCenter = 'All';
+  HR_ADMIN: boolean;
   constructor(
     private payrollService: PayrollService,
     private alertService: AlertService,
@@ -79,6 +80,7 @@ export class StaffLeavesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.HR_ADMIN = this.adminService.hasPrivilage('HR_ADMIN');
     this.getEmployees();
     this.getCenters();
   }

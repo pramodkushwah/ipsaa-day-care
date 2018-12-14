@@ -62,11 +62,22 @@ export class DashboardComponent implements OnInit {
   dashboardTabs: any[] = [];
   history: any;
   viewPanelForFee: boolean;
+  DASHBOARD_STATS: boolean;
 
   terget: any;
+  SALARY_READ: boolean;
   constructor(private dashboardService: DashboardService, private alertService: AlertService, private adminService: AdminService) { }
 
   ngOnInit() {
+    this.DASHBOARD_STATS = this.adminService.hasPrivilage('DASHBOARD_STATS');
+    this.SALARY_READ = this.adminService.hasPrivilage('SALARY_READ');
+    if (this.DASHBOARD_STATS) {
+      this.loadDashboard();
+    }
+    this.subscribeViewPanelChange();
+  }
+
+  loadDashboard() {
     this.getDashboardTabs();
     this.getMonthlyFee({});
     this.getQuarterlyFee({});
@@ -74,7 +85,6 @@ export class DashboardComponent implements OnInit {
     this.getZones();
     this.getCities();
     this.getCenters();
-    this.subscribeViewPanelChange();
   }
 
   getDashboardTabs() {

@@ -75,7 +75,7 @@
                 <th>Center</th>
                 <th>Base Fee</th>
                 <th>Final Fee</th>
-                <th>Action</th>
+                <th *ngIf="STUDENTFEE_WRITE">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -87,7 +87,7 @@
                 <td>{{student.center.name}}</td>
                 <td>{{student.baseFee}}</td>
                 <td>{{student.finalFee}}</td>
-                <td class="action-buttons">
+                <td class="action-buttons" *ngIf="STUDENTFEE_WRITE">
                   <button type="button" class="btn btn-primary btn-sm" (click)="getStudentFee(student)">edit</button>
                 </td>
               </tr>
