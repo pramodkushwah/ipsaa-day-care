@@ -13,6 +13,9 @@ export class StudentMessageComponent implements OnInit {
   centers: any[];
   groups: any[];
   programs: any[];
+  selectedCenter: any = 'all';
+  selectedProgram: any = 'all';
+  selectedGroup: any = 'all';
   students: any[];
   studentIds: any = {};
   loader: boolean;
@@ -21,7 +24,7 @@ export class StudentMessageComponent implements OnInit {
   pageSize: any;
   pageNumber: any;
   searchKey: any;
-  pager: any =  {};
+  pager: any = {};
   pagedItems: any;
   viewPanel: boolean;
   smsCard: boolean;
@@ -35,13 +38,15 @@ export class StudentMessageComponent implements OnInit {
   selectAllStudent: boolean;
   sending: boolean;
   emailData: any;
-
+  ccEmail: string ;
+emailList: any = [];
+  searchArray: any = [];
   constructor(
     private adminService: AdminService,
     private pagerService: PagerService,
     private smsService: SmsService,
     private alertService: AlertService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.getStudents();
@@ -96,17 +101,93 @@ export class StudentMessageComponent implements OnInit {
     });
   }
 
+
+
+  filterByCenter() {
+    this.selectedProgram = 'all';
+    this.selectedGroup = 'all';
+    if (this.selectedCenter === 'all') {
+      this.allItems = this.students;
+    } else {
+      this.allItems = this.students.filter(student => {
+        return student.center.name === this.selectedCenter.name;
+      });
+    }
+
+    this.searchArray = this.allItems.slice();
+    this.setPage(1);
+
+  }
+
+  filterByProgram() {
+    this.selectedGroup = 'all';
+    this.filterProgram();
+    this.searchArray = this.allItems.slice();
+
+    this.setPage(1);
+
+  }
+
+  filterProgram() {
+    if (this.selectedCenter === 'all') {
+      this.allItems = this.students.filter(student => {
+        return student.program.code === this.selectedProgram.code;
+      });
+    } else {
+      if (this.selectedProgram === 'all') {
+        this.allItems = this.students.filter(student => {
+          return student.center.name === this.selectedCenter.name;
+        });
+      } else {
+        this.allItems = this.students.filter(student => {
+          return student.center.name === this.selectedCenter.name && student.program.code === this.selectedProgram.code;
+        });
+      }
+
+    }
+    return this.allItems;
+
+  }
+  filterByGroup() {
+
+
+    if (this.selectedGroup === 'all') {
+      this.allItems = this.filterProgram();
+    } else {
+
+      this.allItems = this.filterProgram().filter(student => {
+        return student.group.name === this.selectedGroup.name;
+      });
+    }
+    this.searchArray = this.allItems.slice();
+    this.setPage(1);
+
+  }
+
   searchStudent(event: any) {
     this.searchKey = event;
-    const val = event.target.value;
-    if (val && val.trim() !== '') {
-      this.allItems = this.students.filter(student => {
-        return student.fullName.startsWith(val);
-      });
-      this.setPage(1);
+    const val = event.target.value.toLowerCase();
+
+    if ((this.selectedCenter !== 'all' || this.selectedProgram !== 'all' || this.selectedGroup !== 'all')) {
+      if (val && val.trim() !== '') {
+        this.allItems = this.searchArray.filter(student => {
+          return student.fullName.toLowerCase().startsWith(val);
+        });
+        this.setPage(1);
+      } else {
+        this.allItems = this.searchArray;
+        this.setPage(1);
+      }
     } else {
-      this.allItems = this.studentsCopy;
-      this.setPage(1);
+      if (val && val.trim() !== '') {
+        this.allItems = this.students.filter(student => {
+          return student.fullName.toLowerCase().startsWith(val);
+        });
+        this.setPage(1);
+      } else {
+        this.allItems = this.studentsCopy;
+        this.setPage(1);
+      }
     }
   }
 
@@ -128,7 +209,7 @@ export class StudentMessageComponent implements OnInit {
   }
 
   selectAll(isChecked: boolean) {
-    if ( isChecked ) {
+    if (isChecked) {
       this.students.forEach(student => {
         this.studentIds[student.id] = true;
       });
@@ -148,7 +229,7 @@ export class StudentMessageComponent implements OnInit {
   }
 
   smsApi() {
-    const object = {ids: this.ids, smscontent: this.smsContent};
+    const object = { ids: this.ids, smscontent: this.smsContent };
     this.sending = true;
     this.smsService.sendStudentSMS(object).subscribe((response: any) => {
       this.sending = false;
@@ -163,9 +244,9 @@ export class StudentMessageComponent implements OnInit {
 
   emailApi() {
     const object = {
-    'ids': this.ids,
-    'subject': this.emailsubject,
-    'emailcontent': this.emailcontent
+      'ids': this.ids,
+      'subject': this.emailsubject,
+      'emailcontent': this.emailcontent
     };
     // this.files.forEach(element => {
     //   object['files'] = element;
@@ -184,7 +265,9 @@ export class StudentMessageComponent implements OnInit {
     this.emailData.images.forEach(image => {
       formData.append('images', image);
     });
-    
+    this.emailList.forEach(element => {
+      formData.append('cc', element);
+          });
     this.sending = true;
     this.smsService.sendStudentEmail(formData).subscribe((response: any) => {
       this.sending = false;
@@ -207,7 +290,7 @@ export class StudentMessageComponent implements OnInit {
   selectStudents() {
     this.ids = [];
     Object.keys(this.studentIds).forEach(id => {
-      if ( this.studentIds[id] ) {
+      if (this.studentIds[id]) {
         this.ids.push(id);
       }
     });
@@ -228,4 +311,13 @@ export class StudentMessageComponent implements OnInit {
     this.emailData = event;
     this.emailcontent = event.textContent;
   }
+
+
+  addCcEmail() {
+this.emailList.push(this.ccEmail);
+this.ccEmail = '';
+  }
+removeCcEmail(i) {
+this.emailList.splice(i, 1);
+}
 }

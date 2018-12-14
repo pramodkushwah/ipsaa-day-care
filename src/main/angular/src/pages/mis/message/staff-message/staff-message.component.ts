@@ -32,6 +32,7 @@ export class StaffMessageComponent implements OnInit {
   centers: any[];
   groups: any[];
   programs: any[];
+  selectedCenter: any = 'all';
   staffs: any[];
   staffIds: any = {};
   loader: boolean;
@@ -54,6 +55,8 @@ export class StaffMessageComponent implements OnInit {
   selectAllStaff: boolean;
   sending: boolean;
   emailData: any;
+  ccEmail: string ;
+  emailList: any = [];
 
   constructor(
     private adminService: AdminService,
@@ -115,6 +118,16 @@ export class StaffMessageComponent implements OnInit {
     });
   }
 
+  filterByCenter(center) {
+    if (center === 'all') {
+this.allItems = this.staffs;
+    } else {
+      this.allItems = this.staffs.filter(staff => {
+        return staff.centerName === center.name;
+      });
+    }
+    this.setPage(1);
+  }
   searchStaff(event: any) {
     this.searchKey = event;
     const val = event.target.value.toLowerCase();
@@ -200,6 +213,11 @@ export class StaffMessageComponent implements OnInit {
     this.emailData.images.forEach(image => {
       formData.append('images', image);
     });
+    this.emailList.forEach(element => {
+formData.append('cc', element);
+    });
+    console.log(this.emailList);
+
     this.sending = true;
     this.smsService.sendStaffEmail(formData).subscribe((response: any) => {
       this.sending = false;
@@ -242,4 +260,15 @@ export class StaffMessageComponent implements OnInit {
     this.emailData = event;
     this.emailcontent = event.textContent;
   }
+
+
+
+
+  addCcEmail() {
+    this.emailList.push(this.ccEmail);
+    this.ccEmail = '';
+      }
+    removeCcEmail(i) {
+    this.emailList.splice(i, 1);
+    }
 }

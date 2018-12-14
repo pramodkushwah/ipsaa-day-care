@@ -14,6 +14,11 @@
       "p": "STAFF_ATTENDANCE_REPORT",
       "seq": 200
     },{
+      "label": "Ipsaa Club Report",
+      "state": "report/ipsaaclubreport",
+      "p": "FEE_REPORT",
+      "seq": 210
+    },{
       "label": "Student Fee Report",
       "state": "report/stdfeereport",
       "p": "FEE_REPORT",
@@ -30,6 +35,12 @@
       "state": "report/collectionfeereport",
       "p": "COLLECTION_FEE_REPORT",
       "seq": 500
+    },
+    {
+      "label": "HDFC Gateway Fee Report",
+      "state": "report/hdfcgatewayfeereport",
+      "p": "COLLECTION_FEE_REPORT",
+      "seq": 550
     },
     {
       "label": "Staff Salary Monthly Report",

@@ -412,6 +412,11 @@ export class AdminService {
 
   }
 
+  hdfcGatewayReportdownload(centerId_and_range) {
+    return this.api.getPDF('api/report/collectionfee/hdfc/', centerId_and_range);
+
+  }
+
   studentsAttendanceReportDownload(centerId_and_range) {
     return this.api.getPDF('api/report/studentattendance/', centerId_and_range);
 
@@ -498,10 +503,21 @@ export class AdminService {
     return this.api.get('/api/state/zone/' + zoneId + '/');
   }
   getCitiesByStateByZone(stateId) {
-    return this.api.get('/api/ctty/state/' + stateId + '/');
+    return this.api.get('/api/city/state/' + stateId + '/');
   }
 
+  getHolidaysList(currentYearMonth) {
+    return this.api.post('/api/holiday/' , currentYearMonth);
+  }
 
+  AddNewHolliday(holliday_Details) {
+    return this.api.post('/api/holiday/save' , holliday_Details);
+  }
+
+  deleteHoliday(holidayId) {
+    return this.api.delete('/api/holiday/' + holidayId);
+
+  }
 
 
   // crm

@@ -65,6 +65,8 @@ export class InquiryDetailsComponent implements OnInit {
         callDisposition: '',
         comment: '',
     };
+    today: Date;
+    time: any;
 
 
     constructor(
@@ -74,13 +76,17 @@ export class InquiryDetailsComponent implements OnInit {
     ) { }
 
     @Input() set inquiryId(inquiryId: any) {
+        this.today = new Date();
+
         this.inquiryForm = this.inquiryDetialForm();
         this.newInquiry = inquiryId;
         if (inquiryId) {
             this.loadInquiry(inquiryId);
         } else {
-            // this.getInquiryDetials({});
-        }
+this.inquiryForm.get('inquiryDate').setValue(this.today);
+this.inquiryForm.get('toTime').setValue(this.today.getHours() + ':' +  this.today.getMinutes());
+this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' +  this.today.getMinutes());
+}
     }
     @Input() set currentTab(currentTab: any) {
         this.tab = currentTab;
@@ -90,6 +96,8 @@ export class InquiryDetailsComponent implements OnInit {
     ngOnInit() {
         this.getCenter();
         this.getPrograms();
+        // this.today.setDate(this.today.getDate());
+        // console.log(this.today);
     }
 
     getCenter() {
@@ -187,15 +195,12 @@ export class InquiryDetailsComponent implements OnInit {
 
     saveForm() {
 
-        console.log(this.newInquiry);
 
         if (this.log.callDisposition) {
             this.log.callBack = ' ' + this.log.callBackDate + ' ' + this.log.callBackTime + ' ' + 'IST';
             this.inquiryForm.value['log'] = this.log;
 
-            console.log(this.log);
         }
-        console.log(this.inquiryForm.value);
         if (this.newInquiry) {
             this.inquiryForm.value['logs'] = this.inquiryDetails;
 
@@ -206,35 +211,30 @@ export class InquiryDetailsComponent implements OnInit {
 
         } else {
 
-        this.centers.forEach(element => {
-            if (element.code === this.inquiryForm.controls.centerCode.value) {
-                this.inquiryForm.controls.centerId.setValue(element.id);
-                this.inquiryForm.controls.centerName.setValue(element.name);
+            this.centers.forEach(element => {
+                if (element.code === this.inquiryForm.controls.centerCode.value) {
+                    this.inquiryForm.controls.centerId.setValue(element.id);
+                    this.inquiryForm.controls.centerName.setValue(element.name);
+                }
+            });
 
-            }
-        });
+            this.programs.forEach(element => {
+                if (element.code === this.inquiryForm.controls.programCode.value) {
+                    this.inquiryForm.controls.programId.setValue(element.id);
+                    this.inquiryForm.controls.programName.setValue(element.name);
+                }
+            });
 
-        this.programs.forEach(element => {
-            if (element.code === this.inquiryForm.controls.programCode.value) {
-                this.inquiryForm.controls.programId.setValue(element.id);
-                this.inquiryForm.controls.programName.setValue(element.name);
+            this.groups.forEach(element => {
+                if (element.id === Number(this.inquiryForm.controls.groupId.value)) {
+                    this.inquiryForm.controls.groupName.setValue(element.name);
 
-            }
-        });
-
-        this.groups.forEach(element => {
-            if (element.id === Number(this.inquiryForm.controls.groupId.value)) {
-                this.inquiryForm.controls.groupName.setValue(element.name);
-
-            }
-        });
-
-        console.log(this.inquiryForm.value);
-
-            // this.adminService.addNewInquiry(this.inquiryForm.value)
-            //     .subscribe((res: any) => {
-            //         this.alertService.successAlert('');
-            //     });
+                }
+            });
+            this.adminService.addNewInquiry(this.inquiryForm.value)
+                .subscribe((res: any) => {
+                    this.alertService.successAlert('');
+                });
 
         }
 

@@ -2,7 +2,18 @@
   <div class="col-md-4">
     <div class="form-group">
       <label for="exampleFormControlInput1">Search</label>
-      <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Search by Staff Name.." (keyup)="searchStaff($event)">
+      <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Search by Staff Name.."
+        (keyup)="searchStaff($event)">
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="sel3">Center:</label>
+      <select class="form-control" id="sel3" [(ngModel)]="selectedCenter" (ngModelChange)="filterByCenter($event)">
+        <option value="all">All</option>
+        <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
+      </select>
+      <span class="material-input"></span>
     </div>
   </div>
 </div>
@@ -15,8 +26,10 @@
         </div>
         <h3 class="card-title">Staffs
           <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="!loader"></i>
-          <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" (click)="showEmailPanel()" [disabled]="!ids.length">Email</button>
-          <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" (click)="showSmsPanel()" [disabled]="!ids.length">SMS</button>
+          <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" (click)="showEmailPanel()"
+            [disabled]="!ids.length">Email</button>
+          <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" (click)="showSmsPanel()"
+            [disabled]="!ids.length">SMS</button>
         </h3>
       </div>
       <div class="card-content mx-3">
@@ -74,7 +87,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-6" *ngIf="viewPanel">    
+  <div class="col-lg-6" *ngIf="viewPanel">
     <div class="card" *ngIf="smsCard">
       <div class="card-header card-header-icon card-header-warning ">
         <div class="card-icon">
@@ -89,11 +102,11 @@
       <div class="card-body">
         <div class="form-group">
           <!-- <label for="smscontent">Comment:</label> -->
-          <textarea class="form-control" rows="3" id="smscontent" [(ngModel)]="smsContent" ></textarea>
+          <textarea class="form-control" rows="3" id="smscontent" [(ngModel)]="smsContent"></textarea>
           <span class="badge badge-primary pull-right">{{smsContent.length}}</span>
         </div>
         <div class="form-group">
-          <button mat-raised-button class="btn btn-primary btn-sm" (click)="smsApi()" [disabled]="!(ids.length && smsContent)" >
+          <button mat-raised-button class="btn btn-primary btn-sm" (click)="smsApi()" [disabled]="!(ids.length && smsContent)">
             <span *ngIf="sending;else send">
               <i class="fa fa-spinner fa-spin"></i> Sending
             </span>
@@ -101,7 +114,7 @@
           </button>
         </div>
       </div>
-    </div>      
+    </div>
     <div class="card" *ngIf="emailCard">
       <div class="card-header card-header-icon card-header-warning">
         <div class="card-icon">
@@ -114,6 +127,19 @@
         </h4>
       </div>
       <div class="card-body">
+          <div class="form-group">
+              <label class="control-label" for="cc">CC</label>
+              <input class="form-control" name="ccemail"  required  
+               pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" id="cc" type="email" [(ngModel)]="ccEmail" #cc="ngModel">
+              <button class="btn btn-rose btn-xm " (click)="addCcEmail()" [disabled]="!cc.valid" > ADD<i  class="material-icons" >add</i>
+                </button>
+            </div>
+            <div class="form-group">
+                  <button class="btn btn-info btn-sm btn-round" *ngFor="let email of emailList ,let i = index">
+                      {{email}}<i (click)="removeCcEmail(i)"  class="material-icons" >close</i>
+                    </button>
+            </div>
+    
         <div class="form-group">
           <label class="control-label">Subject*</label>
           <input class="form-control" [(ngModel)]="emailsubject">
@@ -121,7 +147,7 @@
         <div class="form-group">
           <label class="control-label">Message*</label>
           <!-- <textarea id="message" class="form-control" [(ngModel)]="emailcontent"></textarea> -->
-          <app-email-message-directive (onFileDrop)="dropped($event)" ></app-email-message-directive>
+          <app-email-message-directive (onFileDrop)="dropped($event)"></app-email-message-directive>
           <span class="badge badge-primary pull-right">{{emailcontent.length}}</span>
         </div>
         <div>
@@ -130,7 +156,7 @@
             <i class="material-icons" ng-click="removeAttachment(i)">close</i>
           </span>
         </div>
-        <input class="btn btn-primary btn-sm" type="file" (change)="getFiles($event)" multiple/>
+        <input class="btn btn-primary btn-sm" type="file" (change)="getFiles($event)" multiple />
         <div class="form-group">
           <button mat-raised-button class="btn btn-primary btn-sm" (click)="emailApi()">
             <span *ngIf="sending;else send">

@@ -228,6 +228,7 @@ export class StudentInfoComponent implements OnInit {
         })
         .subscribe((response: any) => {
           this.programFee = response;
+          this.subscribeToCalculateDiscount();
           if (this.studentForm.contains('fee')) {
             const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
             // feeControlForm.reset();
@@ -237,7 +238,6 @@ export class StudentInfoComponent implements OnInit {
 
             feeControlForm.patchValue(response);
             console.log(feeControlForm.value);
-            // feeControlForm.controls['baseFee'].patchValue(response.fee); // Monthly Fees
             feeControlForm.controls['finalBaseFee'].patchValue(response.baseFee); // Final Monthly Fees
             feeControlForm.controls['finalAnnualFee'].patchValue(
               response.annualFee
@@ -318,20 +318,63 @@ export class StudentInfoComponent implements OnInit {
     }
   }
 
+  subscribeToCalculateDiscount() {
+    this.studentForm.controls.fee.get('finalAnnualFee').valueChanges
+      .subscribe((val) => { this.updateDiscount(); });
+
+    this.studentForm.controls.fee.get('finalAdmissionCharges').valueChanges
+      .subscribe((val) => { this.updateDiscount(); });
+
+      this.studentForm.controls.fee.get('finalSecurityDeposit').valueChanges
+      .subscribe((val) => { this.updateDiscount(); });
+
+    this.studentForm.controls.fee.get('finalBaseFee').valueChanges
+      .subscribe((val) => { this.updateDiscount(); });
+
+      this.studentForm.controls.fee.get('transportFee').valueChanges
+      .subscribe((val) => { this.updateDiscount(); });
+
+  }
+
+  updateDiscount() {
+    const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
+    // if (typeof student !== 'undefined' && student.formalSchool) {
+    //   feeControlForm.controls['gstFee'].patchValue(
+    //     Number((Number(feeControlForm.controls['finalAnnualFee'].value) * 0.18).toFixed(2))
+    //   ); // annual-fee-gst
+    //   feeControlForm.controls['baseFeeGst'].patchValue(
+    //     Number((Number(feeControlForm.controls['finalBaseFee'].value) * 3 * 0.18).toFixed(2))
+    //   );
+    // } else
+    if (feeControlForm.controls['formalSchool'].value) {
+      feeControlForm.controls['gstFee'].patchValue(
+        Number((Number(feeControlForm.controls['finalAnnualFee'].value) * 0.18).toFixed(2))
+      );
+      feeControlForm.controls['baseFeeGst'].patchValue(
+        Number((Number(feeControlForm.controls['finalBaseFee'].value) * 3 * 0.18).toFixed(2))
+      );
+    } else {
+      feeControlForm.controls['gstFee'].patchValue(0);
+      feeControlForm.controls['baseFeeGst'].patchValue(0);
+    }
+
+    this.calculateFinalFee(feeControlForm.value);
+  }
+
   calculateDiscount(base: string, final: string, targetDiscount: string) {
+    this.subscribeToCalculateDiscount();
+
     const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
     const fee = feeControlForm.value;
 
 
     if (fee[final] === fee[base]) {
       if (fee[base] === 0) {
-        this.calculateGstFee(feeControlForm.value, this.studentForm.value);
         return;
 
       } else {
         feeControlForm.controls[targetDiscount].setValue(0);
         feeControlForm.controls[final].setValue(fee[base]);
-        this.calculateGstFee(feeControlForm.value, this.studentForm.value);
 
         return;
       }
@@ -349,32 +392,6 @@ export class StudentInfoComponent implements OnInit {
       feeControlForm.controls[final].setValue(fee[base]);
 
     }
-
-    this.calculateGstFee(feeControlForm.value, this.studentForm.value);
-  }
-
-  calculateGstFee(fee, student) {
-    const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
-    if (typeof student !== 'undefined' && student.formalSchool) {
-      feeControlForm.controls['gstFee'].patchValue(
-        Number((Number(fee.finalAnnualFee) * 0.18).toFixed(2))
-      ); // annual-fee-gst
-      feeControlForm.controls['baseFeeGst'].patchValue(
-        Number((Number(fee.finalBaseFee) * 3 * 0.18).toFixed(2))
-      );
-    } else if (fee.formalSchool) {
-      feeControlForm.controls['gstFee'].patchValue(
-        Number((Number(fee.finalAnnualFee) * 0.18).toFixed(2))
-      );
-      feeControlForm.controls['baseFeeGst'].patchValue(
-        Number((Number(fee.finalBaseFee) * 3 * 0.18).toFixed(2))
-      );
-    } else {
-      feeControlForm.controls['gstFee'].patchValue(0);
-      feeControlForm.controls['baseFeeGst'].patchValue(0);
-    }
-
-    this.calculateFinalFee(feeControlForm.value);
 
   }
 
@@ -446,8 +463,9 @@ export class StudentInfoComponent implements OnInit {
     if (this.studentForm.contains('fee')) {
       const feeConrol = <FormGroup>this.studentForm.controls['fee'];
       feeConrol.controls['formalSchool'].patchValue(formalSchool);
-      this.calculateGstFee(feeConrol.value, this.studentForm.value);
-      this.calculateFinalFee(feeConrol.value);
+      // this.calculateGstFee(feeConrol.value, this.studentForm.value);
+      // this.calculateFinalFee(feeConrol.value);
+      this.updateDiscount();
     }
   }
 

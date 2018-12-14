@@ -37,4 +37,22 @@ export class PayrollService {
     return this.api.get('api/staff/leave/reject/' + leaveId + '/');
   }
 
+  deleteLeave(leaveId) {
+    return this.api.delete('api/attendance/staff/hradmin/' + leaveId + '/');
+
+  }
+
+  saveLeave(timingDetails) {
+    return this.api.post('api/attendance/staff/hradmin' , timingDetails);
+
+  }
+
+  getEmployeeAttendance(id) {
+    return this.api.post('/api/staff/leave/' + id , {} );
+
+  }
+
+  getAttendanvceSummry( id, month) {
+    return this.api.post('api/staff/leave/employeeMonthly?eid=' + id + '&month=' + month , {});
+  }
 }

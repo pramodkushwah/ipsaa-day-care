@@ -181,7 +181,10 @@ export class AppStaffComponent implements OnInit {
       dangerMode: true
     }).then(value => {
       if (value) {
-        this.adminService.deleteStaffById(staffId);
+        this.adminService.deleteStaffById(staffId)
+        .subscribe((res: any) => {
+
+        });
       }
     });
   }
