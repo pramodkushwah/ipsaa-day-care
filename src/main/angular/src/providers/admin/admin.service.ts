@@ -21,6 +21,10 @@ export class AdminService {
     return this.api.get('api/center/programs/' + centerId);
   }
 
+  deleteProgram(programId) {
+    return this.api.delete('api/program/' + programId);
+  }
+
   getCenters() {
     return this.api.get('api/center/');
   }
@@ -45,8 +49,16 @@ export class AdminService {
     return this.api.get('api/student/' + studentId);
   }
 
+  isFeePanding(studentId: number) {
+    return this.api.get('api/student/checkPending/' + studentId);
+  }
+
   deleteStudentById(studentId: number) {
     return this.api.delete('api/student/' + studentId);
+  }
+
+  deleteStudentForcefully(studentId: number) {
+    return this.api.delete('api/student/' + studentId + '/forced');
   }
 
   getStudentPaymentHistory(studentId: number) {
@@ -163,6 +175,10 @@ export class AdminService {
 
   getRoles() {
     return this.api.get('api/user/roles/');
+  }
+
+  deleteRole(role) {
+    return this.api.delete('api/role/' + role.id);
   }
 
   getAllPrivileges() {
@@ -408,6 +424,14 @@ export class AdminService {
 
   }
 
+  ipsaaClubFeeReportDownload(data) {
+    return this.api.getPDF('api/report/ipsaaclub/studentfee/excel', data);
+  }
+
+  ipsaaClubCollectionFeeDownload(data) {
+    return this.api.getPDF('api/report/ipsaaclub/collectionfee/excel', data);
+  }
+
   studentsFeeReportdownload(centerId_and_range) {
     return this.api.getPDF('api/report/studentfee/excel/', centerId_and_range);
 
@@ -489,8 +513,8 @@ export class AdminService {
   aproveStudent(student_id) {
     return this.api.get('api/student/approve/' + student_id);
   }
-  rejectStudent(student_id) {
-    return this.api.get('api/student/reject/' + student_id);
+  rejectStudent(student_id, comment) {
+    return this.api.post('api/student/reject/' + student_id, {'comment': comment});
   }
 
   // center

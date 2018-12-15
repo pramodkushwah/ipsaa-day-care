@@ -46,7 +46,9 @@ export class StudentInfoComponent implements OnInit {
         this.studentForm.controls['centerId'].patchValue(student.center.id);
         this.studentForm.controls['groupId'].patchValue(student.group.id);
         this.studentForm.controls['programId'].patchValue(student.program.id);
-        this.studentForm.controls['fee'].patchValue(student.fee);
+        if (this.studentForm.contains('fee')) {
+          this.studentForm.controls['fee'].patchValue(student.fee);
+        }
         if (this.student.program.id === 72932732558618) {
           this.isIpsaaclub = true;
         } else {
