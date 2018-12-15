@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertService } from '../../../providers/alert/alert.service';
+import { AdminService } from '../../../providers/admin/admin.service';
+import { ParentService } from '../../../providers/parentPotel/parent.service';
+import { FormGroup } from '@angular/forms';
+declare let $: any;
 
 @Component({
   selector: 'app-profile',
@@ -6,10 +11,66 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-
-  constructor() { }
+  bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'NA'];
+  // student = {center:{},program:{},parents:[],group:{}};
+  student: any;
+  studentForm: FormGroup;
+  selectedStudent: string;
+  studentId: number;
+  parent: any = [];
+  constructor(
+    private adminService: AdminService,
+    private parentService: ParentService,
+    private alertService: AlertService,
+  ) { }
 
   ngOnInit() {
+    this.getStudents();
+  }
+  getStudents() {
+    this.parentService.getStudentDetails()
+      .subscribe((res: any) => {
+        console.log(res);
+        this.parent = res;
+        this.studentId = this.parent[0].id;
+        this.getStudentsDetails(this.studentId);
+      });
+  }
+
+  getStudentsDetails(std_id) {
+    this.parentService.getDetailsByStudentId(std_id)
+      .subscribe((res: any) => {
+        this.student = res;
+      });
+  }
+
+
+  editStudent() {
+
+  }
+
+  notify(x, h) {
+
+  }
+
+  uploadProfilePic(student: any, file: any) {
+    console.log('asdfdsf', file);
+    const formData = new FormData();
+    formData.append('file', file);
+    if (file) {
+      this.adminService.uploadStudentProfilePic(student.id, formData).subscribe(
+        (response: any) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = function (e: any) {
+            $('#student-profile').attr('src', e.target.result);
+          };
+        },
+        (error: any) => {
+          this.alertService.errorAlert(error);
+        }
+      );
+    }
   }
 
 }
