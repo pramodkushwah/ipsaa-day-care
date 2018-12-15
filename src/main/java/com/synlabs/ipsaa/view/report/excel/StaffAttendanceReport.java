@@ -66,7 +66,7 @@ public class StaffAttendanceReport {
 
        this.halfdays= BigDecimal.valueOf(calendar.entrySet().stream().filter(e->e.getValue().equals("HD")).count());
 
-       this.paidDays= this.presents.add(this.leaves).add(weekoff).add(holidays).add(halfdays);
+       this.paidDays= this.presents.add(this.leaves).add(weekoff).add(holidays);
     }
 
     @Override
