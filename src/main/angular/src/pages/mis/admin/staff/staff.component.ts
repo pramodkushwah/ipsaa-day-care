@@ -10,6 +10,7 @@ declare let $: any;
   templateUrl: './staff.component.html'
 })
 export class AppStaffComponent implements OnInit {
+  staffListCopy: any = [];
   constructor(
     private adminService: AdminService,
     private pagerService: PagerService
@@ -27,7 +28,7 @@ export class AppStaffComponent implements OnInit {
 
   update: boolean;
   search: string;
-  selectedStaffStatus: any = 'true';
+  selectedStaffStatus: boolean;
   selectedStaffType: any = 'ALL';
   viewPanel = false;
   allItems = []; // all staff list will be stored here
@@ -63,6 +64,7 @@ export class AppStaffComponent implements OnInit {
   getStaff() {
     this.adminService.getStaff().subscribe(response => {
       this.allItems = response;
+      this.staffListCopy = this.allItems;
       this.staffList = this.allItems;
       this.setPage(1);
       this.staffLoaded();
@@ -141,27 +143,34 @@ export class AppStaffComponent implements OnInit {
     this.staffLoaded();
   }
 
-  filterStaff() {
+  filterStaff(status) {
+    const a = 'true' === status;
     this.loadingStaffList = true;
-
-    const filter = {
-      employeeType: this.selectedStaffType,
-      active: this.selectedStaffStatus,
-      pageNumber: 0,
-      pageSize: 0
-    };
-    this.adminService.filterStaff(filter).subscribe(response => {
-      this.staffList = response.stafflist;
-      this.filteredStaff = this.staffList;
-      if (this.searchedStaff.length) {
-        this.searchStaff(this.searchKey);
-      }
-      if (this.selectedCenter !== 'all') {
-        this.filterStaffByCenter();
-      } else {
-        this.staffLoaded();
-      }
+    this.staffList = this.staffListCopy.filter((staff: any) => {
+      console.log(staff.active , a);
+      return staff.active === a;
     });
+    console.log(this.staffList);
+    this.setPage(1);
+    this.staffLoaded();
+    // const filter = {
+    //   employeeType: this.selectedStaffType,
+    //   active: this.selectedStaffStatus,
+    //   pageNumber: 0,
+    //   pageSize: 0
+    // };
+    // this.adminService.filterStaff(filter).subscribe(response => {
+    //   this.staffList = response.stafflist;
+    //   this.filteredStaff = this.staffList;
+    //   if (this.searchedStaff.length) {
+    //     this.searchStaff(this.searchKey);
+    //   }
+    //   if (this.selectedCenter !== 'all') {
+    //     this.filterStaffByCenter();
+    //   } else {
+    //     this.staffLoaded();
+    //   }
+    // });
   }
 
   staffLoaded() {

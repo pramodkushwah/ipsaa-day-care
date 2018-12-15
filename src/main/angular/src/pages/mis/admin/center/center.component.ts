@@ -321,12 +321,14 @@ export class CenterComponent implements OnInit {
       if (isConfirm) {
         this.adminService.deleteCenter(center.id).subscribe((response: any) => {
           this.centers.splice(this.centers.indexOf(this.selectedCenter), 1);
+          this.alertService.successAlert('You have successfully deleted ' + center.name + 'Center');
         });
       }
     });
   }
 
   filterCenter(searchKey) {
+    this.tableData = this.centersCopy;
     const val = searchKey.toLowerCase();
     if (val && val.trim() !== '') {
       this.tableData = this.centersCopy.filter((center: any) => {

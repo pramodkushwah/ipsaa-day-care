@@ -96,14 +96,24 @@ export class StudentComponent implements OnInit {
   }
 
   deleteStudentSwal(student: any) {
-    this.alertService.confirm('').then(isConfirm => {
-      if (isConfirm) {
-        this.adminService.deleteStudentById(student.id).subscribe((response: any) => {
-          this.alertService.successAlert('You have deleted student record successfully');
-        }, (error: any) => {
-          this.alertService.errorAlert(error);
+    this.adminService.isFeePanding(student.id).subscribe((isPending: boolean) => {
+       if (isPending) {
+        this.alertService.confirm('as' + student.name + ' Fee is still outstanding').then(isConfirm => {
+          if (isConfirm) {
+            this.adminService.deleteStudentForcefully(student.id).subscribe(response => {
+              this.alertService.successAlert('Student successfully deleted');
+            });
+          }
         });
-      }
+       } else {
+         this.alertService.confirm('').then(isConfirm => {
+           if (isConfirm) {
+             this.adminService.deleteStudentById(student.id).subscribe((response: any) => {
+               this.alertService.successAlert('You have deleted student record successfully');
+             });
+           }
+         });
+       }
     });
   }
 

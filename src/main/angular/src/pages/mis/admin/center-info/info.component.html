@@ -52,7 +52,7 @@
         <div class="col-md-4">
           <div class="form-group">
             <label class="control-label">*Zone</label>
-            <select class="form-control" formControlName="zone" (ngModelChange)="getCitiesByZone($event)" required>
+            <select class="form-control" formControlName="zone" (ngModelChange)="getCitiesByZone($event)" required autocomplete="off">
               <option *ngFor="let zone of zones;" [ngValue]="zone.name">{{zone.name}}</option>
             </select>
           </div>
@@ -60,7 +60,7 @@
         <div class="col-md-4">
           <div class="form-group">
             <label class="control-label">*Phone</label>
-            <input class="form-control" formControlName="phone" name="phone" type="text" required  >
+            <input class="form-control" formControlName="phone" name="phone" type="text" required  autocomplete="off">
             <span class="material-input"></span>
           </div>
         </div>
@@ -69,7 +69,7 @@
         <div class="col-md-12">
           <div class="form-group">
             <label class="control-label">*Address</label>
-            <input class="form-control" formControlName="address" name="address" type="text" required >
+            <input class="form-control" formControlName="address" name="address" type="text" required autocomplete="off">
             <span class="material-input"></span>
           </div>
         </div>
@@ -78,7 +78,8 @@
         <div class="col-md-4">
           <div class="form-group">
             <label class="control-label">*City</label>
-            <select class="form-control" formControlName="city" required (ngModelChange)="setState($event)">
+            <select class="form-control" formControlName="city" required (ngModelChange)="setState($event)" autocomplete="off">
+              <option value="">Select City</option>
               <option *ngFor="let city of cities;" [ngValue]="city.name">{{city.name}}</option>
             </select>
             <span class="material-input"></span>
@@ -87,14 +88,14 @@
         <div class="col-md-4">
           <div class="form-group">
             <label class="control-label">*State</label>
-            <input class="form-control" formControlName="state" name="state" type="text" required >
+            <input class="form-control" formControlName="state" name="state" type="text" required autocomplete="off" readonly>
             <span class="material-input"></span>
           </div>
         </div>
         <div class="col-md-4">
           <div class="form-group">
             <label class="control-label">*Zipcode</label>
-            <input class="form-control" formControlName="zipcode" name="zipcode" type="text" required >
+            <input class="form-control" formControlName="zipcode" name="zipcode" type="text" required autocomplete="off">
             <span class="material-input"></span>
           </div>
         </div>

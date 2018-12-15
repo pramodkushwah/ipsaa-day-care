@@ -48,6 +48,7 @@ export class FeeReceiptInfoComponent implements OnInit {
     this.selectedStudentDetails = (studentReceipt) ? studentReceipt : {};
     this.feePaymentForm = this.getReceiptForm();
     this.feePaymentForm.patchValue(this.selectedStudentDetails);
+    this.feePaymentForm.controls['paymentDate'].patchValue(studentReceipt.invoiceDate);
   }
   ngOnInit() {
     console.log(this.selectedStudentDetails);

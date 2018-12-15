@@ -7,6 +7,7 @@ import { StudentAttendanceReportComponent } from './student-attendance-report/st
 import { StaffAttendanceReportComponent } from './staff-attendance-report/staff-attendance-report.component';
 import { FeeCollectionReportComponent } from './fee-collection-report/fee-collection-report.component';
 import { HdfcGatewayFeeReportComponent } from './hdfc-gateway-fee-report/hdfc-gateway-fee-report.component';
+import { IpsaaClubReportComponent } from './ipsaa-club-report/ipsaa-club-report.component';
 
 const reportRoutes: Routes = [
   {
@@ -33,10 +34,14 @@ const reportRoutes: Routes = [
     path: 'collectionfeereport',
     component: FeeCollectionReportComponent
   },
-{
-  path: 'HdfcGatewayFeeReport',
-  component: HdfcGatewayFeeReportComponent
-}
+  {
+    path: 'hdfcgatewayfeereport',
+    component: HdfcGatewayFeeReportComponent
+  },
+  {
+    path: 'ipsaaclubreport',
+    component: IpsaaClubReportComponent
+  }
 ];
 
 @NgModule({

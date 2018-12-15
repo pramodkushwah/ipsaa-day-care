@@ -85,22 +85,17 @@
         <p class="card-category">Staff Cost : {{statsResult.staffCost}}</p>
       </div>
       <div class="card-footer" >
-        <div class="row" (click)=" scroll(target) ">
-        <div (click)="  scroll(target) " class="col-lg-12 stats">
-          <a (click)="getFilterStaff('newjoinings')" class="link">New Joiners: {{statsResult.newJoinings}} | </a> &nbsp;
-          <a (click)="getFilterStaff('newleavings')" class="link">Resignee
-            : {{statsResult.newLeavings}} | </a> &nbsp;
-                <a (click)="getFilterStaff('recruitmentHeadCountList')"  class="link">Active Headcount
-                : {{statsResult.recruitmentCount}} | </a> &nbsp; 
-              </div>
-               
-              <div  class=" col-lg-12 stats">
-          <a (click)="getFilterStaff('presentStaff')"  class="link">Present
-            : {{statsResult.staffPresent}} | </a> &nbsp; 
-            <a (click)="getFilterStaff('absentStaff')" class="link">Absent: {{statsResult.staffAbsent}} | </a> &nbsp;
-            <a (click)="getFilterStaff('onLeaveStaff')" class="link">On Leave
-            : {{statsResult.staffOnLeave}} | </a> &nbsp;&nbsp;&nbsp;
-        </div>
+        <div (click)=" scroll(target) ">
+          <p><a (click)="getFilterStaff('newjoinings')" class="link">New Joiners: {{statsResult.newJoinings}} </a></p>
+          <p><a (click)="getFilterStaff('newleavings')" class="link">Resignee
+            : {{statsResult.newLeavings}}</a></p>
+          <p><a (click)="getFilterStaff('recruitmentHeadCountList')"  class="link">Active Headcount
+            : {{statsResult.recruitmentCount}}</a></p>
+          <p><a (click)="getFilterStaff('presentStaff')"  class="link">Present
+            : {{statsResult.staffPresent}}</a></p>
+          <p><a (click)="getFilterStaff('absentStaff')" class="link">Absent: {{statsResult.staffAbsent}}</a></p>
+          <p><a (click)="getFilterStaff('onLeaveStaff')" class="link">On Leave
+            : {{statsResult.staffOnLeave}}</a></p>
         </div>
       </div>
     </div>

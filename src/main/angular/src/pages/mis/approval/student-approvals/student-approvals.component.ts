@@ -76,8 +76,8 @@ this.showSidePanel();
       });
   }
 
-  studentReject(student) {
-    this.adminService.rejectStudent(student.id)
+  studentReject(student, comment) {
+    this.adminService.rejectStudent(student.id, comment)
       .subscribe((res: any) => {
         this.getCenterStudentApprovelList();
         this.studentAprrovelList = this.studentAprrovelList.filter(element => element.id !== student.id);

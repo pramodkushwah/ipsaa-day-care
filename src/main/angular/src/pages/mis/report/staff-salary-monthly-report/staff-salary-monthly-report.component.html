@@ -11,7 +11,7 @@
   </div>
   <div class="col-md-3">
     <div class="form-group">
-      <label for="month">month:</label>
+      <label for="month">Month:</label>
       <select class="form-control" [(ngModel)]="selectedMonth">
         <option value="" disabled="true">Select month</option>
         <option *ngFor="let month of months; let i =index;" [value]="i+1">{{month}}</option>
