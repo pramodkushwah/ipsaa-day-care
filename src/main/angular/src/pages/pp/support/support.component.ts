@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ParentService } from '../../../providers/parentPotel/parent.service';
+import { AlertService } from '../../../providers/alert/alert.service';
 
 @Component({
   selector: 'app-support',
@@ -8,9 +10,23 @@ import { Component, OnInit } from '@angular/core';
 export class SupportComponent implements OnInit {
   query: any;
   queries: any = [];
-  constructor() { }
+  parent: any;
+  studentId: any;
+  constructor(
+    private parentService: ParentService,
+    private alertService: AlertService,
+  ) { }
 
   ngOnInit() {
+    this.getStudents();
+  }
+  getStudents() {
+    this.parentService.getStudentDetails()
+      .subscribe((res: any) => {
+        console.log(res);
+        this.parent = res;
+        this.studentId = this.parent[0].id;
+      });
   }
   newQuery() {
 
@@ -19,4 +35,5 @@ export class SupportComponent implements OnInit {
   replyToQuery() {
 
   }
+
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AdminService } from '../../../providers/admin/admin.service';
 import { ParentService } from '../../../providers/parentPotel/parent.service';
 import { AlertService } from '../../../providers/alert/alert.service';
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-fee',
@@ -36,13 +37,26 @@ export class FeeComponent implements OnInit {
         this.parent = res;
         this.studentId = this.parent[0].id;
         this.getStudentsDetails(this.studentId);
+        this.getStudentFeeledgerDetails(this.studentId);
       });
   }
 
   getStudentsDetails(std_id) {
-    this.parentService.getDetailsByStudentId(std_id)
+    this.parentService.getStudentFee(std_id)
       .subscribe((res: any) => {
         this.fee = res;
+      });
+  }
+
+onStudentChange(id) {
+  this.getStudentsDetails(id);
+  this.getStudentFeeledgerDetails(id);
+}
+
+  getStudentFeeledgerDetails(std_id) {
+    this.parentService.getStudentFeeledger(std_id)
+      .subscribe((res: any) => {
+        this.studentfeeledger = res;
       });
   }
 
@@ -53,12 +67,23 @@ export class FeeComponent implements OnInit {
 
 
 
-  downloadFeeSlip(s) {
-
+  slipDownload(id) {
+    this.parentService.downloadFeeSlip(id)
+      .subscribe((res: any) => {
+        const blob = new Blob([res.body], {
+        });
+        FileSaver.saveAs(blob, res.headers.get('fileName'));
+      });
   }
 
 
-  downloadFeeReceipt(id) {
-
+  receiptDownload(id) {
+    this.parentService.downloadFeeReceipt(id)
+      .subscribe((res: any) => {
+        const blob = new Blob([res.body], {
+        });
+        FileSaver.saveAs(blob, res.headers.get('fileName'));
+      });
   }
+
 }
