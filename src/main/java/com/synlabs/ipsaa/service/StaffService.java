@@ -766,7 +766,7 @@ public class StaffService extends BaseService
     // checking dol is present or not
     if (employee.getProfile().getDol() == null)
     {
-      throw new ValidationException(String.format("Emploee[%s] date of leaving not found", request.getId()));
+      throw new ValidationException(String.format("Emploee[%s] date of leaving is not set", request.getEid()));
     }
       employee.setActive(false);
       employeeRepository.saveAndFlush(employee);
@@ -898,7 +898,7 @@ public class StaffService extends BaseService
 //    } catch (InvalidFormatException e) {
 //      e.printStackTrace();
 //    }
-    return employeeRepository.findByActiveIsTrue();
+    return employeeRepository.findAll();
   }
   //-----------------------shubham-----------------------------------------
 // not in use
