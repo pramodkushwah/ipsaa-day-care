@@ -1,0 +1,54 @@
+<div class="row" *ngIf="students?.length>1">
+  <div class="col-md-2">
+    <div class="form-group ">
+      <label class="control-label">Student</label>
+      <select class="form-control" id="student" name="student" [(ngModel)]="selectedStudent" (ngModelChange)="getEmployeeAttendance()">
+        <option value="" disabled="true">Select student</option>
+        <option *ngFor="let stud of students; let i =index;" [value]="stud.id">{{stud.student}}</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-3">
+    <div class="form-group">
+      <label for="month">month:</label>
+      <select class="form-control" id="month" name="month" [(ngModel)]="selectedMonth" (ngModelChange)="getEmployeeAttendance()">
+        <option value="" disabled="true">Select month</option>
+        <option *ngFor="let mon of months; let i =index;" [value]="mon.id">{{mon.month}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="form-group">
+      <label for="year">Year:</label>
+      <select class="form-control" id="year" name="year" [(ngModel)]="selectedYear" (ngModelChange)="getEmployeeAttendance()">
+        <option value="" disabled="true">Select Year</option>
+        <option *ngFor="let year of years" [value]="year">{{year}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+`    <div class="table-responsive">
+      <table class="table table-bordered">
+        <tr>
+          <th>Date</th>
+          <th>Day</th>
+          <th>ClockIn</th>
+          <th>ClockOut</th>
+        </tr>
+        <tr *ngFor=" let day of days;">
+          <td>{{day.day}}</td>
+          <td>{{day.wd}}</td>
+          <td>{{day.checkin}}</td>
+          <td>{{day.checkout}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

@@ -36,7 +36,7 @@ export class NavbarComponent implements OnInit {
     this.toggleButton = navbar.getElementsByClassName('navbar-toggler')[0];
     this.router.events.subscribe(event => {
       this.sidebarClose();
-      var $layer: any = document.getElementsByClassName('close-layer')[0];
+      const $layer: any = document.getElementsByClassName('close-layer')[0];
       if ($layer) {
         $layer.remove();
         this.mobile_menu_visible = 0;

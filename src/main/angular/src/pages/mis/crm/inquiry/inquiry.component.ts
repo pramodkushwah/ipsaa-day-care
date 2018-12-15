@@ -53,7 +53,7 @@ export class InquiryComponent implements OnInit {
   selectedCenter = {};
   followUpsCoppy: any;
   inquiriesCoppy: any;
-
+  FOLLOWUP_NOTIFICATION: boolean;
   constructor(
     private fb: FormBuilder,
     private adminService: AdminService,
@@ -62,6 +62,7 @@ export class InquiryComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.FOLLOWUP_NOTIFICATION = this.adminService.hasPrivilage('FOLLOWUP_NOTIFICATION');
     this.alertService.loading.next(true);
     console.log(this.selectedTab);
     this.today = new Date();

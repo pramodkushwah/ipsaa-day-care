@@ -127,7 +127,7 @@
             <td>{{payment.paymentMode}}</td>
             <td>{{payment.paidAmount}}</td>
             <td>{{payment.paymentDate}}</td>
-            <td>
+            <td *ngIf="STUDENTFEE_RECEIPT_CONFIRM">
               <button class="btn btn-sm" [ngClass]="payment.confirmed? 'btn-success': 'btn-rose'" (click)="payment.confirmed?null:upDatePayment(payment , 'confirm')"
                 [disabled]="payment.disabled" *ngIf="(payment.active && !payment.confirmed)">
                 <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="payment.disabled"> </i>Confirm
@@ -141,6 +141,11 @@
                   <i class="fa fa-info"></i>
                 </a>
               </span>
+            </td>
+            <td *ngIf="!STUDENTFEE_RECEIPT_CONFIRM">
+              <span *ngIf="!(payment.confirmed || payment.active)">Rejected</span>
+              <span *ngIf="payment.confirmed && payment.active">Confirmed</span>
+              <span *ngIf="payment.active && !payment.confirmed">Pending</span>
             </td>
 
           </tr>

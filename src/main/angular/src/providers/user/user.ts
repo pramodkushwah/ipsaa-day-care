@@ -71,7 +71,7 @@ export class User {
    * the user entered on the form.
    */
   signup(accountInfo: any) {
-    let seq = this.api.post('signup', accountInfo);
+    const seq = this.api.post('signup', accountInfo);
 
     seq.subscribe(
       (res: any) => {

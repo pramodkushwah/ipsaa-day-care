@@ -21,7 +21,9 @@ export class StudentFeeComponent implements OnInit {
   viewPanel = false;
   loadingFeeList = false;
   allItems = [];
-update = true;
+  update = true;
+  STUDENTFEE_WRITE: boolean;
+
   constructor(
     private adminService: AdminService,
     private alertService: AlertService,
@@ -29,6 +31,7 @@ update = true;
   ) { }
 
   ngOnInit() {
+    this.STUDENTFEE_WRITE = this.adminService.hasPrivilage('STUDENTFEE_WRITE');
     this.initiallize();
     this.subscribSidePanel();
   }

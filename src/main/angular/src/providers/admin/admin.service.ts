@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Api } from '../api/api';
 import { Student } from '../../modal/student';
 import { Subject } from 'rxjs';
+import { StorageService } from '../localstorage/storage';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
@@ -10,7 +11,7 @@ export class AdminService {
   public viewPanel = new Subject<boolean>();
   public viewPanelForFee = new Subject<boolean>();
 
-  constructor(public api: Api) { }
+  constructor(public api: Api, public storage: StorageService) { }
 
   getPrograms() {
     return this.api.get('api/program/');
@@ -580,6 +581,11 @@ export class AdminService {
 
   generateIpsaaclubStudentFee(studentId, data) {
     return this.api.post('api/student/ipsaaclub/generate/' + studentId, data);
+  }
+
+  hasPrivilage(privilage: any) {
+    const privilages: string[] = this.storage.getData('ngStorage-privileges');
+    return privilages.includes(privilage);
   }
 
 
