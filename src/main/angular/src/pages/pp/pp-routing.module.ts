@@ -51,6 +51,8 @@ const routes: Routes = [
         component: FoodMenuComponent
       },
       { path: 'checkout/:p1/:p2', component: LoginComponent},
+
+      { path: 'ipsaaclubcheckout/:p1/:p2', component: LoginComponent},
       {
         path: 'support',
         component: SupportComponent
