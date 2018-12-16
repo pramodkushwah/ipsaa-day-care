@@ -6,7 +6,7 @@ public class StudentFilterRequest extends PageRequest
 {
   private String programCode;
   private String centerCode;
-  private boolean active = true;
+  private boolean active;
 
   public boolean getActive()
   {

@@ -199,8 +199,8 @@ public class StudentService extends BaseService {
 		JPAQuery<Student> query = new JPAQuery<>(entityManager);
 		QStudent student = QStudent.student;
 
-		query.select(student).from(student).where(student.center.in(centers))
-				.where(student.active.eq(request.getActive()));
+		query.select(student).from(student).where(student.center.in(centers));
+				//.where(student.active.eq(request.getActive()));
 
 		if (!StringUtils.isEmpty(request.getProgramCode()) && !request.getProgramCode().equals("ALL")) {
 			query.where(student.program.code.eq(request.getProgramCode()));
@@ -574,13 +574,6 @@ public class StudentService extends BaseService {
         if (student == null) {
             throw new NotFoundException(String.format("Cannot locate student with id %s", request.getId()));
         }
-        StudentFeePaymentRequest slip = studentFeeService.getStudentBalance(student);
-        if (slip != null)
-            if ((slip.getBalance() != null && slip.getBalance().intValue() > 0) || !slip.getPaymentStatus().equals(PaymentStatus.Paid)) {
-                throw new ValidationException(
-                        String.format("Some balance fee is remaining of student [%s]", student.getName()));
-            }
-
         student.setActive(false);
         studentRepository.saveAndFlush(student);
         logger.info("Student deactivated " + student.getName());
@@ -1835,4 +1828,17 @@ public class StudentService extends BaseService {
         }
         return slip2.stream().map(StudentFeeSlipResponse3::new).collect(Collectors.toList());
     }
+
+	public boolean checkPending(StudentRequest request) {
+		Student student = studentRepository.findOne(request.getId());
+		if (student == null) {
+			throw new NotFoundException(String.format("Cannot locate student with id %s", request.getId()));
+		}
+		StudentFeePaymentRequest slip = studentFeeService.getStudentBalance(student);
+		if (slip != null)
+			if ((slip.getBalance() != null && slip.getBalance().intValue() > 0) || !slip.getPaymentStatus().equals(PaymentStatus.Paid)) {
+				return true;
+			}
+			return false;
+	}
 }
