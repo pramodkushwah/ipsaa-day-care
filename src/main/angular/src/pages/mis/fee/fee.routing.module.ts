@@ -11,6 +11,10 @@ const feeRoutes: Routes = [
     component: CenterFeeComponent
   },
   {
+    path: 'ipsaaclub',
+    component: IpsaaclubComponent
+  },
+  {
     path: 'studentfeemanagement',
     component: StudentFeeComponent
   },
@@ -21,10 +25,6 @@ const feeRoutes: Routes = [
   {
     path: 'feepayment',
     component: GenerateFeeReceiptComponent
-  },
-  {
-    path: 'ipsaaclub',
-    component: IpsaaclubComponent
   }
 ];
 

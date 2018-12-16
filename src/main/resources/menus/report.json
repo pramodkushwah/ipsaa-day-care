@@ -47,6 +47,12 @@
       "state": "report/staffsalarymonthlyreport",
       "p": "STAFF_ATTENDANCE_REPORT",
       "seq": 600
+    },
+    {
+      "label": "Staff Report",
+      "state": "report/staffreport",
+      "p": "STAFF_ATTENDANCE_REPORT",
+      "seq": 700
     }
   ]
 }

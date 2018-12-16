@@ -177,8 +177,8 @@ export class AdminService {
     return this.api.get('api/user/roles/');
   }
 
-  deleteRole(role) {
-    return this.api.delete('api/role/' + role.id);
+  deleteRole(roleId) {
+    return this.api.delete('api/role/' + roleId);
   }
 
   getAllPrivileges() {

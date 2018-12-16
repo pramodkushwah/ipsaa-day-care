@@ -31,6 +31,12 @@ export class SidebarComponent implements OnInit {
   constructor(private menuService: MenuService, private userService: User, public router: Router) {
     menuService.getMenus().subscribe(
       (response: any) => {
+        response.items.sort((a: any , b: any) => {
+          a.submenu.sort((ai: any , bi: any) => {
+            return ai.seq - bi.seq ;
+          });
+          return a.seq - b.seq ;
+        });
         this.menu = response;
       });
     menuService.getUserProfile().subscribe(

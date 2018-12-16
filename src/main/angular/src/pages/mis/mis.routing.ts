@@ -18,16 +18,12 @@ export const MISRoutes: Routes = [
         component: DashboardComponent
       },
       {
-        path: 'admin',
-        loadChildren: 'pages/mis/admin/admin.module#AdminModule'
+        path: 'attendance',
+        loadChildren: 'pages/mis/attendance/attendance.module#AttendanceModule'
       },
       {
         path: 'payroll',
         loadChildren: 'pages/mis/payroll/payroll.module#PayrollModule'
-      },
-      {
-        path: 'attendance',
-        loadChildren: 'pages/mis/attendance/attendance.module#AttendanceModule'
       },
       {
         path: 'fee',
@@ -36,6 +32,18 @@ export const MISRoutes: Routes = [
       {
         path: 'comms',
         loadChildren: 'pages/mis/message/message.module#MessageModule'
+      },
+      {
+        path: 'admin',
+        loadChildren: 'pages/mis/admin/admin.module#AdminModule'
+      },
+      {
+        path: 'center',
+        loadChildren: 'pages/mis/center/center.module#CenterModule'
+      },
+      {
+        path: 'support',
+        loadChildren: 'pages/mis/support/support.module#SupportModule'
       },
       {
         path: 'approval',
@@ -49,14 +57,7 @@ export const MISRoutes: Routes = [
         path: 'crm',
         loadChildren: 'pages/mis/crm/crm.module#CrmModule'
       },
-      {
-        path: 'center',
-        loadChildren: 'pages/mis/center/center.module#CenterModule'
-      },
-      {
-        path: 'support',
-        loadChildren: 'pages/mis/support/support.module#SupportModule'
-      }
+
     ]
   }
 ];

@@ -18,7 +18,7 @@ export class GenerateFeeReceiptComponent implements OnInit {
   STUDENTFEE_RECEIPT_CONFIRM: boolean;
   years = [];
 
-  studentDetails: Array<any>;
+  studentDetails = [];
   viewPanel = false;
   selectedStudentDetails: any = {};
   feePaymentForm: FormGroup;
@@ -34,6 +34,7 @@ export class GenerateFeeReceiptComponent implements OnInit {
 
     this.years.push(this.currentYear - 1);
     this.years.push(this.currentYear);
+    this.years.push(this.currentYear + 1);
   }
 
   generateSlipForm = this.fb.group({

@@ -11,24 +11,20 @@ import { IpsaaClubReportComponent } from './ipsaa-club-report/ipsaa-club-report.
 
 const reportRoutes: Routes = [
   {
-    path: 'inquiryreport',
-    component: InquiryReportComponent
-  },
-  {
-    path: 'stdfeereport',
-    component: StudentFeeReportComponent
-  },
-  {
-    path: 'staffsalarymonthlyreport',
-    component: StaffSalaryMonthlyReportComponent
-  },
-  {
     path: 'stdattendancereport',
     component: StudentAttendanceReportComponent
   },
   {
     path: 'staffattendancereport',
     component: StaffAttendanceReportComponent
+  },
+  {
+    path: 'ipsaaclubreport',
+    component: IpsaaClubReportComponent
+  },
+  {
+    path: 'inquiryreport',
+    component: InquiryReportComponent
   },
   {
     path: 'collectionfeereport',
@@ -39,8 +35,12 @@ const reportRoutes: Routes = [
     component: HdfcGatewayFeeReportComponent
   },
   {
-    path: 'ipsaaclubreport',
-    component: IpsaaClubReportComponent
+    path: 'staffsalarymonthlyreport',
+    component: StaffSalaryMonthlyReportComponent
+  },
+  {
+    path: 'stdfeereport',
+    component: StudentFeeReportComponent
   }
 ];
 
