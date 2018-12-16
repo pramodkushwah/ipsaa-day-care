@@ -79,7 +79,7 @@ public class StaffController
   @GetMapping("/reporting/")
   public List<StaffSummaryResponse> listReporting()
   {
-    return staffService.getReportingEmployees().stream().map(e -> new StaffSummaryResponse(e, true)).collect(Collectors.toList());
+    return staffService.getReportingEmployees().stream().map(e -> new StaffSummaryResponse(e, false)).collect(Collectors.toList());
   }
 
   @Secured(STAFF_READ)

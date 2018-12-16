@@ -31,4 +31,5 @@ public interface EmployeeLeaveRepository extends JpaRepository<EmployeeLeave, Lo
 
   List<EmployeeLeave> findByEmployeeAndDateBetweenAndHalfLeaveIsTrue(Employee employee,Date from,Date to);
 
+  List<EmployeeLeave> findByDateBetweenOrderByDate(Date from, Date to);
 }

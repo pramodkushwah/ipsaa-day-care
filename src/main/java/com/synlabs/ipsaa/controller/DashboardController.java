@@ -129,7 +129,7 @@ public class DashboardController
   @PostMapping("dash/presentStaff")
   @Secured(DASHBOARD_STATS)
   public List<StaffNewJoinings> presentStaff(@RequestBody DashboardRequest request){
-    return dashboardService.presentStaff(request).stream().map(StaffNewJoinings::new).collect(Collectors.toList());
+    return dashboardService.presentStaffList(request).stream().map(StaffNewJoinings::new).collect(Collectors.toList());
   }
 
   @PostMapping("dash/absentStaff")

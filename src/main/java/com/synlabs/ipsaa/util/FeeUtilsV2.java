@@ -97,9 +97,25 @@ public class FeeUtilsV2 {
 			finalRatio = THREE;
 		}
 		fee.setFinalTransportFee(fee.getTransportFee().multiply(finalRatio));
-
+// need to chnage fee ratio with 3
 		fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(),
 				fee.getFinalBaseFee().divide(THREE, 2, BigDecimal.ROUND_CEILING), "Base Fee"));
+
+		fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(finalRatio).setScale(2, BigDecimal.ROUND_CEILING));
+
+		return calculateFinalFee(fee);
+	}
+	public static BigDecimal calculateSave(StudentFeePaymentRequest fee, BigDecimal ratio) {
+		BigDecimal finalRatio;
+		if (ratio != null)
+			finalRatio = ratio;
+		else {
+			finalRatio = THREE;
+		}
+		fee.setFinalTransportFee(fee.getTransportFee().multiply(finalRatio));
+// need to chnage fee ratio with 3
+		fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(),
+				fee.getFinalBaseFee().divide(fee.getFeeRatio(), 2, BigDecimal.ROUND_CEILING), "Base Fee"));
 
 		fee.setFinalBaseFee(fee.getFinalBaseFee().multiply(finalRatio).setScale(2, BigDecimal.ROUND_CEILING));
 
