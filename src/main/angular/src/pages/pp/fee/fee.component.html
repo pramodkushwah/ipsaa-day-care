@@ -17,7 +17,7 @@
       <div class="card-content" style="text-align: center">
         <h4>{{fee.admissionNumber}}</h4>
         <h6 class="category">{{fee.fullName}}</h6>
-        <h3 class="card-title">Rs. {{checkoutDetails.feeAmount}}</h3>
+        <h3 *ngIf="checkoutDetails" class="card-title">Rs. {{checkoutDetails?.feeAmount}}</h3>
         <span class="label btn-round btn-rose">{{fee.center?.name}}</span> <br>
         <span class="label btn-round btn-rose">{{fee.program?.name}}</span> <br>
         <span class="label btn-round btn-rose">{{fee.group?.name}}</span>
@@ -29,7 +29,11 @@
           <!--<input type="hidden" name="merchant_id" value="{{checkoutDetails.merchantId}}">-->
           <!--<input type="hidden" name="access_code" value="{{checkoutDetails.accessCode}}">-->
           <!--<input type="hidden" name="encRequest"  value="{{checkoutDetails.encRequest}}">-->
-          <button class="btn btn-portal btn-round" (click)="checkout()"> <a  [routerLink]="['/pp/checkout/ ', { p1: studentfeeledger.id, p2: myDetailId }]" target="_blank" > Pay now</a></button>
+          <a  class="btn btn-portal btn-round" [routerLink]="['/pp/checkout/ ', { p1: studentfeeledger.id, p2: myDetailId }]" target="_blank" > 
+            <!-- <button class="btn btn-portal btn-round"> -->
+              Pay now
+            <!-- </button> -->
+            </a>
         </form>
       </div>
     </div>

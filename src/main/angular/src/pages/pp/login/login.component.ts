@@ -22,12 +22,12 @@ feeledgeId: number;
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
-      this.feeledgeId = +params['p1']; // (+) converts string 'id' to a number
-this.myDetailId = +params['p2'];
+      this.feeledgeId = params['p1']; // (+) converts string 'id' to a number
+      this.myDetailId = params['p2'];
       // In a real app: dispatch action to load the details here.
+      this.getFullBillingDetails();
    });
 
-    this.getFullBillingDetails();
   }
 
 //   getMyParentDeatil() {
@@ -39,6 +39,8 @@ this.myDetailId = +params['p2'];
 //   }
 
   getFullBillingDetails() {
+    console.log(this.feeledgeId, this.myDetailId);
+
     this.parentService.hdfcCheckout(this.feeledgeId, this.myDetailId)
       .subscribe((res: any) => {
         this.checkoutDetails = res;

@@ -123,7 +123,7 @@
             </div>
                   </div>
             <div class="card-footer text-center">
-                <button class="btn btn-rose" (click)="checkout()" [disabled]="checkoutDetails.paymentStatus !='Paid'">checkout</button>
+                <button class="btn btn-rose" (click)="checkout()" [disabled]="checkoutDetails.paymentStatus ==='Paid'">checkout</button>
             </div>
         </div>
     </div>
@@ -132,9 +132,9 @@
     <form id="checkout-form" action="https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction"
         method="post">
 
-        <input type="hidden" name="merchant_id" value="{{checkoutDetails.merchantId}}">
-        <input type="hidden" name="access_code" value="{{checkoutDetails.accessCode}}">
-        <input type="hidden" name="encRequest" value="{{checkoutDetails.encRequest}}">
+        <input type="hidden" name="merchant_id" [value]="checkoutDetails.merchantId">
+        <input type="hidden" name="access_code" [value]="checkoutDetails.accessCode">
+        <input type="hidden" name="encRequest" [value]="checkoutDetails.encRequest">
 
     </form>
 
