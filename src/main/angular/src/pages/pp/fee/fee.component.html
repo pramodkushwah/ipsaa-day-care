@@ -1,3 +1,158 @@
-<p>
-  fee works!
-</p>
+<div class="row" *ngIf="parent.length>1">
+
+  <div class="col-md-2">
+    <div class="form-group ">
+      <label class="control-label">Student</label>
+      <select class="form-control" [(ngModel)]="studentId" (ngModelChange)="onStudentChange(studentId)">
+        <!-- <option value="" disabled="true">Select Quater</option> -->
+        <option *ngFor="let chaild of parent;" [value]="chaild.id">{{chaild.fullName}}</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12  col-md-3" *ngIf="studentfeeledger.paymentStatus != 'Paid'">
+    <div class="card card-pricing card-raised">
+      <div class="card-content">
+        <h4>{{fee.admissionNumber}}</h4>
+        <h6 class="category">{{fee.fullName}}</h6>
+        <h3 class="card-title">Rs. {{checkoutDetails.feeAmount}}</h3>
+        <span class="label btn-portal">{{fee.center.name}}</span>
+        <span class="label btn-portal">{{fee.program.name}}</span>
+        <span class="label btn-portal">{{fee.group.name}}</span>
+        <br>
+        <p class="card-description">
+          You can click on the button below and pay the fee via Hdfc gateway
+        </p>
+        <form id="checkout" method="POST" name="payuform">
+          <!--<input type="hidden" name="merchant_id" value="{{checkoutDetails.merchantId}}">-->
+          <!--<input type="hidden" name="access_code" value="{{checkoutDetails.accessCode}}">-->
+          <!--<input type="hidden" name="encRequest"  value="{{checkoutDetails.encRequest}}">-->
+          <button class="btn btn-portal btn-round" click)="checkout()">Pay now</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-12  col-md-3" *ngIf="details">
+    <div class="card card-raised">
+      <div class="card-header card-header-icon" data-background-color="portal">
+        <i class="material-icons">assignment</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Fee Details</h4>
+        <table class="table table-hover">
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <td>{{fee.fullName}}</td>
+          </tr>
+          <tr>
+            <th>Program</th>
+            <td>{{fee.program.name}}</td>
+          </tr>
+          <tr>
+            <th>Group</th>
+            <td>{{fee.group.name}}</td>
+          </tr>
+          <tr>
+            <th>Center</th>
+            <td>{{fee.center.name}}</td>
+          </tr>
+          <tr>
+            <th>Fee</th>
+            <td>{{fee.finalFee}}</td>
+          </tr>
+          <tr>
+            <th>Transport Fee</th>
+            <td>{{fee.transportFee}}</td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td>{{fee.feeDuration}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12  col-md-3" *ngIf="feeledger">
+    <div class="card card-raised">
+      <div class="card-header card-header-icon" data-background-color="portal">
+        <i class="material-icons">assignment</i>
+      </div>
+      <div class="card-content">
+        <h4 class="card-title">Last Payment</h4>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <tbody>
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+              </tr>
+              <tr>
+                <th>Month</th>
+                <td>{{studentfeeledger.monthName}}</td>
+              </tr>
+              <tr>
+                <th>Year</th>
+                <td>{{studentfeeledger.year}}</td>
+              </tr>
+              <tr>
+                <th>Fee</th>
+                <td>{{studentfeeledger.baseFee}}</td>
+              </tr>
+              <tr *ngIf="studentfeeledger.annualFee!=null">
+                <th>Annual Fee</th>
+                <td>{{studentfeeledger.annualFee}}</td>
+              </tr>
+              <tr *ngIf="studentfeeledger.deposit!=null">
+                <th>Deposit</th>
+                <td>{{studentfeeledger.deposit}}</td>
+              </tr>
+              <tr>
+                <th>Extra Charges</th>
+                <td>{{studentfeeledger.extraCharge}}</td>
+              </tr>
+              <tr>
+                <th>Late Payment Charges</th>
+                <td>{{studentfeeledger.latePaymentCharge}}</td>
+              </tr>
+              <tr>
+                <th>Total</th>
+                <td>{{studentfeeledger.totalFee}}</td>
+              </tr>
+              <tr>
+                <th>Invoice Date</th>
+                <td>{{studentfeeledger.invoiceDate}}</td>
+              </tr>
+              <tr>
+                <th>Payments</th>
+                <td><span class="btn btn-sm btn-round btn-primary" *ngFor=" let payment of studentfeeledger.payments">
+                    {{payment.paidAmount}} RS. on {{payment.paymentDate}}
+                  </span></td>
+              </tr>
+              <tr>
+                <th>Status</th>
+                <td>{{studentfeeledger.paymentStatus}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn btn-sm btn-round btn-portal" (click)="downloadFeeSlip(studentfeeledger.id)" [disabled]="disabledDownloadFeeSlip">
+            <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disabledDownloadFeeSlip"></i>
+            <span class="glyphicon glyphicon-download-alt"></span> slip
+          </button>
+          <button class="btn btn-sm btn-round btn-portal" (click)="downloadFeeReceipt(studentfeeledger.id)" [disabled]="disabledDownloadFeeReceipt"
+            *ngIf="studentfeeledger.paymentStatus=='Paid' || studentfeeledger.paymentStatus=='PartiallyPaid'">
+            <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disabledDownloadFeeReceipt"></i>
+            <span class="glyphicon glyphicon-download-alt"></span> receipt
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
