@@ -3,9 +3,8 @@
     <div class="col-md-3">
       <div class="form-group">
         <label class="control-label" for="center"> Select Center:</label>
-        <select class="form-control"id="center" name="center" [(ngModel)]="SelectedCenterId">
-          <option value="All" disabled="true">Select Center</option>
-          <option *ngFor="let center of centerList;"[value]="center.id">{{center.name}}</option>
+        <select class="form-control"id="center" name="center" [(ngModel)]="SelectedCenter">
+          <option *ngFor="let center of centerList;"[ngValue]="center">{{center.name}}</option>
         </select>
         <span class="material-input"></span>
       </div>
@@ -25,7 +24,7 @@
       </div>
     </div>
     <div class="col-md-3">
-      <button type="submit" class="btn btn-warning btn-md" (click)="staffAttendanceReportDownload()" [disabled]="!( toDate && formDate && SelectedCenterId)">
+      <button type="submit" class="btn btn-warning btn-md" (click)="staffAttendanceReportDownload()" [disabled]="!( toDate && formDate && SelectedCenter)">
         <span *ngIf=" downloadData ;else save">
           <i class="fa fa-spinner fa-spin"></i> Downloading
         </span>

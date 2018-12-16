@@ -11,7 +11,7 @@ export class AlertService {
       title: 'Are you sure?',
       text: msg,
       icon: 'warning',
-      buttons: ['Cancel', 'Ok'],
+      buttons: ['CANCEL', 'OK'],
       dangerMode: true,
     });
   }

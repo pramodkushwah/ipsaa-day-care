@@ -35,6 +35,7 @@ selectedQuater: any;
 
   hdfcGatewayFeeReportdownload() {
     this.downloadData = true;
+    this.hdfcGatewayFeeReport['period'] = 'Quarterly';
     this.hdfcGatewayFeeReport['quarter'] = this.selectedQuater;
     this.hdfcGatewayFeeReport['reportType'] = 'Paid';
       this.hdfcGatewayFeeReport['year'] = this.selectedYear;

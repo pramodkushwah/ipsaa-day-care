@@ -45,7 +45,7 @@ export class StaffSalaryMonthlyReportComponent implements OnInit {
     this.downloadData = true;
     if (this.selectedEmployee === 'All') {
 
-      this.staffSalaryMonthlyReportFor['employerCode'] = 'ALl';
+      this.staffSalaryMonthlyReportFor['employerCode'] = 'ALL';
     } else {
       this.staffSalaryMonthlyReportFor['employerCode'] = this.selectedEmployee;
     }

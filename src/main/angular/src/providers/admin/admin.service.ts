@@ -438,7 +438,7 @@ export class AdminService {
   }
 
   hdfcGatewayReportdownload(centerId_and_range) {
-    return this.api.getPDF('api/report/collectionfee/hdfc/', centerId_and_range);
+    return this.api.getPDF('api/report/collectionfee/hdfc', centerId_and_range);
 
   }
 
