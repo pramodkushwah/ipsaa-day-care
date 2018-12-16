@@ -78,7 +78,7 @@
                 <button mat-raised-button class="btn btn-warning btn-sm" (click)="studentApprove(student)">Approve
                   </button>
                   <br>
-                  <button mat-raised-button class="btn btn-rose btn-sm" data-toggle="modal" data-target="#myModal">Reject
+                  <button mat-raised-button class="btn btn-rose btn-sm" data-toggle="modal" data-target="#myModal" (click)="selectedStudent=student" >Reject
                   </button>
               </td>
             </tr>
@@ -118,7 +118,8 @@
   
         <!-- Modal footer -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="studentReject(student, comment)" [disabled]="comment">Confirm</button>
+          <button type="button" class="btn btn-danger" (click)="studentReject(selectedStudent, comment)" [disabled]="!comment">
+              <i class="fa fa-spinner fa-fw fa-pulse text-primary" *ngIf="studentLoader"> </i>Confirm</button>
           <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
         </div>
   

@@ -440,7 +440,6 @@ export class DashboardComponent implements OnInit {
 
 
   scroll(el) {
-    console.log(el);
     this.terget = el;
     el.scrollIntoView();
 
@@ -469,8 +468,7 @@ export class DashboardComponent implements OnInit {
           'designation',
           'mobile',
           'center',
-          'employer',
-          'ctc'
+          'employer'
         ];
         this.scroll(this.terget);
 

@@ -72,7 +72,7 @@ export class StaffApprovalsComponent implements OnInit {
         this.getCenterStaffApprovelList();
 
         this.staffAprrovelList = this.staffAprrovelList.filter(element => element.id !== staff.id);
-          this.alertService.successAlert('Staff Approve');
+          this.alertService.successAlert('Staff Approved');
       }, (err) => {
         this.alertService.errorAlert(err);
       });
@@ -83,7 +83,7 @@ export class StaffApprovalsComponent implements OnInit {
       .subscribe((res: any) => {
         this.getCenterStaffApprovelList();
         this.staffAprrovelList = this.staffAprrovelList.filter(element => element.id !== staff.id);
-        this.alertService.successAlert('Staff Reject');
+        this.alertService.successAlert('Staff Rejected');
 
       }, (err) => {
         this.alertService.errorAlert(err);

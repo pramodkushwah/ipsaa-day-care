@@ -11,7 +11,7 @@ import * as FileSaver from 'file-saver';
 export class StaffAttendanceReportComponent implements OnInit {
 
   centerList: Array<any>;
-  SelectedCenterId: any;
+  SelectedCenter: any;
   formDate: Date;
   toDate: Date;
   staffAttendanceFor = {};
@@ -32,12 +32,13 @@ export class StaffAttendanceReportComponent implements OnInit {
     this.adminService.getCenters()
       .subscribe((res: any) => {
         this.centerList = res;
+        this.centerList.unshift({ code: 'All', name: 'All', id: 'All' });
       });
   }
   staffAttendanceReportDownload() {
     this.downloadData = true;
 
-      this.staffAttendanceFor['centerId'] = this.SelectedCenterId;
+      this.staffAttendanceFor['centerCode'] = this.SelectedCenter.code;
       this.staffAttendanceFor['from'] = this.formDate;
       this.staffAttendanceFor['to'] = this.toDate;
 console.log(this.staffAttendanceFor);

@@ -147,10 +147,8 @@ export class AppStaffComponent implements OnInit {
     const a = 'true' === status;
     this.loadingStaffList = true;
     this.staffList = this.staffListCopy.filter((staff: any) => {
-      console.log(staff.active , a);
       return staff.active === a;
     });
-    console.log(this.staffList);
     this.setPage(1);
     this.staffLoaded();
     // const filter = {
@@ -192,7 +190,7 @@ export class AppStaffComponent implements OnInit {
       if (value) {
         this.adminService.deleteStaffById(staffId)
         .subscribe((res: any) => {
-
+          this.getStaff();
         });
       }
     });
