@@ -85,4 +85,8 @@ export class ParentService {
     return this.api.post('/api/pp/student/support/' + reply_msg.id + '/reply' , reply_msg);
 
   }
+
+  newInQuery(inqueryDetails) {
+    return this.api.post('/api/pp/student/support' , inqueryDetails);
+  }
 }

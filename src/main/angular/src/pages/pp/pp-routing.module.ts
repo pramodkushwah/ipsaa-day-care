@@ -7,8 +7,9 @@ import { ProfileComponent } from './profile/profile.component';
 import { SupportComponent } from './support/support.component';
 import { ActivitiesComponent } from './activities/activities.component';
 import { GalleryComponent } from './gallery/gallery.component';
-import { SharingSheetComponent } from '../mis/center/sharing-sheet/sharing-sheet.component';
-import { FoodMenuComponent } from '../mis/center/food-menu/food-menu.component';
+import { SharingSheetComponent } from './sharing-sheet/sharing-sheet.component';
+import { FoodMenuComponent } from './food-menu/food-menu.component';
+import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
   {
@@ -48,10 +49,15 @@ const routes: Routes = [
         path: 'foodmenu',
         component: FoodMenuComponent
       },
+      { path: 'checkout/:p1:p2', component: LoginComponent},
       {
         path: 'support',
         component: SupportComponent
       },
+      // {
+      //   path: 'checkout',
+      //   component: LoginComponent
+      // },
     ]
   }
 ];

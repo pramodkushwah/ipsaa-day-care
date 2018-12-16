@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AdminService } from '../../../providers/admin/admin.service';
 import { ParentService } from '../../../providers/parentPotel/parent.service';
 import { AlertService } from '../../../providers/alert/alert.service';
 import * as FileSaver from 'file-saver';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-fee',
@@ -21,14 +21,16 @@ export class FeeComponent implements OnInit {
   feeledger: any;
   disabledDownloadFeeReceipt: any;
   disabledDownloadFeeSlip: any;
+  myDetailId: any;
   constructor(
-    private adminService: AdminService,
+    private router: Router,
     private parentService: ParentService,
     private alertService: AlertService,
   ) { }
 
   ngOnInit() {
     this.getStudents();
+    this.getMyParentDeatil();
   }
   getStudents() {
     this.parentService.getStudentDetails()
@@ -48,20 +50,40 @@ export class FeeComponent implements OnInit {
       });
   }
 
-onStudentChange(id) {
-  this.getStudentsDetails(id);
-  this.getStudentFeeledgerDetails(id);
-}
+  onStudentChange(id) {
+    this.getStudentsDetails(id);
+    this.getStudentFeeledgerDetails(id);
+  }
 
   getStudentFeeledgerDetails(std_id) {
     this.parentService.getStudentFeeledger(std_id)
       .subscribe((res: any) => {
         this.studentfeeledger = res;
+        this.getFullBillingDetails();
       });
   }
 
+  getMyParentDeatil() {
+    this.parentService.getMyDetails()
+      .subscribe((res: any) => {
+        this.myDetailId = res.id;
+      });
+  }
+
+  getFullBillingDetails() {
+    this.parentService.hdfcCheckout(this.studentfeeledger.id, this.myDetailId)
+      .subscribe((res: any) => {
+        this.checkoutDetails = res;
+      });
+  }
 
   checkout() {
+    // $("#checkout")
+    // .attr('action',$scope.checkoutDetails.checkoutDetailsUrl+'/'+$scope.studentfeeledger.id + '/' + $scope.myDetails.id)
+    // .attr('target','_blank')
+    // .attr('method','get')
+    // .submit();
+    // this.router.navigate(['/pp/checkout/ ', { p1: this.studentfeeledger.id, p2: this.myDetailId }]);
 
   }
 
@@ -70,9 +92,9 @@ onStudentChange(id) {
   slipDownload(id) {
     this.parentService.downloadFeeSlip(id)
       .subscribe((res: any) => {
-        const blob = new Blob([res.body], {
+        const blob = new Blob([res.bytes], {
         });
-        FileSaver.saveAs(blob, res.headers.get('fileName'));
+        FileSaver.saveAs(blob, res.fileName);
       });
   }
 
@@ -80,9 +102,9 @@ onStudentChange(id) {
   receiptDownload(id) {
     this.parentService.downloadFeeReceipt(id)
       .subscribe((res: any) => {
-        const blob = new Blob([res.body], {
+        const blob = new Blob([res.bytes], {
         });
-        FileSaver.saveAs(blob, res.headers.get('fileName'));
+        FileSaver.saveAs(blob, res.fileName);
       });
   }
 
