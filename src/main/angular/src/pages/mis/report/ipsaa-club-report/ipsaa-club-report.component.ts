@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AdminService } from '../../../../providers/admin/admin.service';
 import { AlertService } from '../../../../providers/alert/alert.service';
 import * as FileSaver from 'file-saver';
-import { $ } from 'protractor';
+
 @Component({
   selector: 'app-ipsaa-club-report',
   templateUrl: './ipsaa-club-report.component.html',

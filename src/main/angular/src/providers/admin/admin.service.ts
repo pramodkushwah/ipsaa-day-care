@@ -432,6 +432,10 @@ export class AdminService {
     return this.api.getPDF('api/report/ipsaaclub/collectionfee/excel', data);
   }
 
+  staffReportDownload(data) {
+    return this.api.getPDF('api/report/staff/excel', data);
+  }
+
   studentsFeeReportdownload(centerId_and_range) {
     return this.api.getPDF('api/report/studentfee/excel/', centerId_and_range);
 

@@ -8,6 +8,7 @@ import { StaffAttendanceReportComponent } from './staff-attendance-report/staff-
 import { FeeCollectionReportComponent } from './fee-collection-report/fee-collection-report.component';
 import { HdfcGatewayFeeReportComponent } from './hdfc-gateway-fee-report/hdfc-gateway-fee-report.component';
 import { IpsaaClubReportComponent } from './ipsaa-club-report/ipsaa-club-report.component';
+import { StaffReportComponent } from './staff-report/staff-report.component';
 
 const reportRoutes: Routes = [
   {
@@ -21,6 +22,10 @@ const reportRoutes: Routes = [
   {
     path: 'ipsaaclubreport',
     component: IpsaaClubReportComponent
+  },
+  {
+    path: 'stdfeereport',
+    component: StudentFeeReportComponent
   },
   {
     path: 'inquiryreport',
@@ -39,8 +44,8 @@ const reportRoutes: Routes = [
     component: StaffSalaryMonthlyReportComponent
   },
   {
-    path: 'stdfeereport',
-    component: StudentFeeReportComponent
+    path: 'staffreport',
+    component: StaffReportComponent
   }
 ];
 
