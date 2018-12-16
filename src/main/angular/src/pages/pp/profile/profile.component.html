@@ -16,10 +16,10 @@
      <div class="card-body " style="    background-color: orange;  ">
       <div class="card-content">
         <div class="card-avatar">
-          <!-- <a *ngIf="student.imagePath">
+          <a *ngIf="student.imagePath">
             <img class="img" [src]=" 'http://ipsaa-dev.ap-south-1.elasticbeanstalk.com/' +student.imagePath" />
-          </a> -->
-        <a *ngIf="student.imagePath">
+          </a>
+        <a *ngIf="!student.imagePath">
               <img class="img" style="    background-color: white;  " src='src/assets/img/faces/default_profile_pic.png' />
               <!-- G:/ipsaa-angulal2\ipsaa-day-care\src\main\angular\src\assets\img\faces\default_profile_pic.png -->
           </a>
@@ -29,9 +29,9 @@
         <p class="description">
           {{student.profile}}
         </p>
-        <span class="label label-info">{{student.center?.name}}</span> <br>
-        <span class="label label-info">{{student.program?.name}}</span> <br>
-        <span class="label label-info">{{student.group?.name}}</span>
+        <span class="badge badge-primary margin-right-5">{{student.center?.name}}</span> <br>
+        <span class="badge badge-primary margin-right-5">{{student.program?.name}}</span> <br>
+        <span class="badge badge-primary margin-right-5">{{student.group?.name}}</span>
         <br><br>
         <!-- <button class="btn btn-round btn-portal" ng-show="showstudent && false" (click)="editStudent()">Edit Profile</button> -->
         <!-- <button class="btn btn-round btn-portal" ng-show="!showstudent && false">Save Profile</button> -->

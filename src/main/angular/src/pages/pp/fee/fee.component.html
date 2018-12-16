@@ -18,9 +18,9 @@
         <h4>{{fee.admissionNumber}}</h4>
         <h6 class="category">{{fee.fullName}}</h6>
         <h3 *ngIf="checkoutDetails" class="card-title">Rs. {{checkoutDetails?.feeAmount}}</h3>
-        <span class="label btn-round btn-rose">{{fee.center?.name}}</span> <br>
-        <span class="label btn-round btn-rose">{{fee.program?.name}}</span> <br>
-        <span class="label btn-round btn-rose">{{fee.group?.name}}</span>
+        <span class="badge badge-lg badge-primary margin-right-5">{{fee.center?.name}}</span> <br>
+        <span class="badge badge-primary margin-right-5">{{fee.program?.name}}</span> <br>
+        <span class="badge badge-primary margin-right-5">{{fee.group?.name}}</span>
         <br>
         <p class="card-description">
           You can click on the button below and pay the fee via Hdfc gateway
@@ -29,10 +29,13 @@
           <!--<input type="hidden" name="merchant_id" value="{{checkoutDetails.merchantId}}">-->
           <!--<input type="hidden" name="access_code" value="{{checkoutDetails.accessCode}}">-->
           <!--<input type="hidden" name="encRequest"  value="{{checkoutDetails.encRequest}}">-->
-          <a  class="btn btn-portal btn-round" [routerLink]="['/pp/checkout/ ', { p1: studentfeeledger.id, p2: myDetailId }]" target="_blank" > 
-            <!-- <button class="btn btn-portal btn-round"> -->
+          72932732558618
+          
+          <a *ngIf="fee.program.id !== 72932732558618" class="btn btn-portal btn-round" [routerLink]="['/pp/checkout/', studentfeeledger.id, myDetailId]" target="_blank" > 
               Pay now
-            <!-- </button> -->
+            </a>
+            <a  *ngIf="fee.program.id === 72932732558618" class="btn btn-portal btn-round" [routerLink]="['/pp/ipsaaclubcheckout/', studentfeeledger.id, myDetailId]" target="_blank" > 
+              Pay now
             </a>
         </form>
       </div>

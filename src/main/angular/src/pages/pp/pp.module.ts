@@ -13,6 +13,7 @@ import { GalleryComponent } from './gallery/gallery.component';
 import { ActivitiesComponent } from './activities/activities.component';
 import { FoodMenuComponent } from './food-menu/food-menu.component';
 import { SharingSheetComponent } from './sharing-sheet/sharing-sheet.component';
+import { ResponseComponent } from './response/response.component';
 
 @NgModule({
   imports: [
@@ -23,6 +24,6 @@ import { SharingSheetComponent } from './sharing-sheet/sharing-sheet.component';
   ],
   declarations: [PpComponent, AttendanceComponent, FeeComponent,
      ProfileComponent, SupportComponent, LoginComponent, GalleryComponent, ActivitiesComponent,
-     SharingSheetComponent,  FoodMenuComponent]
+     SharingSheetComponent,  FoodMenuComponent, ResponseComponent,  ]
 })
 export class PpModule { }

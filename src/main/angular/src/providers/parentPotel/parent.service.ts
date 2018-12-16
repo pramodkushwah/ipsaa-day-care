@@ -53,6 +53,11 @@ export class ParentService {
 
   }
 
+
+  ipsaaClubhdfcCheckout(feeledger_id, mydetails_id) {
+    return this.api.get('/hdfc/checkout/ipsaaclub/' + feeledger_id + '/' + mydetails_id);
+
+  }
   getMyDetails() {
     return this.api.get('/api/pp/student/mydetails');
   }
@@ -65,6 +70,9 @@ export class ParentService {
     return this.api.get('/api/pp/student/feereceipt/' + student_Id);
   }
 
+  getSuccessDetail(paymentId) {
+  return this.api.get('hdfc/payment/' + paymentId);
+  }
 
 
 
