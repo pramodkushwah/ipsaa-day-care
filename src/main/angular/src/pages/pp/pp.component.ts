@@ -12,14 +12,7 @@ export class PpComponent implements OnInit {
   constructor(private parentService: ParentService) { }
 
   ngOnInit() {
-    this.getStudents();
-  }
-  getStudents() {
-    this.parentService.getStudentDetails()
-      .subscribe((res: any) => {
-console.log(res);
-
-      });
   }
 
 }
+
