@@ -198,7 +198,7 @@ export class AdminService {
   }
 
   getAllCenters() {
-    return this.api.get('api/center/all');
+    return this.api.get('api/center/new');
   }
 
   getEmployee() {

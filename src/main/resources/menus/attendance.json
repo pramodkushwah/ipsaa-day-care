@@ -14,12 +14,6 @@
       "state": "attendance/staff-attendance",
       "p" : "STAFF_CLOCKINOUT",
       "seq" : 200
-    },
-    {
-      "label": "Staff Attendance Logs",
-      "state": "attendance/staff-attendance-log",
-      "p" : "SELF_ATTENDANCE_READ",
-      "seq" : 200
     }
   ]
 }

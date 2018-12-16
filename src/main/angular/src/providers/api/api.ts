@@ -134,10 +134,10 @@ export class Api {
         this.storage.clearData();
         break;
       case 0:
-      this.storage.clearData();
-      this.router.navigate(['/login']).then(() => {
-        this.alertService.errorAlert('You don\'t seem to have an active internet connection. Please connect and try again.');
-      });
+      // this.storage.clearData();
+      // this.router.navigate(['/login']).then(() => {
+      //   this.alertService.errorAlert('You don\'t seem to have an active internet connection. Please connect and try again.');
+      // });
         break;
       default:
         this.alertService.errorAlert(errorResponse.error.message);
