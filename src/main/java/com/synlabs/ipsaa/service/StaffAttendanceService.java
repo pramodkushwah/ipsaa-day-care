@@ -570,7 +570,7 @@ public class StaffAttendanceService extends BaseService {
 		Center center;
 		List<Center> centers= new ArrayList<>();
 
-		if(request.getCenterCode().equals("ALL")) {
+		if(request.getCenterCode().equalsIgnoreCase("ALL")) {
             centers = getUserCenters();
             request.setCenterCode("ALL");
         }

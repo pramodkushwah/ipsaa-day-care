@@ -54,6 +54,12 @@ public class CenterController {
 		return centerService.listAll().stream().map(CenterResponse::new).collect(Collectors.toList());
 	}
 
+	@GetMapping("new")
+	@Secured(ADMIN_CENTER_LIST_READ)
+	public List<CenterResponse> newCenters() {
+		return centerService.nonAccesed().stream().map(CenterResponse::new).collect(Collectors.toList());
+	}
+
 	@Secured(CENTER_WRITE)
 	@PostMapping
 	public CenterResponse createCenter(@RequestBody @Validated CenterRequest request, BindingResult result) {

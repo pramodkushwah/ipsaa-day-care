@@ -74,7 +74,6 @@ public class CenterService extends BaseService
 
   public List<Center> list(CenterListRequest request)
   {
-
     List<Center> usercenters = getUserCenters();
 
     if (!StringUtils.isEmpty(request.getCity()))
@@ -93,6 +92,14 @@ public class CenterService extends BaseService
   public List<Center> listAll()
   {
     return centerRepository.findAll();
+  }
+
+  @Transactional
+  public List<Center> nonAccesed()
+  {
+    List<Center> centres=centerRepository.findAll();
+    centres.removeAll(getUserCenters());
+    return centres;
   }
 
   public Center createCenter(CenterRequest request)
