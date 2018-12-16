@@ -41,7 +41,7 @@ export class IpsaaClubReportComponent implements OnInit {
   downloadFee = function () {
     if (this.validate()) {
       const request = {
-        centerCode: this.selectedCenter.name,
+        centerCode: this.selectedCenter.code,
         month: this.selectedMonth.moy,
         year: this.selectedYear
       };
@@ -62,7 +62,7 @@ export class IpsaaClubReportComponent implements OnInit {
   downloadCollection = function () {
     if (this.validate()) {
       const request = {
-        centerCode: this.selectedCenter.name,
+        centerCode: this.selectedCenter.code,
         month: this.selectedMonth.moy,
         year: this.selectedYear
       };
