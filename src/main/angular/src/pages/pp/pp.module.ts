@@ -11,8 +11,8 @@ import { LoginComponent } from './login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GalleryComponent } from './gallery/gallery.component';
 import { ActivitiesComponent } from './activities/activities.component';
-import { SharingSheetComponent } from './sharing-sheet/sharing-sheet.component';
 import { FoodMenuComponent } from './food-menu/food-menu.component';
+import { SharingSheetComponent } from './sharing-sheet/sharing-sheet.component';
 
 @NgModule({
   imports: [
@@ -21,6 +21,8 @@ import { FoodMenuComponent } from './food-menu/food-menu.component';
     ReactiveFormsModule,
     PpRoutingModule
   ],
-  declarations: [PpComponent, AttendanceComponent, FeeComponent, ProfileComponent, SupportComponent, LoginComponent, GalleryComponent, ActivitiesComponent, SharingSheetComponent, FoodMenuComponent]
+  declarations: [PpComponent, AttendanceComponent, FeeComponent,
+     ProfileComponent, SupportComponent, LoginComponent, GalleryComponent, ActivitiesComponent,
+     SharingSheetComponent,  FoodMenuComponent]
 })
 export class PpModule { }

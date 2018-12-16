@@ -49,12 +49,22 @@ export class ProfileComponent implements OnInit {
 
   }
 
-  notify(x, h) {
+  notify(parent, sms_email) {
 
+    if (sms_email === 'sms') {
+      this.parentService.smsNotification(parent)
+        .subscribe((res: any) => {
+          this.alertService.successAlert('SMS Notification Change Successfuly ');
+        });
+    } else {
+      this.parentService.emailNotification(parent)
+      .subscribe((res: any) => {
+        this.alertService.successAlert('Email Notification Change Successfuly ');
+      });
+    }
   }
 
   uploadProfilePic(student: any, file: any) {
-    console.log('asdfdsf', file);
     const formData = new FormData();
     formData.append('file', file);
     if (file) {

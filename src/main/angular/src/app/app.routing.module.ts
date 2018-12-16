@@ -12,7 +12,7 @@ const routes: Routes = [
     // loadChildren: 'pages/login/login.module#LoginModule',
     component: LoginComponent, canActivate: [LoginGaurd]
   },
-  { path: 'pp', loadChildren: 'pages/pp/pp.module#PpModule', canActivate: [AuthGaurd] },
+  { path: 'pp', loadChildren: 'pages/pp/pp.module#PpModule' },
 
   { path: 'mis', loadChildren: 'pages/mis/mis.module#MISModule', canActivate: [AuthGaurd] },
   {
