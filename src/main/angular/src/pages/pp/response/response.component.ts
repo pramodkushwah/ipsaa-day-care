@@ -15,11 +15,11 @@ export class ResponseComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(parms => {
-      this.param = parms['paymnetId'];
+      this.param = parms['paymentId'];
       this.parentservice.getSuccessDetail(this.param)
-        .subscribe((res: any) => {
-          this.responseDetails = res;
-        });
+      .subscribe((res: any) => {
+        this.responseDetails = res;
+      });
     });
 
 

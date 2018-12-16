@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ParentService } from '../../providers/parentPotel/parent.service';
+import { User } from '../../providers/user/user';
 
 @Component({
   selector: 'app-pp',
@@ -9,9 +10,13 @@ import { ParentService } from '../../providers/parentPotel/parent.service';
 export class PpComponent implements OnInit {
 
 
-  constructor(private parentService: ParentService) { }
+  constructor(private userService: User) { }
 
   ngOnInit() {
+  }
+
+  onLogout() {
+    this.userService.logout();
   }
 
 }

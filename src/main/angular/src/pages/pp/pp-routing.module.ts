@@ -50,21 +50,21 @@ const routes: Routes = [
         path: 'foodmenu',
         component: FoodMenuComponent
       },
+      {
+        path: 'checkout-success/:paymentId',
+        component: ResponseComponent
+      },
+      {
+        path: 'checkout-failure/:paymentId',
+        component: ResponseComponent
+      },
       { path: 'checkout/:p1/:p2', component: LoginComponent},
 
       { path: 'ipsaaclubcheckout/:p1/:p2', component: LoginComponent},
       {
         path: 'support',
         component: SupportComponent
-      },
-      {
-        path: 'checkout/failure/:paymentId',
-        component: ResponseComponent
-      },
-      {
-        path: 'checkout/success/:paymentId',
-        component: ResponseComponent
-      },
+      }
     ]
   }
 ];
