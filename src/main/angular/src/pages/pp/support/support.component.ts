@@ -48,6 +48,8 @@ export class SupportComponent implements OnInit {
      this.studentId = '';
 this.queries.push(res);
 this.closeNewQueryModel();
+this.alertService.successAlert('Query Send Successfuly');
+
       });
   }
 
@@ -86,6 +88,7 @@ id: this.query.id
 .subscribe((res: any) => {
 this.query = res;
 this.closeReplyModel();
+this.alertService.successAlert('Reply Successfuly');
 });
   }
 
