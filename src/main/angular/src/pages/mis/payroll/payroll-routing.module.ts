@@ -10,12 +10,12 @@ export const payrollRoutes: Routes = [
     component: SalaryComponent
   },
   {
-    path: 'generate-monthly-salary',
-    component: GenerateMonthlySalaryComponent
-  },
-  {
     path: 'staffleaves',
     component: StaffLeavesComponent
+  },
+  {
+    path: 'generate-monthly-salary',
+    component: GenerateMonthlySalaryComponent
   }];
 
 @NgModule({

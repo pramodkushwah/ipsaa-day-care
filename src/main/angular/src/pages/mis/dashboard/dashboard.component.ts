@@ -338,7 +338,11 @@ export class DashboardComponent implements OnInit {
 
     this.tableFor = '';
     const object: any = {};
-    this.tableTitle = 'Students Fee';
+    if (feeDuration === 'Monthly') {
+      this.tableTitle = 'Ipsaa Club Students Fee';
+    } else {
+      this.tableTitle = 'Student Fee';
+    }
     this.tableData = [];
     this.tableColumn = [];
     object.feeDuration = feeDuration;
@@ -461,15 +465,77 @@ export class DashboardComponent implements OnInit {
 
         this.tableData = res;
         this.alertService.loading.next(false);
+        switch (fitlterBy) {
+          case 'newjoinings':
+          this.tableColumn = [
+            'name',
+            'designation',
+            'mobile',
+            'center',
+            'employer',
+            'doj',
+            'active'
+          ];
+          this.tableTitle = 'Staff New Joinee';
+            break;
+          case 'newleavings':
+            this.tableColumn = [
+              'name',
+              'designation',
+              'mobile',
+              'center',
+              'employer',
+              'dol',
+              'active'
+            ];
+            this.tableTitle = ';Staff New Joinee';
+            break;
+          case 'recruitmentHeadCountList':
+            this.tableColumn = [
+              'name',
+              'designation',
+              'mobile',
+              'center',
+              'employer',
+              'dol',
+              'active'
+            ];
+            this.tableTitle = 'Staff Active Headcount';
+            break;
+          case 'presentStaff':
+            this.tableColumn = [
+              'name',
+              'designation',
+              'mobile',
+              'center',
+              'employer',
+              'checkIn',
+              'checkOut'
+            ];
+            this.tableTitle = 'Present Staff';
+            break;
+          case 'absentStaff':
+            this.tableColumn = [
+              'name',
+              'designation',
+              'mobile',
+              'center',
+              'employer'
+            ];
+            this.tableTitle = 'Absent Staff';
+            break;
+          case 'onLeaveStaff':
+            this.tableColumn = [
+              'name',
+              'designation',
+              'mobile',
+              'center',
+              'employer'
+            ];
+            this.tableTitle = 'Staff On Leave';
+            break;
 
-        this.tableColumn = [
-          'eid',
-          'name',
-          'designation',
-          'mobile',
-          'center',
-          'employer'
-        ];
+        }
         this.scroll(this.terget);
 
       }, (err) => {

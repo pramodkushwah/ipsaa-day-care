@@ -86,7 +86,7 @@
       </div>
       <div class="card-footer" >
         <div (click)=" scroll(target) ">
-          <p><a (click)="getFilterStaff('newjoinings')" class="link">New Joiners: {{statsResult.newJoinings}} </a></p>
+          <p><a (click)="getFilterStaff('newjoinings')" class="link">New Joinee: {{statsResult.newJoinings}} </a></p>
           <p><a (click)="getFilterStaff('newleavings')" class="link">Resignee
             : {{statsResult.newLeavings}}</a></p>
           <p><a (click)="getFilterStaff('recruitmentHeadCountList')"  class="link">Active Headcount
@@ -112,12 +112,10 @@
       </div>
       <div class="card-footer">
         <div class="stats">
-          <a class="link" (click)="getFilteredStudents('Present') ; scroll(target)" > Present : {{statsResult.studentPresent |
-          number}} | </a> &nbsp;
-          <a class="link" (click)="getFilteredStudents('Corporate') ; scroll(target)"> Corporate : {{statsResult.corporateStudents |
-          number}} | </a> &nbsp;
-          <a class="link" (click)="getFilteredStudents('Non-corporate') ; scroll(target)"> Non-Corporate : {{(statsResult.students -
-          statsResult.corporateStudents) | number}} </a>
+          <p><a class="link" (click)="getFilteredStudents('Present') ; scroll(target)" > Present : {{statsResult.studentPresent}}</a></p> 
+          <p><a class="link" (click)="getFilteredStudents('Corporate') ; scroll(target)"> Corporate : {{statsResult.corporateStudents}}</a></p>
+          <p><a class="link" (click)="getFilteredStudents('Non-corporate') ; scroll(target)"> Non-Corporate : {{(statsResult.students -
+          statsResult.corporateStudents)}} </a></p>
         </div>
       </div>
     </div>
@@ -128,7 +126,7 @@
         <div class="card-icon">
           <i class="material-icons">content_copy</i>
         </div>
-        <p class="card-category">Ipsaaclub Fee</p>
+        <p class="card-category">Ipsaa Club Fee</p>
         <h3 class="card-title" *ngIf="monthlyFee.expectedFee">{{monthlyFee.expectedFee.ipssaFee ? monthlyFee.expectedFee.ipssaFee : 0}}
         </h3>
         <div class="row">
