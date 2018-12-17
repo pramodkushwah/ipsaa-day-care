@@ -36,6 +36,14 @@ public class HdfcController
     Long id = hdfcHelper.recordPaymentSuccess(encResp, orderNumber);
     resp.sendRedirect(success+"/"+BaseService.mask(id));
   }
+  @RequestMapping("/gocheckout")
+  public void gocheckout(HttpServletRequest req, HttpServletResponse resp) throws IOException
+  {
+    String encResp = req.getParameter("encResp");
+    String orderNumber = req.getParameter("orderNo");
+    Long id = hdfcHelper.recordPaymentSuccess(encResp, orderNumber);
+    resp.sendRedirect(success+"/"+BaseService.mask(id));
+  }
 
   @RequestMapping("/failure")
   public void failure(HttpServletRequest req, HttpServletResponse resp) throws IOException

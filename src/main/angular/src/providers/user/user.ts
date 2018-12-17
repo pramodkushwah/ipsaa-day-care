@@ -26,7 +26,7 @@ import { StorageService } from '../localstorage/storage';
 export class User {
   _user: any;
 
-  constructor(public api: Api, public storage: StorageService) {}
+  constructor(public api: Api, public storage: StorageService) { }
 
   /**
    * Send a POST request to our login endpoint with the data
@@ -34,12 +34,14 @@ export class User {
    */
 
   getUser() {
-    const token = this.storage.getData('ngStorage-token');
-    let user = {};
-    if (typeof token !== 'undefined') {
-      user = JSON.parse(this.urlBase64Decode(token.split('.')[1]));
+    if (this.storage.getData('ngStorage-token')) {
+      const token = this.storage.getData('ngStorage-token');
+      let user = {};
+      if (typeof token !== 'undefined') {
+        user = JSON.parse(this.urlBase64Decode(token.split('.')[1]));
+      }
+      return user;
     }
-    return user;
   }
 
   urlBase64Decode(str) {

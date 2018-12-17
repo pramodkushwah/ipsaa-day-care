@@ -9,8 +9,6 @@ import { ActivitiesComponent } from './activities/activities.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { SharingSheetComponent } from './sharing-sheet/sharing-sheet.component';
 import { FoodMenuComponent } from './food-menu/food-menu.component';
-import { LoginComponent } from './login/login.component';
-import { ResponseComponent } from './response/response.component';
 
 const routes: Routes = [
   {
@@ -50,21 +48,19 @@ const routes: Routes = [
         path: 'foodmenu',
         component: FoodMenuComponent
       },
-      {
-        path: 'checkout-success/:paymentId',
-        component: ResponseComponent
-      },
-      {
-        path: 'checkout-failure/:paymentId',
-        component: ResponseComponent
-      },
-      { path: 'checkout/:p1/:p2', component: LoginComponent},
-
-      { path: 'ipsaaclubcheckout/:p1/:p2', component: LoginComponent},
+      // { path: 'checkout/:p1/:p2', component: LoginComponent},
       {
         path: 'support',
         component: SupportComponent
-      }
+      },
+      // {
+      //   path: 'checkout/failure/:paymentId',
+      //   component: ResponseComponent
+      // },
+      // {
+      //   path: 'checkout/success/:paymentId',
+      //   component: ResponseComponent
+      // },
     ]
   }
 ];

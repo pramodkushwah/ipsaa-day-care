@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ParentService } from '../../providers/parentPotel/parent.service';
-import { User } from '../../providers/user/user';
+import { StorageService } from '../../providers/localstorage/storage';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pp',
@@ -10,14 +10,18 @@ import { User } from '../../providers/user/user';
 export class PpComponent implements OnInit {
 
 
-  constructor(private userService: User) { }
+  constructor(
+    private storage: StorageService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
   }
 
   onLogout() {
-    this.userService.logout();
-  }
+    this.storage.clearData();
+    this.router.navigate(['/login']);
 
+    }
 }
 

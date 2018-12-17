@@ -1,16 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ParentService } from '../../../providers/parentPotel/parent.service';
 import { ActivatedRoute } from '@angular/router';
-// import { Route } from '@angular/router';
-
-declare let $: any;
+import { HttpClient } from '@angular/common/http';
+declare const $: any;
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-checkout',
+  templateUrl: './checkout.component.html',
+  styleUrls: ['./checkout.component.css']
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class CheckoutComponent implements OnInit, OnDestroy {
+
   checkoutDetails: any;
   myDetailId: number;
   sub: any;
@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     private parentService: ParentService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute, public http:HttpClient) { }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
@@ -33,9 +33,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     if (this.chec === 'ipsaaclubcheckout') {
       this.parentService.ipsaaClubhdfcCheckout(this.feeledgeId, this.myDetailId)
-      .subscribe((res: any) => {
-        this.checkoutDetails = res;
-      });
+        .subscribe((res: any) => {
+          this.checkoutDetails = res;
+        });
     } else {
       this.getFullBillingDetails();
 
@@ -50,10 +50,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   checkout() {
-    $('#checkout-form').attr('action', this.checkoutDetails.transactionUrl).submit();
+    $('#checkout-form').submit();
   }
 
   ngOnDestroy() {
     this.sub.unsubscribe();
   }
 }
+
