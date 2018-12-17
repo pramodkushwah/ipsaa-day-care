@@ -13,6 +13,8 @@ import { LoginComponent } from '../pages/login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatePipe } from '@angular/common';
 import { AlertService } from '../providers/alert/alert.service';
+import { ResponseComponent } from '../pages/pp/response/response.component';
+import { CheckoutComponent } from '../pages/pp/checkout/checkout.component';
 
 @NgModule({
   imports: [
@@ -25,7 +27,9 @@ import { AlertService } from '../providers/alert/alert.service';
   declarations: [
     AppComponent,
     LoginComponent,
-    Page404Component
+    Page404Component,
+    ResponseComponent,
+    CheckoutComponent
   ],
   providers: [Api, User, StorageService, DatePipe, AlertService],
   bootstrap: [AppComponent]

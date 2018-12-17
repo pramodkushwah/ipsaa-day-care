@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuService } from '../../../providers/initial/menu.service';
-import { User } from '../../../providers/user/user';
+import { StorageService } from '../../../providers/localstorage/storage';
+import { Router } from '@angular/router';
 
 declare const $: any;
 
@@ -27,7 +28,9 @@ export class SidebarComponent implements OnInit {
   self: any = {};
   profileImageURI: string;
 
-  constructor(private menuService: MenuService, private userService: User) {
+  constructor(private menuService: MenuService,
+    private storage: StorageService,
+    private router: Router) {
     menuService.getMenus().subscribe(
       (response: any) => {
         this.menu = response;
@@ -64,6 +67,8 @@ export class SidebarComponent implements OnInit {
   }
 
   onLogout() {
-    this.userService.logout();
-  }
+    this.storage.clearData();
+    this.router.navigate(['/login']);
+
+    }
 }

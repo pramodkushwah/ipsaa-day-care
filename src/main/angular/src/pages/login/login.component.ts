@@ -13,7 +13,7 @@ import { StorageService } from '../../providers/localstorage/storage';
 export class LoginComponent implements OnInit {
   user = {
     email: '',
-    password: 'riddhi0211'
+    password: 'ajay0211'
   };
   logging = false; // to diable the login btn while request is in progress
 

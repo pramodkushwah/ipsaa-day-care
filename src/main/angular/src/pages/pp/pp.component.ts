@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ParentService } from '../../providers/parentPotel/parent.service';
+import { StorageService } from '../../providers/localstorage/storage';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pp',
@@ -9,10 +11,18 @@ import { ParentService } from '../../providers/parentPotel/parent.service';
 export class PpComponent implements OnInit {
 
 
-  constructor(private parentService: ParentService) { }
+  constructor(
+    private storage: StorageService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
   }
 
+  onLogout() {
+    this.storage.clearData();
+    this.router.navigate(['/login']);
+
+    }
 }
 

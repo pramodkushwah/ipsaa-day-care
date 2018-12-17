@@ -5,7 +5,7 @@
       <label class="control-label">Student</label>
       <select class="form-control" [(ngModel)]="studentId" (ngModelChange)="onStudentChange(studentId)">
         <!-- <option value="" disabled="true">Select Quater</option> -->
-        <option *ngFor="let chaild of parent;" [value]="chaild.id">{{chaild.fullName}}</option>
+        <option *ngFor="let chaild of parent;" [ngValue]="chaild.id">{{chaild.fullName}}</option>
       </select>
     </div>
   </div>
@@ -30,10 +30,10 @@
           <!--<input type="hidden" name="access_code" value="{{checkoutDetails.accessCode}}">-->
           <!--<input type="hidden" name="encRequest"  value="{{checkoutDetails.encRequest}}">-->
           
-          <a *ngIf="fee.program.id !== 72932732558618" class="btn btn-portal btn-round" [routerLink]="['/pp/checkout/', studentfeeledger.id, myDetailId]" target="_blank" > 
+          <a *ngIf="!ipsaaClub" class="btn btn-portal btn-round" [routerLink]="['/pp/checkout.html#!/app/checkoutdetails', studentfeeledgerId, myDetailId]" target="_blank" > 
               Pay now
             </a>
-            <a  *ngIf="fee.program.id === 72932732558618" class="btn btn-portal btn-round" [routerLink]="['/pp/ipsaaclubcheckout/', studentfeeledger.id, myDetailId]" target="_blank" > 
+            <a  *ngIf="ipsaaClub" class="btn btn-portal btn-round" [routerLink]="['/pp/ipsaaclubcheckout/', studentfeeledgerId, myDetailId]" target="_blank" > 
               Pay now
             </a>
         </form>
