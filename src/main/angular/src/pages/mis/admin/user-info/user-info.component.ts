@@ -197,4 +197,16 @@ export class UserInfoComponent implements OnInit {
       });
     }
   }
+
+  getSelectedEmployee(id) {
+    const employee = this.employees.find(emp => {
+      return emp.id == id;
+    });
+    if (employee) {
+      // this.userForm.patchValue(employee);
+      this.userForm.controls['firstname'].patchValue(employee.name);
+      this.userForm.controls['phone'].patchValue(employee.mobile);
+      this.userForm.controls['email'].patchValue(employee.email);
+    }
+  }
 }

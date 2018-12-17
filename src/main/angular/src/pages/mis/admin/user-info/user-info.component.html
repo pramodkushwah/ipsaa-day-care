@@ -54,7 +54,7 @@
         <div class="col-lg-4" *ngIf="userForm.controls.type.value == 'Employee'">
           <div class="form-group">
             <label class="control-label">*Employee</label>
-            <select class="form-control" formControlName="empId">
+            <select class="form-control" formControlName="empId" (ngModelChange)="getSelectedEmployee($event)">
               <option *ngFor="let emp of employees;" [value]="emp.id">{{emp.name}} ( {{emp.centerCode}})</option>
             </select>
           </div>

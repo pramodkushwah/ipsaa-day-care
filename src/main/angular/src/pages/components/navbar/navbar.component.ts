@@ -69,12 +69,12 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   //   this.sidebarVisible = true;
   // }
-  // sidebarClose() {
-  //   const body = document.getElementsByTagName('body')[0];
-  //   this.toggleButton.classList.remove('toggled');
-  //   this.sidebarVisible = false;
-  //   body.classList.remove('nav-open');
-  // }
+  sidebarClose() {
+    const body = document.getElementsByTagName('body')[0];
+    this.toggleButton.classList.remove('toggled');
+    this.sidebarVisible = false;
+    body.classList.remove('nav-open');
+  }
   // sidebarToggle() {
   //   // const toggleButton = this.toggleButton;
   //   // const body = document.getElementsByTagName('body')[0];
