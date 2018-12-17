@@ -45,6 +45,7 @@ export class GenerateFeeSlipComponent implements OnInit {
     this.currentYear = (new Date).getFullYear();
     this.years.push(this.currentYear - 1);
     this.years.push(this.currentYear);
+    this.years.push(this.currentYear + 1);
 
 
   }

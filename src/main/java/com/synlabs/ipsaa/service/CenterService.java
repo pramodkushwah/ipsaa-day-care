@@ -26,10 +26,12 @@ import org.apache.poi.util.StringUtil;
 import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,7 +74,6 @@ public class CenterService extends BaseService
 
   public List<Center> list(CenterListRequest request)
   {
-
     List<Center> usercenters = getUserCenters();
 
     if (!StringUtils.isEmpty(request.getCity()))
@@ -91,6 +92,14 @@ public class CenterService extends BaseService
   public List<Center> listAll()
   {
     return centerRepository.findAll();
+  }
+
+  @Transactional
+  public List<Center> nonAccesed()
+  {
+    List<Center> centres=centerRepository.findAll();
+    centres.removeAll(getUserCenters());
+    return centres;
   }
 
   public Center createCenter(CenterRequest request)
@@ -515,5 +524,19 @@ public class CenterService extends BaseService
           throw new ValidationException(String.format("State with this %s id doesn't exist.",stateId));
 
       return cityRepository.findByState(state);
+  }
+
+  @Transactional
+  public void updateCount() {
+    centerRepository.findByActiveIsTrue().stream()
+            .forEach(new Consumer<Center>() {
+                       @Override
+                       public void accept(Center center) {
+                         center.setEnrollmentCount(studentService.getStudentByCenterId(center).size());
+                         centerRepository.save(center);
+                       }
+                     }
+            );
+
   }
 }

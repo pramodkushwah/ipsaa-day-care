@@ -1,15 +1,59 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ParentService } from '../../../providers/parentPotel/parent.service';
+import { ActivatedRoute } from '@angular/router';
+// import { Route } from '@angular/router';
+
+declare let $: any;
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+  checkoutDetails: any;
+  myDetailId: number;
+  sub: any;
+  feeledgeId: number;
+  chec: any;
 
-  constructor() { }
+  constructor(
+    private parentService: ParentService,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.sub = this.route.params.subscribe(params => {
+      this.feeledgeId = params['p1'];
+      this.myDetailId = params['p2'];
+    });
+
+    this.route.url.subscribe( UrlSegment => {
+      this.chec = UrlSegment[0].path;
+    });
+
+    if (this.chec === 'ipsaaclubcheckout') {
+      this.parentService.ipsaaClubhdfcCheckout(this.feeledgeId, this.myDetailId)
+      .subscribe((res: any) => {
+        this.checkoutDetails = res;
+      });
+    } else {
+      this.getFullBillingDetails();
+
+    }
+    console.log(this.chec);
+  }
+  getFullBillingDetails() {
+    this.parentService.hdfcCheckout(this.feeledgeId, this.myDetailId)
+      .subscribe((res: any) => {
+        this.checkoutDetails = res;
+      });
   }
 
+  checkout() {
+    $('#checkout-form').attr('action', this.checkoutDetails.transactionUrl).submit();
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
 }

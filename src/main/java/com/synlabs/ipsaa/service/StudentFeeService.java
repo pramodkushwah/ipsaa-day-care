@@ -237,6 +237,7 @@ public class StudentFeeService extends BaseService{
 
         int slipCount=feePaymentRepository.countByStudentAndFeeDuration(fee.getStudent(),FeeDuration.Quarterly);
         StudentFeePaymentRequest slip=null;
+
         StudentFeePaymentRequest thisQuarterSlip=feePaymentRepository.findByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(),FeeDuration.Quarterly,quarter,year);
         StudentFeePaymentRequest lastQuarterSlip=feePaymentRepository.findByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(),FeeDuration.Quarterly,FeeUtilsV2.getLastQuarter(quarter,year).get("quarter"),FeeUtilsV2.getLastQuarter(quarter,year).get("year"));
         BigDecimal paidAmount=ZERO;
@@ -1076,7 +1077,7 @@ public class StudentFeeService extends BaseService{
             @Override
             public void accept(StudentFeePaymentRequest studentFeePaymentRequest) {
                 double extraHours=attendanceService.getLastQuarterExtraHours(studentFeePaymentRequest.getStudent(),4,2018);
-                System.out.println("from "+studentFeePaymentRequest.getExtraHours() +" to "+ extraHours);
+                //System.out.println("from "+studentFeePaymentRequest.getExtraHours() +" to "+ extraHours);
                 studentFeePaymentRequest.setExtraHours(new BigDecimal(extraHours));
                 feePaymentRepository.saveAndFlush(studentFeePaymentRequest);
             }

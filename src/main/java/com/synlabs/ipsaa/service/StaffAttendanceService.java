@@ -556,7 +556,7 @@ public class StaffAttendanceService extends BaseService {
 				attendanceOfEmplyee.setHalfLeave(employeeLeave.get(i).getHalfLeave());
 				attendanceOfEmplyee.setStatus(AttendanceStatus.Leave);
 				i++;
-				System.out.println(attendanceOfEmplyee.getEmployee().getName());
+				//System.out.println(attendanceOfEmplyee.getEmployee().getName());
 			}
 		}
 		return employeeAttendances;
@@ -570,7 +570,7 @@ public class StaffAttendanceService extends BaseService {
 		Center center;
 		List<Center> centers= new ArrayList<>();
 
-		if(request.getCenterCode().equals("ALL")) {
+		if(request.getCenterCode().equalsIgnoreCase("ALL")) {
             centers = getUserCenters();
             request.setCenterCode("ALL");
         }
@@ -621,7 +621,7 @@ public class StaffAttendanceService extends BaseService {
 	public Map<Date,String> generateDateMap(List<EmployeeAttendance> attendances,Date from , Date to) {
 
 		Set<Date> dates = Utils.datesBetween(from, to, true); //sorted dates
-		System.out.println(dates);
+		//System.out.println(dates);
 		Map<Date, String> calendar = new TreeMap<>();
 		attendances.forEach(a -> {
 			calendar.computeIfAbsent(a.getAttendanceDate(), status(a));   //status returns attendance stats for that date

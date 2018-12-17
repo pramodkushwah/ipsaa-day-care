@@ -1,0 +1,13 @@
+.sidebar{
+  display: none;
+}
+
+/* .main-panel{
+  width: 100%;
+} */
+
+@media (max-width: 991px){
+  .sidebar{
+    display: block !important;
+  }
+}

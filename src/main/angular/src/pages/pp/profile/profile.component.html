@@ -1,19 +1,27 @@
-<!-- <div class="row" ng-show="students.length>1">
+<div class="row" *ngIf="parent.length>1">
+
   <div class="col-md-2">
     <div class="form-group ">
       <label class="control-label">Student</label>
-      <select class="form-control" ng-model="selectedStudent" ng-options="student as student.fullName for student in students" ng-change="studentChanged(selectedStudent)">
-      </select>
+      <select class="form-control" [(ngModel)]="studentId" (ngModelChange)="getStudentsDetails(studentId)">
+      <!-- <option value="" disabled="true">Select Quater</option> -->
+      <option *ngFor="let chaild of parent;" [value]="chaild.id">{{chaild.fullName}}</option>
+    </select>
     </div>
-    </div>
-</div> -->
-<div class="row">
-  <!-- <div class="col-md-3">
+  </div>
+</div>
+<div class="row" *ngIf="student">
+  <div class="col-md-3">
     <div class="card card-profile card-raised profile-card">
+     <div class="card-body " style="    background-color: orange;  ">
       <div class="card-content">
         <div class="card-avatar">
-          <a>
-            <img class="img" src ="{{student.imgPath}}"/>
+          <a *ngIf="student.imagePath">
+            <img class="img" [src]=" 'https://portal.ipsaa.in/' +student.imagePath" />
+          </a>
+        <a *ngIf="!student.imagePath">
+              <img class="img" style="    background-color: white;  " src='src/assets/img/faces/default_profile_pic.png' />
+              <!-- G:/ipsaa-angulal2\ipsaa-day-care\src\main\angular\src\assets\img\faces\default_profile_pic.png -->
           </a>
         </div>
         <h6 class="category">{{student.admissionNumber}}</h6>
@@ -21,60 +29,62 @@
         <p class="description">
           {{student.profile}}
         </p>
-        <span class="label label-info">{{student.center.name}}</span>
-        <span class="label label-info">{{student.program.name}}</span>
-        <span class="label label-info">{{student.group.name}}</span>
+        <span class="badge badge-primary margin-right-5">{{student.center?.name}}</span> <br>
+        <span class="badge badge-primary margin-right-5">{{student.program?.name}}</span> <br>
+        <span class="badge badge-primary margin-right-5">{{student.group?.name}}</span>
         <br><br>
-        <button class="btn btn-round btn-portal" ng-show="showstudent && false" ng-click="editStudent()">Edit Profile</button>
-        <button class="btn btn-round btn-portal" ng-show="!showstudent && false">Save Profile</button>
+        <!-- <button class="btn btn-round btn-portal" ng-show="showstudent && false" (click)="editStudent()">Edit Profile</button> -->
+        <!-- <button class="btn btn-round btn-portal" ng-show="!showstudent && false">Save Profile</button> -->
       </div>
     </div>
-  </div> -->
-  <div class="col-md-12 col-lg-12">
+    </div>
+  </div>
+  <div class="col-md-8 col-lg-8">
     <div class="card profile-form-card">
-      <form id="StudentProfileForm">
-        <div class="card-header card-header-tabs">
-          <div class="nav-tabs-navigation">
-            <div class="nav-tabs-wrapper">
-                              <!-- Nav tabs -->
-                <ul class="nav nav-tabs col-lg-12" style="    background-color: orange;  " role="tablist">
-                  <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#Profile">Profile</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#Father">Father</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#Mother">Mother</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#Notification">Notification</a>
-                  </li>
-                </ul>   
-            </div>
+      <div class="card-header card-header-tabs">
+        <div class="nav-tabs-navigation">
+          <div class="nav-tabs-wrapper">
+            <ul class="nav nav-tabs col-lg-12" style="    background-color: orange;  " role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#Profile">Profile</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#Father">Father</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " data-toggle="tab" href="#Mother">Mother</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#Notification">Notification</a>
+              </li>
+            </ul>
           </div>
         </div>
-        <div class="card-content">
-          <form>
+      </div>
+      <div class="card-body">
+        <div class="card-content" *ngIf="student">
+          <form #studentForm="ngForm">
             <div class="tab-content">
-              <div class="tab-pane active" id="studentprofile">
+              <div class="tab-pane active" id="Profile">
                 <div class="row">
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Center</label>
-                      <input class="form-control" name="center" type="text" required ng-model="student.center.name" ng-readonly="true">
+                      <input class="form-control" name="centerName"  readonly="showstudent" id="centerName" #centerName="ngModel" type="text"
+                        [(ngModel)]="student.center.name">
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Program</label>
-                      <input class="form-control" name="program" type="text" required ng-model="student.program.name" ng-readonly="true">
+                      <input class="form-control" name="programName" readonly="showstudent" id="programName" #programName="ngModel" type="text"
+                        [(ngModel)]="student.program.name">
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Group</label>
-                      <input class="form-control" name="group" type="text" required ng-model="student.group.name" ng-readonly="true">
+                      <input class="form-control" name="group" id="group" readonly="showstudent" #group="ngModel" type="text" [(ngModel)]="student.group.name">
                     </div>
                   </div>
                 </div>
@@ -83,21 +93,24 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Admission Number</label>
-                      <input class="form-control" name="admissionNumber" type="text" required ng-model="student.admissionNumber" ng-readonly="true">
+                      <input class="form-control" name="admissionNumber" readonly="showstudent" id="admissionNumber" #admissionNumber="ngModel"
+                        type="text" [(ngModel)]="student.admissionNumber">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">First Name</label>
-                      <input class="form-control" name="firstName" type="text" required ng-model="student.firstName" ng-readonly="true">
+                      <input class="form-control" name="firstName" readonly="showstudent" id="firstName" #firstName="ngModel" type="text"
+                        [(ngModel)]="student.firstName">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Last Name*</label>
-                      <input class="form-control" name="lastName" type="text" required ng-model="student.lastName" ng-readonly="showstudent">
+                      <input class="form-control" name="lastName" readonly="showstudent" id="lastName" #lastName="ngModel" type="text"
+                        [(ngModel)]="student.lastName" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -107,28 +120,30 @@
                   <div class="col-md-3">
                     <div class="form-group">
                       <label class="control-label">Adm. Date</label>
-                      <input class="form-control datepicker" name="doa" type="text" required ng-model="student.admissionDate" ng-readonly="true">
+                      <input class="form-control datepicker" readonly="showstudent" name="doa" id="doa" #doa="ngModel" type="text" [(ngModel)]="student.admissionDate">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-3">
                     <div class="form-group">
                       <label class="control-label">Date of Birth</label>
-                      <input class="form-control" name="dob" type="text" required ng-model="student.dob" ng-readonly="true">
+                      <input class="form-control" name="dob"  readonly="showstudent" id="dob" #dob="ngModel" type="text" [(ngModel)]="student.dob">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-3">
                     <div class="form-group">
                       <label class="control-label">Nick Name*</label>
-                      <input class="form-control" name="nickName" type="text" required ng-model="student.nickName" ng-readonly="showstudent">
+                      <input class="form-control" name="nickName"  id="nickName" #nickName="ngModel" type="text"
+                        [(ngModel)]="student.nickName" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-3">
                     <div class="form-group">
                       <label class="control-label">Nationality*</label>
-                      <input class="form-control" name="nationality" type="text" required ng-model="student.nationality" ng-readonly="showstudent">
+                      <input class="form-control" name="nationality" id="nationality" #nationality="ngModel" type="text"
+                        [(ngModel)]="student.nationality" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -138,28 +153,24 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Gender</label>
-                      <input class="form-control" name="gender" type="text" required ng-model="student.gender" ng-readonly="true">
+                      <input class="form-control" name="gender" id="gender" #gender="ngModel" readonly="showstudent" type="text" [(ngModel)]="student.gender">
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Blood Group*</label>
-                      <select class="form-control" ng-model="student.bloodGroup"
-                              ng-readonly="showstudent"
-                              ng-disabled="showstudent"
-                              required>
+                      <select class="form-control" [(ngModel)]="student.bloodGroup" readonly="showstudent" name="blood">
+                        id="blood" #blood="ngModel">
                         <option value="">Blood Group</option>
-                        <option value="{{bloodGroup}}" ng-repeat="bloodGroup in bloodGroups">{{bloodGroup}}</option>
+                        <option *ngFor=" let bloodGroup of bloodGroups" value="{{bloodGroup}}">{{bloodGroup}}</option>
                       </select>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Family Type</label>
-                      <select class="form-control" ng-model="student.familyType"
-                              ng-readonly="showstudent"
-                              ng-disabled="showstudent"
-                              required>
+                      <select class="form-control" [(ngModel)]="student.familyType" readonly="showstudent" name="family">
+                        id="family" #family="ngModel">
                         <option value="">Family Type</option>
                         <option value="Nuclear">Nuclear</option>
                         <option value="Joint">Joint</option>
@@ -170,24 +181,27 @@
                 <div class="row">
                   <div class="col-md-12">
                     <label class="control-label">Student Profile</label>
-                    <textarea class="form-control" ng-model="student.profile" row="5" ng-readonly="showstudent"></textarea>
+                    <textarea class="form-control" name="profile" id="profile" #profile="ngModel" [(ngModel)]="student.profile"
+                      row="5" readonly="showstudent"></textarea>
                   </div>
                 </div>
               </div>
 
-              <div class="tab-pane" id="fatherprofile">
+              <div class="tab-pane" id="Father">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="control-label">First Name</label>
-                      <input class="form-control" name="fatherfirstName" type="text" required ng-model="student.father.firstName" ng-readonly="true">
+                      <input class="form-control" name="fatherfirstName" readonly="showstudent" id="fatherfirstName" #fatherfirstName="ngModel"
+                        type="text" [(ngModel)]="student.parents[0].firstName">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="control-label">Last Name</label>
-                      <input class="form-control" name="fatherLastName" type="text" required ng-model="student.father.lastName" ng-readonly="true">
+                      <input class="form-control" name="fatherLastName" readonly="showstudent" id="fatherLastName" #fatherLastName="ngModel"
+                        type="text" [(ngModel)]="student.parents[0].lastName">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -196,14 +210,16 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="control-label">Phone*</label>
-                      <input class="form-control" type="text" required ng-model="student.father.mobile" ng-readonly="showstudent">
+                      <input class="form-control" type="text"  readonly="showstudent" [(ngModel)]="student.parents[0].mobile" name="fatherPhoneNo"
+                      id="fatherPhoneNo" #fatherPhoneNo="ngModel">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="control-label">Email*</label>
-                      <input class="form-control" type="text" required ng-model="student.father.email" ng-readonly="showstudent">
+                      <input class="form-control" type="text" [(ngModel)]="student.parents[0].email" name="fatherEmail"
+                        id="fatherEmail" #fatherEmail="ngModel" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -212,15 +228,17 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="control-label">Educational Qualification*</label>
-                      <input class="form-control" name="fatherEducationalQualification" type="text" required ng-model="student.father.educationalQualification"
-                             ng-readonly="showstudent">
+                      <input class="form-control" name="fatherEducationalQualification" id="fatherEducationalQualification"
+                        #fatherEducationalQualification="ngModel" type="text" [(ngModel)]="student.parents[0].educationalQualification"
+                        readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="control-label">Occupation*</label>
-                      <input class="form-control" name="fatherOccupation" type="text" required ng-model="student.father.occupation" ng-readonly="showstudent">
+                      <input class="form-control" name="fatherOccupation" id="fatherOccupation" #fatherOccupation="ngModel"
+                        type="text" [(ngModel)]="student.parents[0].occupation" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -229,14 +247,16 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Designation*</label>
-                      <input class="form-control" name="fatherdesignation" type="text" required ng-model="student.father.designation" ng-readonly="showstudent">
+                      <input class="form-control" name="fatherdesignation" id="fatherdesignation" #fatherdesignation="ngModel"
+                        type="text" [(ngModel)]="student.parents[0].designation" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-8">
                     <div class="form-group">
                       <label class="control-label">Organisation*</label>
-                      <input class="form-control" name="fatherOrganisation" type="text" required ng-model="student.father.organisation" ng-readonly="showstudent">
+                      <input class="form-control" name="fatherOrganisation" id="fatherOrganisation" #fatherOrganisation="ngModel"
+                        type="text" [(ngModel)]="student.parents[0].organisation" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -250,7 +270,8 @@
                   <div class="col-md-9">
                     <div class="form-group">
                       <label class="control-label">Address*</label>
-                      <input class="form-control" type="text" required ng-model="student.father.residentialAddress.address" ng-readonly="showstudent">
+                      <input class="form-control" type="text" name="fatherAddr" id="fatherAddr" #fatherAddr="ngModel"
+                        [(ngModel)]="student.parents[0].residentialAddress.address" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -259,21 +280,24 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">City*</label>
-                      <input class="form-control" name="city" type="text" required ng-model="student.father.residentialAddress.city" ng-readonly="showstudent">
+                      <input class="form-control" name="city" id="city" #city="ngModel" type="text" [(ngModel)]="student.parents[0].residentialAddress.city"
+                        readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">State*</label>
-                      <input class="form-control" name="state" type="text" required ng-model="student.father.residentialAddress.state" ng-readonly="showstudent">
+                      <input class="form-control" name="state" id="state" #state="ngModel" type="text" [(ngModel)]="student.parents[0].residentialAddress.state"
+                        readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Zipcode*</label>
-                      <input class="form-control" name="zipcode" type="text" required ng-model="student.father.residentialAddress.zipcode" ng-readonly="showstudent">
+                      <input class="form-control" name="zipcode" id="zipcode" #zipcode="ngModel" type="text"
+                        [(ngModel)]="student.parents[0].residentialAddress.zipcode" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -287,7 +311,8 @@
                   <div class="col-md-9">
                     <div class="form-group">
                       <label class="control-label">Address*</label>
-                      <input class="form-control" type="text" required ng-model="student.father.officeAddress.address" ng-readonly="showstudent">
+                      <input class="form-control" type="text" name="fatherOficeAddr" id="fatherOficeAddr"
+                        #fatherOficeAddr="ngModel" [(ngModel)]="student.parents[0].officeAddress.address" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -296,7 +321,8 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">City*</label>
-                      <input class="form-control" name="city" type="text" required ng-model="student.father.officeAddress.city" ng-readonly="showstudent">
+                      <input class="form-control" name="officeAddressCity" id="officeAddressCity" #officeAddressCity="ngModel"
+                        type="text" [(ngModel)]="student.parents[0].officeAddress.city" readonly="showstudent">
 
                       <span class="material-input"></span>
                     </div>
@@ -304,33 +330,38 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">State*</label>
-                      <input class="form-control" name="state" type="text" required ng-model="student.father.officeAddress.state" ng-readonly="showstudent">
+                      <input class="form-control" name="officeAddressState" id="officeAddressState" #officeAddressState="ngModel"
+                        type="text" [(ngModel)]="student.parents[0].officeAddress.state" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Zipcode*</label>
-                      <input class="form-control" name="zipcode" type="text" required ng-model="student.father.officeAddress.zipcode" ng-readonly="showstudent">
+                      <input class="form-control" name="officeAddressZipcode" id="officeAddressZipcode"
+                        #officeAddressZipcode="ngModel" type="text" [(ngModel)]="student.parents[0].officeAddress.zipcode"
+                        readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="tab-pane" id="motherprofile">
+              <div class="tab-pane" id="Mother">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="control-label">First Name</label>
-                      <input class="form-control" type="text" required ng-model="student.mother.firstName" ng-readonly="true">
+                      <input class="form-control" type="text" name="motherFisrtName" readonly="showstudent" id="motherFisrtName"
+                        #motherFisrtName="ngModel" [(ngModel)]="student.parents[1].firstName">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="control-label">*Last Name</label>
-                      <input class="form-control" type="text" required ng-model="student.mother.lastName" ng-readonly="true">
+                      <input class="form-control" type="text" name="motherLastName" readonly="showstudent" id="motherLastName" #motherLastName="ngModel"
+                        [(ngModel)]="student.parents[1].lastName">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -339,7 +370,8 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="control-label">Phone*</label>
-                      <input class="form-control" type="text" required ng-model="student.mother.mobile" ng-readonly="showstudent">
+                      <input class="form-control" type="text" name="motherPhoneNo " id="motherPhoneNo" #motherPhoneNo="ngModel"
+                        [(ngModel)]="student.parents[1].mobile" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -347,7 +379,8 @@
 
                     <div class="form-group">
                       <label class="control-label">Email*</label>
-                      <input class="form-control" type="text" required ng-model="student.mother.email"  ng-readonly="showstudent">
+                      <input class="form-control" type="text" name="MotherEmail" id="MotherEmail" #MotherEmail="ngModel"
+                        [(ngModel)]="student.parents[1].email" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -356,14 +389,17 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="control-label">Educational Qualification*</label>
-                      <input class="form-control" type="text" required ng-model="student.mother.educationalQualification" ng-readonly="showstudent">
+                      <input class="form-control" type="text" name="motherQualification" id="motherQualification"
+                        #motherQualification="ngModel" [(ngModel)]="student.parents[1].educationalQualification"
+                        readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="control-label">Occupation*</label>
-                      <input class="form-control" type="text" required ng-model="student.mother.occupation" ng-readonly="showstudent">
+                      <input class="form-control" type="text" name="motherOccupation" id="motherOccupation"
+                        #motherOccupation="ngModel" [(ngModel)]="student.parents[1].occupation" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -372,14 +408,16 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Designation*</label>
-                      <input class="form-control" name="motherdesignation" type="text" required ng-model="student.mother.designation" ng-readonly="showstudent">
+                      <input class="form-control" name="motherdesignation" id="motherdesignation" #motherdesignation="ngModel"
+                        type="text" [(ngModel)]="student.parents[1].designation" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-8">
                     <div class="form-group">
                       <label class="control-label">Organisation*</label>
-                      <input class="form-control" name="motherOrganisation" type="text" required ng-model="student.mother.organisation" ng-readonly="showstudent">
+                      <input class="form-control" name="motherOrganisation" id="motherOrganisation" #motherOrganisation="ngModel"
+                        type="text" [(ngModel)]="student.parents[1].organisation" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -393,7 +431,8 @@
                   <div class="col-md-9">
                     <div class="form-group">
                       <label class="control-label">Address*</label>
-                      <input class="form-control" type="text" required ng-model="student.mother.residentialAddress.address" ng-readonly="showstudent">
+                      <input class="form-control" type="text" name="motherAddr" id="motherAddr" #motherAddr="ngModel"
+                        [(ngModel)]="student.parents[1].residentialAddress.address" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -402,7 +441,8 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">City*</label>
-                      <input class="form-control" name="city" type="text" required ng-model="student.mother.residentialAddress.city" ng-readonly="showstudent">
+                      <input class="form-control" name="mothercity" id="mothercity" #mothercity="ngModel" type="text"
+                        [(ngModel)]="student.parents[1].residentialAddress.city" readonly="showstudent">
 
                       <span class="material-input"></span>
                     </div>
@@ -410,14 +450,16 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">State*</label>
-                      <input class="form-control" name="state" type="text" required ng-model="student.mother.residentialAddress.state" ng-readonly="showstudent">
+                      <input class="form-control" name="motherState" id="motherState" #motherState="ngModel" type="text"
+                        [(ngModel)]="student.parents[1].residentialAddress.state" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Zipcode*</label>
-                      <input class="form-control" name="zipcode" type="text" required ng-model="student.mother.residentialAddress.zipcode" ng-readonly="showstudent">
+                      <input class="form-control" name="motherZipcode" id="motherZipcode" #motherZipcode="ngModel" type="text"
+                        [(ngModel)]="student.parents[1].residentialAddress.zipcode" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -431,7 +473,8 @@
                   <div class="col-md-9">
                     <div class="form-group">
                       <label class="control-label">Address*</label>
-                      <input class="form-control" type="text" required ng-model="student.mother.officeAddress.address" ng-readonly="showstudent">
+                      <input class="form-control" type="text" name="motherOfficeAdr" id="motherOfficeAdr"
+                        #motherOfficeAdr="ngModel" [(ngModel)]="student.parents[1].officeAddress.address" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -440,7 +483,8 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">City*</label>
-                      <input class="form-control" name="state" type="text" required ng-model="student.mother.officeAddress.city" ng-readonly="showstudent">
+                      <input class="form-control" name="motherOfficeCity" id="motherOfficeCity" #motherOfficeCity="ngModel"
+                        type="text" [(ngModel)]="student.parents[1].officeAddress.city" readonly="showstudent">
 
                       <span class="material-input"></span>
                     </div>
@@ -448,14 +492,17 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">State*</label>
-                      <input class="form-control" name="state" type="text" required ng-model="student.mother.officeAddress.state" ng-readonly="showstudent">
+                      <input class="form-control" name="motherOfficeState" id="motherOfficeState" #motherOfficeState="ngModel"
+                        type="text" [(ngModel)]="student.parents[1].officeAddress.state" readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="control-label">Zipcode*</label>
-                      <input class="form-control" name="zipcode" type="text" required ng-model="student.mother.officeAddress.zipcode" ng-readonly="showstudent">
+                      <input class="form-control" name="motherOfficeZipcode" id="motherOfficeZipcode"
+                        #motherOfficeZipcode="ngModel" type="text" [(ngModel)]="student.parents[1].officeAddress.zipcode"
+                        readonly="showstudent">
                       <span class="material-input"></span>
                     </div>
                   </div>
@@ -464,16 +511,17 @@
                 </div>
               </div>
 
-              <div class="tab-pane" id="notification">
+              <div class="tab-pane" id="Notification">
                 <div class="discription">
                   <p>Change Sms or Email notification setting for Check-in and Check-out of student.</p>
                 </div>
-                <div class="row" ng-repeat="parent in student.parents | filter: {account : true}">
+                <div class="row" *ngFor=" let parent of student.parents;">
                   <legend>{{parent.relationship}}</legend>
                   <div class="col-md-4 col-md-offset-2">
                     <div class="togglebutton">
                       <label>
-                        <input type="checkbox" ng-checked="parent.smsEnabled" ng-change="notify(parent,'sms')" ng-model="parent.smsEnabled">
+                        <input type="checkbox" name="parentSms" id="parentSms" #parentSms="ngModel" [(ngModel)]="parent.smsEnabled"
+                          (ngModelChange)="notify(parent,'sms')" >
                         <span class="toggle"></span>
                         SMS ({{parent.mobile}})
                       </label>
@@ -482,7 +530,8 @@
                   <div class="col-md-4">
                     <div class="togglebutton">
                       <label>
-                        <input type="checkbox" ng-checked="parent.emailEnabled" ng-change="notify(parent,'email')" ng-model="parent.emailEnabled">
+                        <input type="checkbox" name="parentMail" id="parentMail" #parentMail="ngModel" [(ngModel)]="parent.emailEnabled"
+                          (ngModelChange)="notify(parent,'email')" >
                         <span class="toggle"></span>
                         Email ({{parent.email}})
                       </label>
@@ -491,19 +540,19 @@
                 </div>
               </div>
 
-              <div class="tab-pane active" id="controls" ng-show="showFooter">
+              <div class="tab-pane " id="controls" ng-show="showFooter">
                 <div class="category form-category">
                   *Required Field
                 </div>
-                <div class="form-footer text-right">
-                  <button class="btn btn-portal btn-fill" ng-click="saveProfile()" ng-hide="showstudent">save</button>
-                  <button class="btn btn-default btn-fill" ng-click="toggleEdit()">{{editlocklabel}}</button>
-                </div>
+                <!-- <div class="form-footer text-right">
+                <button class="btn btn-portal btn-fill" (click)="saveProfile()" ng-hide="showstudent">save</button>
+                <button class="btn btn-default btn-fill" (click)="toggleEdit()">{{editlocklabel}}</button>
+              </div> -->
               </div>
             </div>
           </form>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </div>

@@ -32,7 +32,17 @@ public class Center extends BaseEntity
 
   private String accountName;
 
+  private int  enrollmentCount;
+
   private boolean active;
+
+  public int getEnrollmentCount() {
+    return enrollmentCount;
+  }
+
+  public void setEnrollmentCount(int enrollmentCount) {
+    this.enrollmentCount = enrollmentCount;
+  }
 
   public String getAccountName()
   {

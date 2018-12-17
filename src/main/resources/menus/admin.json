@@ -38,13 +38,6 @@
       "state": "admin/role",
       "p": "ROLE_WRITE",
       "seq": 800
-    },
-    {
-      "label": "Import Data",
-      "state": "admin/importdata",
-      "p": "IMPORT_WRITE",
-      "seq": 900
     }
-
   ]
 }

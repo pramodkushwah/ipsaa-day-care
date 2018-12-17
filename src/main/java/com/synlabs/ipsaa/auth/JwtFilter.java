@@ -119,6 +119,7 @@ public class JwtFilter extends GenericFilterBean
     catch (JwtException e)
     {
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Session expired");
       return;
     }
 

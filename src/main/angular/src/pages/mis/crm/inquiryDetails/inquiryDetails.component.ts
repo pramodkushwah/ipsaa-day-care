@@ -145,7 +145,7 @@ this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' +  this.to
             groupId: [''],
             groupName: [''],
             hobbies: [''],
-            id: [''],
+            id: [],
             inquiryDate: [''],
             inquiryNumber: [''],
             inquiryType: [''],

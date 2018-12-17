@@ -5,38 +5,67 @@ import { FeeComponent } from './fee/fee.component';
 import { AttendanceComponent } from './attendance/attendance.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SupportComponent } from './support/support.component';
+import { ActivitiesComponent } from './activities/activities.component';
+import { GalleryComponent } from './gallery/gallery.component';
+import { SharingSheetComponent } from './sharing-sheet/sharing-sheet.component';
+import { FoodMenuComponent } from './food-menu/food-menu.component';
+import { LoginComponent } from './login/login.component';
+import { ResponseComponent } from './response/response.component';
 
 const routes: Routes = [
   {
     path: '',
     component: PpComponent,
-    // children: [
-    //   {
-    //     path: '',
-    //     redirectTo: 'dashboard',
-    //     pathMatch: 'full'
-    //   },
-    //   {
-    //     path: 'dashboard',
-    //     component: FeeComponent
-    //   },
-    //   {
-    //     path: 'fee',
-    //     component: FeeComponent
-    //   },
-    //   {
-    //     path: 'attendance',
-    //     component: AttendanceComponent
-    //   },
-    //   {
-    //     path: 'profile',
-    //     component: ProfileComponent
-    //   },
-    //   {
-    //     path: 'support',
-    //     component: SupportComponent
-    //   },
-    // ]
+    children: [
+      {
+        path: '',
+        redirectTo: 'profile',
+        pathMatch: 'full'
+      },
+      {
+        path: 'profile',
+        component: ProfileComponent
+      },
+      {
+        path: 'fee',
+        component: FeeComponent
+      },
+      {
+        path: 'attendance',
+        component: AttendanceComponent
+      },
+      {
+        path: 'activities',
+        component: ActivitiesComponent
+      },
+      {
+        path: 'gallery',
+        component: GalleryComponent
+      },
+      {
+        path: 'sharingSheet',
+        component: SharingSheetComponent
+      },
+      {
+        path: 'foodmenu',
+        component: FoodMenuComponent
+      },
+      {
+        path: 'checkout-success/:paymentId',
+        component: ResponseComponent
+      },
+      {
+        path: 'checkout-failure/:paymentId',
+        component: ResponseComponent
+      },
+      { path: 'checkout/:p1/:p2', component: LoginComponent},
+
+      { path: 'ipsaaclubcheckout/:p1/:p2', component: LoginComponent},
+      {
+        path: 'support',
+        component: SupportComponent
+      }
+    ]
   }
 ];
 
