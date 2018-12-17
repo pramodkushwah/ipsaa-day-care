@@ -20,3 +20,9 @@
 .off-canvas-sidebar .user .photo img {
   width: 100%;
 }
+
+sidebar .user a {
+  color: #3c4858;
+  padding: .5rem 15px;
+  white-space: nowrap;
+}

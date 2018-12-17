@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { MenuService } from '../../../providers/initial/menu.service';
 import { User } from '../../../providers/user/user';
 import { Router } from '@angular/router';
 
 declare const $: any;
-
+declare let document;
 declare interface RouteInfo {
   path: string;
   title: string;
@@ -28,6 +28,7 @@ export class SidebarComponent implements OnInit {
   self: any = {};
   profileImageURI: string;
 
+  // tslint:disable-next-line:max-line-length
   constructor(private menuService: MenuService, private userService: User, public router: Router) {
     menuService.getMenus().subscribe(
       (response: any) => {

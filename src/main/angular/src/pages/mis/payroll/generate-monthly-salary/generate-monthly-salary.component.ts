@@ -113,6 +113,7 @@ export class GenerateMonthlySalaryComponent implements OnInit {
   getEmployers() {
     this.adminService.getCostCenter().subscribe((response: any) => {
       this.employers = response;
+      this.employers.unshift({ id: 'ALL', code: 'ALL', name: 'ALL' });
     });
   }
 

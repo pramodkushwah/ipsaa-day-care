@@ -1,5 +1,12 @@
-<div class="logo">
+<!-- <div class="logo">
   <a ui-sref="app.home" class="simple-text">
+    <img src="/assets/img/ipsaa-logo-sm.png">
+  </a>
+</div> -->
+<div class="logo">
+  <a href="http://www.creative-tim.com" class="simple-text logo-mini">
+  </a>
+  <a href="http://www.creative-tim.com" class="simple-text logo-normal">
     <img src="/assets/img/ipsaa-logo-sm.png">
   </a>
 </div>
@@ -9,11 +16,24 @@
       <img *ngIf="!loaded" src="/assets/img/faces/default_profile_pic.png" />
       <img *ngIf="profileImageURI" [hidden]="!loaded" (load)="loaded = true" [src]="profileImageURI" />
     </div>
-    <div class="info">
-      <a data-toggle="collapse" class="collapsed">{{self.name}}</a>
-      <a href="{{self.name}}" style="text-transform: lowercase">{{self.email}}</a>
+    <div class="user-info">
+      <a data-toggle="collapse" href="#collapseExample" class="username">
+        <span>{{self.name}}</span><br>
+        <!-- <span>{{self.email}}</span> -->
+      </a>
+      <div class="collapse" id="collapseExample">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span class="sidebar-normal"> {{self.name}} </span><br>
+              <span class="sidebar-normal"> {{self.email}} </span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
+
   <div *ngIf="isMobileMenu()">
     <ul class="nav navbar-nav nav-mobile-menu">
       <li class="nav-item">
