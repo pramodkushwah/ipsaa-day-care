@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ParentService } from '../../providers/parentPotel/parent.service';
 import { StorageService } from '../../providers/localstorage/storage';
 import { Router } from '@angular/router';
 

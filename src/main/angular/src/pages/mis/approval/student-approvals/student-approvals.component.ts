@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AlertService } from '../../../../providers/alert/alert.service';
 import { AdminService } from '../../../../providers/admin/admin.service';
 
+declare let $: any;
+
 @Component({
   selector: 'app-student-approvals',
   templateUrl: './student-approvals.component.html',
@@ -16,6 +18,7 @@ export class StudentApprovalsComponent implements OnInit {
   viewPanel = false;
   update  = false;
   showTable = false;
+  studentLoader: boolean;
   constructor(
     private alertService: AlertService,
     private adminService: AdminService,
@@ -70,20 +73,23 @@ this.showSidePanel();
       .subscribe((res: any) => {
         this.getCenterStudentApprovelList();
         this.studentAprrovelList = this.studentAprrovelList.filter(element => element.id !== student.id);
-          this.alertService.successAlert('Student Approve');
+          this.alertService.successAlert('Student Approved');
       }, (err) => {
         this.alertService.errorAlert(err);
       });
   }
 
-  studentReject(student) {
-    this.adminService.rejectStudent(student.id)
+  studentReject(student: any, comment: any) {
+    this.studentLoader = true;
+    this.adminService.rejectStudent(student.id, comment)
       .subscribe((res: any) => {
+        this.studentLoader = false;
         this.getCenterStudentApprovelList();
         this.studentAprrovelList = this.studentAprrovelList.filter(element => element.id !== student.id);
-        this.alertService.successAlert('Student Reject');
-
+        this.alertService.successAlert('Student Rejected');
+        $('#myModal').modal('hide');
       }, (err) => {
+        this.studentLoader = false;
         this.alertService.errorAlert(err);
       });
   }

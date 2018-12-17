@@ -14,9 +14,9 @@
         </div>
         <div class="col-md-3">
           <div class="form-group">
-            <label for="Quater">Quater:</label>
+            <label for="Quater">Quarter:</label>
             <select class="form-control" formControlName="quater">
-              <option value="" disabled="true">Select Quater</option>
+              <option value="" disabled="true">Select Quarter</option>
               <option *ngFor="let quater of quaters;" [value]="quater.id">{{quater.Qtype}}</option>
             </select>
             <span class="material-input"></span>
@@ -145,7 +145,7 @@
               <col width="10%">
               <col width="10%">
             </colgroup>
-            <thead class="text-primary" *ngIf=" studentDetails?.length >0">
+            <thead class="text-primary">
               <th>
 
                 <input type="checkbox" (ngModelChange)="selectAll($event)" [(ngModel)]="selectAllStudent"> </th>
@@ -191,13 +191,10 @@
                   </span>
                 </td>
               </tr>
-
-            </tbody>
-            <tfoot *ngIf=" studentDetails.length == 0" style="border: 1px groove #e8e8e8;">
-              <tr>
-                <td class="text-center">No Content</td>
+              <tr *ngIf=" studentDetails.length == 0">
+                <td class="text-center" colspan="10">No Content</td>
               </tr>
-            </tfoot>
+            </tbody>
           </table>
         </div>
         </div>
@@ -543,9 +540,9 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content card card-stats">
       <div class="card-header card-header-danger card-header-icon">
-        <h2 style="text-align: center" class="card-title">Are You Sure</h2>
-        <h3 style="text-align: center" class="card-title">You Want To Regenerate Slip
-        </h3>
+        <h3 style="text-align: center" class="card-title">Are you sure</h3>
+        <h4 style="text-align: center" class="card-title">you want to Regenerate slip
+        </h4>
       </div>
       <div class="modal-body">
         <div style="text-align: center">
@@ -555,7 +552,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-rose" data-dismiss="modal">Cancle</button>
+        <button type="button" class="btn btn-rose" data-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>

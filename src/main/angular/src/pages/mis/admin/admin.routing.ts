@@ -18,10 +18,6 @@ export const adminRoutes: Routes = [
     component: ProgramComponent
   },
   {
-    path: 'role',
-    component: RoleComponent
-  },
-  {
     path: 'student',
     component: StudentComponent
   },
@@ -32,6 +28,10 @@ export const adminRoutes: Routes = [
   {
     path: 'user',
     component: UserComponent
+  },
+  {
+    path: 'role',
+    component: RoleComponent
   },
   {
     path: 'importdata',

@@ -15,10 +15,10 @@ export class GenerateFeeReceiptComponent implements OnInit {
   centers: Array<any>;
   quaters = [{ Qtype: 'FYQ1', id: 2 }, { Qtype: 'FYQ2', id: 3 }, { Qtype: 'FYQ3', id: 4 }, { Qtype: 'FYQ4', id: 1 }];
   currentYear: number;
-
+  STUDENTFEE_RECEIPT_CONFIRM: boolean;
   years = [];
 
-  studentDetails: Array<any>;
+  studentDetails = [];
   viewPanel = false;
   selectedStudentDetails: any = {};
   feePaymentForm: FormGroup;
@@ -34,6 +34,7 @@ export class GenerateFeeReceiptComponent implements OnInit {
 
     this.years.push(this.currentYear - 1);
     this.years.push(this.currentYear);
+    this.years.push(this.currentYear + 1);
   }
 
   generateSlipForm = this.fb.group({
@@ -111,6 +112,7 @@ this.showSidePanel();
     });
   }
   ngOnInit() {
+    this.STUDENTFEE_RECEIPT_CONFIRM = this.adminService.hasPrivilage('STUDENTFEE_RECEIPT_CONFIRM');
     this.getCenter();
     this.subscribSidePanel();
   }

@@ -111,4 +111,13 @@ export class RoleComponent implements OnInit {
       });
     }
   }
+
+  deleteRole(role: any) {
+    this.alertService.confirm('you want to delete ' + role.name + ' role').then(() => {
+      this.adminService.deleteRole(role.id).subscribe(response => {
+        this.alertService.successAlert(role.name + 'role Deleted Successfully');
+        this.roles.splice(this.roles.indexOf(role, 1));
+      });
+    });
+  }
 }

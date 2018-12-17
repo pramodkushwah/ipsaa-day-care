@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Api } from '../api/api';
 import { Student } from '../../modal/student';
 import { Subject } from 'rxjs';
+import { StorageService } from '../localstorage/storage';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
@@ -10,7 +11,7 @@ export class AdminService {
   public viewPanel = new Subject<boolean>();
   public viewPanelForFee = new Subject<boolean>();
 
-  constructor(public api: Api) { }
+  constructor(public api: Api, public storage: StorageService) { }
 
   getPrograms() {
     return this.api.get('api/program/');
@@ -18,6 +19,10 @@ export class AdminService {
 
   getProgramsByCenterId(centerId: number) {
     return this.api.get('api/center/programs/' + centerId);
+  }
+
+  deleteProgram(programId) {
+    return this.api.delete('api/program/' + programId);
   }
 
   getCenters() {
@@ -44,8 +49,16 @@ export class AdminService {
     return this.api.get('api/student/' + studentId);
   }
 
+  isFeePanding(studentId: number) {
+    return this.api.get('api/student/checkPending/' + studentId);
+  }
+
   deleteStudentById(studentId: number) {
     return this.api.delete('api/student/' + studentId);
+  }
+
+  deleteStudentForcefully(studentId: number) {
+    return this.api.delete('api/student/' + studentId + '/forced');
   }
 
   getStudentPaymentHistory(studentId: number) {
@@ -164,6 +177,10 @@ export class AdminService {
     return this.api.get('api/user/roles/');
   }
 
+  deleteRole(roleId) {
+    return this.api.delete('api/role/' + roleId);
+  }
+
   getAllPrivileges() {
     return this.api.get('api/user/privileges/');
   }
@@ -181,7 +198,7 @@ export class AdminService {
   }
 
   getAllCenters() {
-    return this.api.get('api/center/all');
+    return this.api.get('api/center/new');
   }
 
   getEmployee() {
@@ -407,13 +424,25 @@ export class AdminService {
 
   }
 
+  ipsaaClubFeeReportDownload(data) {
+    return this.api.getPDF('api/report/ipsaaclub/studentfee/excel', data);
+  }
+
+  ipsaaClubCollectionFeeDownload(data) {
+    return this.api.getPDF('api/report/ipsaaclub/collectionfee/excel', data);
+  }
+
+  staffReportDownload(data) {
+    return this.api.getPDF('api/report/staff/excel', data);
+  }
+
   studentsFeeReportdownload(centerId_and_range) {
     return this.api.getPDF('api/report/studentfee/excel/', centerId_and_range);
 
   }
 
   hdfcGatewayReportdownload(centerId_and_range) {
-    return this.api.getPDF('api/report/collectionfee/hdfc/', centerId_and_range);
+    return this.api.getPDF('api/report/collectionfee/hdfc', centerId_and_range);
 
   }
 
@@ -488,8 +517,8 @@ export class AdminService {
   aproveStudent(student_id) {
     return this.api.get('api/student/approve/' + student_id);
   }
-  rejectStudent(student_id) {
-    return this.api.get('api/student/reject/' + student_id);
+  rejectStudent(student_id, comment) {
+    return this.api.post('api/student/reject/' + student_id, {'comment': comment});
   }
 
   // center
@@ -580,6 +609,11 @@ export class AdminService {
 
   generateIpsaaclubStudentFee(studentId, data) {
     return this.api.post('api/student/ipsaaclub/generate/' + studentId, data);
+  }
+
+  hasPrivilage(privilage: any) {
+    const privilages: string[] = this.storage.getData('ngStorage-privileges');
+    return privilages.includes(privilage);
   }
 
 

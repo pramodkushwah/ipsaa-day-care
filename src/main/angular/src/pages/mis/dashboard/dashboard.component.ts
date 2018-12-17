@@ -62,11 +62,22 @@ export class DashboardComponent implements OnInit {
   dashboardTabs: any[] = [];
   history: any;
   viewPanelForFee: boolean;
+  DASHBOARD_STATS: boolean;
 
   terget: any;
+  SALARY_READ: boolean;
   constructor(private dashboardService: DashboardService, private alertService: AlertService, private adminService: AdminService) { }
 
   ngOnInit() {
+    this.DASHBOARD_STATS = this.adminService.hasPrivilage('DASHBOARD_STATS');
+    this.SALARY_READ = this.adminService.hasPrivilage('SALARY_READ');
+    if (this.DASHBOARD_STATS) {
+      this.loadDashboard();
+    }
+    this.subscribeViewPanelChange();
+  }
+
+  loadDashboard() {
     this.getDashboardTabs();
     this.getMonthlyFee({});
     this.getQuarterlyFee({});
@@ -74,7 +85,6 @@ export class DashboardComponent implements OnInit {
     this.getZones();
     this.getCities();
     this.getCenters();
-    this.subscribeViewPanelChange();
   }
 
   getDashboardTabs() {
@@ -328,7 +338,11 @@ export class DashboardComponent implements OnInit {
 
     this.tableFor = '';
     const object: any = {};
-    this.tableTitle = 'Students Fee';
+    if (feeDuration === 'Monthly') {
+      this.tableTitle = 'Ipsaa Club Students Fee';
+    } else {
+      this.tableTitle = 'Student Fee';
+    }
     this.tableData = [];
     this.tableColumn = [];
     object.feeDuration = feeDuration;
@@ -430,7 +444,6 @@ export class DashboardComponent implements OnInit {
 
 
   scroll(el) {
-    console.log(el);
     this.terget = el;
     el.scrollIntoView();
 
@@ -452,16 +465,77 @@ export class DashboardComponent implements OnInit {
 
         this.tableData = res;
         this.alertService.loading.next(false);
+        switch (fitlterBy) {
+          case 'newjoinings':
+          this.tableColumn = [
+            'name',
+            'designation',
+            'mobile',
+            'center',
+            'employer',
+            'doj',
+            'active'
+          ];
+          this.tableTitle = 'Staff New Joinee';
+            break;
+          case 'newleavings':
+            this.tableColumn = [
+              'name',
+              'designation',
+              'mobile',
+              'center',
+              'employer',
+              'dol',
+              'active'
+            ];
+            this.tableTitle = ';Staff New Joinee';
+            break;
+          case 'recruitmentHeadCountList':
+            this.tableColumn = [
+              'name',
+              'designation',
+              'mobile',
+              'center',
+              'employer',
+              'dol',
+              'active'
+            ];
+            this.tableTitle = 'Staff Active Headcount';
+            break;
+          case 'presentStaff':
+            this.tableColumn = [
+              'name',
+              'designation',
+              'mobile',
+              'center',
+              'employer',
+              'checkIn',
+              'checkOut'
+            ];
+            this.tableTitle = 'Present Staff';
+            break;
+          case 'absentStaff':
+            this.tableColumn = [
+              'name',
+              'designation',
+              'mobile',
+              'center',
+              'employer'
+            ];
+            this.tableTitle = 'Absent Staff';
+            break;
+          case 'onLeaveStaff':
+            this.tableColumn = [
+              'name',
+              'designation',
+              'mobile',
+              'center',
+              'employer'
+            ];
+            this.tableTitle = 'Staff On Leave';
+            break;
 
-        this.tableColumn = [
-          'eid',
-          'name',
-          'designation',
-          'mobile',
-          'center',
-          'employer',
-          'ctc'
-        ];
+        }
         this.scroll(this.terget);
 
       }, (err) => {

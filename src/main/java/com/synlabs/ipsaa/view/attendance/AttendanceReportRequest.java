@@ -8,6 +8,7 @@ public class AttendanceReportRequest implements Request
 {
   private Long centerId;
   private String centerCode;
+  private String centerName;
   private Date to;
   private Date from;
 
@@ -55,4 +56,8 @@ public class AttendanceReportRequest implements Request
   {
     this.from = from;
   }
+
+  public String getCentername() { return centerName; }
+
+  public void setCentername(String centername) { this.centerName = centername; }
 }

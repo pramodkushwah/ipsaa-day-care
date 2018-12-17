@@ -35,7 +35,7 @@
         <li class="nav-item" *ngIf="studentForm.controls.fee">
           <a class="nav-link" data-toggle="tab" href="#feeTab">Fee</a>
         </li>
-        <li class="nav-item" *ngIf="!newStudent">
+        <li class="nav-item" *ngIf="!newStudent" [hidden]="student.corporate">
           <a class="nav-link" data-toggle="tab" href="#payment-history">Payment History</a>
         </li>
       </ul>

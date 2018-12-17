@@ -33,12 +33,14 @@ export class SidebarComponent implements OnInit {
     private router: Router) {
     menuService.getMenus().subscribe(
       (response: any) => {
+        response.items.sort((a: any , b: any) => {
+          a.submenu.sort((ai: any , bi: any) => {
+            return ai.seq - bi.seq ;
+          });
+          return a.seq - b.seq ;
+        });
         this.menu = response;
-      },
-      err => {
-        console.error('ERROR', err);
-      }
-    );
+      });
     menuService.getUserProfile().subscribe(
       (response: any) => {
         this.self = response;
@@ -49,11 +51,7 @@ export class SidebarComponent implements OnInit {
         } else {
           this.profileImageURI = '/assets/img/faces/default_profile_pic.png';
         }
-      },
-      err => {
-        console.error('ERROR', err);
-      }
-    );
+      });
   }
 
   ngOnInit() {

@@ -111,6 +111,15 @@ public class StudentController
     request.setId(id);
     studentService.deleteStudent(request);
   }
+
+  @GetMapping(path = "checkPending/{id}")
+  @Secured(STUDENT_DELETE)
+  public boolean checkPending(@PathVariable Long id)
+  {
+    StudentRequest request = new StudentRequest();
+    request.setId(id);
+    return studentService.checkPending(request);
+  }
   @DeleteMapping(path = "{id}/forced")
   @Secured(STUDENT_DELETE)
   public void deleteStudentForced(@PathVariable Long id)
@@ -218,15 +227,12 @@ public class StudentController
     studentService.approve(request);
   }
 
-  @GetMapping("reject/{studentId}")
+  @PostMapping("reject/{id}")
   @Secured(STUDENT_APPROVAL_WRITE)
-  public void rejectStudent(@PathVariable("studentId") Long studentId){
+  public void rejectStudent(@PathVariable long id,@RequestBody() Map<String,Object> req){
     StudentRequest request=new StudentRequest();
-    // comment filed is pending from front end but implemented in backed
-    //request.setRejectionReason(comment);
-    request.setId(studentId);
+    request.setRejectionReason((String)req.get("comment"));
+    request.setId(id);
     studentService.reject(request);
   }
-
-
 }

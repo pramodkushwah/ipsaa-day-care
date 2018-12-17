@@ -64,7 +64,7 @@ public class HolidayService extends BaseService
     try
     {
       LocalDate localDate = LocalDate.fromDateFields(pareDate(dateString,"dd-MM-yyyy"));
-      System.out.println(localDate.plusMonths(12-request.getMonth()+1).toDate());
+      //System.out.println(localDate.plusMonths(12-request.getMonth()+1).toDate());
       query.where(holiday.holidayDate.between(localDate.toDate(),localDate.plusMonths(12-request.getMonth()+1).toDate()));
     }
     catch (ParseException e)

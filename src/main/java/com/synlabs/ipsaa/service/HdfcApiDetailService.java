@@ -86,10 +86,10 @@ public class HdfcApiDetailService {
                              details.setWorkingKey(currentCell.getStringCellValue());
                              currentCell=cellIterator.next();
                              details.setHdfcTid(((long)currentCell.getNumericCellValue())+"");
-                             System.out.println(details);
+                             //System.out.println(details);
                              hdfcApiDetailRepository.save(details);
                          }else {
-                             System.out.println("center not found"+currentCell.getStringCellValue());
+                             //System.out.println("center not found"+currentCell.getStringCellValue());
                          }
                  }
              }catch(Exception e){

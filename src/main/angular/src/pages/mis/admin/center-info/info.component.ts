@@ -79,6 +79,8 @@ export class CenterInfoComponent {
   }
 
   getCitiesByZone(zone: any) {
+    this.centerForm.controls['city'].patchValue('');
+    this.centerForm.controls['state'].patchValue(null);
     if (zone) {
       this.cities = this.zones.find(element => {
         return element.name === zone;

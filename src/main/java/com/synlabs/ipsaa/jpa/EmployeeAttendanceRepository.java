@@ -22,4 +22,6 @@ public interface EmployeeAttendanceRepository extends JpaRepository<EmployeeAtte
 
   //Avneet
   List<EmployeeAttendance>findByEmployeeInAndAttendanceDateOrderByEmployeeIdAsc(List<Employee> employees,Date date);
+
+  List<EmployeeAttendance> findByCenterInAndAttendanceDateBetween(List<Center> center,Date from, Date to);
 }

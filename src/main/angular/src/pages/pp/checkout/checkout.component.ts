@@ -22,11 +22,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
-      this.feeledgeId = +params['p1'];
-      this.myDetailId = +params['p2'];
+      this.feeledgeId = params['p1'];
+      this.myDetailId = params['p2'];
     });
 
-    this.route.url.subscribe(UrlSegment => {
+    this.route.url.subscribe( UrlSegment => {
       this.chec = UrlSegment[0].path;
     });
 

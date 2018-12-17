@@ -89,7 +89,14 @@ export class ProgramComponent implements OnInit {
   }
 
   deleteProgram(program: any) {
+    this.alertService.confirm('you want to delete ' + program.name + 'program').then(() => {
+      this.adminService.deleteProgram(program.id).subscribe(response => {
+        this.alertService.successAlert(program.name + 'Program Deleted Successfully');
+        this.programs.splice(this.programs.indexOf(program, 1));
+      });
+    }).catch((error) => {
 
+    });
   }
 
   addProgramGroup(program) {

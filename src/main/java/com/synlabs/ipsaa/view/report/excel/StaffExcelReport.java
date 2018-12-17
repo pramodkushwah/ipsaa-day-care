@@ -245,10 +245,10 @@ public class StaffExcelReport {
 				BigDecimal sal=staffR.getNetSalary();
 				//System.out.println(sal);
 				sal=sal.subtract(staffR.getExtraMonthlyAllowance()).subtract(staffR.getOtherAllowances());
-				System.out.println(sal);
+				//System.out.println(sal);
 				sal=sal.add(staffR.getOtherDeductions()).add(staffR.getTds());
-				System.out.println(sal);
-				System.out.println(staffR.getNetSalary()+" "+sal);
+				//System.out.println(sal);
+				//System.out.println(staffR.getNetSalary()+" "+sal);
 				cell.setCellValue(sal.intValue());
 				}
 

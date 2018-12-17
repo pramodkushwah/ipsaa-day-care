@@ -237,6 +237,7 @@ public class StudentFeeService extends BaseService{
 
         int slipCount=feePaymentRepository.countByStudentAndFeeDuration(fee.getStudent(),FeeDuration.Quarterly);
         StudentFeePaymentRequest slip=null;
+
         StudentFeePaymentRequest thisQuarterSlip=feePaymentRepository.findByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(),FeeDuration.Quarterly,quarter,year);
         StudentFeePaymentRequest lastQuarterSlip=feePaymentRepository.findByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(),FeeDuration.Quarterly,FeeUtilsV2.getLastQuarter(quarter,year).get("quarter"),FeeUtilsV2.getLastQuarter(quarter,year).get("year"));
         BigDecimal paidAmount=ZERO;
@@ -772,37 +773,11 @@ public class StudentFeeService extends BaseService{
         if(request.getAdjust()!=null){
             slip.setAdjust(request.getAdjust());
         }
-
-        slip.setTotalFee(FeeUtilsV2.calculateSaveFinalFee(slip,slip.getFeeRatio()));
+        slip.setTotalFee(FeeUtilsV2.calculateSave(slip,slip.getFeeRatio()));
         slip.setTotalFee(slip.getTotalFee().add(slip.getBalance()));
        return feePaymentRepository.saveAndFlush(slip);
     }
-    public StudentFeePaymentRequest updateSlipHard(StudentFeeSlipRequestV2 request) {
-        StudentFeePaymentRequest slip = feePaymentRepository.findOne(request.getId());
-        if (slip == null)
-        {
-            throw new NotFoundException("Missing slip");
-        }
 
-        if (slip.getPaymentStatus() == PaymentStatus.Paid)
-        {
-            throw new ValidationException("Already paid.");
-        }
-        slip.setUniformCharges(request.getUniformCharges()==null?ZERO:request.getUniformCharges());
-        slip.setStationary(request.getStationary()==null?ZERO:request.getStationary());
-
-        if(request.getExtraCharge()!=null)
-            slip.setExtraCharge(request.getExtraCharge());
-        if(request.getLatePaymentCharge()!=null)
-            slip.setLatePaymentCharge(request.getLatePaymentCharge());
-        if(request.getAdjust()!=null){
-            slip.setAdjust(request.getAdjust());
-        }
-
-        slip.setTotalFee(FeeUtilsV2.calculateSaveFinalFee(slip,slip.getFeeRatio()));
-        slip.setTotalFee(slip.getTotalFee().add(slip.getBalance()));
-        return feePaymentRepository.saveAndFlush(slip);
-    }
     public StudentFeePaymentRequestIpsaaClub getSlip(Long id)
     {
         StudentFeePaymentRequestIpsaaClub slip = paymentIpsaaRequestRepository.findOne(id);
@@ -1102,7 +1077,7 @@ public class StudentFeeService extends BaseService{
             @Override
             public void accept(StudentFeePaymentRequest studentFeePaymentRequest) {
                 double extraHours=attendanceService.getLastQuarterExtraHours(studentFeePaymentRequest.getStudent(),4,2018);
-                System.out.println("from "+studentFeePaymentRequest.getExtraHours() +" to "+ extraHours);
+                //System.out.println("from "+studentFeePaymentRequest.getExtraHours() +" to "+ extraHours);
                 studentFeePaymentRequest.setExtraHours(new BigDecimal(extraHours));
                 feePaymentRepository.saveAndFlush(studentFeePaymentRequest);
             }

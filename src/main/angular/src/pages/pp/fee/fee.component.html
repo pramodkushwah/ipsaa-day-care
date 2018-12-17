@@ -29,11 +29,12 @@
           <!--<input type="hidden" name="merchant_id" value="{{checkoutDetails.merchantId}}">-->
           <!--<input type="hidden" name="access_code" value="{{checkoutDetails.accessCode}}">-->
           <!--<input type="hidden" name="encRequest"  value="{{checkoutDetails.encRequest}}">-->
-          
-          <a *ngIf="!ipsaaClub" class="btn btn-portal btn-round" [routerLink]="['/pp/checkout.html#!/app/checkoutdetails', studentfeeledgerId, myDetailId]" target="_blank" > 
+
+
+          <a *ngIf="fee.program.id !== 72932732558618" class="btn btn-portal btn-round" [routerLink]="['/pp/checkout/', studentfeeledger.id, myDetailId]" target="_blank" >
               Pay now
             </a>
-            <a  *ngIf="ipsaaClub" class="btn btn-portal btn-round" [routerLink]="['/pp/ipsaaclubcheckout/', studentfeeledgerId, myDetailId]" target="_blank" > 
+            <a  *ngIf="fee.program.id === 72932732558618" class="btn btn-portal btn-round" [routerLink]="['/pp/ipsaaclubcheckout/', studentfeeledger.id, myDetailId]" target="_blank" >
               Pay now
             </a>
         </form>
@@ -96,7 +97,7 @@
   </div>
   <div class="col-sm-12  col-md-4" *ngIf="studentfeeledger">
     <div class="card card-raised">
-      
+
         <div class="card-header card-header-warning card-header-icon">
             <div class="row">
               <div class="col-md-12">

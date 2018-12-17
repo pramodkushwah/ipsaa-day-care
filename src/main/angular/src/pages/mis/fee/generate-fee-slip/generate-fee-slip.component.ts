@@ -16,7 +16,7 @@ export class GenerateFeeSlipComponent implements OnInit {
   quaters = [{ Qtype: 'FYQ1', id: 2 }, { Qtype: 'FYQ2', id: 3 }, { Qtype: 'FYQ3', id: 4 }, { Qtype: 'FYQ4', id: 1 }];
   currentYear: number;
   years = [];
-  studentDetails: Array<any>;
+  studentDetails = [];
   viewPanel = false;
   mailPanel = false;
   saveFeeSlip = false;
@@ -43,6 +43,7 @@ export class GenerateFeeSlipComponent implements OnInit {
     this.currentYear = (new Date).getFullYear();
     this.years.push(this.currentYear - 1);
     this.years.push(this.currentYear);
+    this.years.push(this.currentYear + 1);
 
 
   }
@@ -79,20 +80,19 @@ export class GenerateFeeSlipComponent implements OnInit {
       'period': 'Quarterly',
       'quarter': this.generateSlipForm.value.quater,
       'year': this.generateSlipForm.value.year
-    })
-      .subscribe((res) => {
-        this.alertService.loading.next(false);
-        this.showtable = true;
-        this.downloadinData = true;
+    }).subscribe((res) => {
+      this.alertService.loading.next(false);
+      this.showtable = true;
+      this.downloadinData = true;
 
-        this.studentDetails = res;
-        this.allItems = res.slice(0);
-      }, (err) => {
-        this.alertService.loading.next(false);
-        this.downloadinData = true;
-        this.showtable = true;
+      this.studentDetails = res;
+      this.allItems = res.slice(0);
+    }, (err) => {
+      this.alertService.loading.next(false);
+      this.downloadinData = true;
+      this.showtable = true;
 
-      });
+    });
 
   }
 

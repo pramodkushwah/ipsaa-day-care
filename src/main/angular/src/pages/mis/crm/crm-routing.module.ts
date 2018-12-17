@@ -5,12 +5,12 @@ import { InquiryComponent } from './inquiry/inquiry.component';
 
 const attendanceRoutes: Routes = [
   {
-    path: 'inquiryreport',
-    component: ReportComponent
-  },
-  {
     path: 'inquiry',
     component: InquiryComponent
+  },
+  {
+    path: 'inquiryreport',
+    component: ReportComponent
   }
 ];
 

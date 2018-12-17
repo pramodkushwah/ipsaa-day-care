@@ -7,20 +7,10 @@ import { StudentAttendanceReportComponent } from './student-attendance-report/st
 import { StaffAttendanceReportComponent } from './staff-attendance-report/staff-attendance-report.component';
 import { FeeCollectionReportComponent } from './fee-collection-report/fee-collection-report.component';
 import { HdfcGatewayFeeReportComponent } from './hdfc-gateway-fee-report/hdfc-gateway-fee-report.component';
+import { IpsaaClubReportComponent } from './ipsaa-club-report/ipsaa-club-report.component';
+import { StaffReportComponent } from './staff-report/staff-report.component';
 
 const reportRoutes: Routes = [
-  {
-    path: 'inquiryreport',
-    component: InquiryReportComponent
-  },
-  {
-    path: 'stdfeereport',
-    component: StudentFeeReportComponent
-  },
-  {
-    path: 'staffsalarymonthlyreport',
-    component: StaffSalaryMonthlyReportComponent
-  },
   {
     path: 'stdattendancereport',
     component: StudentAttendanceReportComponent
@@ -30,13 +20,33 @@ const reportRoutes: Routes = [
     component: StaffAttendanceReportComponent
   },
   {
+    path: 'ipsaaclubreport',
+    component: IpsaaClubReportComponent
+  },
+  {
+    path: 'stdfeereport',
+    component: StudentFeeReportComponent
+  },
+  {
+    path: 'inquiryreport',
+    component: InquiryReportComponent
+  },
+  {
     path: 'collectionfeereport',
     component: FeeCollectionReportComponent
   },
-{
-  path: 'HdfcGatewayFeeReport',
-  component: HdfcGatewayFeeReportComponent
-}
+  {
+    path: 'hdfcgatewayfeereport',
+    component: HdfcGatewayFeeReportComponent
+  },
+  {
+    path: 'staffsalarymonthlyreport',
+    component: StaffSalaryMonthlyReportComponent
+  },
+  {
+    path: 'staffreport',
+    component: StaffReportComponent
+  }
 ];
 
 @NgModule({

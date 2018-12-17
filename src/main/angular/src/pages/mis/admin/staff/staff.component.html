@@ -21,7 +21,7 @@
   <div class="col-md-3">
     <div class="form-group">
       <label for="staff_status">Staff Status:</label>
-      <select class="form-control" id="staff_status" [(ngModel)]="selectedStaffStatus" (ngModelChange)="filterStaff()">
+      <select class="form-control" id="staff_status" [(ngModel)]="selectedStaffStatus" (ngModelChange)="filterStaff($event)">
         <option value="true">Active</option>
         <option value="false">Inactive</option>
       </select>

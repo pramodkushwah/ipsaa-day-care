@@ -9,6 +9,8 @@ import { StaffAttendanceReportComponent } from './staff-attendance-report/staff-
 import { FeeCollectionReportComponent } from './fee-collection-report/fee-collection-report.component';
 import { FormsModule } from '@angular/forms';
 import { HdfcGatewayFeeReportComponent } from './hdfc-gateway-fee-report/hdfc-gateway-fee-report.component';
+import { IpsaaClubReportComponent } from './ipsaa-club-report/ipsaa-club-report.component';
+import { StaffReportComponent } from './staff-report/staff-report.component';
 
 @NgModule({
   imports: [CommonModule,    FormsModule,
@@ -20,7 +22,9 @@ import { HdfcGatewayFeeReportComponent } from './hdfc-gateway-fee-report/hdfc-ga
     StudentAttendanceReportComponent,
     StaffAttendanceReportComponent,
     FeeCollectionReportComponent,
-    HdfcGatewayFeeReportComponent
+    HdfcGatewayFeeReportComponent,
+    IpsaaClubReportComponent,
+    StaffReportComponent
   ],
   exports: [InquiryReportComponent],
 })

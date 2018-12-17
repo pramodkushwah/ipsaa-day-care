@@ -38,7 +38,7 @@
       </div>
 
       <div class="card-body">
-        <table class="table table-responsive">
+        <table class="table table-condensed table-striped table-hover">
           <colgroup>
             
             <col width="10%">
@@ -75,19 +75,17 @@
                 </button>
               </td>
               <td>
-                  <button mat-raised-button class="btn btn-warning btn-sm" (click)="studentApprove(student)">Approve
-                    </button>
-                    <br>
-                    <button mat-raised-button class="btn btn-rose btn-sm" (click)="studentReject(student)">Reject
-                    </button>
+                <button mat-raised-button class="btn btn-warning btn-sm" (click)="studentApprove(student)">Approve
+                  </button>
+                  <br>
+                  <button mat-raised-button class="btn btn-rose btn-sm" data-toggle="modal" data-target="#myModal" (click)="selectedStudent=student" >Reject
+                  </button>
               </td>
             </tr>
-          </tbody>
-          <tfoot *ngIf=" studentAprrovelList.length === 0" style="border: 1px groove #e8e8e8;">
-            <tr>
+            <tr *ngIf=" studentAprrovelList.length === 0" class="text-center">
               <td colspan="7" class="text-center">No Content</td>
             </tr>
-          </tfoot>
+          </tbody>
         </table>
       </div>
     </div>
@@ -98,3 +96,33 @@
      
   </div>
 </div>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Reject Student</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+  
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="control-label">Reason: </label>
+            <input class="form-control" [(ngModel)]="comment">
+          </div>
+        </div>
+  
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="studentReject(selectedStudent, comment)" [disabled]="!comment">
+              <i class="fa fa-spinner fa-fw fa-pulse text-primary" *ngIf="studentLoader"> </i>Confirm</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        </div>
+  
+      </div>
+    </div>
+  </div>

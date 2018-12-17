@@ -69,6 +69,20 @@ export class StudentComponent implements OnInit {
     });
   }
 
+  filterStudent(status) {
+    const a = 'true' === status;
+    this.loader = true;
+    this.allItems = this.studentsCopy.filter((student: any) => {
+      console.log(student.active , a);
+      return student.active === a;
+    });
+    this.setPage(1);
+    this.loader = false;
+    if (this.searchKey) {
+      this.searchStudent(this.searchKey);
+    }
+  }
+
   getPrograms() {
     this.adminService.getPrograms().subscribe((response: any) => {
       this.programs = response;
@@ -96,14 +110,26 @@ export class StudentComponent implements OnInit {
   }
 
   deleteStudentSwal(student: any) {
-    this.alertService.confirm('').then(isConfirm => {
-      if (isConfirm) {
-        this.adminService.deleteStudentById(student.id).subscribe((response: any) => {
-          this.alertService.successAlert('You have deleted student record successfully');
-        }, (error: any) => {
-          this.alertService.errorAlert(error);
+    this.adminService.isFeePanding(student.id).subscribe((isPending: boolean) => {
+       if (isPending) {
+        this.alertService.confirm('As ' + student.fullName + ' Fee is still outstanding').then(isConfirm => {
+          if (isConfirm) {
+            this.adminService.deleteStudentForcefully(student.id).subscribe(response => {
+              this.allItems.splice(this.allItems.indexOf(student), 1);
+              this.setPage(1);
+              this.alertService.successAlert('Student successfully deleted');
+            });
+          }
         });
-      }
+       } else {
+         this.alertService.confirm('').then(isConfirm => {
+           if (isConfirm) {
+             this.adminService.deleteStudentById(student.id).subscribe((response: any) => {
+               this.alertService.successAlert('You have deleted student record successfully');
+             });
+           }
+         });
+       }
     });
   }
 

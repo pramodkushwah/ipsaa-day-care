@@ -34,8 +34,8 @@
       <div class="card-body">
           <div class="table-responsive">
 
-        <table class=" table table-hover">
-            <colgroup>
+        <table class=" table table-condensed table-striped table-hover">
+            <!-- <colgroup>
             
               <col width="10%">
               <col width="15%">
@@ -43,9 +43,9 @@
               <col width="15%">
               <col width="10%">
               <col width="10%">
-              <!-- <col width="10%"> -->
+              <col width="10%">
               <col width="30%">
-            </colgroup>
+            </colgroup> -->
           <thead class="text-primary" >
               <!-- *ngIf=" staffAprrovelList ?.length >0"s -->
             <th> Sr.No</th>
@@ -81,12 +81,10 @@
                 </button>
               </td>
             </tr>
-          </tbody>
-          <tfoot *ngIf="staffAprrovelList.length === 0" style="border: 1px groove #e8e8e8;">
-            <tr  >
+            <tr *ngIf="staffAprrovelList.length === 0" class="text-center">
               <td colspan="7" class="text-center">No Content</td>
             </tr>
-          </tfoot>
+          </tbody>          
         </table>
         </div>
       </div>
