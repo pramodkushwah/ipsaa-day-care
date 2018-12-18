@@ -48,7 +48,7 @@ export class InquiryDetailsComponent implements OnInit {
     programs: Array<any>;
     groups = [];
     selectedCenter = {};
-    inquiryDetails: any;
+    inquiryDetails: any = [];
     newInquiry: number;
     tab: string;
     inquiryDisable: boolean;
@@ -77,13 +77,14 @@ export class InquiryDetailsComponent implements OnInit {
 
     @Input() set inquiryId(inquiryId: any) {
         this.today = new Date();
+        // this.today.setDate(this.today.getDate());
 
         this.inquiryForm = this.inquiryDetialForm();
         this.newInquiry = inquiryId;
         if (inquiryId) {
             this.loadInquiry(inquiryId);
         } else {
-            this.inquiryForm.get('inquiryDate').setValue(this.today);
+            this.inquiryForm.get('inquiryDate').setValue('2018-12-21');
             this.inquiryForm.get('toTime').setValue(this.today.getHours() + ':' + this.today.getMinutes());
             this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' + this.today.getMinutes());
         }
@@ -96,8 +97,11 @@ export class InquiryDetailsComponent implements OnInit {
     ngOnInit() {
         this.getCenter();
         this.getPrograms();
+        const todayDate = new Date().toISOString().slice(0, 10);
+console.log(todayDate);
+
         // this.today.setDate(this.today.getDate());
-        // console.log(this.today);
+        // console.log(this.today.setDate(this.today.getDate()));
     }
 
     getCenter() {
@@ -146,7 +150,7 @@ export class InquiryDetailsComponent implements OnInit {
             groupName: [''],
             hobbies: [''],
             id: [null],
-            inquiryDate: [''],
+            inquiryDate: [{ value: this.today.toISOString().slice(0, 10), disabled: false }],
             inquiryNumber: [''],
             inquiryType: [''],
             leadSource: [''],
@@ -159,7 +163,7 @@ export class InquiryDetailsComponent implements OnInit {
             programId: [0],
             programName: [''],
             secondaryNumbers: [''],
-            status: [''],
+            status: ['NewInquiry'],
             toTime: [''],
             type: [''],
             whoVisited: [''],
@@ -234,8 +238,7 @@ console.log(this.log);
             this.adminService.addNewInquiry(this.inquiryForm.value)
                 .subscribe((res: any) => {
                     this.inquiryDetails.push(this.log);
-
-                    this.alertService.successAlert('');
+                    this.alertService.successAlert('New Inquiry Add Succesfuly');
                 });
 
         }
