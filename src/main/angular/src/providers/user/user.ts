@@ -68,6 +68,9 @@ export class User {
     });
   }
 
+
+
+
   /**
    * Send a POST request to our signup endpoint with the data
    * the user entered on the form.
@@ -88,6 +91,19 @@ export class User {
     );
 
     return seq;
+  }
+
+
+
+
+
+  getTokenForForgetPassword(email) {
+    return this.api.post('mis/resetpassword/email', email);
+  }
+
+
+  getCreateNewPassword(pwd_token) {
+    return this.api.post('mis/resetpassword/', pwd_token);
   }
 
   /**
