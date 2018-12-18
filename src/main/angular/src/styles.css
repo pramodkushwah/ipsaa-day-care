@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-
+body{
+    background-color: white;
+}
 .transition {
     transition: all .3s linear;
 }
@@ -26,3 +28,34 @@ text-transform: capitalize;
     border-top: 1px solid #E9EEF1;
     overflow: hidden;
   } */
+/* 
+.wrapper .main-panel{
+    float: none;
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+} */
+
+.wrapper .main-panel {
+    float: none;
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+    background: #fafafa;
+    height: auto;
+    max-height: inherit;
+    box-shadow: 0 0 10px 2px #999;
+}
+
+.wrapper nav.navbar .container-fluid a.navbar-brand {
+    padding-top: 0;
+}
+.main-panel nav.navbar {
+    position: fixed;
+    top: 0;
+    left: 0 !important;
+    right: 0 !important;
+    background: white !important;
+    box-shadow: 0 0 10px 3px #999;
+    padding: 10px 50px;
+} 
