@@ -85,8 +85,8 @@
           <div class="form-group">
             <label class="control-label">Center(s)</label>
             <select class="form-control" [(ngModel)]="selectedCenterModel" (ngModelChange)="addCenter($event)" [ngModelOptions]="{standalone: true}">
-              <option *ngFor="let center of centers;" [ngValue]="center.name">{{center.name}}</option>
               <option value=""></option>
+              <option *ngFor="let center of centers;" [ngValue]="center.name">{{center.name}}</option>
             </select>
           </div>
         </div>
