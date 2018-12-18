@@ -33,6 +33,7 @@ export class FeeReceiptInfoComponent implements OnInit {
   updateReceipt: any = {};
   paymentUpdate: any = {};
   selectedPayment: any;
+  STUDENTFEE_RECEIPT_CONFIRM = this.adminService.hasPrivilage('STUDENTFEE_RECEIPT_CONFIRM');
   constructor(
     private adminService: AdminService,
     private fb: FormBuilder,
