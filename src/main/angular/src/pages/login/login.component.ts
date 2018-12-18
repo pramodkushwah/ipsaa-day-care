@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { User } from '../../providers/user/user';
 import { AlertService } from '../../providers/alert/alert.service';
 import { StorageService } from '../../providers/localstorage/storage';
-
+declare const $: any;
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -15,16 +15,23 @@ export class LoginComponent implements OnInit {
     email: '',
     password: 'ajay0211'
   };
+  token: string;
+  password1: string;
+  password2: string;
+  forgetForm: any;
+  forgetCLickEmailError: boolean;
   logging = false; // to diable the login btn while request is in progress
+  forgetEmail: string;
+  pwdMisMatch = false;
 
   constructor(
     private userService: User,
     private router: Router,
     private alertService: AlertService,
     private storage: StorageService
-  ) {}
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   verifyUser() {
     this.logging = true;
@@ -62,7 +69,48 @@ export class LoginComponent implements OnInit {
     this.alertService.errorAlert(error.message);
   }
 
+
+  userEmailChange() {
+    this.forgetCLickEmailError = false;
+    this.forgetEmail = this.user.email;
+  }
   onForgotPswd() {
     // TODO
+
+
+    if (this.forgetEmail) {
+
+      this.userService.getTokenForForgetPassword({ email: this.forgetEmail })
+        .subscribe((res: any) => {
+          $('#forgetPassword').modal('show');
+        });
+
+
+    } else {
+      this.forgetCLickEmailError = true;
+    }
+    // console.log('forgetpassword');
+
+  }
+
+
+
+  newPassword() {
+
+    if (this.password1 === this.password2) {
+      console.log(this.token + '  ' + this.password1);
+
+      this.userService.getCreateNewPassword({ password: this.password1, token: this.token.toString() })
+        .subscribe((res: any) => {
+          this.alertService.successAlert('Password Change Successfuly \n Login With New Password');
+          $('#forgetPassword').modal('hide');
+        }, (err) => {
+          this.pwdMisMatch = false;
+
+        });
+    } else {
+      this.pwdMisMatch = true;
+    }
+
   }
 }

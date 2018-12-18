@@ -17,8 +17,8 @@
 										</span>
 										<div class="form-group label-floating">
 											<label for="username" class="control-label">Email address</label>
-											<input type="email" name="username" id="username" class="form-control" [(ngModel)]="user.email" #username="ngModel" required
-											 autofocus>
+											<input type="email" name="username" id="username" class="form-control" (keyup)="userEmailChange()"
+											 [(ngModel)]="user.email" #username="ngModel" required autofocus>
 											<span class="err-msg-red err-msg-smaller" *ngIf="username.dirty && username.invalid">Username is required</span>
 										</div>
 									</div>
@@ -28,8 +28,8 @@
 										</span>
 										<div class="form-group label-floating">
 											<label for="password" class="control-label">Password</label>
-											<input type="password" name="password" id="password" class="form-control" [(ngModel)]="user.password" #password="ngModel"
-											 required>
+											<input type="password" name="password" id="password" class="form-control" [(ngModel)]="user.password"
+											 #password="ngModel" required>
 											<span class="err-msg-red err-msg-smaller" *ngIf="password.dirty && password.invalid">Password is required</span>
 										</div>
 									</div>
@@ -40,10 +40,11 @@
 											<i class="fa fa-spinner fa-spin"></i> Logging In...
 										</span>
 										<ng-template #save>Login</ng-template>
-									</button>
-
-									<div style="padding-top: 20px">
-										<a href="" (click)="onForgotPswd()">Forgot Password?</a>
+									</button> <br>
+									<span class="err-msg-red err-msg-smaller" *ngIf="forgetCLickEmailError">Email is required</span>
+									<!-- <span class="err-msg-red err-msg-smaller" *ngIf="forgetCLickEmailError">Email is required</span> -->
+									<div style="padding-top: 20px; color: black">
+										<a (click)="onForgotPswd()">Forgot Password?</a>
 									</div>
 								</div>
 							</div>
@@ -54,5 +55,38 @@
 		</div>
 
 		<div class="full-page-background"></div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="forgetPassword" tabindex="-1" role="dialog" aria-labelledby="forgetPassword" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content card card-stats">
+			<div class="card-header card-header-danger card-header-icon">
+				<h3 style="text-align: center" class="card-title">Create New Password</h3>
+			</div>
+			<div class="modal-body">
+				<h5 style="text-align: center" class="card-title">Token is sent to {{user.email}}</h5>
+				<form #forgetForm="ngForm">
+				<div class="form-group label-floating">
+					<label for="token" class="control-label">Token</label>
+					<input type="number" [(ngModel)]="token" name="token" id="token" class="form-control" required>
+				</div>
+				<div class="form-group label-floating">
+					<label for="password1" class="control-label">Create new password</label>
+					<input type="password" [(ngModel)]="password1" name="password1"  id="password1" class="form-control" required>
+				</div>
+				<div class="form-group label-floating">
+					<label for="password2" class="control-label">Confirm new password</label>
+					<input type="password" [(ngModel)]="password2" name="password2" id="password2" class="form-control" required>
+				</div>
+				<span class="err-msg-red err-msg-smaller" *ngIf="pwdMisMatch">Password Miss Match Try Again</span>
+				<div style="text-align: center">
+					<button type="button" (click)="newPassword()" [disabled]="!forgetForm.valid " class="btn btn-rose">send</button>
+					<button type="button" data-dismiss="modal" (click)="forgetForm.reset()" class="btn btn-rose">Cancel</button>
+				</div>
+			</form>
+			</div>
+		</div>
 	</div>
 </div>
