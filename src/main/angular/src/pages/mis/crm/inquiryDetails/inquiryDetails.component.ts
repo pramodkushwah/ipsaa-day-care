@@ -122,7 +122,7 @@ this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' +  this.to
 
         return this.fb.group({
             centerCode: [''],
-            centerId: [''],
+            centerId: [],
             centerName: [''],
             childDob: [''],
             childFirstName: [''],
@@ -142,7 +142,7 @@ this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' +  this.to
             fatherMobile: [''],
             feeOffer: [''],
             fromTime: [''],
-            groupId: [''],
+            groupId: [],
             groupName: [''],
             hobbies: [''],
             id: [],

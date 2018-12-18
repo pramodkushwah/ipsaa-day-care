@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 })
 export class FeeComponent implements OnInit {
   studentfeeledger: any;
+  studentfeeledgerId: number;
   fee: any;
   payment: any;
   checkoutDetails: any;
@@ -22,6 +23,7 @@ export class FeeComponent implements OnInit {
   disabledDownloadFeeReceipt: any;
   disabledDownloadFeeSlip: any;
   myDetailId: any;
+  ipsaaClub = false;
   constructor(
     private router: Router,
     private parentService: ParentService,
@@ -47,6 +49,11 @@ export class FeeComponent implements OnInit {
     this.parentService.getStudentFee(std_id)
       .subscribe((res: any) => {
         this.fee = res;
+        if (this.fee.program.id === 72932732558618) {
+          this.ipsaaClub = true;
+        } else {
+          this.ipsaaClub = false;
+        }
       });
   }
 
@@ -59,6 +66,7 @@ export class FeeComponent implements OnInit {
     this.parentService.getStudentFeeledger(std_id)
       .subscribe((res: any) => {
         this.studentfeeledger = res;
+        this.studentfeeledgerId = res.id;
         this.getFullBillingDetails();
       });
   }
@@ -71,7 +79,7 @@ export class FeeComponent implements OnInit {
   }
 
   getFullBillingDetails() {
-    this.parentService.hdfcCheckout(this.studentfeeledger.id, this.myDetailId)
+    this.parentService.hdfcCheckout(this.studentfeeledgerId, this.myDetailId)
       .subscribe((res: any) => {
         this.checkoutDetails = res;
       });
