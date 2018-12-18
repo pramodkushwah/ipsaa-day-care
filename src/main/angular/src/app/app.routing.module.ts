@@ -23,7 +23,7 @@ const routes: Routes = [
     component: CheckoutComponent
   },
   {
-    path: 'pp/checkout.html#!/app/ipsaaclubcheckoutdetails/:p1/:p2',
+    path: 'pp/checkout.html!/app/ipsaaclubcheckoutdetails/:p1/:p2',
     component: CheckoutComponent
   },
   {
