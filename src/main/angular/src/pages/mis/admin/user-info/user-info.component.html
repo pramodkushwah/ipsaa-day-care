@@ -101,7 +101,7 @@
       </div>
 
       <div class="form-footer text-right">
-        <button class="btn btn-rose btn-fill" (click)="saveUser()">
+        <button class="btn btn-rose btn-fill" (click)="saveUser()" [disabled]="userForm.invalid">
           <span *ngIf="saving;else save">
             <i class="fa fa-spinner fa-spin"></i> Saving
           </span>
