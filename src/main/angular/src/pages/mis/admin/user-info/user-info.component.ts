@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AdminService } from '../../../../providers/admin/admin.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService } from '../../../../providers/alert/alert.service';
 
 import * as _ from 'underscore';
@@ -84,16 +84,16 @@ export class UserInfoComponent implements OnInit {
     return this.fb.group({
       active: [''],
       centers: [''],
-      email: [''],
+      email: ['', [Validators.required]],
       empId: [''],
       employee: [''],
-      firstname: [''],
+      firstname: ['', [Validators.required]],
       fullName: [''],
       id: [''],
       lastname: [''],
       mode: [''],
       name: [''],
-      phone: [''],
+      phone: ['', [Validators.required]],
       profileImage: [''],
       profileImageData: [''],
       roles: [[]],
@@ -126,7 +126,7 @@ export class UserInfoComponent implements OnInit {
         this.selectedCenters.push(center);
         this.centers.splice(this.centers.findIndex((cen) => {
           return cen.name === center;
-        }));
+        }), 1);
       }
     }
   }
@@ -184,6 +184,8 @@ export class UserInfoComponent implements OnInit {
               this.selectedRoles = [];
               this.selectedCenters = [];
               this.alertService.successAlert('User updated');
+            }, error => {
+              this.saving = false;
             });
         }
       });
@@ -197,6 +199,8 @@ export class UserInfoComponent implements OnInit {
         this.selectedRoles = [];
         this.selectedCenters = [];
         this.alertService.successAlert('New User added');
+      }, error => {
+        this.saving = false;
       });
     }
   }
