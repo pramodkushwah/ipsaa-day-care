@@ -52,11 +52,11 @@ export class InquiryDetailsComponent implements OnInit {
     newInquiry: number;
     tab: string;
     inquiryDisable: boolean;
-    callBackDisposition: any;
-    callBackNumber: number;
-    callBackDate: string;
-    callBackTime: string;
-    callBackComment: string;
+    // callBackDisposition: any;
+    // callBackNumber: number;
+    // callBackDate: string;
+    // callBackTime: string;
+    // callBackComment: string;
     log = {
         callBack: '',
         callBackTime: '',
@@ -83,10 +83,10 @@ export class InquiryDetailsComponent implements OnInit {
         if (inquiryId) {
             this.loadInquiry(inquiryId);
         } else {
-this.inquiryForm.get('inquiryDate').setValue(this.today);
-this.inquiryForm.get('toTime').setValue(this.today.getHours() + ':' +  this.today.getMinutes());
-this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' +  this.today.getMinutes());
-}
+            this.inquiryForm.get('inquiryDate').setValue(this.today);
+            this.inquiryForm.get('toTime').setValue(this.today.getHours() + ':' + this.today.getMinutes());
+            this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' + this.today.getMinutes());
+        }
     }
     @Input() set currentTab(currentTab: any) {
         this.tab = currentTab;
@@ -122,7 +122,7 @@ this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' +  this.to
 
         return this.fb.group({
             centerCode: [''],
-            centerId: [],
+            centerId: [0],
             centerName: [''],
             childDob: [''],
             childFirstName: [''],
@@ -142,10 +142,10 @@ this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' +  this.to
             fatherMobile: [''],
             feeOffer: [''],
             fromTime: [''],
-            groupId: [],
+            groupId: [0],
             groupName: [''],
             hobbies: [''],
-            id: [],
+            id: [null],
             inquiryDate: [''],
             inquiryNumber: [''],
             inquiryType: [''],
@@ -156,15 +156,14 @@ this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' +  this.to
             motherLastName: [''],
             motherMobile: [''],
             programCode: [''],
-            programId: [''],
+            programId: [0],
             programName: [''],
             secondaryNumbers: [''],
             status: [''],
             toTime: [''],
             type: [''],
             whoVisited: [''],
-
-
+            log: []
         });
     }
 
@@ -196,17 +195,18 @@ this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' +  this.to
     saveForm() {
 
 
-        if (this.log.callDisposition) {
-            this.log.callBack = ' ' + this.log.callBackDate + ' ' + this.log.callBackTime + ' ' + 'IST';
-            this.inquiryForm.value['log'] = this.log;
+        this.log.callBack = ' ' + this.log.callBackDate + ' ' + this.log.callBackTime + ' ' + 'IST';
+        this.inquiryForm.controls['log'].patchValue(this.log);
 
-        }
+console.log(this.log);
+
         if (this.newInquiry) {
             this.inquiryForm.value['logs'] = this.inquiryDetails;
 
             this.adminService.updateInquiry(this.inquiryForm.value)
                 .subscribe((res: any) => {
                     this.alertService.successAlert('');
+                    this.inquiryDetails.push(this.log);
                 });
 
         } else {
@@ -233,6 +233,8 @@ this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' +  this.to
             });
             this.adminService.addNewInquiry(this.inquiryForm.value)
                 .subscribe((res: any) => {
+                    this.inquiryDetails.push(this.log);
+
                     this.alertService.successAlert('');
                 });
 

@@ -19,7 +19,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   constructor(
     private parentService: ParentService,
-    private route: ActivatedRoute, public http:HttpClient) { }
+    private route: ActivatedRoute, public http: HttpClient) { }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
