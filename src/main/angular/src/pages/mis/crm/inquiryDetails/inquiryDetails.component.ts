@@ -76,7 +76,7 @@ export class InquiryDetailsComponent implements OnInit {
     ) { }
 
     @Input() set inquiryId(inquiryId: any) {
-        this.today = new Date() ;
+        this.today = new Date();
         // this.today.setDate(this.today.getDate());
 
         this.inquiryForm = this.inquiryDetialForm();
@@ -84,7 +84,7 @@ export class InquiryDetailsComponent implements OnInit {
         if (inquiryId) {
             this.loadInquiry(inquiryId);
         } else {
-            // this.inquiryForm.get('inquiryDate').setValue('');
+            this.inquiryForm.get('inquiryDate').setValue('2018-12-21');
             this.inquiryForm.get('toTime').setValue(this.today.getHours() + ':' + this.today.getMinutes());
             this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' + this.today.getMinutes());
         }
@@ -97,8 +97,11 @@ export class InquiryDetailsComponent implements OnInit {
     ngOnInit() {
         this.getCenter();
         this.getPrograms();
-        this.today.setDate(this.today.getDate());
-        console.log(this.today.setDate(this.today.getDate()));
+        const todayDate = new Date().toISOString().slice(0, 10);
+console.log(todayDate);
+
+        // this.today.setDate(this.today.getDate());
+        // console.log(this.today.setDate(this.today.getDate()));
     }
 
     getCenter() {
@@ -147,7 +150,7 @@ export class InquiryDetailsComponent implements OnInit {
             groupName: [''],
             hobbies: [''],
             id: [null],
-            inquiryDate: [{ value: this.today.toISOString().split('T')[0], disabled: false }],
+            inquiryDate: [{ value: this.today.toISOString().slice(0, 10), disabled: false }],
             inquiryNumber: [''],
             inquiryType: [''],
             leadSource: [''],

@@ -33,6 +33,7 @@ export class FeeReceiptInfoComponent implements OnInit {
   updateReceipt: any = {};
   paymentUpdate: any = {};
   selectedPayment: any;
+  STUDENTFEE_RECEIPT_CONFIRM: boolean = this.adminService.hasPrivilage('adminService');
   constructor(
     private adminService: AdminService,
     private fb: FormBuilder,
@@ -102,7 +103,7 @@ export class FeeReceiptInfoComponent implements OnInit {
       stationary: [{ value: '', disabled: false }],
       stationaryPaidAmountTotal: [{ value: '', disabled: false }],
       status: [{ value: '', disabled: false }],
-      paymentDate: [{ value: this.currentDate.toISOString().split('T')[0], disabled: false }],
+      paymentDate: [{ value: this.currentDate.toISOString().slice(0, 10), disabled: false }],
       totalFee: [{ value: '', disabled: true }],
       totalOtherPaidAmount: [{ value: '', disabled: false }],
       totalOtherRemainningAmount: [{ value: '', disabled: false }],
