@@ -17,7 +17,7 @@ export class UserInfoComponent implements OnInit {
   userForm: FormGroup;
   editable: boolean;
   roles: any[];
-  centers: any;
+  centers: any[] = [];
   employees: any[] = [];
   selectedRoleModel: string;
   selectedCenterModel: string;
@@ -37,8 +37,7 @@ export class UserInfoComponent implements OnInit {
     if (this.editable) {
       this.userForm.patchValue(user);
       this.selectedRoles = JSON.parse(JSON.stringify(user.roles));
-      this.selectedCenters = JSON.parse(JSON.stringify(user.centers));
-      console.log(user);
+      this.selectedCenters = user.centers;
     } else {
       this.selectedUser = {};
       this.userForm.reset();
@@ -69,6 +68,9 @@ export class UserInfoComponent implements OnInit {
   getCenters() {
     this.adminService.getAllCenters().subscribe((response: any) => {
       this.centers = response;
+      this.centers = this.centers.filter(cen => {
+        return !this.selectedCenters.includes(cen.name);
+      });
     });
   }
 
@@ -120,10 +122,11 @@ export class UserInfoComponent implements OnInit {
       this.selectedCenters = [];
       this.selectedCenters.push(center);
     } else {
-      if (
-        this.selectedCenters.findIndex(element => center === element) === -1
-      ) {
+      if (!this.selectedCenters.includes(center)) {
         this.selectedCenters.push(center);
+        this.centers.splice(this.centers.findIndex((cen) => {
+          return cen.name === center;
+        }));
       }
     }
   }
