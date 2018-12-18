@@ -23,11 +23,15 @@ const routes: Routes = [
     component: CheckoutComponent
   },
   {
-    path: 'pp/checkout/failure/:paymentId',
+    path: 'pp/checkout.html#!/app/ipsaaclubcheckoutdetails/:p1/:p2',
+    component: CheckoutComponent
+  },
+  {
+    path: 'pp/checkout-failure/:paymentId',
     component: ResponseComponent
   },
   {
-    path: 'pp/checkout/success/:paymentId',
+    path: 'pp/checkout-success/:paymentId',
     component: ResponseComponent
   },
   {

@@ -31,7 +31,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.chec = UrlSegment[0].path;
     });
 
-    if (this.chec === 'ipsaaclubcheckout') {
+    if (this.chec === 'ipsaaclubcheckoutdetails') {
       this.parentService.ipsaaClubhdfcCheckout(this.feeledgeId, this.myDetailId)
         .subscribe((res: any) => {
           this.checkoutDetails = res;
