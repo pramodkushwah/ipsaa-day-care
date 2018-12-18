@@ -488,7 +488,7 @@ export class DashboardComponent implements OnInit {
               'dol',
               'active'
             ];
-            this.tableTitle = ';Staff New Joinee';
+            this.tableTitle = 'Staff New Joinee';
             break;
           case 'recruitmentHeadCountList':
             this.tableColumn = [

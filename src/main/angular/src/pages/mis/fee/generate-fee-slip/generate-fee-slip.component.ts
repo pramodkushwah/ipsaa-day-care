@@ -35,6 +35,8 @@ export class GenerateFeeSlipComponent implements OnInit {
   showtable = false;
   downloadinData: boolean;
   regenrateSpecificDate: any;
+  studentDetailsCopy: any;
+  statusFilter = 'All';
   constructor(
     private adminService: AdminService,
     private fb: FormBuilder,
@@ -86,6 +88,7 @@ export class GenerateFeeSlipComponent implements OnInit {
       this.downloadinData = true;
 
       this.studentDetails = res;
+      this.studentDetailsCopy = res;
       this.allItems = res.slice(0);
     }, (err) => {
       this.alertService.loading.next(false);
@@ -94,6 +97,17 @@ export class GenerateFeeSlipComponent implements OnInit {
 
     });
 
+  }
+
+  filterByPaymentStatus(status: string) {
+    this.studentDetails = this.studentDetailsCopy;
+    if (status === 'All') {
+      this.studentDetails = this.studentDetailsCopy;
+      return;
+    }
+    this.studentDetails = this.studentDetails.filter(slip => {
+      return slip.status === status;
+    });
   }
 
   searchStudent(event: any) {

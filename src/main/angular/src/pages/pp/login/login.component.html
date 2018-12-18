@@ -1,0 +1,141 @@
+<div class="row" *ngIf="checkoutDetails">
+
+    <div class="col-md-12 col-md-offset-2">
+        <div class="card">
+                <div class="card-header card-header-warning card-header-icon">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="card-icon">
+                              <i class="material-icons">content_copy</i>
+                            </div>
+                            <h4 class="card-title">Checkout details</h4>
+                          </div>
+                        </div>
+                      </div>
+                  <div class="card-body">
+            <div class="card-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Student Name</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.studentName" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Center</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.centerName" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Program</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.programName" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Group</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.groupName" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Payable Amount</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.feeAmount" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Duration</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.duration" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Period</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.period" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Status</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.paymentStatus" readonly>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Name</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.billing_name" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Address</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.billing_address" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">City</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.billing_city" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">State</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.billing_state" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Country</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.billing_country" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Zip</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.billing_zip" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Contact Number</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.billing_tel" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Email</label>
+                            <input class="form-control" [ngModel]="checkoutDetails.billing_email" readonly>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+                  </div>
+            <div class="card-footer text-center">
+                <button class="btn btn-rose" (click)="checkout()" [disabled]="checkoutDetails.paymentStatus ==='Paid'">checkout</button>
+            </div>
+        </div>
+    </div>
+
+
+    <form id="checkout-form" action="https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction"
+        method="post">
+
+        <input type="hidden" name="merchant_id" [value]="checkoutDetails.merchantId">
+        <input type="hidden" name="access_code" [value]="checkoutDetails.accessCode">
+        <input type="hidden" name="encRequest" [value]="checkoutDetails.encRequest">
+
+    </form>
+
+</div>

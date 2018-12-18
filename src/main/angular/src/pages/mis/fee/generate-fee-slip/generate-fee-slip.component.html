@@ -157,7 +157,15 @@
               <th>Extra Charges</th>
               <th>Late Payment</th>
               <th>Final Fee</th>
-              <th>Status</th>
+              <th>
+                Status
+                <select (ngModelChange)="filterByPaymentStatus($event)" [(ngModel)]="statusFilter">
+                  <option value="All">All</option>
+                  <option value="Paid">Paid</option>
+                  <option value="PartiallyPaid">Partially Paid</option>
+                  <option value="Raised">Raised</option>
+                </select>
+              </th>
               <th>Locked</th>
 
             </thead>

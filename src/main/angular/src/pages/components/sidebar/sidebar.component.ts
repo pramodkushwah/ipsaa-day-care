@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { MenuService } from '../../../providers/initial/menu.service';
 import { StorageService } from '../../../providers/localstorage/storage';
 import { Router } from '@angular/router';
 
 declare const $: any;
-
+declare let document;
 declare interface RouteInfo {
   path: string;
   title: string;

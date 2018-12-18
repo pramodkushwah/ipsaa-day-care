@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ParentService } from '../../../providers/parentPotel/parent.service';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 declare const $: any;
 
 @Component({
@@ -18,7 +19,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   constructor(
     private parentService: ParentService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute, public http:HttpClient) { }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
@@ -49,7 +50,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   checkout() {
-    $('#checkout-form').attr('action', this.checkoutDetails.transactionUrl).submit();
+    $('#checkout-form').submit();
   }
 
   ngOnDestroy() {

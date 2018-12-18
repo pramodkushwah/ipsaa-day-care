@@ -19,7 +19,7 @@ const routes: Routes = [
 
   { path: 'mis', loadChildren: 'pages/mis/mis.module#MISModule', canActivate: [AuthGaurd] },
   {
-    path: 'pp/checkout.html#!/app/checkoutdetails/:p1/:p2',
+    path: 'pp/checkout.html!/app/checkoutdetails/:p1/:p2',
     component: CheckoutComponent
   },
   {

@@ -50,7 +50,7 @@ public class FeeUtils
         switch (studentFeePaymentRequest.getQuarter())
         {
           case 1:
-            return "Jan, " + (year + 1) + " to March, " + (year + 1);
+            return "Jan, " + (year) + " to March, " + (year);
           case 2:
             return "April, " + year + " to June, " + year;
           case 3:
