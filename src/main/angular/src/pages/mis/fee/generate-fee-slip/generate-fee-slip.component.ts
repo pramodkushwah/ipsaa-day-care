@@ -160,15 +160,12 @@ export class GenerateFeeSlipComponent implements OnInit {
   updateFinalFee() {
     const val = this.regenerateSlipForm.get('balance').value + this.regenerateSlipForm.get('adjust').value +
       this.regenerateSlipForm.get('latePaymentCharge').value + this.regenerateSlipForm.get('extraCharge').value +
-      this.regenerateSlipForm.get('stationary').value + this.regenerateSlipForm.get('uniformCharges').value;
+      this.regenerateSlipForm.get('stationary').value + this.regenerateSlipForm.get('uniformCharges').value +
+      this.regenerateSlipForm.get('finalAnnualCharges').value + this.regenerateSlipForm.get('finalAdmissionFee').value +
+      this.regenerateSlipForm.get('finalBaseFee').value + this.regenerateSlipForm.get('finalDepositFee').value +
+      this.regenerateSlipForm.get('transportFee').value + this.regenerateSlipForm.get('gstAmount').value;
 
-
-
-
-
-
-    const v = this.regenerateSlipForm.get('finalFee').value + this.regenerateSlipForm.get('gstAmount').value + val;
-    this.regenerateSlipForm.get('totalFee').setValue(v);
+    this.regenerateSlipForm.get('totalFee').setValue(val);
   }
 
   getRegenerateSlipForm() {

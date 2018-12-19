@@ -24,7 +24,9 @@ export class AdminService {
   deleteProgram(programId) {
     return this.api.delete('api/program/' + programId);
   }
-
+  deleteGroup(groupId) {
+    return this.api.delete('api/group/' + groupId);
+  }
   getCenters() {
     return this.api.get('api/center/');
   }

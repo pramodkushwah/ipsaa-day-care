@@ -388,7 +388,7 @@
               <div class="col-lg-6 col-md-3 col-sm-3">
                 <div class="form-group">
                   <label class="control-label"> Fee</label>
-                  <input class="form-control" type="number" [value]="regenerateSlipForm.get('finalFee').value + regenerateSlipForm.get('gstAmount').value"
+                  <input class="form-control" type="number" formControlName="finalFee" 
                     name="finalFee" readonly>
                   <span class="material-input"></span>
                 </div>
