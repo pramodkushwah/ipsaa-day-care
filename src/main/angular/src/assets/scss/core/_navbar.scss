@@ -3,10 +3,20 @@
     border-radius: $border-radius-base;
     padding: 0.625rem 0;
     margin-bottom: 20px;
+    
     @include navbar-colors($white-color, $navbar-color);
 
     &.fixed-top{
         border-radius: 0;
+    }
+
+    .navbar-minimize{
+        .btn{
+            .material-icons{
+                background-color: $orange-500 !important;
+                color: $white;
+            }
+        }
     }
 
     .navbar-nav{
@@ -113,7 +123,7 @@
     // give correct size to ripple container
     .navbar-brand {
         position: relative;
-        color: inherit;
+        color: $grey-900;
         height: 50px;
         font-size: $navbar-brand-font-size - 0.125;
         line-height: 30px;
@@ -179,6 +189,8 @@
 }
 
 .navbar{
+    color: $grey-600;
+
   .navbar-minimize{
     padding: 3px 0 0 15px;
   }

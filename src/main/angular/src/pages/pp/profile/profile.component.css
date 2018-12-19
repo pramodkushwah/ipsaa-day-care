@@ -1,0 +1,94 @@
+.card-profile .card-content h6.category {
+    margin-top: 10px;
+    color: #333;
+    font-size: 14px;
+}
+.card-profile .card-content .card-title{
+    font-size: 20px;
+}
+.card-profile .card-content .description{
+    color: #666;
+}
+
+.card-body .card-content .tab-content .control-label {
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 5px;
+    color: #777;
+    line-height: normal;
+}
+.card-body .card-content .tab-content .form-control {
+    background: none;
+    border: solid 1px #ddd;
+    font-size: 13px;
+    color: #666;
+    font-weight: lighter;
+    padding-left: 10px;
+}
+.card-body .card-content .form-group.address_title {
+    padding-bottom: 0;
+    padding-top: 10px;
+}
+.profile-form-card .card-header {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.profile-form-card .card-header ul.nav.nav-tabs {
+    background-color: transparent !important;
+    border-bottom: solid 1px #ddd !important;
+}
+.profile-form-card .card-header ul.nav.nav-tabs li a.nav-link {
+    color: #333 !important;
+}
+
+.profile-form-card .card-header ul.nav.nav-tabs li a.nav-link.active {
+    margin-bottom: 0px;
+    border: solid 1px #ddd !important;
+    position: relative;
+    z-index: 222;
+    background: white;
+    border-bottom: none !important;
+    border-radius: 0;
+    margin-top: 0px;
+    border-top: none !important;
+    transition:0.1s !important;
+    padding: 10px 14px;
+ }
+.profile-form-card .card-header ul.nav.nav-tabs li:first-child a.nav-link.active{
+    border-left: none !important;
+}
+.profile-form-card .card-header ul.nav.nav-tabs li a.nav-link.active:after {
+    content: "";
+    width: 100%;
+    height: 4px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    background: #fca300;
+    display: inline-block;
+}
+
+
+
+.card.card-profile .card-body {
+    border-top: solid 4px #fca300;
+    border-radius: 3px 3px 0 0;
+}
+
+.card-profile .card-avatar {
+    margin-top: 20px;
+    border: solid 2px #fff;
+    box-shadow: 0 0px 0 5px #fca300;
+}
+.card .card-title{
+    margin-bottom: 5px;
+}
+.card-content span.badge {
+    padding: 5px;
+    width: 100%;
+    margin: 4px 0;
+    background: #522e91;
+    font-weight: lighter;
+}
+

@@ -6,6 +6,46 @@
   width: 100%;
 } */
 
+
+
+/*--19-12-18-by-Pramod--*/
+
+
+.wrapper .main-panel{
+  float: none;
+  width: 100% !important;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.wrapper .main-panel .main-content{
+  float: none;
+  width: 100%;
+  max-width: 1000px;
+  margin: 80px 0 0 0;
+  background: #fafafa;
+  height: auto;
+  
+  box-shadow: 0 0 10px 2px #999;
+}
+
+.wrapper nav.navbar .container-fluid a.navbar-brand {
+  padding-top: 0;
+}
+.main-panel nav.navbar {
+  position: fixed;
+  top: 0;
+  left: 0 !important;
+  right: 0 !important;
+  background: white !important;
+  box-shadow: 0 0 10px 3px #999;
+  padding: 10px 50px;
+} 
+
+/*--19-12-18-by-Pramod--*/
+
+
+
 @media (max-width: 991px){
   .sidebar{
     display: block !important;
