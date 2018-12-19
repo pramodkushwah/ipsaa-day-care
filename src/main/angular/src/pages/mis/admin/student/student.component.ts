@@ -60,7 +60,6 @@ export class StudentComponent implements OnInit {
       this.studentsCopy = JSON.parse(JSON.stringify(this.students));
       this.pageSize = response.pageSize;
       this.pageNumber = response.pageNumber;
-      this.filterStudent('true')
       // initialize to page 1
       this.filterStudent('true');
       this.setPage(1);
@@ -75,7 +74,6 @@ export class StudentComponent implements OnInit {
     const a = 'true' === status;
     this.loader = true;
     this.allItems = this.studentsCopy.filter((student: any) => {
-      console.log(student.active, a);
       return student.active === a;
     });
     this.setPage(1);
