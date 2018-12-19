@@ -201,7 +201,9 @@ export class IpsaaclubComponent implements OnInit {
     }
     if (fee_diff > 0) {
       this.alertService.confirm('Your are about to pay extra amount of Ruppes ' + fee_diff + '.').then( ok => {
+        if(ok ===true) {
         this.feePaymentRequest();
+}
       }).catch(err => {
 
       });

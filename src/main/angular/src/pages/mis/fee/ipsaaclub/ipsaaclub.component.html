@@ -153,7 +153,7 @@
       </div>
       <div class="card-footer">
         <button type="button" class="btn btn-rose" (click)="saveSlip(selectedStudentFee)">Save</button>
-        <button type="button" class="btn btn-rose" (click)="showPayNow(selectedStudentFee)" data-toggle="modal" data-target="#myModal"  [disabled]="selectedStudentFee.paymentStatus=='Paid'">Pay Now</button>
+        <button type="button" class="btn btn-rose" (click)="showPayNow(selectedStudentFee)" data-toggle="modal" data-target="#myModal"  [disabled]="selectedStudentFee.paymentStatus=='Paid' || selectedStudentFee.totalFee < 1  ">Pay Now</button>
         <button type="button" class="btn btn-rose" (click)="downloadSlip(selectedStudentFee)" [disabled]="disabledSlipDownload">
           <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disabledSlipDownload"></i>Download Slip
         </button>

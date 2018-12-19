@@ -94,14 +94,6 @@ public class CenterService extends BaseService
     return centerRepository.findAll();
   }
 
-  @Transactional
-  public List<Center> nonAccesed()
-  {
-    List<Center> centres=centerRepository.findAll();
-    centres.removeAll(getUserCenters());
-    return centres;
-  }
-
   public Center createCenter(CenterRequest request)
   {
     Center center = request.toEntity();
