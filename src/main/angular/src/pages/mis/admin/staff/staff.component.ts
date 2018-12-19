@@ -66,6 +66,7 @@ export class AppStaffComponent implements OnInit {
       this.allItems = response;
       this.staffListCopy = this.allItems;
       this.staffList = this.allItems;
+      this.filterStaff('true');
       this.setPage(1);
       this.staffLoaded();
     });

@@ -52,7 +52,7 @@
                 <td (click)="showStudent(student)">{{student.fullName}}</td>
                 <td (click)="showStudent(student)">{{student.program.name}}</td>
                 <td (click)="showStudent(student)">{{student.group.name}}</td>
-                <td *ngIf="activeStatus">
+                <td *ngIf="student.active">
                   <button type="button" class="btn btn-primary btn-sm" (click)="editStudent(student)">edit</button>
                   <button type="button" class="btn btn-danger btn-sm" (click)="deleteStudentSwal(student)" *ngIf="hasPrivilege('STUDENT_DELETE')">del</button>
                 </td>

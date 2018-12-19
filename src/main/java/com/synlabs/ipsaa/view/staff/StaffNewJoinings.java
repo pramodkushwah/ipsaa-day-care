@@ -47,6 +47,7 @@ public class StaffNewJoinings  implements Response {
 
     ///For Attendance----- Avneet
     public StaffNewJoinings(EmployeeAttendance attendance){
+        id=mask(attendance.getEmployee().getId());
         center= attendance.getEmployee().getCostCenter().getName();
         name=attendance.getEmployee().getName();
         designation=attendance.getEmployee().getDesignation();

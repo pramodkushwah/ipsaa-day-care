@@ -242,7 +242,10 @@ public class StaffService extends BaseService
     }
     else{
       LegalEntity employer =legalEntityRepository.findByCode(staffRequest.getEmployerCode());
-      list= employeePaySlipRepository.findByEmployerIdAndMonthAndYear(unmask(employer.getId()),staffRequest.getMonth(),staffRequest.getYear());
+      if(employer==null){
+        throw new ValidationException("employer code not found");
+      }
+      list= employeePaySlipRepository.findByEmployerIdAndMonthAndYear(employer.getId(),staffRequest.getMonth(),staffRequest.getYear());
     }
 
     StaffExcelReport report=new StaffExcelReport(list,staffRequest,exportDirectory, staffRequest.getEmployerCode(),employeeSalaryRepository);

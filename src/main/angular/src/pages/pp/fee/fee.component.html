@@ -31,10 +31,10 @@
           <!--<input type="hidden" name="encRequest"  value="{{checkoutDetails.encRequest}}">-->
 
 
-          <a *ngIf="fee.program.id !== 72932732558618" class="btn btn-portal btn-round" [routerLink]="['/pp/checkout/', studentfeeledger.id, myDetailId]" target="_blank" >
+          <a *ngIf="fee.program.id !== 72932732558618" class="btn btn-portal btn-round" [routerLink]="['pp/checkout.html!/app/checkoutdetails', studentfeeledger.id, myDetailId]" target="_blank" >
               Pay now
             </a>
-            <a  *ngIf="fee.program.id === 72932732558618" class="btn btn-portal btn-round" [routerLink]="['/pp/ipsaaclubcheckout/', studentfeeledger.id, myDetailId]" target="_blank" >
+            <a  *ngIf="fee.program.id === 72932732558618" class="btn btn-portal btn-round" [routerLink]="['pp/checkout.html!/app/ipsaaclubcheckoutdetails', studentfeeledger.id, myDetailId]" target="_blank" >
               Pay now
             </a>
         </form>

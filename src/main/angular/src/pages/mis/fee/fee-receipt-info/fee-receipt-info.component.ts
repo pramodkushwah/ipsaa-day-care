@@ -103,7 +103,7 @@ export class FeeReceiptInfoComponent implements OnInit {
       stationary: [{ value: '', disabled: false }],
       stationaryPaidAmountTotal: [{ value: '', disabled: false }],
       status: [{ value: '', disabled: false }],
-      paymentDate: [{ value: this.currentDate.toISOString().split('T')[0], disabled: false }],
+      paymentDate: [{ value: this.currentDate.toISOString().slice(0, 10), disabled: false }],
       totalFee: [{ value: '', disabled: true }],
       totalOtherPaidAmount: [{ value: '', disabled: false }],
       totalOtherRemainningAmount: [{ value: '', disabled: false }],
