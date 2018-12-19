@@ -3,18 +3,18 @@
   <div class="col-md-4">
     <div class="form-group">
       <label class="control-label" for="center"> Select Center:</label>
-      <select class="form-control" id="center" name="center" [(ngModel)]="selectedCenterId">
+      <select class="form-control" id="center" name="center" [(ngModel)]="selectedCenterId" (ngModelChange)="getStudentsList()">
         <option value="" disabled="true">Select Center</option>
         <option *ngFor="let center of centers;" [value]="center.id"> ( {{center.count}} ){{center.centerName}}</option>
       </select>
       <span class="material-input"></span>
     </div>
   </div>
-  <div class="col-sm-4">
+  <!-- <div class="col-sm-4">
     <button type="submit" mat-raised-button class="btn btn-warning btn-lg" [disabled]="!selectedCenterId" (click)="getStudentsList()">
       Get
     </button>
-  </div>
+  </div> -->
 
 </div>
 <div class="row" *ngIf="showTable">
@@ -39,7 +39,7 @@
 
       <div class="card-body">
         <table class="table table-condensed table-striped table-hover">
-          <colgroup>
+          <!-- <colgroup>
             
             <col width="10%">
             <col width="10%">
@@ -48,8 +48,8 @@
             <col width="10%">
             <col width="10%">
             <col width="30%">
-            <!-- <col width="10%"> -->
-          </colgroup>
+            <col width="10%">
+          </colgroup> -->
           <thead  style="text-align: center" class="text-primary">
               <!-- *ngIf=" studentAprrovelList ?.length >0" -->
             <th> Sr.No</th>
@@ -58,28 +58,25 @@
             <th> Center </th>
             <!-- <th> Group </th> -->
             <th>Corporate</th>
-            <th>Link </th>
+            <!-- <th>Link </th> -->
             <th>action</th>
           </thead>
           <tbody>
             <tr style="text-align: center" *ngFor="let student of studentAprrovelList ; let i= index">
-
               <td>{{i+1}}</td>
               <td>{{student.fullName}}</td>
               <td> {{student.program.name}} </td>
               <td>{{student.center.name}}</td>
               <!-- <td> {{student.group.name}} </td> -->
               <td> {{student.corporate}} </td>
+              <!-- <td></td> -->
               <td>
                 <button mat-raised-button class="btn btn-primary btn-sm" (click)="getSelectedStudentsDetail(student)">Show Details
                 </button>
-              </td>
-              <td>
                 <button mat-raised-button class="btn btn-warning btn-sm" (click)="studentApprove(student)">Approve
-                  </button>
-                  <br>
-                  <button mat-raised-button class="btn btn-rose btn-sm" data-toggle="modal" data-target="#myModal" (click)="selectedStudent=student" >Reject
-                  </button>
+                </button>
+                <button mat-raised-button class="btn btn-rose btn-sm" data-toggle="modal" data-target="#myModal" (click)="selectedStudent=student">Reject
+                </button>
               </td>
             </tr>
             <tr *ngIf=" studentAprrovelList.length === 0" class="text-center">
