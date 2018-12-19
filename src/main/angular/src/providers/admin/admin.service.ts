@@ -383,6 +383,10 @@ export class AdminService {
     return this.api.getPDF('api/student/feeslips/pdf', fd);
   }
 
+  uploadEmployeeSalaryFile(data: any) {
+    return this.api.put('api/employee/payslip/upload', data);
+  }
+
 
   sendEmails(fd) {
     return this.api.post('api/student/paymentLink/', fd);
