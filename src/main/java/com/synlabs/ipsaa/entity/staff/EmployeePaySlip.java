@@ -569,8 +569,8 @@ public class EmployeePaySlip extends BaseEntity {
 		bonus = bonus.setScale(0, BigDecimal.ROUND_HALF_UP);
 		special = special.setScale(0, BigDecimal.ROUND_HALF_UP);
 		totalEarning = totalEarning.setScale(0, BigDecimal.ROUND_HALF_UP);
-//		netSalary=netSalary.setScale(0,BigDecimal.ROUND_HALF_UP);
-//		ctc=ctc.setScale(0,BigDecimal.ROUND_HALF_UP);
+		netSalary=netSalary.setScale(2,BigDecimal.ROUND_HALF_UP);
+		ctc=ctc.setScale(2,BigDecimal.ROUND_HALF_UP);
 	}
 
 	// ------------------------------------shubham--------------------------------------------------------
