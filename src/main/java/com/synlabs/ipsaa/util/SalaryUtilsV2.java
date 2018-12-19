@@ -284,7 +284,7 @@ public class SalaryUtilsV2 {
 		paySlip.setTotalEarning(totalEaring);
 
 		paySlip.setNetSalary(SalaryUtilsV2.calculateNetSalary(totalEaring, totalDeduction));
-
+        paySlip.roundOff();
 		return paySlip;
 	}
 
