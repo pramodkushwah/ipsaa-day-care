@@ -60,6 +60,7 @@ export class StudentComponent implements OnInit {
       this.studentsCopy = JSON.parse(JSON.stringify(this.students));
       this.pageSize = response.pageSize;
       this.pageNumber = response.pageNumber;
+      this.filterStudent(true)
       // initialize to page 1
       this.setPage(1);
       // checked if searchKey entered before
