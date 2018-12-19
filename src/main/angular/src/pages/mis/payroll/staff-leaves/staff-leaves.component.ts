@@ -27,6 +27,7 @@ export class StaffLeavesComponent implements OnInit {
   years = [];
   toDate: any;
   fromDate: any;
+  empName: string;
   selectedLeaveType: any;
   leaveList = ['SICK', 'CASUAL', 'PAID', 'UNPAID', 'ADOPTION', 'MATERNITY', 'BEREAVEMENT'];
   selectedId: number;
@@ -102,8 +103,9 @@ export class StaffLeavesComponent implements OnInit {
       });
   }
 
-  selctedEmpId(id) {
-    this.selectedId = id;
+  selctedEmpId(staff) {
+    this.selectedId = staff.id;
+    this.empName = staff.name;
     this.getEmployeeAttendance();
   }
 

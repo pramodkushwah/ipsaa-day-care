@@ -54,9 +54,17 @@
         <div class="col-lg-4" *ngIf="userForm.controls.type.value == 'Employee'">
           <div class="form-group">
             <label class="control-label">*Employee</label>
-            <select class="form-control" formControlName="empId" (ngModelChange)="getSelectedEmployee($event)">
+            <input type="text" class="form-control dropdown-toggle" [ngModelOptions]="{standalone: true}" [(ngModel)]="EmpName" data-toggle="dropdown"
+              placeholder="Employee" (keyup)="searchStudent($event)">
+            <ul class="dropdown-menu dropdown-menu-right" role="menu" style="right: unset;max-height: 50vh;overflow-y: auto;;">
+              <li *ngFor=" let emp of employees">
+                <a (click)="getSelectedEmployee(emp)">{{emp.name}} - {{emp.centerCode}}
+                </a>
+              </li>
+            </ul>
+            <!-- <select class="form-control" formControlName="empId" (ngModelChange)="getSelectedEmployee($event)">
               <option *ngFor="let emp of employees;" [value]="emp.id">{{emp.name}} ( {{emp.centerCode}})</option>
-            </select>
+            </select> -->
           </div>
         </div>
       </div>
@@ -64,7 +72,8 @@
         <div class="col-md-6">
           <div class="form-group">
             <label class="control-label">Role(s)</label>
-            <select class="form-control" [(ngModel)]="selectedRoleModel" (ngModelChange)="addRole($event)" [ngModelOptions]="{standalone: true}">
+            <select class="form-control" [(ngModel)]="selectedRoleModel" (ngModelChange)="addRole($event)"
+              [ngModelOptions]="{standalone: true}">
               <option *ngFor="let role of roles;" [ngValue]="role.name">{{role.name}}</option>
               <option value=""></option>
             </select>
@@ -84,7 +93,8 @@
         <div class="col-md-6">
           <div class="form-group">
             <label class="control-label">Center(s)</label>
-            <select class="form-control" [(ngModel)]="selectedCenterModel" (ngModelChange)="addCenter($event)" [ngModelOptions]="{standalone: true}">
+            <select class="form-control" [(ngModel)]="selectedCenterModel" (ngModelChange)="addCenter($event)"
+              [ngModelOptions]="{standalone: true}">
               <option value=""></option>
               <option *ngFor="let center of centers;" [ngValue]="center.name">{{center.name}}</option>
             </select>

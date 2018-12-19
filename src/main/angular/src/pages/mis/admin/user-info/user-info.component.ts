@@ -17,8 +17,10 @@ export class UserInfoComponent implements OnInit {
   userForm: FormGroup;
   editable: boolean;
   roles: any[];
+  EmpName: string;
   centers: any[] = [];
   employees: any[] = [];
+  employeesCopy: any[] = [];
   selectedRoleModel: string;
   selectedCenterModel: string;
   saving: boolean;
@@ -77,6 +79,7 @@ export class UserInfoComponent implements OnInit {
   getEmployee() {
     this.adminService.getEmployee().subscribe((response: any) => {
       this.employees = response.stafflist;
+      this.employeesCopy = response.stafflist;
     });
   }
 
@@ -205,15 +208,28 @@ export class UserInfoComponent implements OnInit {
     }
   }
 
-  getSelectedEmployee(id) {
+  getSelectedEmployee(employe) {
+    this.EmpName = employe.name;
     const employee = this.employees.find(emp => {
-      return emp.id == id;
+      return emp.id === employe.id;
     });
     if (employee) {
       // this.userForm.patchValue(employee);
+      this.userForm.controls['empId'].patchValue(employee.name);
       this.userForm.controls['firstname'].patchValue(employee.name);
       this.userForm.controls['phone'].patchValue(employee.mobile);
       this.userForm.controls['email'].patchValue(employee.email);
     }
+  }
+
+  searchStudent(event) {
+    const val = event.target.value.toLowerCase();
+    if (val && val.trim() !== '') {
+      this.employees = this.employeesCopy.filter(employee => {
+        return employee.name.toLowerCase().startsWith(val);
+      });
+  }  else {
+    this.employees = this.employeesCopy;
+  }
   }
 }

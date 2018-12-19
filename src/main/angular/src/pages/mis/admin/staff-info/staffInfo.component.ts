@@ -83,7 +83,7 @@ export class StaffInfoComponent implements OnInit {
       this.staff = staff;
       this.staffForm.patchValue(staff);
       this.staffForm.controls['costCenterId'].patchValue(
-        staff.costCenter ? staff.costCenter.id + '' : ''
+        staff.costCenter ? staff.costCenter.id : ''
       );
       this.payrollService.getSalaryByEmployee(staff.eid).subscribe(response => {
         this.salary = response;
