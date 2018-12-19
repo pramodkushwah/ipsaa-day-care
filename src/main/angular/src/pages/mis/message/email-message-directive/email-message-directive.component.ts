@@ -53,7 +53,7 @@ export class EmailMessageDirectiveComponent implements OnInit {
   @Output()
   public onFileLeave: EventEmitter<any> = new EventEmitter<any>();
 
-  private keyUpSubject = new Subject<string>();
+  public keyUpSubject = new Subject<string>();
   globalStart: Function;
   globalDisable: boolean;
   globalEnd: Function;
@@ -63,16 +63,16 @@ export class EmailMessageDirectiveComponent implements OnInit {
   validImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
   subscription: Subscription;
 
-  private fileCopies: any[] = [];
-  private imageCopies: any[] = [];
+  public fileCopies: any[] = [];
+  public imageCopies: any[] = [];
 
   model = '';
 
   @ViewChild('dropZone') dropZone: ElementRef;
   textContent: string;
   uploadEvent: UploadEvent;
-  constructor(private zone: NgZone,
-    private renderer: Renderer) {
+  constructor(public zone: NgZone,
+    public renderer: Renderer) {
     this.globalStart = this.renderer.listen('document', 'dragstart', (evt) => {
       this.globalDisable = true;
     });
@@ -168,7 +168,7 @@ export class EmailMessageDirectiveComponent implements OnInit {
     }
   }
 
-  private addToQueue(file: UploadFile) {
+  public addToQueue(file: UploadFile) {
 
     this.files = this.fileCopies;
     this.images = this.imageCopies;
@@ -198,7 +198,7 @@ export class EmailMessageDirectiveComponent implements OnInit {
     this.imageCopies = this.images;
   }
 
-  private preventAndStop(event) {
+  public preventAndStop(event) {
     event.stopPropagation();
     event.preventDefault();
   }
