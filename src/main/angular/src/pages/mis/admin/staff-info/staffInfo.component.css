@@ -1,0 +1,46 @@
+.padding-left-right-30 {
+  padding: 0 20px;
+}
+
+.staff-img {
+  overflow: hidden;
+  width: 100px;
+  height: 100px;
+  margin-bottom: -50px;
+}
+
+/* .card-profile img {
+  width: 100%;
+} */
+
+.card-body .card-content {
+  padding: 10px;
+}
+
+.card-body .card-content ul {
+  background-color: orange;
+}
+
+.card-body .card-profile-name {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+  border-bottom: 1px solid lightgrey;
+}
+
+.card-body .card-profile-name span {
+  line-height: 24px;
+  color: rgba(0, 0, 0, 0.9);
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, Segoe UI, Roboto,
+    Helvetica Neue, Fira Sans, Ubuntu, Oxygen, Oxygen Sans, Cantarell,
+    Droid Sans, Apple Color Emoji, Segoe UI Emoji, Segoe UI Emoji,
+    Segoe UI Symbol, Lucida Grande, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.readonly {
+  background: #e9ecef;
+  pointer-events: none;
+  cursor: not-allowed;
+}

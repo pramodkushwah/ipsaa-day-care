@@ -6,7 +6,7 @@
     }
   </style>
 </head>
-<body style="font-family: arial;">
+<body style="font-family: arisliptableal;">
 <table style="width: 100%;height: 100%; border-collapse: separate; border-spacing: 15px">
   <tr>
     <td style="border: 1px solid black; padding: 15px; border-collapse: collapse; width: 50%;">

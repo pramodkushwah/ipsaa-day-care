@@ -1,0 +1,362 @@
+<div class="row">
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="control-label" for="center"> Select Center:</label>
+      <select class="form-control" id="center" name="center" [(ngModel)]="selectedCenter" (ngModelChange)="getGeneratedFeeSlips($event)">
+        <option value="" disabled="true">Select Center</option>
+        <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div [class]="showPanel ?'col-lg-6':'col-lg-12'">
+    <div class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <h3 class="card-title">Student Fee Slips
+          <button class="btn btn-info pull-right" (click)="showPanel = 'email';selectedStudentFee = null;" *ngIf="generatedFeeSlips.length>0" [disabled]="checkedSlipCount==0">
+            <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="sendPaymentLinkDisable"></i>Send Email
+          </button>
+        </h3>
+      </div>
+      <div class="card-body">
+        <table class="table table-condensed table-striped table-hover" *ngIf="selectedCenter">
+          <thead class="text-primary">
+            <tr>
+              <th>
+                <input type="checkbox" class="checkbox" (ngModelChange)="toggleAll($event)" [(ngModel)]="allchecked" />
+              </th>
+              <th>Name</th>
+              <th>Center</th>
+              <th>Invoice Date</th>
+              <th>Total Fee</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let studentfee of generatedFeeSlips">
+              <td>
+                <input type="checkbox" class="checkbox" [(ngModel)]="studentfee.selected" (ngModelChange)="toggleOneSlip(studentfee)">
+              </td>
+              <td (click)="loadStudentFee(studentfee)">{{studentfee.name}}</td>
+              <td (click)="loadStudentFee(studentfee)">{{studentfee.center.code}}</td>
+              <td (click)="loadStudentFee(studentfee)">{{studentfee.invoiceDate}}</td>
+              <td (click)="loadStudentFee(studentfee)">{{studentfee.totalFee}}</td>
+              <td (click)="loadStudentFee(studentfee)">{{studentfee.paymentStatus}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6" *ngIf="selectedStudentFee">
+    <div class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <h3 class="card-title">{{selectedStudentFee.name}}
+            <button type="button" class="close" aria-label="Close" (click)="hideShowPanel()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </h3>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Invoice Date</label>
+              <div class="form-control">{{selectedStudentFee.invoiceDate}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Base Fee</label>
+              <div class="form-control">{{selectedStudentFee.finalBaseFee}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Annual Fee</label>
+              <div class="form-control">{{selectedStudentFee.annualFee}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Security Fee</label>
+              <div class="form-control">{{selectedStudentFee.deposit}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Full Days</label>
+              <div class="form-control">{{selectedStudentFee.noOfFullDays}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Half Day</label>
+              <div class="form-control">{{selectedStudentFee.noOfHalfDays}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Total Days Fee</label>
+              <div class="form-control">{{selectedStudentFee.totalDaysFee}}</div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Gst</label>
+              <div class="form-control">{{selectedStudentFee.gstAmount}}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Balance</label>
+              <input class="form-control" type="number" [(ngModel)]="selectedStudentFee.balance" (change)="addBalance()">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Extra Charge</label>
+              <input class="form-control" type="number" [(ngModel)]="selectedStudentFee.extraCharge" (change)="addExtraCharges()">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Total Fee</label>
+              <div class="form-control">{{selectedStudentFee.totalFee}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Comments*</label>
+              <textarea class="form-control" type="text" row="2" required [(ngModel)]="selectedStudentFee.comments" [attr.readonly]="selectedStudentFee.status=='Paid'"></textarea>
+            </div>
+          </div>
+          <div class="col-md-12" *ngIf="selectedStudentFee.autoComments">
+            <div class="form-group">
+              <label class="control-label">Auto Comments*</label>
+              <textarea class="form-control" type="text" row="2" required [(ngModel)]="selectedStudentFee.autoComments" readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button type="button" class="btn btn-rose" (click)="saveSlip(selectedStudentFee)">Save</button>
+        <button type="button" class="btn btn-rose" (click)="showPayNow(selectedStudentFee)" data-toggle="modal" data-target="#myModal"  [disabled]="selectedStudentFee.paymentStatus=='Paid'">Pay Now</button>
+        <button type="button" class="btn btn-rose" (click)="downloadSlip(selectedStudentFee)" [disabled]="disabledSlipDownload">
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disabledSlipDownload"></i>Download Slip
+        </button>
+        <button class="btn btn-rose btn-fill" (click)="downloadReceipt(selectedStudentFee)" [disabled]="selectedStudentFee.status=='Raised'|| disabledReceiptDownload"
+          *ngIf="selectedStudentFee.paymentStatus!='Raised'">
+          <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disabledReceiptDownload"></i>
+          Download Receipt
+        </button>
+      </div>
+    </div>
+    <div class="card" *ngIf="selectedStudentFee.payments.length">
+      <div class="card-header">
+        <h4 class="card-title">Student Fee Records</h4>
+        <!-- <p class="category">Category subtitle</p> -->
+      </div>
+      <div class="card-body">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>TxnId</th>
+              <th>Mode</th>
+              <th>Amount</th>
+              <th>Date</th>
+              <th *ngIf="STUDENTFEE_WRITE">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let payment of selectedStudentFee.payments">
+              <td>{{payment.txnid}}</td>
+              <td>{{payment.paymentMode}}</td>
+              <td>{{payment.paidAmount}}</td>
+              <td>{{payment.paymentDate}}</td>
+              <td *ngIf="STUDENTFEE_RECEIPT_CONFIRM">
+                <button class="btn btn-sm" [ngClass]="payment.confirmed?'btn-success':'btn-rose'" (click)="payment.confirmed?null:confirm(payment)"
+                  [disabled]="payment.disabled" *ngIf="payment.active&&!payment.confirmed">
+                  <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="payment.disabled"></i>Confirm
+                </button>
+                <span *ngIf="payment.confirmed">Confirmed</span>
+
+                <button class="btn btn-sm" [hidden]="payment.confirmed || !payment.active" data-toggle="modal" data-target="#commentModal" (click)="showCommentField(payment)">Reject</button>
+                <span *ngIf="!payment.active">Rejected &nbsp;
+                  <a href="#" data-toggle="tooltip" title="{{payment.comment}}">
+                    <i class="fa fa-info"></i>
+                  </a>
+                </span>
+              </td>
+              <td *ngIf="!STUDENTFEE_RECEIPT_CONFIRM">
+                <span *ngIf="!(payment.confirmed || payment.active)">Rejected</span>
+                <span *ngIf="payment.confirmed && payment.active">Confirmed</span>
+                <span *ngIf="payment.active&&!payment.confirmed">Pending</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6" *ngIf="showPanel == 'email'">
+    <div class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <h3 class="card-title">Send email to parents
+            <button type="button" class="close" aria-label="Close" (click)="hideShowPanel()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </h3>
+      </div>
+      <div class="card-body">
+        <h4>Note: To add payment link {{'{'+'paymentlink'+'}' }} in email add in email body.</h4>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Subject</label>
+              <input type="text" class="form-control" [(ngModel)]="slipEmail.subject">
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Message</label>
+              <div id="slipEmailMessage" class="form-control" contenteditable="true" style="min-height: 200px;overflow: scroll;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div>
+          <span>This email will sent to {{checkedSlipCount}} student's parents.</span>
+        </div>
+        <button class="btn btn-rose btn-fill" (click)="sendSlipEmail(generatedFeeSlips, slipEmail)" *ngIf="checkedSlipCount > 0">Send</button>
+        <button class="btn btn-default" (click)="cancelSlipEmail()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="myModal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" *ngIf="selected">
+      <div class="modal-header">
+        <h4 class="card-title">Fee Slip - {{selected.name}}</h4>
+        <!-- <span class="label label-info">{{selected.center.name}}</span> -->
+        <!-- <span class="label label-info">{{selected.program.name}}</span>
+        <span class="label label-info">{{selected.group.name}}</span> -->
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Total Amount</label>
+              <input class="form-control" type="text" [(ngModel)]="selected.totalFee" readonly>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Payable Amount</label>
+              <input class="form-control" type="number" [(ngModel)]="selected.payableAmount" readonly>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Paid Amount</label>
+              <input class="form-control" type="number" [(ngModel)]="selected.paidAmount">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label">Payment mode</label>
+              <select class="form-control" [(ngModel)]="selected.paymentMode" [disabled]="selected.status=='Paid'">
+                <option value="Cash">CASH</option>
+                <option value="Cheque">CHEQUE</option>
+                <option value="NEFT">NEFT</option>
+                <option value="Hdfc" disabled>HDFC</option>
+                <option value="Card">CARD</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Payment Date (YYYY-MM-DD)</label>
+              <input class="form-control" type="text" required [(ngModel)]="selected.paymentDate" value="{{currentDate}}">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Reference</label>
+              <input class="form-control" type="text" required [(ngModel)]="selected.txnid">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Comments*</label>
+              <textarea class="form-control" type="text" required [(ngModel)]="selected.comments"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane active" id="controls">
+          <div class="category form-category">
+            *Required Fields
+          </div>
+          <div class="form-footer text-right">
+            <button class="btn btn-rose btn-fill" (click)="payStudentFee()" [disabled]="selected.status=='Paid'||disabledRecordPayment">
+              <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disabledRecordPayment"></i>
+              Record Payment
+            </button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div> -->
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content card card-stats">
+      <div class="card-header card-header-danger card-header-icon">
+        <h3 style="text-align: center" class="card-title">Please write comment to decline transaction</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="reply"> Comment</label>
+          <textarea class="form-control " style="border: 1px solid #d9d4d4;" rows="5" [(ngModel)]="comment" name="reply"
+            id="reply"></textarea>
+        </div>
+      </div>
+      <div style="text-align: center">
+        <button type="button" class="btn btn-default" [disabled]="!comment" (click)="rejectFeeSlip(comment)">Okay</button>
+      </div>
+    </div>
+  </div>
+</div>

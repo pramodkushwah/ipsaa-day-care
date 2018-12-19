@@ -1,0 +1,201 @@
+<div class="row">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs col-lg-12" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#program" (click)="changeTab('Program');">Program</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#group" (click)="changeTab('Group');">Group</a>
+    </li>
+  </ul>
+
+  <div [class]="viewPanel?'col-lg-6':'col-lg-12'">
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div id="program" class="tab-pane active">
+        <br>
+        <div class="card">
+          <div class="card-header card-header-warning card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
+            </div>
+            <h3 class="card-title">
+                Programs
+              <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="programs.length"></i>
+              <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" (click)="showSidePanel(false,null)" >Add New</button>
+            </h3>
+          </div>
+          <div class="card-footer">
+            <div class="table-responsive">
+              <table class="table">
+                <colgroup>
+                <col width="10%">
+                <col width="10%">
+                <col width="10%">
+                <col width="60%">
+                <col width="10%">
+                </colgroup>
+                <thead class="text-primary">
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Group</th>
+                  <th>*Action</th>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let program of programs;">
+                    <td>{{program.code}}</td>
+                    <td>{{program.name}}</td>
+                    <td>{{program.description}}</td>
+                    <td>
+                      <span class="badge badge-primary margin-right-5" *ngFor="let group of program.groups;">{{group.name}}</span>
+                    </td>
+                    <td>
+                      <button mat-raised-button class="btn btn-primary btn-sm" (click)="showSidePanel(true,program)">Edit </button>
+                      <button mat-raised-button class="btn btn-danger btn-sm" (click)="deleteProgram(program)">Delete </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="group" class="tab-pane fade">
+        <br>
+        <div class="card">
+          <div class="card-header card-header-warning card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
+            </div>
+            <h3 class="card-title">
+              Groups
+              <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="programs.length"></i>
+              <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" (click)="showSidePanel(false,null)" >Add New</button>
+            </h3>
+          </div>
+          <div class="card-footer">
+            <div class="table-responsive">
+              <table class="table">
+                <colgroup>
+                <col width="10%">
+                <col width="80%">
+                <col width="10%">
+                </colgroup>
+                <thead class="text-primary">
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>*Action</th>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let group of groups;">
+                    <td>{{group.name}}</td>
+                    <td>{{group.description}}</td>
+                    <td>
+                      <button mat-raised-button class="btn btn-primary btn-sm" (click)="showSidePanel(true,group)">Edit </button>
+                      <button mat-raised-button class="btn btn-danger btn-sm" (click)="deleteGroup(group)">Delete </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="viewPanel">
+    <br>
+    <div class="card">
+      <div class="card-header card-header-warning">
+        <button type="button" class="close" aria-label="Close" (click)="hideViewPanel()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="card-title">
+          <span *ngIf="!editable;else edit">
+            Add
+          </span>
+          <ng-template #edit>
+            Edit
+          </ng-template>
+          {{selectedTab}}
+        </h4>
+      </div>
+      <div class="card-body" *ngIf="selectedTab === 'Program'">
+        <form id="programForm" [formGroup]="programForm">
+          <div class="card-content">
+            <h4 class="card-title" *ngIf="selectedProgram">{{selectedProgram.mode}} Program</h4>
+            <div class="form-group">
+              <label class="control-label">*Code</label>
+              <input class="form-control" name="code" type="text" required formControlName="code">
+              <span class="material-input"></span>
+            </div>
+            <div class="form-group">
+              <label class="control-label">*Name</label>
+              <input class="form-control" name="name" type="text" required formControlName="name">
+              <span class="material-input"></span>
+            </div>
+            <div class="form-group">
+              <label class="control-label">*Description</label>
+              <textarea class="form-control" name="description" required type="" formControlName="description" rows="3"></textarea>
+              <span class="material-input"></span>
+            </div>
+            <div class="form-group" *ngIf="selectedGroups.length">
+              <label class="control-label">Group(s)</label><br>
+              <span class="badge badge-primary margin-right-5" *ngFor="let group of selectedGroups;let i = index;">
+                {{group.name}}
+                <i class="material-icons icon-inside-button" (click)="removeProgramGroup(i)">close</i>
+              </span>              
+            </div>
+            <div class="form-group">
+              <label class="control-label">Select Groups</label>
+              <select class="form-control" [ngModelOptions]="{standalone: true}" (ngModelChange)="addProgramGroup($event)" [(ngModel)]="selectedGroupModel">
+                <option value="">Select groups</option>
+                <option *ngFor="let group of groups;" [ngValue]="group">{{group.name}}</option>
+              </select>
+            </div>
+            <div class="category form-category">
+              *Required Fields
+            </div>
+            <div class="form-footer text-right">
+              <button class="btn btn-rose btn-fill" (click)="saveProgram()">
+                <span *ngIf="saving;else save">
+                  <i class="fa fa-spinner fa-spin"></i> Saving
+                </span>
+                <ng-template #save>Save</ng-template>
+              </button>
+              <button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="card-body" *ngIf="selectedTab === 'Group'">
+        <form id="groupForm" [formGroup]="groupForm" novalidate>
+          <div class="card-header card-header-icon" data-background-color="orange">
+            <i class="material-icons">mail_outline</i>
+          </div>
+          <div class="card-content">
+            <h4 class="card-title" *ngIf="selectedGroup">{{selectedGroup.name}} Group</h4>
+            <div class="form-group">
+              <label class="control-label">Name*</label>
+              <input class="form-control" name="name" type="text" required formControlName="name">
+              <span class="material-input"></span>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Description</label>
+              <textarea class="form-control" name="description" required type="" formControlName="description" rows="3"></textarea>
+              <span class="material-input"></span>
+            </div>
+            <div class="category form-category">
+              *Required Fields
+            </div>
+            <div class="form-footer text-right">
+              <button class="btn btn-rose btn-fill" (click)="saveGroup()">Save</button>
+              <button class="btn btn-default" >Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

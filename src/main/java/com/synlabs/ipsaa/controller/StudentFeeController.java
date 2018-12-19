@@ -202,7 +202,7 @@ public class StudentFeeController {
     @PutMapping("/payfee")
     //Confirm payment
     public StudentFeePaymentResponse updatePayFee(@RequestBody SaveFeeSlipRequest request) {
-        return new StudentFeePaymentResponse(studentFeeService.updatePayFee(request));
+        return studentFeeService.updatePayFee(request);
     }
 
     //-----------------------------------------ipsaa club---------------------------------------------------------//

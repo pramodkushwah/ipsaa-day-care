@@ -1,0 +1,116 @@
+<div class="card">
+  <div class="card-header card-header-warning">
+    <button type="button" class="close" aria-label="Close" (click)="hideViewPanel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="card-title">
+      <span *ngIf="!editable;else edit">
+        Add
+      </span>
+      <ng-template #edit>
+        Edit
+      </ng-template>
+      User
+    </h4>
+  </div>
+  <div class="card-body">
+    <form id="userForm" [formGroup]="userForm">
+      <div class="row">
+        <div class="col-lg-4">
+          <label class="control-label">*User Type</label>
+          <select class="form-control" formControlName="type">
+            <option label="Employee" value="Employee">Employee</option>
+            <option label="Parent" value="Parent">Parent</option>
+            <option label="Consultant" value="Consultant">Consultant</option>
+            <option label="Management" value="Management">Management</option>
+          </select>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group">
+            <label class="control-label">*First Name</label>
+            <input class="form-control" name="firstname" type="text" formControlName="firstname">
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group">
+            <label class="control-label">*Last Name</label>
+            <input class="form-control" name="lastname" type="text" formControlName="lastname">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="form-group">
+            <label class="control-label">*Email</label>
+            <input class="form-control" name="description" type="text" formControlName="email">
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group">
+            <label class="control-label">*Phone</label>
+            <input class="form-control" name="description" type="text" formControlName="phone">
+          </div>
+        </div>
+        <div class="col-lg-4" *ngIf="userForm.controls.type.value == 'Employee'">
+          <div class="form-group">
+            <label class="control-label">*Employee</label>
+            <select class="form-control" formControlName="empId" (ngModelChange)="getSelectedEmployee($event)">
+              <option *ngFor="let emp of employees;" [value]="emp.id">{{emp.name}} ( {{emp.centerCode}})</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="control-label">Role(s)</label>
+            <select class="form-control" [(ngModel)]="selectedRoleModel" (ngModelChange)="addRole($event)" [ngModelOptions]="{standalone: true}">
+              <option *ngFor="let role of roles;" [ngValue]="role.name">{{role.name}}</option>
+              <option value=""></option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="selectedRoles.length">
+        <label class="control-label">Role(s)</label>
+        <span class="badge badge-primary margin-right-5" *ngFor="let role of selectedRoles;let i = index;">
+          {{role}}
+          <i class="material-icons icon-inside-button" (click)="removeUserRole(i)">close</i>
+        </span>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="control-label">Center(s)</label>
+            <select class="form-control" [(ngModel)]="selectedCenterModel" (ngModelChange)="addCenter($event)" [ngModelOptions]="{standalone: true}">
+              <option value=""></option>
+              <option *ngFor="let center of centers;" [ngValue]="center.name">{{center.name}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="selectedCenters.length">
+        <label class="control-label">Center(s)</label>
+        <span class="badge badge-primary margin-right-5" *ngFor="let center of selectedCenters;let i = index;">
+          {{center}}
+          <i class="material-icons icon-inside-button" (click)="removeUserCenter(i)">close</i>
+        </span>
+      </div>
+
+      <div class="form-footer text-right">
+        <button class="btn btn-rose btn-fill" (click)="saveUser()" [disabled]="userForm.invalid">
+          <span *ngIf="saving;else save">
+            <i class="fa fa-spinner fa-spin"></i> Saving
+          </span>
+          <ng-template #save>Save</ng-template>
+        </button>
+        <button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>
+        <button class="btn btn-default" (click)="resetPassword()">Reset Password</button>
+        <button class="btn btn-default" (click)="removeUser()">Deactivate</button>
+      </div>
+    </form>
+  </div>
+</div>

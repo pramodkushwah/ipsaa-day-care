@@ -1,0 +1,350 @@
+<div class="row">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs col-lg-12" style="    background-color: orange;  " role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#apply">VIEW / APPLY FOR LEAVES</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#view">VIEW LEAVES BY MONTH</a>
+    </li>
+  </ul>
+</div>
+
+<div class="tab-content">
+
+  <div id="apply" class="tab-pane active">
+    <div class="row">
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <div class="input-group">
+            <input type="text" class="form-control dropdown-toggle" data-toggle="dropdown" placeholder="Employee" (keyup)="searchStudent($event)">
+            <ul class="dropdown-menu dropdown-menu-right" role="menu" style="right: unset;max-height: 50vh;overflow-y: auto;;">
+              <li *ngFor =" let staff of employeeList">
+                <a (click)="selctedEmpId(staff.id)">{{staff.name}} - {{staff.designation}} - {{staff.centerCode}}
+      
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="card" *ngIf="showDetails">
+        <div class="card-title">
+          <br>
+          <h3 style="text-align: center"> Apply Leaves </h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="EID">EID:</label>
+                <input class="form-control" id="eid" [(ngModel)]="eId" disabled name="eid">
+                <span class="material-input"></span>
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="half">Half:</label>
+                <input class="form-control" id="half" [(ngModel)]="halfDay" type="checkbox" name="haflday">
+                <span class="material-input"></span>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="From">*From:</label>
+                <input class="form-control" id="From" min="{{ currentDate | date: 'y-MM-dd'}}" [(ngModel)]="fromDate"
+                  type="date" name="fromdate">
+                <span class="material-input"></span>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="To">*To:</label>
+                <input class="form-control" id="To" min="{{ fromDate | date: 'y-MM-dd'}}" [(ngModel)]="toDate" type="date"
+                  name="todate">
+                <span class="material-input"></span>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="reason">*Reason:</label>
+                <input class="form-control" id="reasone" [(ngModel)]="reason" type="text" name="reason">
+                <span class="material-input"></span>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="control-label" for="leave"> * Leave Type:</label>
+                <select class="form-control" id="leave" name="leave" [(ngModel)]="selectedLeaveType">
+                  <option value="All" disabled="true">Select Leave Type</option>
+                  <option *ngFor="let leave of leaveList;" [value]="leave">{{leave}}</option>
+                </select>
+                <span class="material-input"></span>
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-warning btn-md" (click)="apllyLeave()" [disabled]="!(selectedLeaveType && reason && fromDate && toDate)">
+                <span *ngIf=" !apllyLeaveSuccessful ;else save">
+                  <i class="fa fa-spinner fa-spin"></i> Applying
+                </span>
+                <ng-template #save>Apply</ng-template>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" *ngIf="showDetails">
+        <div class="card-title">
+          <br>
+          <h3 style="text-align: center"> Details </h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="month">month:</label>
+                <select class="form-control" id="month" name="month" [(ngModel)]="selectedMonth" (ngModelChange)="getEmployeeAttendance()">
+                  <option value="" disabled="true">Select month</option>
+                  <option *ngFor="let mon of months; let i =index;" [value]="mon.id">{{mon.month}}</option>
+                </select>
+                <span class="material-input"></span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="year">Year:</label>
+                <select class="form-control" id="year" name="year" [(ngModel)]="selectedYear" (ngModelChange)="getEmployeeAttendance()">
+                  <option value="" disabled="true">Select Year</option>
+                  <option *ngFor="let year of years" [value]="year">{{year}}</option>
+                </select>
+                <span class="material-input"></span>
+              </div>
+            </div>
+          </div>
+
+          <h3>Leave Summary</h3>
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+
+              <colgroup>
+                <col width="10%">
+                <col width="10%">
+                <col width="10%">
+                <col width="10%">
+                <col width="10%">
+                <col width="10%">
+                <col width="10%">
+                <col width="10%">
+                <col width="10%">
+                <col width="10%">
+              </colgroup>
+              <thead>
+                <!-- <tr> -->
+                <th scope="col">
+                  <b>MONTH </b>
+                </th>
+                <th scope="col" *ngFor="let leave of leaveList;"><b>{{leave}}</b></th>
+                <th scope="col">
+                  <b>TOTAL </b>
+                </th>
+                <th scope="col">
+                  <b>TOTAL(yearly) </b>
+                </th>
+                <!-- </tr> -->
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row"> {{leaveMonth}} </th>
+                  <td *ngFor="let Type of leaveList;">{{leaveSummary[Type]}} </td>
+                  <td>{{totalMonthly}}</td>
+                  <td>{{totalLeave}}</td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Attendance Summary</h3>
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+              <colgroup>
+                <col width="20%">
+                <col width="15%">
+                <col width="15%">
+                <col width="10%">
+                <col width="10%">
+                <col width="30%">
+
+
+              </colgroup>
+              <thead>
+                <!-- <tr> -->
+                <th scope="col">
+                  <b>Date </b>
+                </th>
+                <th scope="col">
+                  <b>Day </b>
+                </th>
+                <th scope="col">
+                  <b>Status </b>
+                </th>
+                <th scope="col">
+                  <b>ClockIn</b>
+                </th>
+                <th scope="col">
+                  <b>ClockOut </b>
+                </th>
+                <th scope="col">
+                  <b>Action </b>
+                </th>
+                <th scope="col">
+                  <b>Attendance Action</b>
+                </th>
+
+                <!-- </tr> -->
+              </thead>
+              <tbody *ngFor="let attendanceDetails of selectedEmployeeAttendanceDetails">
+                <tr [ngClass]="attendanceDetails.class">
+                  <td>{{attendanceDetails.date | date : 'dd/MM/y'}}</td>
+                  <td>{{attendanceDetails.date | date :'EEEE'}}</td>
+                  <td *ngIf="attendanceDetails.status == 'Present'">{{attendanceDetails.status}}</td>
+                  <td *ngIf="attendanceDetails.status == 'Absent'">{{attendanceDetails.status}}</td>
+                  <td *ngIf="attendanceDetails.status == 'Holiday'">{{attendanceDetails.status}} (
+                    {{attendanceDetails.holidayName}} )</td>
+                  <td *ngIf="attendanceDetails.status == 'Leave'">{{attendanceDetails.halfLeave ? 'Half Day' : 'Full
+                    Day'}} Leave ({{attendanceDetails.leaveType}})</td>
+                  <td>
+
+                    <span *ngIf="attendanceDetails.actualIn">{{attendanceDetails.actualIn}}</span>
+                    <input *ngIf="!attendanceDetails.actualOut && !attendanceDetails.actualIn && attendanceDetails.status != 'Holiday'"
+                      type="text" placeholder="HH:MM" [(ngModel)]="attendanceDetails.attenClockin">
+                  </td>
+                  <td>
+
+                    <span *ngIf="attendanceDetails.actualOut">{{attendanceDetails.actualOut}}</span>
+                    <input *ngIf="!attendanceDetails.actualOut && !attendanceDetails.actualIn && attendanceDetails.status != 'Holiday'"
+                      type="text" placeholder="HH:MM" [(ngModel)]="attendanceDetails.attenClockOut">
+                  </td>
+                  <td>
+                    <span class="label label-info">{{attendanceDetails.leaveStatus}}</span>
+                    <button class="btn btn-sm btn-primary" *ngIf="attendanceDetails.leaveStatus == 'Applied' || attendanceDetails.leaveStatus == 'Rejected'"
+                      (click)="approveLeave(attendanceDetails)" [disabled]="disableApprove">
+                      <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="attendanceDetails.disableApprove"></i>
+                      Approve
+                    </button>
+                    <button class="btn btn-sm btn-primary" *ngIf="attendanceDetails.leaveStatus == 'Applied' || attendanceDetails.leaveStatus == 'Approved'"
+                      (click)="rejectLeave(attendanceDetails)" [disabled]="disableApprove">
+                      <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="attendanceDetails.disableApprove"></i>
+                      Reject
+                    </button>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" *ngIf="attendanceDetails.status === 'Present'"
+                     [disabled]='attendanceDetails.disableDelete' (click)="delete(attendanceDetails)">
+                      <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="attendanceDetails.disableDelete"></i>
+                      Delete
+                    </button>
+                    <button class="btn btn-sm btn-primary" *ngIf="!(attendanceDetails.actualIn && attendanceDetails.actualOut) 
+                    && (attendanceDetails.status === 'Absent' || attendanceDetails.status === 'Leave')"
+                      (click)="saveAttendance(attendanceDetails)" [disabled]="attendanceDetails.disableSave">
+                      <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="attendanceDetails.disableSave"></i>
+                      Save
+                    </button>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+  </div>
+
+  <div id="view" class="tab-pane fade">
+    <div class="row">
+        <div class="col-md-2 col-sm-4 col-xs-6">
+            <div class="form-group">
+                <label class="control-label" for="Month"> Month:</label>
+                <select class="form-control" id="month" [(ngModel)]="summaryMonth" name="month" (ngModelChange)="getMonthlyEmployee(summaryMonth)">
+                  <option value="0" >All</option>
+                  <option *ngFor="let month of months; " [value]="month.id">{{month.month}}</option>
+                </select>
+                <span class="material-input"></span>
+              </div>
+      
+        </div>
+        <div class="col-md-2 col-sm-4 col-xs-6" >
+          <label class="control-label">Center:</label>
+                <select class="form-control"  [(ngModel)]="filterCenter" name="center" (ngModelChange)="filterEmployeeList()">
+                  <option [value]="'All'" >All</option>
+                  <option *ngFor="let center of centers; " [value]="center.name">{{center.name}}</option>
+                </select>
+                <span class="material-input"></span>
+        </div>
+      
+      </div>
+
+      <div class="card" id="coll">
+        <table class="table" >
+            <colgroup>
+              <col width="25%">
+              <col width="25%">
+              <col width="25%">
+              <col width="25%">
+             
+
+
+            </colgroup>
+          <thead class="row" style="margin: 0px;font-weight: bold;">
+            <!-- <tr> -->
+              <th>Eid</th>
+              <th>Name</th>
+              <th>Center</th>
+              <th>No of Leaves</th>
+            <!-- </tr> -->
+          </thead>
+          <tbody *ngFor =" let summary of employeeLeaveSummary; let i =index"  >
+            <tr (click)="getEmployeeLeaves(summary.eid)" id="heading{{i}}" data-toggle="collapse" attr.href="#collapseExample{{i}}" >
+              <td>{{summary.eid}}</td>
+              <td>{{summary.name}}</td>
+              <td>{{summary.center}}</td>
+              <td>{{summary.count}}</td>
+            </tr>
+             <tr class="collapse "data-parent="#coll" attr.id="collapseExample{{i}}">
+              <td colspan="4" style="background: gray;">
+                <table class="table table-bordered">
+                  <tr>
+                    <th>Date</th>
+                    <th>Leave Type</th>
+                    <th>Leave Status</th>
+                    <th>Reason</th>
+                  </tr>
+                  <tr *ngFor=" let leave of monthlyLeaves;">
+                    <td>{{leave.date}}</td>
+                    <td>{{leave.leaveType}} ({{leave.halfLeave=='NO'? 'Full Day' : 'Half Day'}})</td>
+                    <td>{{leave.leaveStatus}}</td>
+                    <td>{{leave.reason || 'None'}}</td>
+                  </tr>
+                  <tr *ngIf = "monthlyLeaves?.length === 0">
+                    <td colspan="4" class="text-center">No Leaves</td>
+                  </tr>
+                </table>
+              </td>
+            </tr> 
+          </tbody> 
+          <tfoot *ngIf ="employeeLeaveSummary?.length === 0">
+            <tr>
+              <th colspan="4" class="text-center">No Content</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div> 
+  </div>
+</div>

@@ -1,0 +1,130 @@
+<div class="row">
+  <div class="col-md-3">
+    <div class="form-group">
+      <label for="serach">Search:</label>
+      <input type="text" class="form-control" id="search" [(ngModel)]="search" (keyup)="searchStaff($event)" placeholder="Search by staff name">
+      <span class="material-input"></span>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="form-group">
+      <label for="center">Center:</label>
+      <select class="form-control" id="center" [(ngModel)]="selectedCenter" (ngModelChange)="filterStaffByCenter()">
+        <option value="all">All</option>
+        <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="form-group">
+      <label for="staff_status">Staff Status:</label>
+      <select class="form-control" id="staff_status" [(ngModel)]="selectedStaffStatus" (ngModelChange)="filterStaff($event)">
+        <option value="true">Active</option>
+        <option value="false">Inactive</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="form-group">
+      <label for="staff_type">Staff Type:</label>
+      <select class="form-control" id="staff_type" [(ngModel)]="selectedStaffType" (ngModelChange)="filterStaff()">
+        <option value="ALL" selected>All</option>
+        <option *ngFor="let stafftype of staffType" [ngValue]="stafftype.value">{{stafftype.name}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div [class]="viewPanel?'transition col-lg-6':'transition col-md-12'">
+    <div class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <h3 class="card-title">Staff
+          <i class="fa fa-spinner fa-fw fa-pulse text-primary" *ngIf="!allItems.length"></i>
+          <i class="fa fa-spinner fa-fw fa-pulse text-primary" *ngIf="loadingStaffList"></i>
+          <button mat-raised-button class="btn btn-primary btn-sm pull-right" (click)="addNewStaff()">Add New</button>
+        </h3>
+      </div>
+      <div class="card-content mx-3">
+        <div class="table-responsive">
+          <table class="table table-condensed table-striped table-hover">
+            <colgroup>
+            <col width="10%">
+            <col width="20%">
+            <col width="20%">
+            <col width="10%">
+            <col width="10%">
+            <col width="20%">
+            <col width="10%">
+            </colgroup>
+            <thead class="text-primary">
+              <tr>
+                <!-- <th>Sr. No.</th> -->
+                <th>EID</th>
+                <th>Center</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let staff of pagedItems;let i = index" class="staff-list-row" [hidden]="loadingStaffList">
+                <!-- <td>{{i+1}}</td> -->
+                <td (click)="showStaff(staff)">{{staff.eid}}</td>
+                <td (click)="showStaff(staff)">{{staff.centerName}}</td>
+                <td (click)="showStaff(staff)">{{staff.name}}</td>
+                <td (click)="showStaff(staff)">{{staff.designation}}</td>
+                <td (click)="showStaff(staff)">{{staff.mobile}}</td>
+                <td (click)="showStaff(staff)"><span style="word-break: break-all;">{{staff.email}}</span></td>
+                <td *ngIf="activeStatus" class="action-buttons">
+                  <button type="button" class="btn btn-primary btn-sm" (click)="editStaff(staff)">edit</button>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="deleteStaffSwal(staff.id)">del</button>
+                </td>
+              </tr>
+              <tr *ngIf="!loadingStaffList && !staffList.length" class="text-center">
+                <td colspan="8">No Staff to display</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <ul class="pagination pagination-info">
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === 1}">
+            <a class="page-link" (click)="setPage(1)">First</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === 1}">
+            <a class="page-link" (click)="setPage(pager.currentPage - 1)">Previous</a>
+          </li>
+          <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+            <a class="page-link" (click)="setPage(page)">{{page}}</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+            <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+            <a class="page-link" (click)="setPage(pager.totalPages)">Last</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="viewPanel">
+    <div class="card" id="staff_info">
+
+    </div>
+    <app-staff-info [id]="selectedStaff.id" [update]="update"></app-staff-info>
+  </div>
+</div>

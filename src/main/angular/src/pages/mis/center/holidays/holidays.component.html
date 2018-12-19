@@ -1,0 +1,200 @@
+
+<div class="row">
+
+<div class="col-lg-12">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="zone">Zone:</label>
+          <select class="form-control" name="zone" id="zone" [(ngModel)]="selectedZone" (ngModelChange)="getSelectedZoneStates(selectedZone)" >
+            <option ngValue="all"  disabled="true" >Select Zone:</option>
+            <option *ngFor="let zone of zones;" [ngValue]="zone">{{zone.name}}</option>
+          </select>
+          <span class="material-input"></span>
+        </div>
+      </div>
+      <div class="col-md-2">
+          <div class="form-group">
+            <label for="state">State:</label>
+            <select class="form-control" name="state" id="state" [(ngModel)]="selectedState" [disabled]="!selectedZone" (ngModelChange)="getSelectedStateCities(selectedState)" >
+              <option ngValue="" disabled="true">Select State</option>
+              <option *ngFor="let state of states;" [ngValue]="state">{{state.name}}</option>
+            </select>
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+              <label for="city">city:</label>
+              <select class="form-control" name="city" id="city" [(ngModel)]="selectedCity" [disabled]="!selectedState" (ngModelChange)="filterCenter(selectedCity , 'city')" >
+                <option value="" disabled="true">Select city</option>
+                <option *ngFor="let city of cities;" [value]="city.name">{{city.name}}</option>
+              </select>
+              <span class="material-input"></span>
+            </div>
+          </div>
+        
+       <div class="col-md-3">
+          <div class="form-group">
+            <label for="center">Center:</label>
+            <select class="form-control" name="center" id="center" (ngModelChange)="getSelectedStateCities(selectedCity)">
+              <option [ngValue]="">Select Center</option>
+              <option *ngFor="let center of centers;" [value]="center.code">{{center.name}}</option>
+            </select>
+            <span class="material-input"></span>
+          </div>
+        </div>
+      <div class="col-md-2">
+        <button type="submit" mat-raised-button class="btn btn-warning btn-lg"  (click)="add()">
+              ADD
+        </button>
+      </div>
+    </div>
+
+</div>
+<div  [class]="viewPanel?'col-lg-6':'col-lg-12'">
+    <div class="card">
+
+      <div class="card-header card-header-warning card-header-icon">
+      
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+
+
+      </div>
+      <div class="card-body">
+          <table class="table table-responsive">
+            <colgroup>
+              <col width="20%">
+              <col width="20%">
+              <col width="20%">
+              <col width="20%">
+              <col width="20%">
+              <!-- <col width="20%"> -->
+
+            </colgroup>
+            <thead class="text-primary">
+              <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Floating</th>
+                <th>Optional</th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr  *ngFor="let  holiday of holidays">
+                <td (click)="editHoliday( holiday , false )">{{holiday.name}}</td>
+                <td (click)="editHoliday( holiday , false )">{{holiday.holidayDate}}</td>
+                <td (click)="editHoliday( holiday , false )">{{holiday.floating}}</td>
+                <td (click)="editHoliday( holiday , false )">{{holiday.optional}}</td>
+                <td>
+                  <div class="buttons">
+                    <button type="button" class="btn btn-primary btn-xs" (click)="editHoliday(holiday , true)">EDIT</button>
+                    <button type="button" class="btn btn-danger btn-xs" (click)="delHoliday(holiday.id)">DEL</button>
+                  </div>
+                </td>
+              </tr>
+  
+            </tbody>
+
+            <tfoot *ngIf="false" style="border: 1px groove #e8e8e8;">
+                <tr>
+                  <td class="text-center">No Content</td>
+                </tr>
+              </tfoot>
+          </table>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col-lg-6" *ngIf="viewPanel">
+
+    <div class="card">
+        <div class="card-header card-header-warning card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
+            </div>    
+            <button type="button" class="close" aria-label="Close" (click)="hideSidePanel()">
+                <span aria-hidden="true">&times;</span>
+              </button>  
+            <h4 class="card-title">{{mode}} Holiday</h4>
+          </div>
+          <div class="card-body">
+      <div class="card-content">
+              <form id="hollidayForm" [formGroup]="hollidayForm">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="control-label">*Name</label>
+                <input class="form-control" [readonly]="!show" name="name" required type="text" required formControlName="name">
+                <span class="material-input"></span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="control-label">*Date (YYYY-MM-DD)</label>
+                <input class="form-control " [readonly]="!show" name="holidayDate" type="date" required formControlName="holidayDate" >
+                <span class="material-input"></span>
+              </div>
+            </div>
+            
+       <div class="col-md-4">
+        <div class="form-group">
+          <label class="control-label" for="center">Add Center:</label>
+          <select class="form-control"  [class.readonly]="!show" name="center" id="center" [ngModelOptions]="{standalone: true}" [(ngModel)]="selectCenter" (ngModelChange)="addCenter(selectCenter)" >
+            <option [ngValue]="'All'" >All</option>
+            <option *ngFor="let center of centers;"  [ngValue]="center">{{center.name}}</option>
+          </select>
+          <span class="material-input"></span>
+        </div>
+      </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="control-label">Center(s)</label>
+                <button   class="btn btn-info btn-xs btn-round" *ngFor=" let center of formCenters">
+                  {{center.name}}<i [hidden]="!show" class="material-icons"  (click)="removeCenter(center)">close</i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="checkbox" style="padding-top: 45px;">
+                  <label>
+                    <input [readonly]="!show"  name=" floating"  formControlName="floating" type="checkbox" >
+                    Floating
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="checkbox" style="padding-top: 45px;">
+                  <label>
+                    <input  [readonly]="!show" formControlName="optional" name="optional" type="checkbox">
+                    Optional
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="category form-category">
+            *Required Fields
+          </div>
+          <div class="form-footer text-right">
+            <button [hidden]="!show" class="btn btn-rose btn-fill" [disabled]="! (this.hollidayForm.valid && this.formCenterCopy !== [])" (click)="saveHoliday()">
+                <i *ngIf="saved" class="fa fa-spinner fa-spin"></i>Save</button>
+            <button [hidden]="!show" class="btn btn-default" (click)="hideSidePanel()">Cancel</button>
+          </div>
+        </form>
+        </div>
+        </div>
+    </div>
+  </div>
+</div>

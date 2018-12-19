@@ -13,10 +13,10 @@ public class CenterProgramFeeResponse implements Response
   private ProgramResponse program;
   private CenterResponse  center;
 
-  private Integer fee;
-  private Integer deposit;
+  private Integer baseFee;
+  private Integer securityDeposit;
   private Integer annualFee;
-  private Integer admissionFee;
+  private Integer admissionCharges;
 
   private BigDecimal cgst;
   private BigDecimal sgst;
@@ -28,9 +28,9 @@ public class CenterProgramFeeResponse implements Response
     {
       return;
     }
-    fee = centerProgramFee.getFee();
-    admissionFee=centerProgramFee.getAddmissionFee()==null?0:centerProgramFee.getAddmissionFee().intValue();
-    deposit = centerProgramFee.getDeposit();
+    baseFee = centerProgramFee.getFee();
+    admissionCharges =centerProgramFee.getAddmissionFee()==null?0:centerProgramFee.getAddmissionFee().intValue();
+    securityDeposit = centerProgramFee.getDeposit();
     annualFee = centerProgramFee.getAnnualFee();
     program = centerProgramFee.getProgram() != null ? new ProgramResponse(centerProgramFee.getProgram()) : null;
     center = centerProgramFee.getCenter() != null ? new CenterResponse(centerProgramFee.getCenter()) : null;
@@ -39,12 +39,12 @@ public class CenterProgramFeeResponse implements Response
     igst = centerProgramFee.getIgst();
   }
 
-  public Integer getAdmissionFee() {
-    return admissionFee;
+  public Integer getAdmissionCharges() {
+    return admissionCharges;
   }
 
-  public void setAdmissionFee(Integer admissionFee) {
-    this.admissionFee = admissionFee;
+  public void setAdmissionCharges(Integer admissionCharges) {
+    this.admissionCharges = admissionCharges;
   }
 
   public BigDecimal getIgst()
@@ -92,23 +92,23 @@ public class CenterProgramFeeResponse implements Response
     this.center = center;
   }
 
-  public Integer getFee()
+  public Integer getBaseFee()
   {
-    return fee;
+    return baseFee;
   }
 
-  public void setFee(Integer fee)
+  public void setBaseFee(Integer baseFee)
   {
-    this.fee = fee;
+    this.baseFee = baseFee;
   }
 
-  public Integer getDeposit()
+  public Integer getSecurityDeposit()
   {
-    return deposit;
+    return securityDeposit;
   }
 
-  public void setDeposit(Integer deposit)
+  public void setSecurityDeposit(Integer securityDeposit)
   {
-    this.deposit = deposit;
+    this.securityDeposit = securityDeposit;
   }
 }

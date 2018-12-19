@@ -40,6 +40,10 @@ public class CenterController {
 	@Secured(CENTER_READ)
 	public List<CenterResponseV2> list(@RequestParam(required = false, name = "zone") String zone,
 			@RequestParam(required = false, name = "city") String city) {
+
+		//to update entrollment count
+		//centerService.updateCount();
+
 		return centerService.list(new CenterListRequest(zone, city)).stream().map(CenterResponseV2::new)
 				.collect(Collectors.toList());
 	}
@@ -48,6 +52,12 @@ public class CenterController {
 	@Secured(ADMIN_CENTER_LIST_READ)
 	public List<CenterResponse> allCenters() {
 		return centerService.listAll().stream().map(CenterResponse::new).collect(Collectors.toList());
+	}
+
+	@GetMapping("new")
+	@Secured(ADMIN_CENTER_LIST_READ)
+	public List<CenterResponse> newCenters() {
+		return centerService.nonAccesed().stream().map(CenterResponse::new).collect(Collectors.toList());
 	}
 
 	@Secured(CENTER_WRITE)
@@ -69,7 +79,7 @@ public class CenterController {
 		Center center = centerService.updateCenter(request);
 		return new CenterResponseV2(center);
 	}
-
+	
   @Secured(CENTER_DELETE)
   @DeleteMapping(path = "{centerId}")
   public void deleteCenter(@PathVariable Long centerId)

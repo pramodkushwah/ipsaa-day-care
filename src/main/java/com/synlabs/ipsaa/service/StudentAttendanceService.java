@@ -73,7 +73,7 @@ public class StudentAttendanceService extends BaseService {
 
 		List<Student> students = studentRepository.findByCenterInAndActive(userService.getUserCenters(), true);
 
-		System.out.println("student size : " + students.size());
+		//System.out.println("student size : " + students.size());
 		List<StudentAttendance> attendances = new ArrayList<>(students.size());
 
 		for (Student student : students) {
@@ -89,7 +89,7 @@ public class StudentAttendanceService extends BaseService {
 			}
 			attendances.add(attendance);
 		}
-		System.out.println(attendances.size());
+		//System.out.println(attendances.size());
 		return attendances;
 	}
 
@@ -326,7 +326,7 @@ public class StudentAttendanceService extends BaseService {
 		return extra;
 	}
 	private double getmintusDiff(DateTime dateTime, DateTime dateTime1) {
-		System.out.println(dateTime.toDate()+" "+dateTime1.toDate());
+		//System.out.println(dateTime.toDate()+" "+dateTime1.toDate());
 		long milis=dateTime.toDate().getTime()-dateTime1.toDate().getTime();
 		long diffSec = milis / 1000;
 		double min = diffSec / 60;
@@ -363,6 +363,18 @@ public class StudentAttendanceService extends BaseService {
 		List<StudentAttendance> list = calculateList(students, studentAttendance);
 		return list;
 	}
+	// list of present and absent Students
+	public List<StudentAttendance> studentAttendanceList(String centerCode) {
+
+		List<Student> students = studentRepository.findByCenterCodeAndActiveOrderByIdAsc(centerCode,
+				true);
+
+		List<StudentAttendance> studentAttendance = attendanceRepository
+				.findByStudentInAndAttendanceDateOrderByStudentIdAsc(students, LocalDate.now().toDate());
+
+		List<StudentAttendance> list = calculateList(students, studentAttendance);
+		return list;
+	}
 
 	// list of students that are prsent in the moment
 	public List<StudentAttendance> listOfPresentStudents() {
@@ -383,7 +395,7 @@ public class StudentAttendanceService extends BaseService {
 			corporateOrNot = studentRepository.findByCenterInAndActiveTrueAndCorporate(userService.getUserCenters(),
 					isCorporate);
 		}
-		System.out.println(corporateOrNot.size());
+		//System.out.println(corporateOrNot.size());
 		List<StudentAttendance> attendances = attendanceRepository
 				.findByStudentInAndAttendanceDateOrderByStudentIdAsc(corporateOrNot, LocalDate.now().toDate());
 		return calculateList(corporateOrNot, attendances);
@@ -505,7 +517,7 @@ public class StudentAttendanceService extends BaseService {
 			add.setExtraHours(countExtra(add,true));
 			add.setExtraHours(add.getExtraHours()+countExtra(add,false));
 			attendanceRepository.save(add);
-			System.out.println(add.getAttendanceDate()+ " "+add.getExtraHours());
+			//System.out.println(add.getAttendanceDate()+ " "+add.getExtraHours());
 		}
 
 		return true;
@@ -529,7 +541,7 @@ public class StudentAttendanceService extends BaseService {
 			updatelist.put(add.getExtraHours(),list);
 			}
 
-			System.out.println(add.getAttendanceDate() + " "+add.getExtraHours());
+			//System.out.println(add.getAttendanceDate() + " "+add.getExtraHours());
 		}
 		updatelist.forEach(new BiConsumer<Integer, List<Long>>() {
 			@Override

@@ -1,0 +1,99 @@
+<div class="wrapper">
+    <div class="sidebar" data-color="orange" data-background-color="white" data-image="../assets/img/sidebar-4.jpg">
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" style="cursor: pointer;" routerLink="/pp/gallery">Gallery</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" style="cursor: pointer;" routerLink="/pp/sharingSheet">Sharing Sheet</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" style="cursor: pointer;" routerLink="/pp/activities">Activities</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" style="cursor: pointer;" routerLink="/pp/profile">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" style="cursor: pointer;" routerLink="/pp/fee">Fees</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" style="cursor: pointer;" routerLink="/pp/attendance">Attendance</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" style="cursor: pointer;" routerLink="/pp/foodmenu">Food Menu</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" style="cursor: pointer;" routerLink="/pp/support">Support</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" (click)="onLogout()" style="cursor: pointer;">
+                    <i class="material-icons">power_settings_new</i>
+                    <p>
+                        <span class="d-lg-none d-md-block">Log Out</span>
+                    </p>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-background" style="background-image: url(../assets/img/sidebar-4.jpg)"></div>
+    </div>
+    <div class="main-panel">
+        <nav class="navbar navbar-expand-lg navbar-transparent  navbar-absolute fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand">
+                    <img src="/assets/img/ipsaa-logo-sm.png">
+                </a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navigation">
+                    <span class="mat-button-wrapper">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                    </span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end"  data-color="orange" data-background-color="white" id="navigation">
+                    <ul class="navbar-nav navbar-right">
+                        <li class="nav-item">
+                            <a class="nav-link" style="cursor: pointer;" routerLink="/pp/gallery">Gallery</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" style="cursor: pointer;" routerLink="/pp/sharingSheet">Sharing Sheet</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" style="cursor: pointer;" routerLink="/pp/activities">Activities</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" style="cursor: pointer;" routerLink="/pp/profile">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" style="cursor: pointer;" routerLink="/pp/fee">Fees</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" style="cursor: pointer;" routerLink="/pp/attendance">Attendance</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" style="cursor: pointer;" routerLink="/pp/foodmenu">Food Menu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" style="cursor: pointer;" routerLink="/pp/support">Support</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" (click)="onLogout()" style="cursor: pointer;">
+                                <i class="material-icons">power_settings_new</i>
+                                <p>
+                                    <span class="d-lg-none d-md-block">Log Out</span>
+                                </p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div>&nbsp;</div>
+        <div class="main-content">
+            <div class="container-fluid">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+        <!-- <app-footer></app-footer> -->
+    </div>
+</div>

@@ -49,7 +49,7 @@ public class StudentFeeSlipResponse3 implements Response
     //this.feeDuration = slip.getFeeDuration().name();
     //this.comments = slip.getComments();
     //this.invoiceDate = slip.getInvoiceDate() == null ? null : slip.getInvoiceDate().toString();
-    //this.deposit = slip.getDeposit();
+    //this.deposit = slip.getSecurityDeposit();
     //this.annualFee = slip.getAnnualFee();
     //this.sgst = slip.getSgst();
     //this.cgst = slip.getCgst();
@@ -155,7 +155,7 @@ public class StudentFeeSlipResponse3 implements Response
 //    return quarter;
 //  }
 //
-//  public BigDecimal getDeposit()
+//  public BigDecimal getSecurityDeposit()
 //  {
 //    return deposit;
 //  }

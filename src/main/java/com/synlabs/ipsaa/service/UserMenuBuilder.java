@@ -34,8 +34,8 @@ public class UserMenuBuilder
   public void init() {
     try {
       Resource[] resources
-          = ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
-                                .getResources("classpath*:/menu/*.json");
+              = ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
+              .getResources("classpath*:/menus/*.json");          ////////////Change it for angular1
 
       for (Resource resource : resources) {
         logger.info("Loaded menu from {}", resource.getFilename());

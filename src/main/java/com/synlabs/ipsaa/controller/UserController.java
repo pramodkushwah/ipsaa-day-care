@@ -35,13 +35,12 @@ public class UserController
     return userService.list().stream().map(UserResponse::new).collect(Collectors.toList());
   }
 
-  @GetMapping("menu")
+  @GetMapping("menus")
   @Secured(SELF_READ)
   public Menu getMenu()
   {
     return userService.getCurrentUserMenu();
   }
-
 
   @DeleteMapping("{userId}")
   @Secured(USER_WRITE)

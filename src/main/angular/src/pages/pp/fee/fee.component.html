@@ -1,0 +1,184 @@
+<div class="row" *ngIf="parent.length>1">
+
+  <div class="col-md-2">
+    <div class="form-group ">
+      <label class="control-label">Student</label>
+      <select class="form-control" [(ngModel)]="studentId" (ngModelChange)="onStudentChange(studentId)">
+        <!-- <option value="" disabled="true">Select Quater</option> -->
+        <option *ngFor="let chaild of parent;" [ngValue]="chaild.id">{{chaild.fullName}}</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row" *ngIf="fee">
+  <div class="col-sm-12  col-md-4" >
+    <div class="card card-pricing card-raised">
+      <div class="card-body">
+      <div class="card-content" style="text-align: center">
+        <h4>{{fee.admissionNumber}}</h4>
+        <h6 class="category">{{fee.fullName}}</h6>
+        <h3 *ngIf="checkoutDetails" class="card-title">Rs. {{checkoutDetails?.feeAmount}}</h3>
+        <span class="badge badge-lg badge-primary margin-right-5">{{fee.center?.name}}</span> <br>
+        <span class="badge badge-primary margin-right-5">{{fee.program?.name}}</span> <br>
+        <span class="badge badge-primary margin-right-5">{{fee.group?.name}}</span>
+        <br>
+        <p class="card-description">
+          You can click on the button below and pay the fee via Hdfc gateway
+        </p>
+        <form id="checkout" method="POST" name="payuform">
+          <!--<input type="hidden" name="merchant_id" value="{{checkoutDetails.merchantId}}">-->
+          <!--<input type="hidden" name="access_code" value="{{checkoutDetails.accessCode}}">-->
+          <!--<input type="hidden" name="encRequest"  value="{{checkoutDetails.encRequest}}">-->
+
+
+          <a *ngIf="fee.program.id !== 72932732558618" class="btn btn-portal btn-round" [routerLink]="['/pp/checkout/', studentfeeledger.id, myDetailId]" target="_blank" >
+              Pay now
+            </a>
+            <a  *ngIf="fee.program.id === 72932732558618" class="btn btn-portal btn-round" [routerLink]="['/pp/ipsaaclubcheckout/', studentfeeledger.id, myDetailId]" target="_blank" >
+              Pay now
+            </a>
+        </form>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="col-sm-12  col-md-4" *ngIf="true">
+    <div class="card card-raised">
+        <div class="card-header card-header-warning card-header-icon">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card-icon">
+                  <i class="material-icons">content_copy</i>
+                </div>
+                <h3 class="card-title">Fee Details</h3>
+              </div>
+            </div>
+          </div>
+      <div class="card-body">
+      <div class="card-content">
+        <table class="table table-hover">
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <td>{{fee.fullName}}</td>
+          </tr>
+          <tr>
+            <th>Program</th>
+            <td>{{fee.program.name}}</td>
+          </tr>
+          <tr>
+            <th>Group</th>
+            <td>{{fee.group.name}}</td>
+          </tr>
+          <tr>
+            <th>Center</th>
+            <td>{{fee.center.name}}</td>
+          </tr>
+          <tr>
+            <th>Fee</th>
+            <td>{{fee.finalFee}}</td>
+          </tr>
+          <tr>
+            <th>Transport Fee</th>
+            <td>{{fee.transportFee}}</td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td>{{fee.feeDuration}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    </div>
+  </div>
+  <div class="col-sm-12  col-md-4" *ngIf="studentfeeledger">
+    <div class="card card-raised">
+
+        <div class="card-header card-header-warning card-header-icon">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card-icon">
+                  <i class="material-icons">content_copy</i>
+                </div>
+                <h3 class="card-title">Last Payment</h3>
+              </div>
+            </div>
+          </div>
+      <div class="card-body">
+      <div class="card-content">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <tbody>
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+              </tr>
+              <tr>
+                <th>Month</th>
+                <td>{{studentfeeledger.monthName}}</td>
+              </tr>
+              <tr>
+                <th>Year</th>
+                <td>{{studentfeeledger.year}}</td>
+              </tr>
+              <tr>
+                <th>Fee</th>
+                <td>{{studentfeeledger.baseFee}}</td>
+              </tr>
+              <tr *ngIf="studentfeeledger.annualFee!=null">
+                <th>Annual Fee</th>
+                <td>{{studentfeeledger.annualFee}}</td>
+              </tr>
+              <tr *ngIf="studentfeeledger.deposit!=null">
+                <th>Deposit</th>
+                <td>{{studentfeeledger.deposit}}</td>
+              </tr>
+              <tr>
+                <th>Extra Charges</th>
+                <td>{{studentfeeledger.extraCharge}}</td>
+              </tr>
+              <tr>
+                <th>Late Payment Charges</th>
+                <td>{{studentfeeledger.latePaymentCharge}}</td>
+              </tr>
+              <tr>
+                <th>Total</th>
+                <td>{{studentfeeledger.totalFee}}</td>
+              </tr>
+              <tr>
+                <th>Invoice Date</th>
+                <td>{{studentfeeledger.invoiceDate}}</td>
+              </tr>
+              <tr>
+                <th>Payments</th>
+                <td><span class="btn btn-sm btn-round btn-primary" *ngFor=" let payment of studentfeeledger.payments">
+                    {{payment.paidAmount}} RS. on {{payment.paymentDate}}
+                  </span></td>
+              </tr>
+              <tr>
+                <th>Status</th>
+                <td>{{studentfeeledger.paymentStatus}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn btn-sm btn-round btn-portal" (click)="slipDownload(studentfeeledger.id)" [disabled]="disabledDownloadFeeSlip">
+            <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disabledDownloadFeeSlip"></i>
+            <span class="glyphicon glyphicon-download-alt"></span> slip
+          </button>
+          <button class="btn btn-sm btn-round btn-portal" (click)="receiptDownload(studentfeeledger.id)" [disabled]="disabledDownloadFeeReceipt"
+            *ngIf="studentfeeledger.paymentStatus=='Paid' || studentfeeledger.paymentStatus=='PartiallyPaid'">
+            <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disabledDownloadFeeReceipt"></i>
+            <span class="glyphicon glyphicon-download-alt"></span> receipt
+          </button>
+
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+</div>

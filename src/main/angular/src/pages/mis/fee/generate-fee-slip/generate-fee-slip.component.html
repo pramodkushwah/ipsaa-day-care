@@ -1,0 +1,592 @@
+<div class="row">
+  <div class="col-lg-12">
+    <form [formGroup]="generateSlipForm">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="center">Center:</label>
+            <select class="form-control" formControlName="center">
+              <option value="" disabled="true">Select Center</option>
+              <option *ngFor="let center of centers;" [value]="center.code">{{center.name}}</option>
+            </select>
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="Quater">Quarter:</label>
+            <select class="form-control" formControlName="quater">
+              <option value="" disabled="true">Select Quarter</option>
+              <option *ngFor="let quater of quaters;" [value]="quater.id">{{quater.Qtype}}</option>
+            </select>
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="year">Year:</label>
+            <select class="form-control" formControlName="year">
+              <option value="" disabled="true">Select Year</option>
+              <option *ngFor="let year of years" [value]="year">{{year}}</option>
+            </select>
+            <span class="material-input"></span>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <button type="submit" mat-raised-button class="btn btn-warning btn-lg" [disabled]="!generateSlipForm.valid"
+            (click)="generate( generateSlipForm.value)">Get / Generate </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+  <div *ngIf="showtable" [class]="viewPanel?'col-lg-8':'col-lg-12'">
+    <div class="card">
+
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
+            </div>
+            <h3 style="float: left" class="card-title">
+              Student Fee Slip
+              <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="downloadinData"></i>
+            </h3>
+            <h3 style="float: right ;" class="card-title">
+              <!-- <mat-form-field>
+                    <input matInput placeholder="Search" >
+                  </mat-form-field> -->
+              <form class="form-inline ml-auto">
+                <div class=" no-border">
+                  <input matInput type="text" class="form-control" (keyup)="searchStudent($event)" name="search"
+                    placeholder="search text goes here">
+                </div>
+                <button type="submit" class="btn btn-just-icon btn-round " style="background: orange">
+                  <i class="material-icons">search</i>
+                </button>
+              </form>
+              <!-- <button mat-raised-button class="btn btn-primary btn-sm">New</button> -->
+            </h3>
+          </div>
+        </div>
+
+      </div>
+      <div *ngIf=" studentDetails?.length >0" style=" text-align: center;" class="row">
+
+        <div  class="col-lg-6 col-md-6 ">
+          <div class="row">
+
+            <div class="col-lg-6 col-md-6 ">
+              <button mat-raised-button class="btn btn-primary btn-sm" [disabled]="ids.length ==0" (click)="downloadSlips()">
+                <span *ngIf=" downloadingSlips ;else Download">
+                  <i class="fa fa-spinner fa-spin"></i> Downloading
+                </span>
+                <ng-template #Download>Download </ng-template>
+              </button>
+            </div>
+            <div class="col-lg-6 col-md-6 ">
+              <button mat-raised-button class="btn btn-primary btn-sm" [disabled]="ids.length ==0" (click)="sendMailPanel(true)">
+                Send Mail
+              </button>
+            </div>
+            <div class=" col-lg-12 col-md-12 card-title">
+              <p>*Downloading slips may take several minutes.
+              </p>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 ">
+          <div class="row">
+            <div class="col-lg-6 col-md-6 ">
+              <button mat-raised-button class="btn btn-primary btn-sm" [disabled]="!(unlockIds.length >0) || (unlockIds.length != ids.length)"
+                (click)="lockFee()">
+                <span *ngIf=" lockSlip ;else Lock">
+                  <i class="fa fa-spinner fa-spin"></i>Lock
+                </span>
+                <ng-template #Lock>Lock</ng-template>
+              </button>
+            </div>
+            <div class="col-lg-6 col-md-6 ">
+              <button mat-raised-button class="btn btn-primary btn-sm" [disabled]="!(unlockIds.length >0 )|| (unlockIds.length != ids.length)"
+                (click)="regenerateSlips()">
+
+                <span *ngIf=" regeneratingSlip ;else Regenerate">
+                  <i class="fa fa-spinner fa-spin"></i>Regenerating
+                </span>
+                <ng-template #Regenerate>Regenerate</ng-template>
+              </button>
+            </div>
+            <div *ngIf="((ids.length - unlockIds.length) >0 && unlockIds.length>0) " class=" col-lg-12 col-md-12 card-title">
+              <p>unselect the locked field
+              </p>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-body">
+        <div *ngIf="downloadinData" >
+          <div class="table-responsive">
+          <table class="table table-condensed table-striped table-hover">
+            <colgroup>
+              <col width="5%">
+              <col width="5%">
+              <col width="10%">
+              <col width="20%">
+              <col width="10%">
+              <col width="10%">
+              <col width="10%">
+              <col width="10%">
+              <col width="10%">
+              <col width="10%">
+              <col width="10%">
+            </colgroup>
+            <thead class="text-primary">
+              <th>
+
+                <input type="checkbox" (ngModelChange)="selectAll($event)" [(ngModel)]="selectAllStudent"> </th>
+
+              <th> Sr.No</th>
+              <th>Student</th>
+              <th>Program / Group</th>
+              <th>Fee</th>
+              <th>Extra Charges</th>
+              <th>Late Payment</th>
+              <th>Final Fee</th>
+              <th>
+                Status
+                <select (ngModelChange)="filterByPaymentStatus($event)" [(ngModel)]="statusFilter">
+                  <option value="All">All</option>
+                  <option value="Paid">Paid</option>
+                  <option value="PartiallyPaid">Partially Paid</option>
+                  <option value="Raised">Raised</option>
+                </select>
+              </th>
+              <th>Locked</th>
+
+            </thead>
+            <tbody>
+              <tr *ngFor="let student of studentDetails; let i= index">
+                <td>
+                  <input type="checkbox" [(ngModel)]="studentIds[student.id]" (ngModelChange)="selectStudents()">
+                </td>
+                <td (click)="showSidePanel(true,student)">{{i+1}}</td>
+                <td (click)="showSidePanel(true,student)">{{student.fullName}}</td>
+                <td (click)="showSidePanel(true,student)">
+                  <span class="badge badge-primary margin-right-5"> {{student.program}} </span>
+                  <span class="badge badge-primary margin-right-5"> {{student.group}} </span>
+                </td>
+                <td (click)="showSidePanel(true,student)">{{student.fee}}</td>
+                <td (click)="showSidePanel(true,student)"> {{student.extraCharge}} </td>
+                <td (click)="showSidePanel(true,student)"> {{student.latePaymentCharge}} </td>
+                <td (click)="showSidePanel(true,student)"> {{student.payableAmount}} </td>
+                <td (click)="showSidePanel(true,student)"> {{student.status}} </td>
+                <td (click)="showSidePanel(true,student)">
+
+                  <span *ngIf="student.generateActive">
+                    <i class="material-icons">
+                      lock
+                    </i>
+                  </span>
+                  <span *ngIf="!student.generateActive">
+                    <i class="material-icons">
+                      lock_open
+                    </i>
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf=" studentDetails.length == 0">
+                <td class="text-center" colspan="10">No Content</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col-lg-4" *ngIf="viewPanel">
+
+    <div *ngIf="!mailPanel" class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <button type="button" class="close" aria-label="Close" (click)="showSidePanel(false,null)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="card-title">
+          <span>
+            Fee Slip - {{selectedStudentDetails.fullName}}
+          </span>
+
+          <br>
+          <td>
+            <span class="badge badge-primary margin-right-5"> {{selectedStudentDetails.program}} </span>
+            <span class="badge badge-primary margin-right-5"> {{selectedStudentDetails.group}} </span>
+            <span *ngIf="selectedStudentDetails.generateActive">
+              <i class="material-icons">
+                lock
+              </i>
+            </span>
+            <span *ngIf="!selectedStudentDetails.generateActive">
+              <i class="material-icons">
+                lock_open
+              </i>
+            </span>
+          </td>
+        </h4>
+      </div>
+      <div class="card-body">
+        <form id="regenerateSlipForm" [formGroup]="regenerateSlipForm">
+          <div class="card-content">
+            <div class="row">
+              <div class="col-lg-6 col-md-3 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label"> Annual Charge</label>
+                  <input class="form-control" type="number" name="annualFee" readonly formControlName="annualFee">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label"> Discount(%)</label>
+                  <input class="form-control" type="number" name="annualFeeDiscount" readonly formControlName="annualFeeDiscount">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Final Annual Charges</label>
+                  <input class="form-control" type="number" name="finalAnnualCharges" readonly formControlName="finalAnnualCharges">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Admission Charges</label>
+                  <input class="form-control" type="number" name="admissionFee" readonly formControlName="admissionFee">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Discount(%)</label>
+                  <input class="form-control" type="number" name="addmissionFeeDiscount" readonly formControlName="addmissionFeeDiscount">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Final Admission Charges</label>
+                  <input class="form-control" type="number" name="finalAdmissionFee" readonly formControlName="finalAdmissionFee">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <!-- </div>
+            <div class="row"> -->
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Monthly Program Fees</label>
+                  <input class="form-control" type="number" name="baseFee" readonly formControlName="baseFee">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Discount(%)</label>
+                  <input class="form-control" type="number" name="baseFeeDiscount" readonly formControlName="baseFeeDiscount">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Final Monthly Fees</label>
+                  <input class="form-control" type="number" [value]="regenerateSlipForm.get('finalBaseFee').value / regenerateSlipForm.get('feeRatio').value  "
+                    name="finalBaseFee" readonly>
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Security Deposit</label>
+                  <input class="form-control" type="number" name="deposit" readonly formControlName="deposit">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Discount(%)</label>
+                  <input class="form-control" type="number" name="depositFeeDiscount" readonly formControlName="depositFeeDiscount">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Final Security Deposit</label>
+                  <input class="form-control" type="number" name="finalDepositFee" readonly formControlName="finalDepositFee">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <!-- </div>
+            <div class="row"> -->
+              <div class="col-lg-12 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Monthly Transport Fees</label>
+                  <input class="form-control" type="number" name="transportFee" readonly formControlName="transportFee">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Annual-Fee-GST</label> &nbsp; <a data-toggle="tooltip" title="18% if applicable ">
+                    <b>i</b></a>
+                  <input class="form-control" type="number" readonly [value]=" regenerateSlipForm.get('gstAmount').value >0?  regenerateSlipForm.get('finalAnnualCharges').value *.18 : 0">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-12 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Quarterly-Program-Fee-GST</label> &nbsp; <a data-toggle="tooltip" title="18% if applicable ">
+                    <b>i</b></a>
+                  <input class="form-control" type="number" readonly [value]=" regenerateSlipForm.get('gstAmount').value >0 ? regenerateSlipForm.get('finalBaseFee').value *.18 : 0">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Uniform Charges</label>
+                  <input class="form-control" type="number" name="uniformCharges" [readonly]="selectedStudentDetails.generateActive"
+                    formControlName="uniformCharges">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Stationary Charges</label>
+                  <input class="form-control" type="number" name="stationary" [readonly]="selectedStudentDetails.generateActive"
+                    formControlName="stationary">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Fee Ratio</label>
+                  <input class="form-control" type="number" name="feeRatio" readonly formControlName="feeRatio">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <!-- </div>
+            <div class="row"> -->
+              <div class="col-lg-6 col-md-3 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label"> Fee</label>
+                  <input class="form-control" type="number" [value]="regenerateSlipForm.get('finalFee').value + regenerateSlipForm.get('gstAmount').value"
+                    name="finalFee" readonly>
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label"> Balance</label>
+                  <input class="form-control" type="number" name="balance" [readonly]="selectedStudentDetails.generateActive"
+                    formControlName="balance">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label"> Extra</label>
+                  <input class="form-control" type="number" name="extraCharge" [readonly]="selectedStudentDetails.generateActive"
+                    formControlName="extraCharge">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Late Payment </label>
+                  <input class="form-control" type="number" name="latePaymentCharge" [readonly]="selectedStudentDetails.generateActive"
+                    formControlName="latePaymentCharge">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Adjust</label>
+                  <input class="form-control" type="number" name="adjust" [readonly]="selectedStudentDetails.generateActive"
+                    formControlName="adjust">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-4 col-sm-3">
+                <div class="form-group">
+                  <label class="control-label">Final Fees</label>
+                  <input class="form-control" type="number" name="totalFee" readonly formControlName="totalFee">
+                  <span class="material-input"></span>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <div class="form-group">
+                    <label class="control-label">Comments*</label>
+                    <textarea class="form-control" name="comments" [readonly]="selectedStudentDetails.generateActive"
+                      formControlName="comments" rows="3" cols="100"> </textarea>
+                    <span class="material-input"></span>
+                  </div>
+                </div>
+
+                <div *ngIf="selectedStudentDetails.autoComments" class="col-lg-12 col-md-12 col-sm-12">
+                  <div class="form-group">
+                    <label class="control-label">Auto Comments*</label>
+                    <textarea class="form-control" name="autoComments" readonly formControlName="autoComments"> </textarea>
+                    <span class="material-input"></span>
+                  </div>
+                </div>
+
+              </div>
+              <div class="category form-category">
+                *Required Fields
+              </div>
+              <div *ngIf="!selectedStudentDetails.generateActive" class="form-footer text-right">
+
+                <button class="btn btn-sm btn-rose btn-fill"  (click)="saveSlip('save')">
+                  <span *ngIf=" saveFeeSlip ;else save">
+                    <i class="fa fa-spinner fa-spin"></i> Saving
+                  </span>
+                  <ng-template #save>Save</ng-template>
+                </button>
+
+                <button class="btn btn-sm btn-rose btn-fill" data-toggle="modal" data-target="#regenerateDatePopUp" >
+                  <span *ngIf=" regenerateSlip ;else Regenerate">
+                    <i class="fa fa-spinner fa-spin"></i> Regenerating
+                  </span>
+                  <ng-template #Regenerate>Regenerate</ng-template>
+                </button>
+
+                <button class="btn btn-sm btn-default" (click)="showSidePanel(false,null)">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <div *ngIf="mailPanel" class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <button type="button" class="close" aria-label="Close" (click)="showSidePanel(false,null)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="card-title">
+          <span>
+            Send email to parents
+          </span>
+
+        </h4>
+
+      </div>
+      <div class="card-body">
+        <h5>
+          Note: To add payment link in email add {{ '{' }}paymentlink{{ '}' }} in email body.
+
+        </h5>
+        <form id="eMailForm" [formGroup]="eMailForm">
+          <div class="card-content">
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="control-label">*Subject</label>
+                  <input type="text" class="form-control" name="subject" formControlName="subject">
+                  <span class="material-input"></span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="control-label">*Message</label>
+                  <textarea class="form-control" name="body" formControlName="body" rows="10" cols="100"></textarea>
+                  <span class="material-input"></span>
+                </div>
+              </div>
+            </div>
+            <div class="category form-category">
+              *Required Fields
+            </div>
+            <div class="category form-category">
+              Mail Sent To {{ids.length}} parents
+            </div>
+            <div class="form-footer text-right">
+              <button class="btn btn-rose btn-fill" [disabled]="!(ids?.length > 0)" (click)="sendMail()">
+                <span *ngIf=" true">
+                  Send
+                </span>
+              </button>
+              <button class="btn btn-default" (click)="showSidePanel(false,null)">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="regenerateDatePopUp" tabindex="-1" role="dialog" aria-labelledby="regenerateDatePopUp" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content card card-stats">
+      <div class="card-header card-header-danger card-header-icon">
+        <h3 style="text-align: center" class="card-title">Are you sure</h3>
+        <h4 style="text-align: center" class="card-title">you want to Regenerate slip
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div style="text-align: center">
+<button type="button" class="btn btn-primary" (click)="saveSlip('Regenerate')" >From Start Date</button>
+<button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#SpecificDate" >From Specific Date</button>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-rose" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="SpecificDate" tabindex="-1" role="dialog" aria-labelledby="SpecificDate" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content card card-stats">
+      <div class="card-header card-header-danger card-header-icon">
+        <h2 style="text-align: center" class="card-title">Specific Date </h2>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+            <label for="Specific">Specific Date:</label>
+            <input class="form-control" id="Specific" [(ngModel)]="regenrateSpecificDate" type="date"  name="Specific">
+            <span class="material-input"></span>
+          </div>       
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-rose"  (click)="saveSlip('SpecificDate')" >Submit</button>
+        <button type="button" class="btn btn-rose" data-dismiss="modal">Cancle</button>
+      </div>
+    </div>
+  </div>
+</div>

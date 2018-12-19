@@ -1,0 +1,137 @@
+<div class="row">
+  <div class="col-lg-12">
+    <form [formGroup]="generateSlipForm">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="center">Center:</label>
+            <select class="form-control" formControlName="center">
+              <option value="" disabled="true">Select Center</option>
+              <option *ngFor="let center of centers;" [value]="center.code">{{center.name}}</option>
+            </select>
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="Quater">Quarter:</label>
+            <select class="form-control" formControlName="quater">
+              <option value="" disabled="true">Select Quarter</option>
+              <option *ngFor="let quater of quaters;" [value]="quater.id">{{quater.Qtype}}</option>
+            </select>
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="year">Year:</label>
+            <select class="form-control" formControlName="year">
+              <option value="" disabled="true">Select Year</option>
+              <option *ngFor="let year of years" [value]="year">{{year}}</option>
+            </select>
+            <span class="material-input"></span>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <button type="submit" mat-raised-button class="btn btn-warning btn-lg" [disabled]="!generateSlipForm.valid " (click)="getCenterStudentFeeDetails()">
+                Get
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+  <div *ngIf="showtable" [class]="viewPanel?'col-lg-6':'col-lg-12'">
+    <div class="card">
+
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
+            </div>
+            <h3 style="float: left" class="card-title">
+              Student Fee Slip
+              <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="downloadinData"></i>
+            </h3>
+            <h3 style="float: right ;" class="card-title">
+             
+              <form class="form-inline ml-auto">
+                <div class=" no-border">
+                  <input matInput type="text" class="form-control" (keyup)="searchStudent($event)" name="search"
+                    placeholder="search text goes here">
+                </div>
+                <button type="submit" class="btn btn-just-icon btn-round " style="background: orange">
+                  <i class="material-icons">search</i>
+                </button>
+              </form>
+            </h3>
+          </div>
+        </div>
+       
+
+      </div>
+      <div class="card-body">
+        <div *ngIf="downloadinData" >
+          <div class=" table-responsive">
+          <table class="table table-condensed table-striped table-hover">
+            <colgroup>
+              <col width="10%">
+              <col width="15%">
+              <col width="40%">
+              <col width="15%">
+              <col width="10%">
+              <col width="10%">
+
+            </colgroup>
+            <thead style="text-align: center" *ngIf=" studentDetails?.length >0" class="text-primary">
+
+
+              <th> Sr.No</th>
+              <th>Student</th>
+              <th >Program / Group</th>
+
+              <th>Final Fee</th>
+              <th>Period</th>
+              <th>Status</th>
+
+            </thead>
+            <tbody style="text-align: center" >
+              <tr *ngFor="let student of studentDetails; let i= index" >
+
+                <td (click)="getStudentReceipt(student)">{{i+1}}</td>
+                <td (click)="getStudentReceipt(student)">{{student.fullName}}</td>
+                <td (click)="getStudentReceipt(student)">
+                  <span class="badge badge-primary margin-right-5"> {{student.program}} </span>
+                  <span class="badge badge-primary margin-right-5"> {{student.group}} </span>
+                </td>
+                <td (click)="getStudentReceipt(student)">{{student.payableAmount}}</td>
+
+                <td (click)="getStudentReceipt(student)"> {{student.feeDuration}} </td>
+                <td (click)="getStudentReceipt(student)"> {{student.status}} </td>
+              </tr>
+
+            </tbody>
+
+            <tfoot *ngIf=" studentDetails.length == 0" style="border: 1px groove #e8e8e8;">
+                <tr>
+                  <td class="text-center">No Content</td>
+                </tr>
+              </tfoot>
+          </table>
+        </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col-lg-6" *ngIf="viewPanel">
+
+<app-fee-receipt-info [studentReceipt]="selectedStudentDetails"></app-fee-receipt-info>
+
+
+
+  </div>
+</div>

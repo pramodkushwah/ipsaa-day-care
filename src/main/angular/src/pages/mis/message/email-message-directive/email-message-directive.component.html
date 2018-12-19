@@ -1,0 +1,20 @@
+<div style="height: 37vh;overflow-y: auto">
+<div id="dropZone" #dropZone [class.over]="dragoverflag" role="textbox" aria-multiline="true" contenteditable="true" tabindex="1" style="direction: ltr; min-height: 328px;" (drop)="dropFiles($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (keyup)="getElements($event);keyUpSubject.next($event.target.textContent)">
+  <div>
+  <br>
+  </div>
+</div>
+<div style="position: absolute;bottom: 0;">
+  <div>
+    <div style="background-color: #f5f5f5;border: 1px solid transparent;font-weight: bold;margin: 0 0 9px;
+    overflow-y: hidden;padding: 4px 4px 4px 8px;max-width: 448px;
+    width: 100%;" *ngFor="let file of fileCopies;"> 
+    <a href="#" contenteditable="false">{{file.name}}
+      <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </a>
+    </div>
+  </div>
+</div>
+</div>

@@ -237,6 +237,7 @@ public class StudentFeeService extends BaseService{
 
         int slipCount=feePaymentRepository.countByStudentAndFeeDuration(fee.getStudent(),FeeDuration.Quarterly);
         StudentFeePaymentRequest slip=null;
+
         StudentFeePaymentRequest thisQuarterSlip=feePaymentRepository.findByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(),FeeDuration.Quarterly,quarter,year);
         StudentFeePaymentRequest lastQuarterSlip=feePaymentRepository.findByStudentAndFeeDurationAndQuarterAndYear(fee.getStudent(),FeeDuration.Quarterly,FeeUtilsV2.getLastQuarter(quarter,year).get("quarter"),FeeUtilsV2.getLastQuarter(quarter,year).get("year"));
         BigDecimal paidAmount=ZERO;
@@ -975,14 +976,15 @@ public class StudentFeeService extends BaseService{
 
         feePaymentRepository.saveAndFlush(slip);
         paymentRecordRepository.saveAndFlush(record);
-        logger.info(String.format("Student Fee payment recoded successfully.%s", record));
 
+        logger.info(String.format("Student Fee payment recoded successfully.%s", record));
         documentService.generateFeeReceiptPdf(slip);
+        slip.getPayments().add(record);
         return slip;
     }
 
     @Transactional
-    public StudentFeePaymentRecord updatePayFee(SaveFeeSlipRequest request) {
+    public StudentFeePaymentResponse updatePayFee(SaveFeeSlipRequest request) {
 
         if (request.getId() == null) {
             throw new ValidationException("Receipt id is required.");
@@ -1040,7 +1042,8 @@ public class StudentFeeService extends BaseService{
         //slip.setComments(request.getComments());
 
         feePaymentRepository.saveAndFlush(slip);
-        return receipt;
+
+        return new StudentFeePaymentResponse(receipt,slip);
     }
 
     public StudentFeePaymentRequest getStudentBalance(Student student) {
@@ -1074,7 +1077,7 @@ public class StudentFeeService extends BaseService{
             @Override
             public void accept(StudentFeePaymentRequest studentFeePaymentRequest) {
                 double extraHours=attendanceService.getLastQuarterExtraHours(studentFeePaymentRequest.getStudent(),4,2018);
-                System.out.println("from "+studentFeePaymentRequest.getExtraHours() +" to "+ extraHours);
+                //System.out.println("from "+studentFeePaymentRequest.getExtraHours() +" to "+ extraHours);
                 studentFeePaymentRequest.setExtraHours(new BigDecimal(extraHours));
                 feePaymentRepository.saveAndFlush(studentFeePaymentRequest);
             }

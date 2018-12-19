@@ -1,0 +1,94 @@
+<div class="row">
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="exampleFormControlInput1">Search</label>
+      <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Search .." (keyup)="searchEmployee($event)">
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="exampleFormControlSelect2">Center</label>
+      <select class="form-control" id="exampleFormControlSelect2" [(ngModel)]="center" (ngModelChange)="getEmployeeByCenter($event)">
+        <option value="ALL">ALL</option>
+        <option *ngFor="let center of centers;" value="{{center.code}}">{{center.name}}</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div [class]="viewPanel?'col-lg-6':'col-lg-12'">
+    <div class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+        <h3 class="card-title">
+          Employee Salary
+          <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="salaryList.length"></i>
+          <button class="btn btn-primary btn-sm" style="float: right;" (click)="showSidePanel(false,null)">Add New</button>
+        </h3>
+      </div>
+      <div class="card-content mx-3">
+        <div class="table-responsive">
+          <table class="table">
+            <colgroup>
+              <col width="15%">
+              <col width="20%">
+              <col width="20%">
+              <col width="10%">
+              <col width="10%">
+              <col width="15%">
+              <col width="10%">
+            </colgroup>
+            <thead class="text-primary">
+              <th>Eid</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Center</th>
+              <th>Employer</th>
+              <th>Net Salary</th>
+              <th>*Action</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let salary of pagedItems;">
+                <td>{{salary.eid}}</td>
+                <td>{{salary.firstName}}</td>
+                <td>{{salary.lastName}}</td>
+                <td>{{salary.centerCode}}</td>
+                <td>{{salary.employerCode}}</td>
+                <td>{{salary.netSalary}}</td>
+                <td>
+                  <!-- <button class="btn btn-primary btn-sm" (click)="showSidePanel(false,salary)">Show</button> -->
+                  <button class="btn btn-primary btn-sm" (click)="showSidePanel(true,salary)" *ngIf="SALARY_WRITE">Edit </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card-footer">
+        <!-- pager -->
+        <ul *ngIf="pager.pages && pager.pages.length" class="pagination pagination-info">
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === 1}">
+            <a class="page-link" (click)="setPage(1)">First</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === 1}">
+            <a class="page-link" (click)="setPage(pager.currentPage - 1)">Previous</a>
+          </li>
+          <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+            <a class="page-link" (click)="setPage(page)">{{page}}</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+            <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+            <a class="page-link" (click)="setPage(pager.totalPages)">Last</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="viewPanel">
+    <app-salary-info [salary]="selectedSalary" [update]="editable"></app-salary-info>
+  </div>
+</div>

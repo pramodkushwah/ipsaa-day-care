@@ -339,6 +339,7 @@ public class IpsaaClubFeeSerivce {
             if(request.getComments()==null){
                 throw new ValidationException("Comment is missing");
             }
+
             receipt.setComment(request.getComments());
             studentFeePaymentRecordIpsaaClubRepository.saveAndFlush(receipt);
 
@@ -354,7 +355,6 @@ public class IpsaaClubFeeSerivce {
                 slip.setTotalFee(slip.getTotalFee().add(slip.getExtraCharge()));
             }
 
-
             if (slip.getTotalFee().intValue() <= slip.getPaidAmount().intValue()) {
                 slip.setPaymentStatus(PaymentStatus.Paid);
             } else if (slip.getPaidAmount().intValue() == 0) {
@@ -362,7 +362,6 @@ public class IpsaaClubFeeSerivce {
             } else {
                 slip.setPaymentStatus(PaymentStatus.PartiallyPaid);
             }
-
             studentFeePaymentRequestIpsaaClubRepository.saveAndFlush(slip);
             logger.info(String.format("Student Fee payment rejected .%s",receipt.getId()));
         }

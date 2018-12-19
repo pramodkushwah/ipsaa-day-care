@@ -1,0 +1,13 @@
+.icon-inside-button{
+    font-size: inherit;
+    float: right;
+    padding-left: 5px;
+    cursor: pointer;
+  }
+  ul {
+    background-color: orange;
+  }
+
+  .table-responsive {
+    height: inherit;
+  }

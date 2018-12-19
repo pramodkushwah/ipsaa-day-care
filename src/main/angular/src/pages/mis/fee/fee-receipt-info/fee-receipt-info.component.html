@@ -1,0 +1,275 @@
+<div class="card">
+  <div class="card-header card-header-warning card-header-icon">
+    <div class="card-icon">
+      <i class="material-icons">content_copy</i>
+    </div>
+    <button type="button" class="close" aria-label="Close" (click)="hideSidePanel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="card-title">
+      <span>
+        Fee Slip - {{selectedStudentDetails.fullName}}
+      </span>
+      <br>
+      <span class="badge badge-primary margin-right-5"> {{selectedStudentDetails.program}} </span>
+      <span class="badge badge-primary margin-right-5"> {{selectedStudentDetails.group}} </span>
+
+      <div style="float: right">
+        <button mat-raised-button class="btn btn-primary btn-sm" (click)="sendMailPanel(!mailPanel)">
+          <span *ngIf=" !mailPanel ;else Regenerate">
+            <i class="material-icons">
+              menu
+            </i> View Fees Details</span>
+          <ng-template #Regenerate>
+            <i class="material-icons">
+              cancel
+            </i>Hide Fees Details</ng-template>
+        </button>
+      </div>
+    </h4>
+  </div>
+  <div *ngIf="!mailPanel" class="card-body">
+    <form id="feePaymentForm" [formGroup]="feePaymentForm">
+      <div class="card-content">
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group">
+              <label class="control-label"> Total Amount</label>
+              <input class="form-control" type="number" name="totalFee" formControlName="totalFee">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group">
+              <label class="control-label"> Payable Amount</label>
+              <input class="form-control" type="number" name="payableAmount" formControlName="payableAmount">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Paid Amount</label>
+              <input class="form-control" type="number" required name="paidAmount" formControlName="paidAmount">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Payment mode</label>
+              <select required class="form-control" formControlName="paymentMode">
+                <option disabled> HDFC</option>
+                <option *ngFor="let mode of paymentMode" [value]="mode">{{mode}}</option>
+              </select>
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Payment Date (YYYY-MM-DD)</label>
+              <input class="form-control" required name="paymentDate" formControlName="paymentDate">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group">
+              <label class="control-label"> Reference</label>
+              <input class="form-control" [required]="feePaymentForm.get('paymentMode').value!='Cash'" name="txnid"
+                formControlName="txnid">
+              <span class="material-input"></span>
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group">
+              <label class="control-label">Comments*</label>
+              <textarea class="form-control" name="comments" formControlName="comments" rows="3" cols="100"> </textarea>
+              <span class="material-input"></span>
+            </div>
+          </div>
+
+        </div>
+        <div class="category form-category">
+          *Required Fields
+        </div>
+        <div class="form-footer text-right">
+
+          <button class="btn btn-sm btn-rose btn-fill" [disabled]="!feePaymentForm.valid" (click)="paymentRecord()">
+            <span *ngIf=" recordPayment ;else Payment">
+              <i class="fa fa-spinner fa-spin"></i> Record payment
+            </span>
+            <ng-template #Payment>Record payment</ng-template>
+          </button>
+          <button class="btn btn-sm btn-rose btn-fill" [disabled]=" selectedStudentDetails.status ==='Raised' " (click)="receiptDownload()">
+            <span *ngIf=" downloadReceipt ;else Receipt">
+              <i class="fa fa-spinner fa-spin"></i> Download
+            </span>
+            <ng-template #Receipt>Download</ng-template>
+          </button>
+
+          <button class="btn btn-sm btn-default" (click)="hideSidePanel()">Cancel</button>
+        </div>
+      </div>
+    </form>
+    <!-- <div class="tab-pane active"> -->
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead class="text-primary">
+          <tr>
+            <th>TxnId</th>
+            <th>Mode</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let payment of selectedStudentDetails.payments">
+            <td>{{payment.txnid}}</td>
+            <td>{{payment.paymentMode}}</td>
+            <td>{{payment.paidAmount}}</td>
+            <td>{{payment.paymentDate}}</td>
+            <td *ngIf="STUDENTFEE_RECEIPT_CONFIRM">
+              <button class="btn btn-sm" [ngClass]="payment.confirmed? 'btn-success': 'btn-rose'" (click)="payment.confirmed?null:upDatePayment(payment , 'confirm')"
+                [disabled]="payment.disabled" *ngIf="(payment.active && !payment.confirmed)">
+                <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="payment.disabled"> </i>Confirm
+              </button>
+              <span *ngIf="payment.confirmed">Confirmed</span>
+
+              <button class="btn btn-sm" *ngIf="(payment.active && !payment.confirmed)" data-toggle="modal" data-target="#rejectReply"
+                (click)="rejectPayment(payment)">Reject</button>
+              <span *ngIf="!payment.active">Rejected &nbsp;
+                <a data-toggle="tooltip" title="{{payment.comment}}">
+                  <i class="fa fa-info"></i>
+                </a>
+              </span>
+            </td>
+            <td *ngIf="!STUDENTFEE_RECEIPT_CONFIRM">
+              <span *ngIf="!(payment.confirmed || payment.active)">Rejected</span>
+              <span *ngIf="payment.confirmed && payment.active">Confirmed</span>
+              <span *ngIf="payment.active && !payment.confirmed">Pending</span>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- </div> -->
+  </div>
+
+  <div *ngIf="mailPanel" class="card-body">
+
+    <table class="table  table-hover table-bordered">
+      <thead>
+        <!-- <tr> -->
+        <th scope="col">
+          <b>Fee/ Charges </b>
+        </th>
+        <th scope="col">
+          <b>Final Amount </b>
+        </th>
+        <th scope="col">
+          <b>Paid Amount </b>
+        </th>
+        <th scope="col">
+          <b>Remaining </b>
+        </th>
+        <!-- </tr> -->
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row"> Uniform Charges </th>
+          <td>{{selectedStudentDetails.uniformCharges}}</td>
+          <td>{{selectedStudentDetails.uniformPaidAmountTotal}}</td>
+          <td>{{selectedStudentDetails.uniformCharges - selectedStudentDetails.uniformPaidAmountTotal}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Stationery Charges</th>
+          <td>{{selectedStudentDetails.stationary}}</td>
+          <td>{{selectedStudentDetails.stationaryPaidAmountTotal}}</td>
+          <td>{{selectedStudentDetails.stationary -selectedStudentDetails.stationaryPaidAmountTotal }}</td>
+        </tr>
+        <tr>
+          <th scope="row">Transport Fees </th>
+          <td>{{selectedStudentDetails.transportFee}}</td>
+          <td>{{selectedStudentDetails.transportPaidAmountTotal}}</td>
+          <td>{{selectedStudentDetails.transportFee - selectedStudentDetails.transportPaidAmountTotal}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Annual Charges </th>
+          <td>{{selectedStudentDetails.annualFee}}</td>
+          <td>{{selectedStudentDetails.annualPaidAmountTotal}}</td>
+          <td>{{selectedStudentDetails.annualFee - selectedStudentDetails.annualPaidAmountTotal}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Admission Charges </th>
+          <td>{{selectedStudentDetails.admissionFee}}</td>
+          <td>{{selectedStudentDetails.addmissionPaidAmountTotal}}</td>
+          <td> {{selectedStudentDetails.admissionFee - selectedStudentDetails.addmissionPaidAmountTotal}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Base Fee </th>
+          <td>{{selectedStudentDetails.finalBaseFee}}</td>
+          <td>{{selectedStudentDetails.programPaidAmountTotal}}</td>
+          <td>{{selectedStudentDetails.finalBaseFee - selectedStudentDetails.programPaidAmountTotal}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Security Deposite Fee </th>
+          <td>{{selectedStudentDetails.deposit}}</td>
+          <td>{{selectedStudentDetails.depositPaidAmountTotal}}</td>
+          <td>{{selectedStudentDetails.deposit - selectedStudentDetails.depositPaidAmountTotal}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Late Payment </th>
+          <td>{{selectedStudentDetails.latePaymentCharge}}</td>
+          <td rowspan="5">{{selectedStudentDetails.totalOtherPaidAmount}}</td>
+          <td rowspan="5">{{ selectedStudentDetails.adjust + selectedStudentDetails.balance +
+            selectedStudentDetails.latePaymentCharge +
+            selectedStudentDetails.gstAmount- selectedStudentDetails.totalOtherPaidAmount }}</td>
+
+        </tr>
+        <tr>
+          <th scope="row">Extra</th>
+          <td>{{selectedStudentDetails.extraCharge}}</td>
+          <!-- <td colspan="2">Larry the Bird</td> -->
+        </tr>
+        <tr>
+          <th scope="row">GST</th>
+          <td>{{selectedStudentDetails.gstAmount}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Balance</th>
+          <td>{{selectedStudentDetails.balance}}</td>
+          <!-- <td colspan="2">Larry the Bird</td> -->
+        </tr>
+        <tr>
+          <th scope="row">Adjust</th>
+          <td>{{selectedStudentDetails.adjust}}</td>
+          <!-- <td colspan="2">Larry the Bird</td> -->
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="modal fade" id="rejectReply" tabindex="-1" role="dialog" aria-labelledby="rejectReply" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content card card-stats">
+      <div class="card-header card-header-danger card-header-icon">
+        <h2 style="text-align: center" class="card-title">Confirm</h2>
+        <h3 style="text-align: center" class="card-title">Please submit a comment to decline transaction
+        </h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="reply"> description</label>
+          <textarea class="form-control " style="border: 1px solid #d9d4d4;" rows="5" [(ngModel)]="replyText" name="reply"
+            id="reply"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="upDatePayment(selectedPayment, 'reject')">Okay</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancle</button>
+      </div>
+    </div>
+  </div>
+</div>

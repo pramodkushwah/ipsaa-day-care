@@ -1,0 +1,39 @@
+.user {
+  padding-bottom: 20px;
+  margin: 20px auto 0;
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 15px;
+    height: 1px;
+    width: calc(100% - 30px);
+    background-color: rgba(180, 180, 180, 0.3);
+  }
+
+  .photo {
+    width: 34px;
+    height: 34px;
+    overflow: hidden;
+    float: left;
+    z-index: 5;
+    margin-right: 11px;
+    border-radius: 50%;
+    margin-left: 23px;
+    box-shadow: 0 16px 38px -12px rgba(0,0,0,.56), 0 4px 25px 0 rgba(0,0,0,.12), 0 8px 10px -5px rgba(0,0,0,.2);
+
+    img {
+      width: 100%;
+    }
+  }
+
+  a {
+    text-align: center;
+    color: black;
+    text-align: center;
+    display: block;
+    white-space: nowrap;
+  }
+}

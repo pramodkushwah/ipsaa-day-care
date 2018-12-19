@@ -1,0 +1,10 @@
+ul {
+  background-color: orange;
+}
+
+.icon-inside-button{
+  font-size: inherit;
+  float: right;
+  padding-left: 5px;
+  cursor: pointer;
+}

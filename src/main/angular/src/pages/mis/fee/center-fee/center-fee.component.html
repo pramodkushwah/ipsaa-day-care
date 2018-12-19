@@ -1,0 +1,301 @@
+<div class="row">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs col-lg-12" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" (click)="changeTab('Program Fee');" href="#programFee">Program Fee</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" (click)="changeTab('Additional Charges');" href="#additionalCharges">Additional Charges
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" (click)="changeTab('Charge');" href="#chargeList">Charge List</a>
+    </li>
+  </ul>
+
+
+  <div [class]="viewPanel?'col-lg-8':'col-lg-12'">
+    <div class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">content_copy</i>
+        </div>
+
+        <h3 class="card-title">
+          {{selectedTab}}
+          <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="!loader"></i>
+          <button class="btn btn-primary btn-sm pull-right" *ngIf="tableShow || selectedTab ==='Charge'" [disabled]="(selectedTab ==='Additional Charges') " (click)="showSidePanel(true,null)">Add New</button>
+        </h3>
+        <div class="row">
+          <div class="form-group col-lg-4 col-md-6">
+            <label class="control-label" *ngIf="selectedTab != 'Charge' " for="center">Center:</label>
+            <select *ngIf="selectedTab != 'Charge'" class="form-control" id="center"
+              [(ngModel)]="selectedCenter" (ngModelChange)="filterFeeByCenter()">
+              <option [ngValue]="'All'">Select Option</option>
+              <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab panes -->
+
+      <div class="tab-content">
+        <div id="programFee" class="tab-pane active">
+          <br>
+          <div *ngIf="tableShow" class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="text-primary" *ngIf="selectedCenterDetails.length">
+                  <th *ngFor="let head of heading">{{head}}</th>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let detail of selectedCenterDetails">
+                    <td (click)="showSidePanel(false)"> {{detail.program.code}}-{{detail.program.name}}</td>
+                    <td> {{detail.fee}} </td>
+                    <td> {{detail.annualFee}} </td>
+                    <td> {{detail.deposit}} </td>
+                    <td> {{detail.admissionFee}} </td>
+                    <td>
+                      <button mat-raised-button class="btn btn-primary btn-sm" (click)="showSidePanel(true,detail)">Edit
+                      </button>
+                      <button mat-raised-button class="btn btn-danger btn-sm" (click)="delete( detail.id )">Del </button>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot *ngIf="!selectedCenterDetails.length" style="border: 1px groove #e8e8e8;">
+                  <tr>
+                    <td class="text-center">No Content</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="additionalCharges" class="tab-pane fade">
+          <br>
+          <div *ngIf="tableShow" class="card-body">
+            <div class="table-responsive ">
+              <table class="table table-hover">
+                <thead class="text-primary" *ngIf="additionCharge.length">
+                  <th>Charge</th>
+                  <th>Amount</th>
+                  <th>Actions</th>
+                </thead>
+                <tbody *ngFor="let addCharge of additionCharge">
+                  <tr>
+                    <td (click)="showSidePanel(false)">{{addCharge.charge.name}} </td>
+                    <td> {{addCharge.amount}} </td>
+                    <td>
+                      <button mat-raised-button class="btn btn-primary btn-sm" (click)="showSidePanel(true,addCharge)">Edit
+                      </button>
+                      <button mat-raised-button class="btn btn-danger btn-sm" (click)="delete( addCharge.id )">Del </button>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot *ngIf="!additionCharge.length" style="border: 1px groove #e8e8e8;">
+                    <tr>
+                      <td class="text-center">No Content</td>
+                    </tr>
+                  </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="chargeList" class="tab-pane fade">
+          <br>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+
+                <thead class="text-primary">
+                  <th>Charge</th>
+                  <th>Action</th>
+
+                </thead>
+                <tbody *ngFor="let charge of charges">
+                  <tr>
+                    <td> {{charge.name}} </td>
+                    <td>
+                      <button mat-raised-button class="btn btn-primary btn-sm" (click)="showSidePanel(true,charge)">Edit
+                      </button>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="col-lg-4" *ngIf="viewPanel">
+
+
+
+
+    <div class="card">
+      <div class="card-header card-header-warning">
+        <button type="button" class="close" aria-label="Close" (click)="showSidePanel(false,null)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="card-title">
+          <span *ngIf="!editable;else edit">
+            Add
+          </span>
+          <ng-template #edit>
+            Edit
+          </ng-template>
+          {{selectedTab}}
+        </h4>
+      </div>
+      <div class="card-body" *ngIf="selectedTab === 'Program Fee'">
+        <form id="programFeeForm" [formGroup]="programFeeForm">
+          <div class="card-content">
+            <div formGroupName="program">
+              <div class="form-group">
+                <label class="control-label">*program</label>
+
+                <select class="form-control" formControlName="id" [disabled]="editable">
+                  <option value="null" hidden disabled>Select</option>
+                  <option *ngFor="let program of FilterProgramList;let c = index;" [ngValue]="program.id"> {{program.name}}</option>
+                </select>
+                <!-- <div *ngIf="id.invalid && (id.dirty || id.touched)" class="text-danger position-absolute">
+                    <div *ngIf="id.errors.required">Required</div>
+                  </div>              -->
+              </div>
+
+
+            </div>
+            <div class="form-group">
+              <label class="control-label" for="fee">* Fee</label>
+              <input class="form-control" id="fee" name="fee" type="text" formControlName="fee">
+              <span class="material-input"></span>
+              <div *ngIf="fee.invalid && (fee.dirty || fee.touched)" class="text-danger position-absolute">
+                <div *ngIf="!!fee.errors.required">Required</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">*Annual Fee</label>
+              <input class="form-control" name="annualFee" type="text" required formControlName="annualFee">
+              <span class="material-input"></span>
+              <div *ngIf="annualFee.invalid && (annualFee.dirty || annualFee.touched)" class="text-danger position-absolute">
+                <div *ngIf="!!annualFee.errors.required">Required</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">*security Deposit</label>
+              <input class="form-control" name="securityDeposit" type="number" formControlName="deposit" rows="3">
+              <span class="material-input"></span>
+              <div *ngIf="deposit.invalid && (deposit.dirty || deposit.touched)" class="text-danger position-absolute">
+                <div *ngIf="!!deposit.errors.required">Required</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label"> Admission Fee</label>
+              <input class="form-control" name="admissionFee" type="number" formControlName="admissionFee">
+              <span class="material-input"></span>
+              <div *ngIf="admissionFee.invalid && (admissionFee.dirty || admissionFee.touched)" class="text-danger position-absolute">
+                <div *ngIf="!!admissionFee.errors.required">Required</div>
+              </div>
+            </div>
+            <div class="category form-category">
+              *Required Fields
+            </div>
+            <div class="form-footer text-right">
+              <button class="btn btn-rose btn-fill" [disabled]="!programFeeForm.valid" (click)="saveProgramFee()">
+                <span *ngIf="saving;else save">
+                  <i class="fa fa-spinner fa-spin"></i> Saving
+                </span>
+                <ng-template #save>Save</ng-template>
+              </button>
+              <button class="btn btn-default" (click)="cancel(programFeeForm)">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="card-body" *ngIf="selectedTab === 'Additional Charges'">
+        <form id="additionalChargeForm" [formGroup]="additionalChargeForm">
+          <div class="card-content">
+
+            <div formGroupName="charge">
+              <div class="form-group">
+                <label class="control-label">*charge</label>
+
+                <select class="form-control" formControlName="id">
+                  <option value="null" hidden disabled>Select</option>
+                  <option *ngFor="let charge of filterCharge;let c = index;" [ngValue]="charge.id"> {{charge.name}}</option>
+                </select>
+                <div *ngIf="id.invalid && (id.dirty || id.touched)" class="text-danger position-absolute">
+                  <div *ngIf="!!id.errors.required">Required</div>
+                </div>
+              </div>
+
+
+            </div>
+            <div class="form-group">
+              <label class="control-label">* Amount</label>
+              <input class="form-control" name="amount" type="text" formControlName="amount">
+              <span class="material-input"></span>
+              <div *ngIf="amount.invalid && (amount.dirty || amount.touched)" class="text-danger position-absolute">
+                <div *ngIf="!!amount.errors.required">Required</div>
+              </div>
+            </div>
+
+            <div class="category form-category">
+              *Required Fields
+            </div>
+            <div class="form-footer text-right">
+              <button class="btn btn-rose btn-fill" [disabled]="!additionalChargeForm.valid" (click)="saveProgramFee()">
+                <span *ngIf="saving;else save">
+                  <i class="fa fa-spinner fa-spin"></i> Saving
+                </span>
+                <ng-template #save>Save</ng-template>
+              </button>
+              <button class="btn btn-default" (click)="cancel(additionalChargeForm)">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+
+      <div class="card-body" *ngIf="selectedTab === 'Charge'">
+        <form id="chargeListForm" [formGroup]="chargeListForm">
+          <div class="card-content">
+            <div class="form-group">
+              <label class="control-label">*Name</label>
+              <input class="form-control" name="name" type="text" formControlName="name">
+              <span class="material-input"></span>
+              <!-- <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger position-absolute">
+                    <div *ngIf="name.errors.required">Required</div>
+                  </div> -->
+            </div>
+
+
+            <div class="category form-category">
+              *Required Fields
+            </div>
+            <div class="form-footer text-right">
+              <button class="btn btn-rose btn-fill" [disabled]="!chargeListForm.valid" (click)="saveProgramFee()">
+                <span *ngIf="saving;else save">
+                  <i class="fa fa-spinner fa-spin"></i> Saving
+                </span>
+                <ng-template #save>Save</ng-template>
+              </button>
+              <button class="btn btn-default" (click)="cancel(chargeListForm)">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>

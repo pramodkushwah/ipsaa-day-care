@@ -1,0 +1,38 @@
+{
+  "label": "Fee",
+  "icon" : "receipt",
+  "seq" : 300,
+  "submenu": [
+    {
+      "label": "Center Fee",
+      "state": "fee/centerfeemanagement",
+      "p" : "CENTERFEE_WRITE",
+      "seq" : 100
+    },
+    {
+      "label": "Ipsaa Club Fee",
+      "state": "fee/ipsaaclub",
+      "p" : "STUDENTFEE_READ",
+      "seq" : 200
+    },
+    {
+      "label": "Student Fee",
+      "state": "fee/studentfeemanagement",
+      "p" : "STUDENTFEE_READ",
+      "seq" : 250
+    },
+    {
+      "label": "Generate Fee Slip",
+      "state": "fee/feeslip",
+      "p" : "STUDENTFEE_SLIP_WRITE",
+      "seq" : 300
+    },
+    {
+      "label": "Generate Fee Receipt",
+      "state": "fee/feepayment",
+      "p" : "STUDENTFEE_RECEIPT_WRITE",
+      "seq" : 400
+    }
+
+  ]
+}

@@ -576,8 +576,14 @@ public class DashboardService extends BaseService {
 		query.select(studentfee).from(studentfee).where(studentfee.student.active.isTrue())
 				.where(studentfee.student.center.in(centers));
 
+
 		if (request.getFeeDuration() != null) {
-			query.where(studentfee.feeDuration.eq(request.getFeeDuration()));
+			if(request.getFeeDuration().equals(FeeDuration.Monthly)){
+				query.where(studentfee.student.program.id.eq(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID));
+			}else{
+				query.where(studentfee.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID));
+				query.where(studentfee.feeDuration.eq(request.getFeeDuration()));
+			}
 		}
 
 		List<StudentFee> fees = query.fetch();

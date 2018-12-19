@@ -1,0 +1,17 @@
+.card-header img {
+  height: 130px;
+  width: 130px;
+  /* margin: auto; */
+  display: table;
+  margin-bottom: -100px;
+  border-radius: 50%;
+}
+
+.card-body .card-content {
+  padding: 10px;
+}
+
+.card-header .card-profile-name {
+  text-align: right;
+  text-transform: capitalize;
+}

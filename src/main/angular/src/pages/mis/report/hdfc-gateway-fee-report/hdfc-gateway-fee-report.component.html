@@ -1,0 +1,30 @@
+<div class="row">
+              <div class="col-md-3">
+          <div class="form-group">
+            <label for="Quater">Quarter:</label>
+            <select class="form-control" [(ngModel)]="selectedQuater">
+              <option value="" disabled="true">Select Quarter</option>
+              <option *ngFor="let quater of quaters;" [value]="quater.id">{{quater.Qtype}}</option>
+            </select>
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="year">Year:</label>
+            <select class="form-control" [(ngModel)]="selectedYear">
+              <option value="" disabled="true">Select Year</option>
+              <option *ngFor="let year of years" [value]="year">{{year}}</option>
+            </select>
+            <span class="material-input"></span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-warning btn-md" (click)="hdfcGatewayFeeReportdownload()" [disabled]="!( selectedYear && selectedQuater)">
+            <span *ngIf=" downloadData ;else save">
+              <i class="fa fa-spinner fa-spin"></i> Downloading
+            </span>
+            <ng-template #save>Download</ng-template>
+          </button>
+        </div>
+      </div>

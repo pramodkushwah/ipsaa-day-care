@@ -515,7 +515,7 @@ public class StaffLeaveService extends BaseService {
      }
 
     for (EmployeeLeave l : leaves){
-      System.out.println(l.getEmployee().getName()+ " ");
+      //System.out.println(l.getEmployee().getName()+ " ");
 
       if (leaveCount.containsKey(l.getEmployee()))
 
@@ -532,7 +532,7 @@ public class StaffLeaveService extends BaseService {
         summaryResponse.setEid(entry.getKey().getEid());
         summaryResponse.setCount(entry.getValue());
         summaryResponse.setMonth(month);
-        System.out.println(summaryResponse.getName() + " " + summaryResponse.getCount());
+        //System.out.println(summaryResponse.getName() + " " + summaryResponse.getCount());
         list.add(summaryResponse);
       }
     return list;
@@ -569,7 +569,7 @@ public class StaffLeaveService extends BaseService {
 
  public BigDecimal count (EmployeeLeave leave,BigDecimal count){
 
-   System.out.println(leave);
+   //System.out.println(leave);
     if (leave.getHalfLeave())
       return count.add(new BigDecimal(0.5));
     else

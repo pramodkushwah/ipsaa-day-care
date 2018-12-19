@@ -1,0 +1,96 @@
+<div class="row">
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="control-label" for="center"> Select Center:</label>
+      <select class="form-control" id="center" name="center" [(ngModel)]="selectedCenterId">
+        <option value="" disabled="true">Select Center</option>
+        <option *ngFor="let center of centers;" [value]="center.id"> ( {{center.count}} ){{center.centerName}}</option>
+      </select>
+      <span class="material-input"></span>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <button type="submit" mat-raised-button class="btn btn-warning btn-lg" [disabled]="!selectedCenterId" (click)="getStaffList()">
+      Get
+    </button>
+  </div>
+</div>
+<div class="row"  *ngIf="showTable">
+  <div [class]="viewPanel?'transition col-lg-6':'transition col-md-12'">
+    <div class="card">
+      <div class="card-header card-header-warning card-header-icon">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
+            </div>
+            <h3 style="float: left" class="card-title">
+              Staff Approvals
+              <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="true"></i>
+            </h3>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+          <div class="table-responsive">
+
+        <table class=" table table-condensed table-striped table-hover">
+            <!-- <colgroup>
+            
+              <col width="10%">
+              <col width="15%">
+              <col width="10%">
+              <col width="15%">
+              <col width="10%">
+              <col width="10%">
+              <col width="10%">
+              <col width="30%">
+            </colgroup> -->
+          <thead class="text-primary" >
+              <!-- *ngIf=" staffAprrovelList ?.length >0"s -->
+            <th> Sr.No</th>
+            <th>Name</th>
+            <th>Designation</th>
+            <th> Center Name</th>
+            <!-- <th>Center Code</th>
+            <th>Contact No</th> -->
+            <th>Reporting Manager</th>
+            <th>Link </th>
+            <th>Action </th>
+
+          </thead>
+          <tbody>
+            <tr *ngFor="let staff of staffAprrovelList ; let i= index">
+              <td>{{i+1}}</td>
+              <td>{{staff.name}}</td>
+              <td>{{staff.designation}}</td>
+              <td> {{staff.centerName}} </td>
+              <!-- <td> {{staff.centerCode}} </td>
+              <td> {{staff.mobile}} </td> -->
+              <td> {{staff.reportingManagerName}} </td>
+              <td>
+                <button mat-raised-button class="btn btn-primary btn-sm" (click)="getSelectedStaffDetail(staff)">Show details
+                </button>
+             
+              </td>
+              <td>
+                <button mat-raised-button class="btn btn-warning btn-sm" (click)="staffApprove(staff)">Approve
+                </button>
+                <br>
+                <button mat-raised-button class="btn btn-rose btn-sm" (click)="staffReject(staff)">Reject
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="staffAprrovelList.length === 0" class="text-center">
+              <td colspan="7" class="text-center">No Content</td>
+            </tr>
+          </tbody>          
+        </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="viewPanel">
+    <app-staff-info [id]="selectedStaff.id" [update]="update"></app-staff-info>
+  </div>
+</div>

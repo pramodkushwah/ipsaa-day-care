@@ -17,6 +17,7 @@ public class StaffNewJoinings  implements Response {
     private String mobile;
     private String center;
     private boolean isActive;
+    private long id;
 
     @JsonFormat(pattern = "HH:mm", timezone = "IST")
     private Date checkIn;
@@ -26,6 +27,7 @@ public class StaffNewJoinings  implements Response {
 
     private String employer;
     public StaffNewJoinings(Employee employee) {
+        id=mask(employee.getId());
        center= employee.getCostCenter().getName();
        name=employee.getName();
        designation=employee.getDesignation();
@@ -33,6 +35,14 @@ public class StaffNewJoinings  implements Response {
        mobile=employee.getMobile();
        this.isActive=employee.isActive();
        this.employer=employee.getEmployer().getName();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     ///For Attendance----- Avneet

@@ -366,7 +366,7 @@ public class DocumentService extends BaseService
           String html = out.toString();
 
           String fileName = UUID.randomUUID() + ".pdf";
-          System.out.println(fileName);
+          //System.out.println(fileName);
           feeSlip.setSlipFileName(fileName);
           Map<String, String> params = new HashMap<>();
           params.put("-O", "landscape");
@@ -913,7 +913,7 @@ public class DocumentService extends BaseService
           String html = out.toString();
 
           String fileName = UUID.randomUUID() + ".pdf";
-          System.out.println(fileName);
+          //System.out.println(fileName);
           feeSlip.setSlipFileName(fileName);
           Map<String, String> params = new HashMap<>();
           params.put("-O", "landscape");

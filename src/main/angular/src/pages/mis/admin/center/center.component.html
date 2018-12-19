@@ -1,0 +1,268 @@
+<div class="row">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs col-lg-12" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#Center" (click)="changeTab('Center')">Centers</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#Zone" (click)="changeTab('Zone')">Zones</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#City" (click)="changeTab('City')">Cities</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#State" (click)="changeTab('State')">States</a>
+    </li>
+  </ul>
+  <div [class]="viewPanel?'col-lg-6':'col-lg-12'">
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div id="Center" class="tab-pane active">
+        <br>
+        <div class="card">
+          <div class="card-header card-header-warning card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
+            </div>
+            <h3 class="card-title">
+              <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="tableData.length"></i>
+              {{tableTitle}}
+              <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" (click)="showSidePanel(false,null)" >Add New</button>
+              <div class="form-group" style="float: right;" *ngIf="tableTitle=='Centers'">
+                <input class="form-control" [(ngModel)]="searchCenter" (ngModelChange)="filterCenter($event)" placeholder="Search by center code..">
+              </div>
+            </h3>
+          </div>
+          <div class="card-footer">
+            <div class="table-responsive">
+              <table class="table">
+                <thead class="text-primary" *ngIf="tableColumn">
+                  <tr>
+                    <th *ngFor="let col of tableColumn;">{{col}}</th>
+                    <th width="20%">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of tableData;let i = index;">
+                    <td *ngFor="let col of tableColumn;">{{row[col]}}</td>
+                    <td>
+                      <button mat-raised-button class="btn btn-primary btn-sm" (click)="showSidePanel(true,row)">Edit</button>
+                      <button mat-raised-button class="btn btn-danger btn-sm" (click)="deleteCenter(row)">Delete</button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="tableColumn.length && !tableData.length">
+                    <td [attr.colspan]="tableColumn.length + 1">No {{tableTitle}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="Zone" class="tab-pane fade">
+        <br>
+        <div class="card">
+          <div class="card-header card-header-warning card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
+            </div>
+            <h3 class="card-title">
+              {{tableTitle}}
+              <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="tableData.length"></i>
+              <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" (click)="showSidePanel(false,null)" >Add New</button>
+            </h3>
+          </div>
+          <div class="card-footer">
+            <div class="table-responsive">
+              <table class="table">
+                <thead class="text-primary" *ngIf="tableColumn">
+                  <tr>
+                    <th *ngFor="let col of tableColumn;">{{col}}</th>
+                    <th width="20%">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of tableData;let i = index;">
+                    <td *ngFor="let col of tableColumn;">
+                      <span *ngIf="col != 'cities'">{{row[col]}}</span>
+                      <ng-container *ngIf="col == 'cities'">
+                        <span class="badge badge-primary margin-right-5" *ngFor="let city of row.cities;">{{city.name}}</span>
+                      </ng-container>
+                    </td>
+                    <td>
+                      <button mat-raised-button class="btn btn-primary btn-sm" (click)="showSidePanel(true,row)">Edit</button>
+                      <button mat-raised-button class="btn btn-danger btn-sm" (click)="deleteCity(row)">Delete</button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="tableColumn.length && !tableData.length">
+                    <td [attr.colspan]="tableColumn.length + 1">No {{tableTitle}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="City" class="tab-pane fade">
+        <br>
+        <div class="card">
+          <div class="card-header card-header-warning card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
+            </div>
+            <h3 class="card-title">
+              {{tableTitle}}
+              <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="tableData.length"></i>
+              <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" (click)="showSidePanel(false,null)" >Add New</button>
+            </h3>
+          </div>
+          <div class="card-footer">
+            <div class="table-responsive">
+              <table class="table">
+                <thead class="text-primary" *ngIf="tableColumn">
+                  <tr>
+                    <th *ngFor="let col of tableColumn;">{{col}}</th>
+                    <th width="20%">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of tableData;let i = index;">
+                    <td *ngFor="let col of tableColumn;"> {{row[col]}}</td>
+                    <td>
+                      <button mat-raised-button class="btn btn-primary btn-sm" (click)="showSidePanel(true,row)"> Edit</button>
+                      <button mat-raised-button class="btn btn-danger btn-sm" (click)="deleteCity(row)">Delete</button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="tableColumn.length && !tableData.length">
+                    <td [attr.colspan]="tableColumn.length + 1">No {{tableTitle}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="State" class="tab-pane fade">
+        <br>
+        <div class="card">
+          <div class="card-header card-header-warning card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">content_copy</i>
+            </div>
+            <h3 class="card-title">
+              {{tableTitle}}
+              <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="tableData.length"></i>
+              <button mat-raised-button class="btn btn-primary btn-sm" style="float: right;" (click)="showSidePanel(false,null)" >Add New</button>
+            </h3>
+          </div>
+          <div class="card-footer">
+            <div class="table-responsive">
+              <table class="table">
+                <thead class="text-primary" *ngIf="tableColumn">
+                  <tr>
+                    <th *ngFor="let col of tableColumn;">{{col}}</th>
+                    <th width="20%">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of tableData;let i = index;">
+                    <td *ngFor="let col of tableColumn;"> {{row[col]}}</td>
+                    <td>
+                      <button mat-raised-button class="btn btn-primary btn-sm" (click)="showSidePanel(true,row)"> Edit</button>
+                      <button mat-raised-button class="btn btn-danger btn-sm" (click)="deleteState(row)">Delete</button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="tableColumn.length && !tableData.length">
+                    <td [attr.colspan]="tableColumn.length + 1">No {{tableTitle}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="viewPanel">
+    <br>
+    <div class="card" *ngIf="selectedTab !== 'Center';else centerTab">
+      <div class="card-header card-header-warning">
+        <button type="button" class="close" aria-label="Close" (click)="hideViewPanel()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="card-title">
+          <span *ngIf="!editable;else edit">
+            Add
+          </span>
+          <ng-template #edit>
+            Edit
+          </ng-template>
+          {{selectedTab}}
+        </h4>
+      </div>
+      <div class="card-body" *ngIf="selectedTab === 'Zone'">
+        <form id="zoneForm" [formGroup]="zoneForm" novalidate>
+          <div class="form-group">
+            <label class="control-label">Name*</label>
+            <input class="form-control" name="name" type="text" formControlName="name">
+            <span class="material-input"></span>
+          </div>
+          <div class="category form-category">
+            *Required Fields
+          </div>
+          <div class="form-footer text-right">
+            <button class="btn btn-rose btn-fill" (click)="saveZone()">Save</button>
+            <button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>
+          </div>
+        </form>
+      </div>
+      <div class="card-body" *ngIf="selectedTab === 'City'">
+        <form id="cityForm" [formGroup]="cityForm" novalidate>
+          <div class="form-group">
+            <label class="control-label">Name*</label>
+            <input class="form-control" name="name" type="text" formControlName="name">
+            <span class="material-input"></span>
+          </div>
+          <div class="form-group">
+            <label class="control-label">*Zone</label>
+            <select class="form-control" formControlName="zone" required>
+              <option *ngFor="let zone of zones;" [ngValue]="zone.name">{{zone.name}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="control-label">*State</label>
+            <select class="form-control" formControlName="state" required>
+              <option *ngFor="let state of states;" [ngValue]="state.name">{{state.name}}</option>
+            </select>
+          </div>
+          <div class="category form-category">
+            *Required Fields
+          </div>
+          <div class="form-footer text-right">
+            <button class="btn btn-rose btn-fill" (click)="saveCity()">Save</button>
+            <button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>
+          </div>
+        </form>
+      </div>
+      <div class="card-body" *ngIf="selectedTab === 'State'">
+        <form id="stateForm" [formGroup]="stateForm" novalidate>
+          <div class="form-group">
+            <label class="control-label">Name*</label>
+            <input class="form-control" name="name" type="text" formControlName="name">
+            <span class="material-input"></span>
+          </div>
+          <div class="category form-category">
+            *Required Fields
+          </div>
+          <div class="form-footer text-right">
+            <button class="btn btn-rose btn-fill" (click)="saveState()">Save</button>
+            <button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <ng-template #centerTab>
+      <app-center-info [center]="selectedCenter" [update]="editable" (addCenter)="pushCenter($event)"></app-center-info>
+    </ng-template>
+  </div>
+</div>

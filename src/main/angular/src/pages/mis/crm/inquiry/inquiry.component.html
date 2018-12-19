@@ -1,0 +1,137 @@
+<div class="row">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs col-lg-12" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" (click)="changeTab('Inquiry');" href="#Inquiry">Inquiry</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" (click)="changeTab('FollowUps');" href="#FollowUps">FollowUps</a>
+    </li>
+  </ul>
+</div>
+
+
+<div *ngIf="!InquiresDteailsShow">
+  <!-- Tab panes -->
+  <div class="card ">
+
+    <div class="card-header card-header-warning card-header-icon">
+      <div class="card-icon">
+        <i class="material-icons">content_copy</i>
+      </div>
+
+      <h3 class="card-title">
+        {{selectedTab}}
+        <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="!loader"></i>
+        <button class="btn btn-primary btn-sm pull-right" (click)="loadInquiry(null)" *ngIf="selectedTab !== 'FollowUps' ">New Inquiry</button>
+      </h3>
+      <div class="row">
+        <div class="form-group ipsaa-form-group col-lg-4 col-md-4">
+          <label class="control-label" for="center">Center:</label>
+          <select class="form-control" id="center" [(ngModel)]="selectedCenter" (ngModelChange)="filterFeeByCenter(selectedCenter)">
+            <option [ngValue]="null">All</option>
+            <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
+          </select>
+        </div>
+        <div class=" col-lg-4 col-md-4">
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Search</label>
+            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Search by Student Name.." (keyup)="searchStudent($event)">
+          </div>
+        </div>
+        <div *ngIf="selectedTab === 'FollowUps' " class="form-group ipsaa-form-group col-lg-4 col-md-4">
+          <label class="control-label">Filter By:-</label>
+          <select class="form-control" id="filter" [(ngModel)]="filterBy" (ngModelChange)="getFollowUps()" name="filter">
+            <option *ngFor=" let filterBy of filterFollowUps " [ngValue]="filterBy">{{filterBy.name}}</option>
+          </select>
+  
+      </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="tab-content">
+
+        <div id="Inquiry" class="tab-pane active">
+          <br>
+
+          <table class="table table-responsive table-hover">
+            <colgroup>
+              <col width="20%">
+              <col width="15%">
+              <col width="15%">
+              <col width="15%">
+              <col width="15%">
+              <col width="20%">
+
+            </colgroup>
+            <thead class="text-primary">
+              <tr>
+                <th>#</th>
+                <th>Child Name</th>
+                <th>Center</th>
+                <th>Program</th>
+                <th>Group</th>
+                <th>Fees offer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor=" let inquiry of  inquiries ">
+                <td (click)="loadInquiry(inquiry.id)">{{inquiry.inquiryNumber}}</td>
+                <td (click)="loadInquiry(inquiry.id)">{{inquiry.childName}}</td>
+                <td (click)="loadInquiry(inquiry.id)">{{inquiry.centerCode}}</td>
+                <td (click)="loadInquiry(inquiry.id)">{{inquiry.programCode}}</td>
+                <td (click)="loadInquiry(inquiry.id)">{{inquiry.groupName}}</td>
+                <td (click)="loadInquiry(inquiry.id)">{{inquiry.feeOffer}}</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+        <div id="FollowUps" class="tab-pane fade">
+          <br>
+        
+          <br>
+
+          <table class="table table-hover table-responsive ">
+            <colgroup>
+              <col width="20%">
+              <col width="15%">
+              <col width="20%">
+              <col width="15%">
+              <col width="30%">
+
+            </colgroup>
+            <thead class="text-primary">
+              <tr>
+                <th>Inquiry Number</th>
+                <th>Disposition</th>
+                <th>CallBack Date</th>
+                <th>CallBack Number</th>
+                <th>Comment</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor=" let followUp of followUps ">
+                <td (click)="loadInquiry(followUp.inquiryId)">{{followUp.inquiryNumber}}</td>
+                <td (click)="loadInquiry(followUp.inquiryId)">{{followUp.callDisposition}}</td>
+                <td (click)="loadInquiry(followUp.inquiryId)">{{followUp.callBack}}</td>
+                <td (click)="loadInquiry(followUp.inquiryId)">{{followUp.callBackNumber}}</td>
+                <td (click)="loadInquiry(followUp.inquiryId)">{{followUp.comment}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="InquiresDteailsShow">
+  
+  <app-inquirydetails [inquiryId]="selectedInquiryDetialsId" [currentTab]="selectedTab" ></app-inquirydetails>
+
+
+</div>

@@ -199,8 +199,8 @@ public class StudentService extends BaseService {
 		JPAQuery<Student> query = new JPAQuery<>(entityManager);
 		QStudent student = QStudent.student;
 
-		query.select(student).from(student).where(student.center.in(centers))
-				.where(student.active.eq(request.getActive()));
+		query.select(student).from(student).where(student.center.in(centers));
+				//.where(student.active.eq(request.getActive()));
 
 		if (!StringUtils.isEmpty(request.getProgramCode()) && !request.getProgramCode().equals("ALL")) {
 			query.where(student.program.code.eq(request.getProgramCode()));
@@ -405,11 +405,11 @@ public class StudentService extends BaseService {
 			parent.setSmsEnabled(false);
 			studentParentRepository.saveAndFlush(parent);
 		}
+		center.setEnrollmentCount(center.getEnrollmentCount()+1);
+		centerRepository.save(center);
 		studentRepository.saveAndFlush(student);
 		communicationService.sendStudentApprovalEmail(student);
-
 		StudentResponse response = new StudentResponse(student);
-
 		if (request.getFee() != null && !request.getFee().isEmpty()) {
 			request.getFee().setCenterId(mask(center.getId()));
 			request.getFee().setStudentId(mask(student.getId()));
@@ -440,6 +440,9 @@ public class StudentService extends BaseService {
 			throw new NotFoundException(String.format("Cannot locate group with id %s", request.getGroupId()));
 		}
 
+		if(!center.equals(dbStudent.getCenter())){
+			updateCenterEnrollmentCount(center,dbStudent.getCenter());
+		}
 		updateParents(dbStudent, request);
 
 		boolean feeChange = !(dbStudent.getProgram().equals(program) && dbStudent.getCenter().equals(center));
@@ -497,7 +500,15 @@ public class StudentService extends BaseService {
         return dbStudent;
     }
 
-    private void updateParents(Student dbStudent, StudentRequest request) {
+    @Transactional
+	private void updateCenterEnrollmentCount(Center old, Center current) {
+		old.setEnrollmentCount(old.getEnrollmentCount()-1);
+		centerRepository.save(old);
+		current.setEnrollmentCount(current.getEnrollmentCount()+1);
+		centerRepository.save(current);
+	}
+
+	private void updateParents(Student dbStudent, StudentRequest request) {
         List<ParentRequest> parents = request.getParents();
         for (ParentRequest parentRequest : parents) {
             if (!Relationship.matches(parentRequest.getRelationship())) {
@@ -563,13 +574,6 @@ public class StudentService extends BaseService {
         if (student == null) {
             throw new NotFoundException(String.format("Cannot locate student with id %s", request.getId()));
         }
-        StudentFeePaymentRequest slip = studentFeeService.getStudentBalance(student);
-        if (slip != null)
-            if ((slip.getBalance() != null && slip.getBalance().intValue() > 0) || !slip.getPaymentStatus().equals(PaymentStatus.Paid)) {
-                throw new ValidationException(
-                        String.format("Some balance fee is remaining of student [%s]", student.getName()));
-            }
-
         student.setActive(false);
         studentRepository.saveAndFlush(student);
         logger.info("Student deactivated " + student.getName());
@@ -1375,7 +1379,7 @@ public class StudentService extends BaseService {
          * if (request.getExtraCharge() != null) { total =
          * total.add(request.getExtraCharge()); } if (request.getLatePaymentCharge() !=
          * null) { total = total.add(request.getLatePaymentCharge()); } if
-         * (request.getDeposit() != null) { total = total.add(request.getDeposit()); }
+         * (request.getSecurityDeposit() != null) { total = total.add(request.getSecurityDeposit()); }
          * if (request.getAnnualFee() != null) { total =
          * total.add(request.getAnnualFee()); }
          */
@@ -1824,4 +1828,17 @@ public class StudentService extends BaseService {
         }
         return slip2.stream().map(StudentFeeSlipResponse3::new).collect(Collectors.toList());
     }
+
+	public boolean checkPending(StudentRequest request) {
+		Student student = studentRepository.findOne(request.getId());
+		if (student == null) {
+			throw new NotFoundException(String.format("Cannot locate student with id %s", request.getId()));
+		}
+		StudentFeePaymentRequest slip = studentFeeService.getStudentBalance(student);
+		if (slip != null)
+			if ((slip.getBalance() != null && slip.getBalance().intValue() > 0) || !slip.getPaymentStatus().equals(PaymentStatus.Paid)) {
+				return true;
+			}
+			return false;
+	}
 }
