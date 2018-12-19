@@ -162,7 +162,7 @@
               <div class="form-group">
                 <label class="control-label">*program</label>
 
-                <select class="form-control" formControlName="id" [disabled]="editable">
+                <select class="form-control" formControlName="id"  [class.readonly]="editable">
                   <option value="null" hidden disabled>Select</option>
                   <option *ngFor="let program of FilterProgramList;let c = index;" [ngValue]="program.id"> {{program.name}}</option>
                 </select>

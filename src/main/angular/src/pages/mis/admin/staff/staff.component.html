@@ -87,7 +87,7 @@
                 <td (click)="showStaff(staff)">{{staff.designation}}</td>
                 <td (click)="showStaff(staff)">{{staff.mobile}}</td>
                 <td (click)="showStaff(staff)"><span style="word-break: break-all;">{{staff.email}}</span></td>
-                <td *ngIf="activeStatus" class="action-buttons">
+                <td *ngIf="staff.active" class="action-buttons">
                   <button type="button" class="btn btn-primary btn-sm" (click)="editStaff(staff)">edit</button>
                   <button type="button" class="btn btn-danger btn-sm" (click)="deleteStaffSwal(staff.id)">del</button>
                 </td>

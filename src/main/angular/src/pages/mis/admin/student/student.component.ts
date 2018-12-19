@@ -61,6 +61,7 @@ export class StudentComponent implements OnInit {
       this.pageSize = response.pageSize;
       this.pageNumber = response.pageNumber;
       // initialize to page 1
+      this.filterStudent('true');
       this.setPage(1);
       // checked if searchKey entered before
       if (this.searchKey) {
@@ -73,7 +74,7 @@ export class StudentComponent implements OnInit {
     const a = 'true' === status;
     this.loader = true;
     this.allItems = this.studentsCopy.filter((student: any) => {
-      console.log(student.active , a);
+      console.log(student.active, a);
       return student.active === a;
     });
     this.setPage(1);
@@ -111,7 +112,7 @@ export class StudentComponent implements OnInit {
 
   deleteStudentSwal(student: any) {
     this.adminService.isFeePanding(student.id).subscribe((isPending: boolean) => {
-       if (isPending) {
+      if (isPending) {
         this.alertService.confirm('As ' + student.fullName + ' Fee is still outstanding').then(isConfirm => {
           if (isConfirm) {
             this.adminService.deleteStudentForcefully(student.id).subscribe(response => {
@@ -121,20 +122,22 @@ export class StudentComponent implements OnInit {
             });
           }
         });
-       } else {
-         this.alertService.confirm('').then(isConfirm => {
-           if (isConfirm) {
-             this.adminService.deleteStudentById(student.id).subscribe((response: any) => {
-               this.alertService.successAlert('You have deleted student record successfully');
-             });
-           }
-         });
-       }
+      } else {
+        this.alertService.confirm('').then(isConfirm => {
+          if (isConfirm) {
+            this.adminService.deleteStudentById(student.id).subscribe((response: any) => {
+              this.alertService.successAlert('You have deleted student record successfully');
+            });
+          }
+        });
+      }
     });
   }
 
   hasPrivilege(previlage) {
-    return true;
+
+    return this.adminService.hasPrivilage(previlage);
+
   }
 
   setPage(page: number) {

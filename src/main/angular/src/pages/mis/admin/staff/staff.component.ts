@@ -28,7 +28,7 @@ export class AppStaffComponent implements OnInit {
 
   update: boolean;
   search: string;
-  selectedStaffStatus: boolean;
+  selectedStaffStatus = true ;
   selectedStaffType: any = 'ALL';
   viewPanel = false;
   allItems = []; // all staff list will be stored here
@@ -66,6 +66,7 @@ export class AppStaffComponent implements OnInit {
       this.allItems = response;
       this.staffListCopy = this.allItems;
       this.staffList = this.allItems;
+      this.filterStaff('true');
       this.setPage(1);
       this.staffLoaded();
     });
