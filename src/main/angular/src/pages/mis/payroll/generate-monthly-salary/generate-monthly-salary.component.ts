@@ -167,6 +167,8 @@ export class GenerateMonthlySalaryComponent implements OnInit {
   lockControls() {
     this.adminService.lockPayslip(this.selectedSalary).subscribe((response: any) => {
       this.selectedSalary.islock = true;
+      _.extend(this.selectedSalary, response);
+
       this.alertService.successAlert('Salary Slip locked');
     });
   }
@@ -175,6 +177,8 @@ export class GenerateMonthlySalaryComponent implements OnInit {
     this.regenerating = true;
     this.adminService.regeneratePaySlip(this.selectedSalary).subscribe((response: any) => {
       this.regenerating = false;
+      _.extend(this.selectedSalary, response);
+
       this.alertService.successAlert('Payslip regenerated successfully.');
     });
   }
