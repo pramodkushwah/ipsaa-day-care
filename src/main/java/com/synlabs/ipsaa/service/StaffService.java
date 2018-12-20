@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 
+import com.synlabs.ipsaa.entity.staff.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -53,10 +54,6 @@ import com.synlabs.ipsaa.entity.common.Address;
 import com.synlabs.ipsaa.entity.common.EIDNumberSequence;
 import com.synlabs.ipsaa.entity.common.LegalEntity;
 import com.synlabs.ipsaa.entity.common.User;
-import com.synlabs.ipsaa.entity.staff.Employee;
-import com.synlabs.ipsaa.entity.staff.EmployeePaySlip;
-import com.synlabs.ipsaa.entity.staff.EmployeeProfile;
-import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.enums.AddressType;
 import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.enums.EmployeeType;
@@ -398,7 +395,7 @@ public class StaffService extends BaseService {
 			throw new ValidationException("Missing DOB");
 		}
 
-		if (profile.getDob() == null) {
+		if (profile.getDoj() == null) {
 			throw new ValidationException("Missing DOJ");
 		}
 
