@@ -164,7 +164,7 @@ export class StaffLeavesComponent implements OnInit {
   apllyLeave() {
     this.apllyLeaveSuccessful = false;
     this.applyLeavDetails['eid'] = this.eId;
-    this.applyLeavDetails['fromDate'] =  this.datePipe.transform(new Date(this.fromDate), 'yyyy-MM-dd');
+    this.applyLeavDetails['fromDate'] = this.datePipe.transform(new Date(this.fromDate), 'yyyy-MM-dd');
     this.applyLeavDetails['leaveType'] = this.selectedLeaveType;
     this.applyLeavDetails['reason'] = this.reason;
     this.applyLeavDetails['toDate'] = this.toDate;
@@ -180,6 +180,9 @@ export class StaffLeavesComponent implements OnInit {
         this.reason = '';
         this.toDate = '';
         this.halfDay = '';
+
+        this.MonthlyLeaveSummry();
+        this.yearlyLeaveSummry();
         this.alertService.successAlert('Leave operation successful');
 
       }, (err) => {
