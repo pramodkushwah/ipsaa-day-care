@@ -602,6 +602,7 @@ public class StudentFeeService extends BaseService{
                 .from(qStudentFee)
                 .where(qStudentFee.feeDuration.eq(FeeDuration.Quarterly))
                 .where(qStudentFee.student.active.isTrue())
+                .where(qStudentFee.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
                 .where(qStudentFee.student.corporate.isFalse())
                 .where(qStudentFee.student.center.code.eq(request.getCenterCode()));
 

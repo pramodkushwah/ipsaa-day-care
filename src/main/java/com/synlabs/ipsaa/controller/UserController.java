@@ -58,7 +58,7 @@ public class UserController
 
   @PostMapping
   @Secured(USER_WRITE)
-  public UserResponse createUser(@RequestBody @Validated UserRequest request, BindingResult result)
+  public UserResponse createUser(@RequestBody @Valid UserRequest request, BindingResult result)
   {
 
     if (result.hasErrors())

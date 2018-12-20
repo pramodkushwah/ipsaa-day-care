@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AdminService } from '../../../../providers/admin/admin.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService } from '../../../../providers/alert/alert.service';
@@ -38,6 +38,10 @@ export class UserInfoComponent implements OnInit {
     this.userForm = this.getUserForm();
     if (this.editable) {
       this.userForm.patchValue(user);
+      if (user.employee) {
+        this.EmpName = user.employee.name;
+        this.userForm.controls['empId'].patchValue(user.employee.id);
+      }
       this.selectedRoles = JSON.parse(JSON.stringify(user.roles));
       this.selectedCenters = user.centers;
     } else {
@@ -45,6 +49,7 @@ export class UserInfoComponent implements OnInit {
       this.userForm.reset();
     }
   }
+  @Output() addUser: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
     private adminService: AdminService,
@@ -194,6 +199,7 @@ export class UserInfoComponent implements OnInit {
       });
     } else {
       this.saving = true;
+      this.userForm.controls['active'].patchValue(true);
       this.adminService.saveUser(this.userForm.value).subscribe(response => {
         // this.users.push(response);
         this.saving = false;
@@ -202,6 +208,7 @@ export class UserInfoComponent implements OnInit {
         this.selectedRoles = [];
         this.selectedCenters = [];
         this.alertService.successAlert('New User added');
+        this.addUser.emit(response);
       }, error => {
         this.saving = false;
       });
@@ -215,7 +222,7 @@ export class UserInfoComponent implements OnInit {
     });
     if (employee) {
       // this.userForm.patchValue(employee);
-      this.userForm.controls['empId'].patchValue(employee.name);
+      this.userForm.controls['empId'].patchValue(employee.id);
       this.userForm.controls['firstname'].patchValue(employee.name);
       this.userForm.controls['phone'].patchValue(employee.mobile);
       this.userForm.controls['email'].patchValue(employee.email);
@@ -228,8 +235,8 @@ export class UserInfoComponent implements OnInit {
       this.employees = this.employeesCopy.filter(employee => {
         return employee.name.toLowerCase().startsWith(val);
       });
-  }  else {
-    this.employees = this.employeesCopy;
-  }
+    }  else {
+      this.employees = this.employeesCopy;
+    }
   }
 }

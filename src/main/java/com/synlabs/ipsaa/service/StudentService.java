@@ -447,9 +447,11 @@ public class StudentService extends BaseService {
 
 		boolean feeChange = !(dbStudent.getProgram().equals(program) && dbStudent.getCenter().equals(center));
 		if(feeChange){
-			request.getFee().setProgramChange(true);
-		   Set<String> privileges= getUser().getPrivileges();
-		   List<Role> roles=getUser().getRoles();
+			if(request.getFee()!=null){
+				request.getFee().setProgramChange(true);
+				Set<String> privileges= getUser().getPrivileges();
+				List<Role> roles=getUser().getRoles();
+			}
         }
 
 		// check chnage in addmision date and validate it

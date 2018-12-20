@@ -2,6 +2,7 @@ package com.synlabs.ipsaa.view.fee;
 
 import com.synlabs.ipsaa.entity.student.StudentFee;
 import com.synlabs.ipsaa.enums.FeeDuration;
+import com.synlabs.ipsaa.util.FeeUtilsV2;
 import com.synlabs.ipsaa.view.student.StudentSummaryResponse;
 
 import java.math.BigDecimal;
@@ -65,9 +66,12 @@ public class StudentFeeResponse extends StudentSummaryResponse
 
     this.finalAdmissionCharges=studentfee.getFinalAdmissionFee();
     this.finalAnnualFee=studentfee.getFinalAnnualCharges();
-    this.finalBaseFee=studentfee.getFinalBaseFee().divide(THREE); // chnage quaterly fee to monthly
-    this.finalSecurityDeposit=studentfee.getFinalDepositFee();
+    if(this.getProgram().getId().toString().equals(FeeUtilsV2.IPSAA_CLUB_MASK_PROGRAM_ID))
+      this.finalBaseFee=studentfee.getFinalBaseFee();
+    else
+      this.finalBaseFee=studentfee.getFinalBaseFee().divide(THREE,2,BigDecimal.ROUND_CEILING); // chnage quaterly fee to monthly
 
+    this.finalSecurityDeposit=studentfee.getFinalDepositFee();
     this.annualFee=studentfee.getAnnualCharges()==null?ZERO:studentfee.getAnnualCharges();
     this.admissionCharges=studentfee.getAdmissionFee()==null?ZERO:studentfee.getAdmissionFee();
     this.securityDeposit=studentfee.getDepositFee()==null?ZERO:studentfee.getDepositFee();

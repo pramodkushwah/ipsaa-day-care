@@ -49,4 +49,11 @@ export class UserComponent implements OnInit {
     }
   }
 
+  pushUser(user) {
+    console.log(user);
+    if (user) {
+      this.users.push(user);
+    }
+  }
+
 }

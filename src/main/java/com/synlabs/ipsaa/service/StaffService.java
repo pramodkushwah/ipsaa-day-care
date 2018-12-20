@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 
+import com.synlabs.ipsaa.entity.staff.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -399,7 +400,7 @@ public class StaffService extends BaseService {
 			throw new ValidationException("Missing DOB");
 		}
 
-		if (profile.getDob() == null) {
+		if (profile.getDoj() == null) {
 			throw new ValidationException("Missing DOJ");
 		}
 
