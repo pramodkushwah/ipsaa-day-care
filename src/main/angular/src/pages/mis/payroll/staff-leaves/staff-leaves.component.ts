@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertService } from '../../../../providers/alert/alert.service';
 import { PayrollService } from '../../../../providers/payroll/payroll.service';
 import { AdminService } from '../../../../providers/admin/admin.service';
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-staff-leaves',
   templateUrl: './staff-leaves.component.html',
@@ -70,6 +71,8 @@ export class StaffLeavesComponent implements OnInit {
     private payrollService: PayrollService,
     private alertService: AlertService,
     private adminService: AdminService,
+    private datePipe: DatePipe
+
   ) {
     this.currentDate = new Date();
     this.currentDate.setDate(this.currentDate.getDate());
@@ -161,7 +164,7 @@ export class StaffLeavesComponent implements OnInit {
   apllyLeave() {
     this.apllyLeaveSuccessful = false;
     this.applyLeavDetails['eid'] = this.eId;
-    this.applyLeavDetails['fromDate'] = this.fromDate;
+    this.applyLeavDetails['fromDate'] =  this.datePipe.transform(new Date(this.fromDate), 'yyyy-MM-dd');
     this.applyLeavDetails['leaveType'] = this.selectedLeaveType;
     this.applyLeavDetails['reason'] = this.reason;
     this.applyLeavDetails['toDate'] = this.toDate;
