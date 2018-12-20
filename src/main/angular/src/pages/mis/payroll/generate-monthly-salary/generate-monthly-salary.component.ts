@@ -30,11 +30,14 @@ export class GenerateMonthlySalaryComponent implements OnInit {
   paySlipForm: FormGroup;
   viewPanel: boolean;
   salaryList: any[] = [];
+  salaryListCopy: any[] = [];
+
   selectedSalary: any;
   salaryPayslipForm: FormGroup;
   saving: boolean;
   regenerating: boolean;
   genrateSalaryLoader: boolean;
+  salaryListCopy1: any;
   constructor(private adminService: AdminService,
     private alertService: AlertService,
     private fb: FormBuilder) { }
@@ -122,6 +125,9 @@ export class GenerateMonthlySalaryComponent implements OnInit {
     this.genrateSalaryLoader = true;
     this.adminService.getPaySlips(this.paySlipForm.value).subscribe((response: any) => {
       this.salaryList = response;
+      this.salaryListCopy = response;
+      this.salaryListCopy1 = response;
+
       this.genrateSalaryLoader = false;
     });
   }
@@ -185,5 +191,18 @@ export class GenerateMonthlySalaryComponent implements OnInit {
       });
     }
   }
+
+
+  searchEmployee(event: any) {
+    const val = event.target.value.toLowerCase();
+    if (val && val.trim() !== '') {
+      this.salaryList = this.salaryListCopy.filter(employee => {
+        return employee.empName.toLowerCase().startsWith(val);
+      });
+    } else {
+      this.salaryList = this.salaryListCopy1;
+    }
+  }
+
 
 }

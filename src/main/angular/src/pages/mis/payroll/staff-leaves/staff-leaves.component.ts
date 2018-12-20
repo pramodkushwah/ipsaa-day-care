@@ -31,7 +31,7 @@ export class StaffLeavesComponent implements OnInit {
   selectedLeaveType: any;
   leaveList = ['SICK', 'CASUAL', 'PAID', 'UNPAID', 'ADOPTION', 'MATERNITY', 'BEREAVEMENT'];
   selectedId: number;
-  summaryMonth: number;
+  summaryMonth = 0;
   rowColour: string;
   selectedMonth: any;
   selectedYear: any;
@@ -58,7 +58,7 @@ export class StaffLeavesComponent implements OnInit {
 
   attenClockin: string;
   attenClockOut: string;
-
+  empLeaveHistory = false;
   attenDetails: any = {};
   centers: any;
   employeeLeaveSummary: any = [];
@@ -84,6 +84,7 @@ export class StaffLeavesComponent implements OnInit {
     this.HR_ADMIN = this.adminService.hasPrivilage('HR_ADMIN');
     this.getEmployees();
     this.getCenters();
+    this.getMonthlyEmployee(this.summaryMonth);
   }
 
   getCenters() {
@@ -334,21 +335,35 @@ export class StaffLeavesComponent implements OnInit {
 
   searchStudent(event: any) {
     const val = event.target.value.toLowerCase();
-      if (val && val.trim() !== '') {
-        this.employeeList = this.employeeListCopy.filter(employee => {
-          return employee.name.toLowerCase().startsWith(val);
-        });
-    }  else {
+    if (val && val.trim() !== '') {
+      this.employeeList = this.employeeListCopy.filter(employee => {
+        return employee.name.toLowerCase().startsWith(val);
+      });
+    } else {
       this.employeeList = this.employeeListCopy;
     }
   }
   getEmployeeLeaves(eid) {
     this.monthlyLeaves = [];
-
+    this.empLeaveHistory = true;
     this.payrollService.getAttendanvceSummry(eid, this.summaryMonth)
       .subscribe((res: any) => {
-        console.log(res);
-this.monthlyLeaves = res;
+        this.empLeaveHistory = false;
+        this.monthlyLeaves = res;
       });
   }
+
+
+  searchEmployee(event: any) {
+    const val = event.target.value.toLowerCase();
+    if (val && val.trim() !== '') {
+      this.employeeLeaveSummary = this.employeeLeaveSummaryCopy.filter(employee => {
+        return employee.name.toLowerCase().startsWith(val) || employee.eid.toLowerCase().startsWith(val);
+      });
+    } else {
+      this.employeeLeaveSummary = this.employeeLeaveSummaryCopy;
+    }
+  }
+
+
 }

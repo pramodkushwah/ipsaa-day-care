@@ -41,7 +41,11 @@
         </div>
         <h3 class="card-title">
           Employee Monthly Salary
-          <input type="file" class="btn btn-info" (change)="getExcelFile($event)" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"> 
+          <input type="file" style="float: right" class="btn btn-info" (change)="getExcelFile($event)" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"> 
+          <div class=" no-border">
+            <input  type="text" class="form-control" (keyup)="searchEmployee($event)" name="search"
+              placeholder="search text goes here">
+          </div>
         </h3>
       </div>
       <div class="card-content mx-3">
