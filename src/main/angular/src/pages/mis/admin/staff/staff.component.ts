@@ -14,7 +14,7 @@ export class AppStaffComponent implements OnInit {
   constructor(
     private adminService: AdminService,
     private pagerService: PagerService
-  ) {}
+  ) { }
 
   loadingStaffList = false;
   centers: any;
@@ -28,7 +28,7 @@ export class AppStaffComponent implements OnInit {
 
   update: boolean;
   search: string;
-  selectedStaffStatus = true ;
+  selectedStaffStatus = true;
   selectedStaffType: any = 'ALL';
   viewPanel = false;
   allItems = []; // all staff list will be stored here
@@ -39,7 +39,7 @@ export class AppStaffComponent implements OnInit {
   pagedItems = [];
   searchKey: any; // search string for name
   pager: any = {}; // for pagination
-  activeStatus = true;
+  activeStatus = 'true';
   selectedStaff = {};
   paginator = {
     active: 1,
@@ -190,14 +190,14 @@ export class AppStaffComponent implements OnInit {
     }).then(value => {
       if (value) {
         this.adminService.deleteStaffById(staffId)
-        .subscribe((res: any) => {
-          this.getStaff();
-        });
+          .subscribe((res: any) => {
+            this.getStaff();
+          });
       }
     });
   }
 
-  hasPrivilege(privilege) {}
+  hasPrivilege(privilege) { }
 
   subscribeViewPanelChange = () => {
     this.adminService.viewPanel.subscribe((val: boolean) => {

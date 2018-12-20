@@ -514,7 +514,8 @@
               <div class="col-md-12">
                 <div class="form-group">
                   <label class="control-label">*Message</label>
-                  <textarea class="form-control" name="body" formControlName="body" rows="10" cols="100"></textarea>
+                  <!-- <textarea class="form-control" name="body" formControlName="body" rows="10" cols="100"></textarea> -->
+                  <app-email-message-directive (onFileDrop)="dropped($event)"></app-email-message-directive>
                   <span class="material-input"></span>
                 </div>
               </div>

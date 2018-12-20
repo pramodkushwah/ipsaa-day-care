@@ -26,7 +26,10 @@
     </div>
   </div>
   <div class="col-lg-3">
-    <button class="btn btn-primary" (click)="getPayslips()">Generate</button>
+    <button class="btn btn-primary" (click)="getPayslips()" [disabled]="genrateSalaryLoader">
+      <i class="fa fa-spinner fa-fw fa-pulse" *ngIf="genrateSalaryLoader"></i>
+      Generate
+    </button>
   </div>
 </div>
 <div class="row" *ngIf="salaryList.length">
@@ -38,6 +41,7 @@
         </div>
         <h3 class="card-title">
           Employee Monthly Salary
+          <input type="file" class="btn btn-info" (change)="getExcelFile($event)" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"> 
         </h3>
       </div>
       <div class="card-content mx-3">

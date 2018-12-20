@@ -43,12 +43,12 @@
               <td><span style="word-break: break-all;">{{user.type}}</span></td>
               <td>
                 <ng-container *ngFor="let role of user.roles;let i = index">
-                    <span class="badge badge-primary margin-right-5" *ngIf="!i">{{role}}</span>
+                  <span class="badge badge-primary margin-right-5" *ngIf="!user.role">{{role}}</span>
                   <span class="complete" *ngIf="user.role"><!--user.role is used only for show content more or less-->
                       <span class="badge badge-primary margin-right-5">{{role}}</span>
                   </span>
                 </ng-container>
-                <label class="more-less" *ngIf="user.roles.length">
+                <label class="more-less" *ngIf="user.roles.length>1">
                   <input type="checkbox" [(ngModel)]="user.role">
                   <span class="more"></span>
                 </label>

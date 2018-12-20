@@ -37,35 +37,38 @@ export class StaffReportComponent implements OnInit {
   }
 
   generateReport() {
-      if (!this.selectedEmployer) {
-        this.alertService.errorAlert('Select Employer');
-        return false;
-      }
+    if (!this.selectedEmployer) {
+      this.alertService.errorAlert('Select Employer');
+      return false;
+    }
 
-      if (!this.selectedMonth) {
-        this.alertService.errorAlert('Select Month');
-        return false;
-      }
+    // if (!this.selectedMonth) {
+    //   this.alertService.errorAlert('Select Month');
+    //   return false;
+    // }
 
-      this.disableGenerateButton = true;
-      this.salaries = [];
+    this.disableGenerateButton = true;
+    this.salaries = [];
 
-      const req_body: any = {
-        employerCode: this.selectedEmployer.code,
-        month: this.selectedMonth.moy
-      };
+    const req_body: any = {
+      employerCode: this.selectedEmployer.code,
+      month: this.selectedMonth.moy
+    };
+    if (this.selectedMonth) {
+      req_body['month'] = this.selectedMonth.moy;
+    }
 
-      this.adminService.staffReportDownload(req_body).subscribe(response => {
-        this.disableGenerateButton = false;
-        const blob = new Blob([response.body], {
-          type: 'application/octet-stream'
-        });
-        FileSaver.saveAs(blob, response.headers.get('fileName'));
-        this.alertService.successAlert('Staff Report Generated');
-      }, error => {
-        this.alertService.errorAlert('Unbale to generate Staff Report');
-        this.disableGenerateButton = false;
+    this.adminService.staffReportDownload(req_body).subscribe(response => {
+      this.disableGenerateButton = false;
+      const blob = new Blob([response.body], {
+        type: 'application/octet-stream'
       });
+      FileSaver.saveAs(blob, response.headers.get('fileName'));
+      this.alertService.successAlert('Staff Report Generated');
+    }, error => {
+      this.alertService.errorAlert('Unbale to generate Staff Report');
+      this.disableGenerateButton = false;
+    });
   }
 
 }

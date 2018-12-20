@@ -34,6 +34,7 @@ export class GenerateMonthlySalaryComponent implements OnInit {
   salaryPayslipForm: FormGroup;
   saving: boolean;
   regenerating: boolean;
+  genrateSalaryLoader: boolean;
   constructor(private adminService: AdminService,
     private alertService: AlertService,
     private fb: FormBuilder) { }
@@ -118,8 +119,10 @@ export class GenerateMonthlySalaryComponent implements OnInit {
   }
 
   getPayslips() {
+    this.genrateSalaryLoader = true;
     this.adminService.getPaySlips(this.paySlipForm.value).subscribe((response: any) => {
       this.salaryList = response;
+      this.genrateSalaryLoader = false;
     });
   }
 
@@ -168,6 +171,19 @@ export class GenerateMonthlySalaryComponent implements OnInit {
       this.regenerating = false;
       this.alertService.successAlert('Payslip regenerated successfully.');
     });
+  }
+
+  getExcelFile(event) {
+    const formData = new FormData();
+    if (event.srcElement.files[0]) {
+      formData.append('file', event.srcElement.files[0]);
+      formData.append('employerId', this.paySlipForm.controls['employer'].value);
+      formData.append('year', this.paySlipForm.controls['year'].value);
+      formData.append('month', this.paySlipForm.controls['month'].value);
+      this.adminService.uploadEmployeeSalaryFile(formData).subscribe(response => {
+        console.log(response);
+      });
+    }
   }
 
 }

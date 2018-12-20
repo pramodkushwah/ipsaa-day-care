@@ -10,7 +10,7 @@ import { AlertService } from '../../../../providers/alert/alert.service';
 })
 export class StudentComponent implements OnInit {
   students: any[] = [];
-  activeStatus = true;
+  activeStatus = 'true';
   pageNumber = 0;
   pageSize = 0;
   programCode = 'ALL';
@@ -55,14 +55,14 @@ export class StudentComponent implements OnInit {
     this.loader = true;
     this.adminService.getStudents(object).subscribe((response: any) => {
       this.loader = false;
-      this.allItems = response.students;
+      // this.allItems = response.students;
       this.students = response.students;
       this.studentsCopy = JSON.parse(JSON.stringify(this.students));
       this.pageSize = response.pageSize;
       this.pageNumber = response.pageNumber;
       // initialize to page 1
       this.filterStudent('true');
-      this.setPage(1);
+      // this.setPage(1);
       // checked if searchKey entered before
       if (this.searchKey) {
         this.searchStudent(this.searchKey);
@@ -78,9 +78,9 @@ export class StudentComponent implements OnInit {
     });
     this.setPage(1);
     this.loader = false;
-    if (this.searchKey) {
-      this.searchStudent(this.searchKey);
-    }
+    // if (this.searchKey) {
+    //   this.searchStudent(this.searchKey);
+    // }
   }
 
   getPrograms() {
@@ -162,13 +162,13 @@ export class StudentComponent implements OnInit {
     this.searchKey = event;
     const val = event.target.value.toLowerCase();
     if (val && val.trim() !== '') {
-      this.allItems = this.students.filter(student => {
+      this.allItems = this.allItems.filter(student => {
         return student.fullName.toLowerCase().startsWith(val);
       });
       this.setPage(1);
     } else {
-      this.allItems = this.studentsCopy;
-      this.setPage(1);
+      this.filterStudent(this.activeStatus);
+      // this.allItems = this.studentsCopy;
     }
   }
   pushNewStudent(student) {
