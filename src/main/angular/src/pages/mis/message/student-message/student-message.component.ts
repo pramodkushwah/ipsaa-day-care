@@ -32,7 +32,7 @@ export class StudentMessageComponent implements OnInit {
   ids: any[] = [];
   smsContent = '';
   emailsubject: any;
-  emailcontent: any = '';
+  emailcontent = '';
   attachments: any[] = [];
   files: any[] = [];
   selectAllStudent: boolean;
@@ -309,7 +309,7 @@ emailList: any = [];
 
   dropped(event) {
     this.emailData = event;
-    this.emailcontent = event.textContent;
+    this.emailcontent = event.textContent || '';
   }
 
 
