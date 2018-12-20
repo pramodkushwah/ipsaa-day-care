@@ -102,7 +102,7 @@ public class StudentFeePaymentRequest extends BaseEntity
   @Enumerated(EnumType.STRING)
   private FeeDuration feeDuration;
 
-  @Column(length = 200)
+  @Column(length = 500)
   private String comments;
 
   @Column(length = 500)

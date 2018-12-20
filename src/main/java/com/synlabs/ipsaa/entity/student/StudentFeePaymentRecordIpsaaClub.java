@@ -37,7 +37,7 @@ public class StudentFeePaymentRecordIpsaaClub extends BaseEntity {
 
     @Column(columnDefinition = "bit(1) default 1")
     private Boolean active = true;
-    @Column(length = 200)
+    @Column(length = 500)
     private String comment;
 
     @Override
