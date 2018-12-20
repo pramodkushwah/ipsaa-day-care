@@ -502,6 +502,7 @@ public class StaffLeaveService extends BaseService {
        leaves= query.select(leave).from(leave)
                .where(leave.date.month().between(1,12).and(leave.date.year().eq(LocalDate.now().getYear())))
                .where(leave.employee.active.isTrue())
+               .where(leave.leaveStatus.eq(LeaveStatus.Approved))
                .orderBy(leave.employee.id.asc())
                .fetch();
 
@@ -510,6 +511,7 @@ public class StaffLeaveService extends BaseService {
              leaves = query.select(leave).from(leave)
                   .where(leave.date.month().eq(month).and(leave.date.year().eq(LocalDate.now().getYear())))
                   .where(leave.employee.active.isTrue())
+                  .where(leave.leaveStatus.eq(LeaveStatus.Approved))
                   .orderBy(leave.employee.id.asc())
                   .fetch();
      }
@@ -554,12 +556,14 @@ public class StaffLeaveService extends BaseService {
         leaves= query.select(employeeLeave).from(employeeLeave)
                 .where(employeeLeave.employee.eid.eq(eid).and(employeeLeave.date.month().between(1,12)))
                 .where(employeeLeave.date.year().eq(LocalDate.now().getYear()))
+                .where(employeeLeave.leaveStatus.eq(LeaveStatus.Approved))
                 .orderBy(employeeLeave.date.asc())
                 .fetch();
       }else {
         leaves = query.select(employeeLeave).from(employeeLeave)
                 .where(employeeLeave.date.month().eq(month).and(employeeLeave.date.year().eq(LocalDate.now().getYear())))
                 .where(employeeLeave.employee.eid.eq(eid))
+                .where(employeeLeave.leaveStatus.eq(LeaveStatus.Approved))
                 .orderBy(employeeLeave.date.asc())
                 .fetch();
       }
