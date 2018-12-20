@@ -65,7 +65,7 @@ public class StudentFeeResponse extends StudentSummaryResponse
 
     this.finalAdmissionCharges=studentfee.getFinalAdmissionFee();
     this.finalAnnualFee=studentfee.getFinalAnnualCharges();
-    this.finalBaseFee=studentfee.getFinalBaseFee().divide(THREE); // chnage quaterly fee to monthly
+    this.finalBaseFee=studentfee.getFinalBaseFee().divide(THREE,2,BigDecimal.ROUND_CEILING); // chnage quaterly fee to monthly
     this.finalSecurityDeposit=studentfee.getFinalDepositFee();
 
     this.annualFee=studentfee.getAnnualCharges()==null?ZERO:studentfee.getAnnualCharges();
