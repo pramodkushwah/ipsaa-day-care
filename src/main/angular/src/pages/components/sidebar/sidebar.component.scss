@@ -31,9 +31,19 @@
 
   a {
     text-align: center;
-    color: black;
+    color: #fff;
     text-align: center;
     display: block;
     white-space: nowrap;
+  }
+}
+
+
+.sidebar{
+  .sidebar-background{
+    &:after{
+      background: #000 !important;
+      opacity: 0.8 !important;
+    }
   }
 }

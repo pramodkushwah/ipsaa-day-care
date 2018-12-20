@@ -88,12 +88,16 @@
                 .sidebar-mini{
                     text-transform: uppercase;
                     width: 30px;
-                    margin-right: 15px;
+                    margin-right: 0;
                     text-align: center;
                     letter-spacing: 1px;
                     position: relative;
                     float: left;
                     display: inherit;
+
+                    i{
+                        font-size: 10px !important;
+                    }
                 }
 
                 i{
@@ -189,6 +193,7 @@
             display: block;
             height: auto;
             white-space: nowrap;
+            color: #fff;
         }
 
         i{
@@ -198,7 +203,7 @@
             line-height: 30px;
             width: 30px;
             text-align: center;
-            color: #a9afbb;
+            color: #fff;
         }
     }
 
@@ -206,7 +211,7 @@
     .nav li .dropdown-menu a{
           margin: 10px 15px 0;
           border-radius: $border-radius-base;
-          color: $black-color;
+          color: $white-color;
           padding-left: 10px;
           padding-right: 10px;
           text-transform: capitalize;
@@ -233,8 +238,8 @@
             height: 100%;
             content: "";
             display: block;
-            background: #FFFFFF;
-            opacity: .93;
+            background: #000;
+            opacity: .8;
         }
     }
 
