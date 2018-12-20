@@ -18,8 +18,8 @@
       <div class="col-md-4">
         <div class="form-group">
           <div class="input-group">
-            <input type="text" class="form-control dropdown-toggle" [ngModelOptions]="{standalone: true}" [(ngModel)]="empName" data-toggle="dropdown"
-              placeholder="Employee" (keyup)="searchStudent($event)">
+            <input type="text" class="form-control dropdown-toggle" [ngModelOptions]="{standalone: true}" [(ngModel)]="empName"
+              data-toggle="dropdown" placeholder="Employee" (keyup)="searchStudent($event)">
             <ul class="dropdown-menu dropdown-menu-right" role="menu" style="right: unset;max-height: 50vh;overflow-y: auto;;">
               <li *ngFor=" let staff of employeeList">
                 <a (click)="selctedEmpId(staff)">{{staff.name}} - {{staff.designation}} - {{staff.centerCode}}
@@ -270,18 +270,28 @@
 
   <div id="view" class="tab-pane fade">
     <div class="row">
-      <div class="col-md-2 col-sm-4 col-xs-6">
+      <div class="col-md-4 col-sm-4 col-xs-4">
+        <div class="form-group">
+          <label class="control-label" for="Month"> Search:</label>
+          <div class=" no-border">
+
+            <input type="text" class="form-control" (keyup)="searchEmployee($event)" name="search" placeholder="search text goes here">
+          </div>
+          <span class="material-input"></span>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-4 col-xs-4">
         <div class="form-group">
           <label class="control-label" for="Month"> Month:</label>
           <select class="form-control" id="month" [(ngModel)]="summaryMonth" name="month" (ngModelChange)="getMonthlyEmployee(summaryMonth)">
-            <option value="0">All</option>
+            <option [value]="0">All</option>
             <option *ngFor="let month of months; " [value]="month.id">{{month.month}}</option>
           </select>
           <span class="material-input"></span>
         </div>
 
       </div>
-      <div class="col-md-2 col-sm-4 col-xs-6">
+      <div class="col-md-4 col-sm-4 col-xs-4">
         <label class="control-label">Center:</label>
         <select class="form-control" [(ngModel)]="filterCenter" name="center" (ngModelChange)="filterEmployeeList()">
           <option [value]="'All'">All</option>
@@ -303,7 +313,7 @@
 
 
         </colgroup>
-        <thead class="row" style="margin: 0px;font-weight: bold;">
+        <thead class="text-primary">
           <!-- <tr> -->
           <th>Eid</th>
           <th>Name</th>
@@ -333,15 +343,19 @@
                   <td>{{leave.leaveStatus}}</td>
                   <td>{{leave.reason || 'None'}}</td>
                 </tr>
-                <tr *ngIf="monthlyLeaves?.length === 0">
+                <tr *ngIf="empLeaveHistory" style="text-align: center">
+                  <i class="fa fa-spinner fa-spin"></i>
+                </tr>
+                <tr *ngIf=" empLeaveHistory &&  monthlyLeaves?.length !== 0">
                   <td colspan="4" class="text-center">No Leaves</td>
                 </tr>
               </table>
             </td>
           </tr>
         </tbody>
-        <tfoot *ngIf="employeeLeaveSummary?.length === 0">
-          <tr>
+
+        <tfoot>
+          <tr *ngIf=" employeeLeaveSummary?.length === 0">
             <th colspan="4" class="text-center">No Content</th>
           </tr>
         </tfoot>
