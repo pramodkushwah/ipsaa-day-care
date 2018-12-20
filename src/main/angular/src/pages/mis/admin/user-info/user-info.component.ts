@@ -40,6 +40,7 @@ export class UserInfoComponent implements OnInit {
       this.userForm.patchValue(user);
       if (user.employee) {
         this.EmpName = user.employee.name;
+        this.userForm.controls['empId'].patchValue(user.employee.id);
       }
       this.selectedRoles = JSON.parse(JSON.stringify(user.roles));
       this.selectedCenters = user.centers;

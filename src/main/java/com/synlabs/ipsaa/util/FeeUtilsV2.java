@@ -26,6 +26,7 @@ public class FeeUtilsV2 {
 	public static final double FEE_DISCOUNT_CALCULATION_TOLERANCE = 1.0;
 
 	public static final long IPSAA_CLUB_PROGRAM_ID = 26;
+	public static final String IPSAA_CLUB_MASK_PROGRAM_ID ="72932732558618";
 	public static final long IPSAA_CLUB_REGULAR_PROGRAM_ID = 30;
 
 	public static BigDecimal calculateGST(BigDecimal baseFee, BigDecimal annualFee, GST type) {
