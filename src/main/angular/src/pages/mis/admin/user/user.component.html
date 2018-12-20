@@ -78,6 +78,6 @@
     </div>
   </div>
   <div class="col-lg-6" *ngIf="viewPanel">
-    <app-user-info [user]="selectedUser" [update]="editable"></app-user-info>
+    <app-user-info [user]="selectedUser" [update]="editable" (addUser)="pushUser($event)"></app-user-info>
   </div>
 </div>

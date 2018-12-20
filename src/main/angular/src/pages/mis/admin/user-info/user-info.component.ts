@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AdminService } from '../../../../providers/admin/admin.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService } from '../../../../providers/alert/alert.service';
@@ -45,6 +45,7 @@ export class UserInfoComponent implements OnInit {
       this.userForm.reset();
     }
   }
+  @Output() addUser: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
     private adminService: AdminService,
@@ -203,6 +204,7 @@ export class UserInfoComponent implements OnInit {
         this.selectedRoles = [];
         this.selectedCenters = [];
         this.alertService.successAlert('New User added');
+        this.addUser.emit(response);
       }, error => {
         this.saving = false;
       });
@@ -229,8 +231,8 @@ export class UserInfoComponent implements OnInit {
       this.employees = this.employeesCopy.filter(employee => {
         return employee.name.toLowerCase().startsWith(val);
       });
-  }  else {
-    this.employees = this.employeesCopy;
-  }
+    }  else {
+      this.employees = this.employeesCopy;
+    }
   }
 }
