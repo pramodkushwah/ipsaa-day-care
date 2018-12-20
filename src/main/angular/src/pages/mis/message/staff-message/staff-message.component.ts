@@ -49,7 +49,7 @@ export class StaffMessageComponent implements OnInit {
   ids: any[] = [];
   smsContent = '';
   emailsubject: any;
-  emailcontent: any = '';
+  emailcontent = '';
   attachments: any[] = [];
   files: any[] = [];
   selectAllStaff: boolean;
@@ -258,7 +258,7 @@ formData.append('cc', element);
 
   dropped(event) {
     this.emailData = event;
-    this.emailcontent = event.textContent;
+    this.emailcontent = event.textContent || '';
   }
 
 

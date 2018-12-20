@@ -75,10 +75,10 @@
               <div class="form-group">
                 <label class="control-label">Email : <sup>*</sup></label>
                 <input class="form-control" value="" [readonly]="!editable" formControlName="email">
-                <div *ngIf="email.invalid && (email.dirty || email.touched)"  class="text-danger position-absolute">
+                <!-- <div *ngIf="email.invalid && (email.dirty || email.touched)"  class="text-danger position-absolute">
                   <div *ngIf="email.errors.required">Required</div>
                   <div *ngIf="email.errors.email">Invalid Email</div>
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="col-md-4">
@@ -197,27 +197,27 @@
               <div class="form-group">
                 <label class="control-label">Expected In : <sup>*</sup></label>
                 <input class="form-control" value="" formControlName="expectedIn" [readonly]="!editable" placeholder="HH:MM">
-                <div *ngIf="expectedIn.invalid && (expectedIn.dirty || expectedIn.touched)" class="text-danger position-absolute">
+                <!-- <div *ngIf="expectedIn.invalid && (expectedIn.dirty || expectedIn.touched)" class="text-danger position-absolute">
                   <div *ngIf="expectedIn.errors.required">Required</div>
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Expected Out : <sup>*</sup></label>
                 <input class="form-control" value="" formControlName="expectedOut" [readonly]="!editable" placeholder="HH:MM">
-                <div *ngIf="expectedOut.invalid && (expectedOut.dirty || expectedOut.touched)" class="text-danger position-absolute">
+                <!-- <div *ngIf="expectedOut.invalid && (expectedOut.dirty || expectedOut.touched)" class="text-danger position-absolute">
                   <div *ngIf="expectedOut.errors.required">Required</div>
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Expected Hours : <sup>*</sup></label>
                 <input class="form-control" value="" formControlName="expectedHours" [readonly]="!editable" type="number">
-                <div *ngIf="expectedHours.invalid && (expectedHours.dirty || expectedHours.touched)" class="text-danger position-absolute">
+                <!-- <div *ngIf="expectedHours.invalid && (expectedHours.dirty || expectedHours.touched)" class="text-danger position-absolute">
                   <div *ngIf="expectedHours.errors.required">Required</div>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -238,9 +238,9 @@
               <div class="form-group">
                 <label class="control-label">Biometric Id : <sup>*</sup></label>
                 <input type="number" class="form-control" value="" formControlName="biometricId" [readonly]="!editable">
-                <div *ngIf="biometricId.invalid && (biometricId.dirty || biometricId.touched)" class="text-danger position-absolute">
+                <!-- <div *ngIf="biometricId.invalid && (biometricId.dirty || biometricId.touched)" class="text-danger position-absolute">
                   <div *ngIf="biometricId.errors.required">Required</div>
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="col-md-4">

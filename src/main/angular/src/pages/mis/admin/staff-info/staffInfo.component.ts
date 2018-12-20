@@ -166,19 +166,19 @@ export class StaffInfoComponent implements OnInit {
       lastName: ['', Validators.required],
       mobile: ['', [Validators.required]],
       secondaryNumbers: [''],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [ Validators.email]],
       payrollEnabled: [''],
       attendanceEnabled: [''],
       designation: ['', Validators.required],
       type: [null, Validators.required],
       active: [''],
-      expectedIn: ['', Validators.required],
-      expectedOut: ['', Validators.required],
-      maritalStatus: [null, Validators.required],
+      expectedIn: [''],
+      expectedOut: [''],
+      maritalStatus: [null],
       profile: this.getProfile(),
       biometricId: [''],
       approvalStatus: [''],
-      expectedHours: ['', Validators.required],
+      expectedHours: [''],
       aadharNumber: [''],
       costCenterId: [null, Validators.required],
       mode: [''],
@@ -224,7 +224,7 @@ export class StaffInfoComponent implements OnInit {
   }
 
   // getter methods for template
-  get email() { return this.staffForm.get('email'); }
+  // get email() { return this.staffForm.get('email'); }
   get firstName() { return this.staffForm.get('firstName'); }
   get lastName() { return this.staffForm.get('lastName'); }
   get dob() { return this.staffForm.controls['profile'].get('dob'); }
@@ -236,11 +236,11 @@ export class StaffInfoComponent implements OnInit {
   get designation() { return this.staffForm.get('designation'); }
   get mobile() { return this.staffForm.get('mobile'); }
   get reportingManagerName() { return this.staffForm.get('reportingManagerName'); }
-  get expectedIn() { return this.staffForm.get('expectedIn'); }
-  get expectedOut() { return this.staffForm.get('expectedOut'); }
-  get expectedHours() { return this.staffForm.get('expectedHours'); }
+  // get expectedIn() { return this.staffForm.get('expectedIn'); }
+  // get expectedOut() { return this.staffForm.get('expectedOut'); }
+  // get expectedHours() { return this.staffForm.get('expectedHours'); }
   get employerId() { return this.staffForm.get('employerId'); }
-  get biometricId() { return this.staffForm.get('biometricId'); }
+  // get biometricId() { return this.staffForm.get('biometricId'); }
   get address() { return this.staffForm.get('profile').get('address').get('address'); }
   get city() { return this.staffForm.get('profile').get('address').get('city'); }
   get state() { return this.staffForm.get('profile').get('address').get('state'); }

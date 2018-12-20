@@ -38,8 +38,8 @@ export class StudentMessageComponent implements OnInit {
   selectAllStudent: boolean;
   sending: boolean;
   emailData: any;
-  ccEmail: string ;
-emailList: any = [];
+  ccEmail: string;
+  emailList: any = [];
   searchArray: any = [];
   constructor(
     private adminService: AdminService,
@@ -267,7 +267,7 @@ emailList: any = [];
     });
     this.emailList.forEach(element => {
       formData.append('cc', element);
-          });
+    });
     this.sending = true;
     this.smsService.sendStudentEmail(formData).subscribe((response: any) => {
       this.sending = false;
@@ -309,15 +309,17 @@ emailList: any = [];
 
   dropped(event) {
     this.emailData = event;
+    console.log(event);
+
     this.emailcontent = event.textContent || '';
   }
 
 
   addCcEmail() {
-this.emailList.push(this.ccEmail);
-this.ccEmail = '';
+    this.emailList.push(this.ccEmail);
+    this.ccEmail = '';
   }
-removeCcEmail(i) {
-this.emailList.splice(i, 1);
-}
+  removeCcEmail(i) {
+    this.emailList.splice(i, 1);
+  }
 }

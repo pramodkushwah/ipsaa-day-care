@@ -194,6 +194,7 @@ export class UserInfoComponent implements OnInit {
       });
     } else {
       this.saving = true;
+      this.userForm.controls['active'].patchValue(true);
       this.adminService.saveUser(this.userForm.value).subscribe(response => {
         // this.users.push(response);
         this.saving = false;

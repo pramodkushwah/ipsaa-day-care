@@ -13,6 +13,7 @@ import { EmailMessageDirectiveComponent } from './email-message-directive/email-
     ReactiveFormsModule,
     MessageRoutingModule
   ],
-  declarations: [StudentMessageComponent, StaffMessageComponent, EmailMessageDirectiveComponent]
+  declarations: [StudentMessageComponent, StaffMessageComponent, EmailMessageDirectiveComponent],
+  exports: [EmailMessageDirectiveComponent]
 })
 export class MessageModule { }
