@@ -384,6 +384,10 @@ this.showSidePanel(false, null);
    });
   }
 
+  dropped(event) {
+    this.eMailForm.controls['body'].patchValue(event.textContent || '');
+  }
+
 
 
 

@@ -10,6 +10,7 @@ import { GenerateFeeReceiptComponent } from './generate-fee-receipt/generate-fee
 import { StudentFeeInfoComponent } from './student-fee-info/student-fee-info.component';
 import { FeeReceiptInfoComponent } from './fee-receipt-info/fee-receipt-info.component';
 import { IpsaaclubComponent } from './ipsaaclub/ipsaaclub.component';
+import { MessageModule } from '../message/message.module';
 @NgModule({
   imports: [
     CommonModule,
@@ -17,7 +18,8 @@ import { IpsaaclubComponent } from './ipsaaclub/ipsaaclub.component';
     ReactiveFormsModule,
     FeeRoutingModule,
     MatSelectModule,
-    MatInputModule
+    MatInputModule,
+    MessageModule
   ],
   declarations: [StudentFeeComponent,
     CenterFeeComponent, GenerateFeeSlipComponent,

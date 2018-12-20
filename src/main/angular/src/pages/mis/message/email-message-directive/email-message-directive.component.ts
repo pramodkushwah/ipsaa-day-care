@@ -84,7 +84,8 @@ export class EmailMessageDirectiveComponent implements OnInit {
       .debounceTime(250)
       .distinctUntilChanged()
       .flatMap((textContent) => Observable.of(textContent).delay(100)).subscribe(value => {
-        this.textContent = value;
+        // this.textContent = value;
+        this.textContent = $('#dropZone').clone().html();
         this.uploadEvent = new UploadEvent(this.textContent, this.fileCopies, this.imageCopies);
         this.onFileDrop.emit(this.uploadEvent);
       });
@@ -159,6 +160,7 @@ export class EmailMessageDirectiveComponent implements OnInit {
       const timerObservable = timer(200, 200);
       this.subscription = timerObservable.subscribe(t => {
         if (this.files.length > 0 || this.images.length > 0) {
+          this.textContent = $('#dropZone').clone().html();
           this.uploadEvent = new UploadEvent(this.textContent, this.files, this.images);
           this.onFileDrop.emit(this.uploadEvent);
           this.files = [];
@@ -213,6 +215,7 @@ export class EmailMessageDirectiveComponent implements OnInit {
       this.imageCopies = this.imageCopies.filter(image => {
           return result.find(element => element['0'].name == image.name);
         });
+        this.textContent = $('#dropZone').clone().html();
       this.uploadEvent = new UploadEvent(this.textContent, this.fileCopies, this.imageCopies);
       this.onFileDrop.emit(this.uploadEvent);
     }

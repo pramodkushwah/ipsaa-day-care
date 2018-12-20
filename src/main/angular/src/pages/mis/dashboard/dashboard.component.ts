@@ -45,7 +45,7 @@ export class DashboardComponent implements OnInit {
     quarter: Math.floor(new Date().getMonth() / 3) + 1,
     year: new Date().getFullYear()
   };
-  years: any[] = [new Date().getFullYear() - 1, new Date().getFullYear()];
+  years: any[] = [new Date().getFullYear() - 1, new Date().getFullYear(), new Date().getFullYear() + 1];
   monthlyFee: any = {};
   quarterlyFee: any = {};
   students: Student[] = [];
@@ -467,16 +467,16 @@ export class DashboardComponent implements OnInit {
         this.alertService.loading.next(false);
         switch (fitlterBy) {
           case 'newjoinings':
-          this.tableColumn = [
-            'name',
-            'designation',
-            'mobile',
-            'center',
-            'employer',
-            'doj',
-            'active'
-          ];
-          this.tableTitle = 'Staff New Joinee';
+            this.tableColumn = [
+              'name',
+              'designation',
+              'mobile',
+              'center',
+              'employer',
+              'doj',
+              'active'
+            ];
+            this.tableTitle = 'Staff New Joinee';
             break;
           case 'newleavings':
             this.tableColumn = [
