@@ -173,6 +173,7 @@ export class StaffLeavesComponent implements OnInit {
     }
     this.payrollService.leaveApplication(this.applyLeavDetails)
       .subscribe((res) => {
+        this.getEmployeeAttendance();
         this.apllyLeaveSuccessful = true;
         this.applyLeavDetails = {};
         this.fromDate = '';
@@ -180,9 +181,6 @@ export class StaffLeavesComponent implements OnInit {
         this.reason = '';
         this.toDate = '';
         this.halfDay = '';
-
-        this.MonthlyLeaveSummry();
-        this.yearlyLeaveSummry();
         this.alertService.successAlert('Leave operation successful');
 
       }, (err) => {
