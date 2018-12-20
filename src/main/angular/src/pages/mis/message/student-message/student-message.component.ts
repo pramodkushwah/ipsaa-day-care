@@ -244,9 +244,10 @@ export class StudentMessageComponent implements OnInit {
 
   emailApi() {
     const object = {
+      'cids': this.emailData.cids,
       'ids': this.ids,
       'subject': this.emailsubject,
-      'emailcontent': this.emailcontent
+      'emailcontent': this.emailData.emailcontent
     };
     // this.files.forEach(element => {
     //   object['files'] = element;
@@ -259,9 +260,9 @@ export class StudentMessageComponent implements OnInit {
       formData.append('files', file);
     }
 
-    this.emailData.files.forEach(file => {
-      formData.append('files', file);
-    });
+    // this.emailData.files.forEach(file => {
+    //   formData.append('files', file);
+    // });
     this.emailData.images.forEach(image => {
       formData.append('images', image);
     });
@@ -311,7 +312,7 @@ export class StudentMessageComponent implements OnInit {
     this.emailData = event;
     console.log(event);
 
-    this.emailcontent = event.textContent || '';
+    // this.emailcontent = event.textContent || '';
   }
 
 

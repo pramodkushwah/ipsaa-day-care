@@ -195,9 +195,10 @@ this.allItems = this.staffs;
 
   emailApi() {
     const object = {
+    'cids': this.emailData.cids,
     'ids': this.ids,
     'subject': this.emailsubject,
-    'emailcontent': this.emailcontent
+    'emailcontent': this.emailData.emailcontent
     };
     const formData = new FormData();
     Object.keys(object).forEach(key => {
@@ -207,9 +208,9 @@ this.allItems = this.staffs;
       formData.append('files', file);
     }
 
-    this.emailData.files.forEach(file => {
-      formData.append('files', file);
-    });
+    // this.emailData.files.forEach(file => {
+    //   formData.append('files', file);
+    // });
     this.emailData.images.forEach(image => {
       formData.append('images', image);
     });
