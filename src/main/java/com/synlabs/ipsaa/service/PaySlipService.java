@@ -102,7 +102,7 @@ public class PaySlipService extends BaseService {
 	}
 
 
-
+	@Transactional
 	public List<EmployeePaySlip> listPayslips(Integer month, Integer year, String employerId) throws ParseException {
 		if (year == null) {
 			throw new ValidationException("Year is required.");
@@ -191,6 +191,7 @@ public class PaySlipService extends BaseService {
 		}
 	}
 
+	@Transactional
 	private EmployeePaySlip generateNewPayslip(Employee employee, EmployeeSalary salary, int year, int month)
 			throws ParseException {
 		EmployeePaySlip payslip = new EmployeePaySlip();
@@ -272,6 +273,7 @@ public class PaySlipService extends BaseService {
 
 	}
 
+	@Transactional
 	private EmployeePaySlip calculatePayslip(Employee employee, EmployeeSalary salary, int year, int month,
 			EmployeePaySlip payslip) throws ParseException {
 		String autoComment = "";
