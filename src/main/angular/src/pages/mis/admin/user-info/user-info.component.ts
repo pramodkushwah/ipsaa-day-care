@@ -38,6 +38,9 @@ export class UserInfoComponent implements OnInit {
     this.userForm = this.getUserForm();
     if (this.editable) {
       this.userForm.patchValue(user);
+      if (user.employee) {
+        this.EmpName = user.employee.name;
+      }
       this.selectedRoles = JSON.parse(JSON.stringify(user.roles));
       this.selectedCenters = user.centers;
     } else {
