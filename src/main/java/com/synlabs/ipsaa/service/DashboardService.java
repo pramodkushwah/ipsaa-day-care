@@ -240,14 +240,19 @@ public class DashboardService extends BaseService {
 	private int countStudents(List<Center> centers) {
 		JPAQuery<Student> query = new JPAQuery<>(entityManager);
 		QStudent student = QStudent.student;
-		query.select(student).from(student).where(student.active.isTrue()).where(student.center.in(centers));
+		query.select(student).from(student)
+				.where(student.active.isTrue())
+				.where(student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
+				.where(student.center.in(centers));
 		return (int) query.fetchCount();
 	}
 
 	private int countStudents(List<Center> centers, boolean corporate) {
 		JPAQuery<Student> query = new JPAQuery<>(entityManager);
 		QStudent student = QStudent.student;
-		query.select(student).from(student).where(student.active.isTrue()).where(student.corporate.eq(corporate))
+		query.select(student).from(student)
+				.where(student.active.isTrue())
+				.where(student.corporate.eq(corporate))
 				.where(student.center.in(centers));
 		return (int) query.fetchCount();
 	}
