@@ -416,17 +416,6 @@ public class StudentFeeService extends BaseService{
             thisQuarterSlip.setGstAmount(fee.getGstAmount());
             thisQuarterSlip.setAdjust(thisQuarterSlip.getAdjust()==null?ZERO:thisQuarterSlip.getAdjust());
 
-            if(thisQuarterSlip.getFinalDepositFee()!=null && thisQuarterSlip.getFinalDepositFee().doubleValue()>0){
-                // one time only
-                thisQuarterSlip.setDepositFeeDiscount(fee.getDepositFeeDiscount()==null?ZERO:fee.getDepositFeeDiscount());
-                thisQuarterSlip.setDeposit(fee.getDepositFee()==null?ZERO:fee.getDepositFee());
-                thisQuarterSlip.setFinalDepositFee(fee.getFinalDepositFee()==null?ZERO:fee.getFinalDepositFee());
-            }else{
-                // one time only
-                thisQuarterSlip.setDepositFeeDiscount(ZERO);
-                thisQuarterSlip.setDeposit(ZERO);
-                thisQuarterSlip.setFinalDepositFee(ZERO);
-            }
             BigDecimal baseFeeRatio=THREE;
             thisQuarterSlip.setFeeRatio(baseFeeRatio);
             // to check is it new addmission
@@ -437,11 +426,29 @@ public class StudentFeeService extends BaseService{
                  thisQuarterSlip.setAdmissionFee(fee.getAdmissionFee()==null?ZERO:fee.getAdmissionFee());
                  thisQuarterSlip.setAddmissionFeeDiscount(fee.getAddmissionFeeDiscount()==null?ZERO:fee.getAddmissionFeeDiscount());
                  thisQuarterSlip.setFinalAdmissionFee(fee.getFinalAdmissionFee()==null?ZERO:fee.getFinalAdmissionFee());
-             }else{
+
+                 thisQuarterSlip.setDepositFeeDiscount(fee.getDepositFeeDiscount()==null?ZERO:fee.getDepositFeeDiscount());
+                thisQuarterSlip.setDeposit(fee.getDepositFee()==null?ZERO:fee.getDepositFee());
+                thisQuarterSlip.setFinalDepositFee(fee.getFinalDepositFee()==null?ZERO:fee.getFinalDepositFee());
+
+                thisQuarterSlip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount()==null?ZERO:fee.getAnnualFeeDiscount());
+                thisQuarterSlip.setAnnualFee(fee.getAnnualCharges()==null?ZERO:fee.getAnnualCharges());
+                thisQuarterSlip.setFinalAnnualCharges(fee.getFinalAnnualCharges()==null?ZERO:fee.getFinalAnnualCharges());
+            }else{
                  thisQuarterSlip.setAdmissionFee(ZERO);
                  thisQuarterSlip.setAddmissionFeeDiscount(ZERO);
                  thisQuarterSlip.setFinalAdmissionFee(ZERO);
-             }
+
+                thisQuarterSlip.setAnnualFee(ZERO);
+                thisQuarterSlip.setAnnualFeeDiscount(ZERO);
+                thisQuarterSlip.setFinalAnnualCharges(ZERO);
+
+                thisQuarterSlip.setDepositFeeDiscount(ZERO);
+                thisQuarterSlip.setDeposit(ZERO);
+                thisQuarterSlip.setFinalDepositFee(ZERO);
+
+            }
+
              if(thisQuarterSlip.getQuarter()==2 || (thisQuarterSlip.getFinalAnnualCharges()!=null &&thisQuarterSlip.getFinalAnnualCharges().intValue()>0)  ){
                  thisQuarterSlip.setAnnualFeeDiscount(fee.getAnnualFeeDiscount()==null?ZERO:fee.getAnnualFeeDiscount());
                  thisQuarterSlip.setAnnualFee(fee.getAnnualCharges()==null?ZERO:fee.getAnnualCharges());

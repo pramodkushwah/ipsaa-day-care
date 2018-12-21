@@ -93,7 +93,7 @@ public class StudentFeePaymentRequestIpsaaClub extends BaseEntity {
     @Temporal(TemporalType.DATE)
     private Date expireDate;
 
-    @Column(length = 200)
+    @Column(length = 500)
     private String comments;
 
     @Column(length = 500)
