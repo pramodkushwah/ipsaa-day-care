@@ -611,6 +611,9 @@ export class AdminService {
   confirmIpsaaClubFee(data) {
     return this.api.put('api/student/ipsaaclub/record/update', data);
   }
+  resetParentAccount(parentId) {
+    return this.api.put('api/student/parent/resetPassword/', {'id': parentId});
+  }
 
   rejectIpsaaClubFee(data) {
     return this.api.put('api/student/ipsaaclub/record/update', data);
