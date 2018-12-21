@@ -57,6 +57,7 @@ export class StaffMessageComponent implements OnInit {
   emailData: any;
   ccEmail: string ;
   emailList: any = [];
+  selectedStaffs: any = [];
 
   constructor(
     private adminService: AdminService,
@@ -234,6 +235,15 @@ formData.append('cc', element);
   }
 
   showEmailPanel() {
+    this.selectedStaffs = [];
+    this.ids.forEach((id: number) => {
+      const staff: any = this.allItems.find(s => {
+        return s.id == id;
+      });
+      if (staff) {
+        this.selectedStaffs.push(staff);
+      }
+    });
     this.adminService.viewPanel.next(true);
     this.smsCard = false;
     this.emailCard = true;

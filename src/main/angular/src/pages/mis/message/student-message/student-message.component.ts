@@ -41,6 +41,7 @@ export class StudentMessageComponent implements OnInit {
   ccEmail: string;
   emailList: any = [];
   searchArray: any = [];
+  selectedStudents: any[] = [];
   constructor(
     private adminService: AdminService,
     private pagerService: PagerService,
@@ -291,6 +292,15 @@ export class StudentMessageComponent implements OnInit {
   }
 
   sendEmail() {
+    this.selectedStudents = [];
+    this.ids.forEach((id: number) => {
+      const student: any = this.allItems.find(s => {
+        return s.id == id;
+      });
+      if (student) {
+        this.selectedStudents.push(student);
+      }
+    });
     this.adminService.viewPanel.next(true);
     this.smsCard = false;
     this.emailCard = true;
