@@ -128,6 +128,7 @@ this.allItems = this.staffs;
       });
     }
     this.setPage(1);
+    this.selectAll(false);
   }
   searchStaff(event: any) {
     this.searchKey = event;

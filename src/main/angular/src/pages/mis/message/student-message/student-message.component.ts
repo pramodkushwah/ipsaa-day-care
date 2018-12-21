@@ -121,7 +121,7 @@ export class StudentMessageComponent implements OnInit {
 
     this.searchArray = this.allItems.slice();
     this.setPage(1);
-
+    this.selectAll(false);
   }
 
   filterByProgram() {
