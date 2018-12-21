@@ -161,11 +161,11 @@ this.allItems = this.staffs;
 
   selectAll(isChecked: boolean) {
     if ( isChecked ) {
-      this.staffs.forEach(staff => {
+      this.allItems.forEach(staff => {
         this.staffIds[staff.id] = true;
       });
     } else {
-      this.staffs.forEach(staff => {
+      this.allItems.forEach(staff => {
         this.staffIds[staff.id] = false;
       });
       this.selectAllStaff = false;
@@ -222,6 +222,8 @@ formData.append('cc', element);
     this.sending = true;
     this.smsService.sendStaffEmail(formData).subscribe((response: any) => {
       this.sending = false;
+      this.emailList = [];
+      this.ccEmail = '';
       this.alertService.successAlert('Succesfully sent');
       this.hideViewPanel();
       this.selectAll(false);

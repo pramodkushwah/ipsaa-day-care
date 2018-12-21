@@ -240,14 +240,20 @@ public class DashboardService extends BaseService {
 	private int countStudents(List<Center> centers) {
 		JPAQuery<Student> query = new JPAQuery<>(entityManager);
 		QStudent student = QStudent.student;
-		query.select(student).from(student).where(student.active.isTrue()).where(student.center.in(centers));
+		query.select(student).from(student)
+				.where(student.active.isTrue())
+				.where(student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
+				.where(student.center.in(centers));
 		return (int) query.fetchCount();
 	}
 
 	private int countStudents(List<Center> centers, boolean corporate) {
 		JPAQuery<Student> query = new JPAQuery<>(entityManager);
 		QStudent student = QStudent.student;
-		query.select(student).from(student).where(student.active.isTrue()).where(student.corporate.eq(corporate))
+		query.select(student).from(student)
+				.where(student.active.isTrue())
+				.where(student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
+				.where(student.corporate.eq(corporate))
 				.where(student.center.in(centers));
 		return (int) query.fetchCount();
 	}
@@ -346,9 +352,12 @@ public class DashboardService extends BaseService {
 		if (feeDuration == null || feeDuration == FeeDuration.Monthly) {
 			JPAQuery<BigDecimal> ipssaQuery = new JPAQuery<>(entityManager);
 
-			ipssaQuery.select(ipsaaSlip.totalFee.sum()).from(ipsaaSlip).where(ipsaaSlip.student.active.isTrue())
-					.where(ipsaaSlip.student.corporate.isFalse()).where(ipsaaSlip.isExpire.isFalse())
-					.where(ipsaaSlip.year.eq(year)).where(ipsaaSlip.month.eq(month))
+			ipssaQuery.select(ipsaaSlip.totalFee.sum()).from(ipsaaSlip)
+					.where(ipsaaSlip.student.active.isTrue())
+					.where(ipsaaSlip.student.corporate.isFalse())
+					.where(ipsaaSlip.isExpire.isFalse())
+					.where(ipsaaSlip.year.eq(year))
+					.where(ipsaaSlip.month.eq(month))
 					.where(ipsaaSlip.student.center.in(centers));
 			BigDecimal totalSum = ipssaQuery.fetchFirst();
 			total += totalSum == null ? 0 : totalSum.intValue();
@@ -360,12 +369,15 @@ public class DashboardService extends BaseService {
 		if (feeDuration == FeeDuration.Quarterly
 				|| (feeDuration == null && (month == 1 || month == 4 || month == 7 || month == 10))) {
 			JPAQuery<BigDecimal> quarterlyquery = new JPAQuery<>(entityManager);
-			quarterlyquery.select(slip.totalFee.sum()).from(slip).where(slip.student.active.isTrue())
+			quarterlyquery.select(slip.totalFee.sum()).from(slip)
+					.where(slip.student.active.isTrue())
 					.where(slip.student.corporate.isFalse())
 					// .where(slip.student.approvalStatus.eq(ApprovalStatus.Approved))
 					.where(slip.feeDuration.eq(FeeDuration.Quarterly))
-					.where(slip.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID)).where(slip.year.eq(year))
-					.where(slip.quarter.eq(quarter)).where(slip.student.center.in(centers));
+					.where(slip.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
+					.where(slip.year.eq(year))
+					.where(slip.quarter.eq(quarter))
+					.where(slip.student.center.in(centers));
 
 			BigDecimal quarterly = quarterlyquery.fetchFirst();
 			total += quarterly == null ? 0 : quarterly.intValue();
@@ -774,6 +786,7 @@ public class DashboardService extends BaseService {
 		StatsResponse response = new StatsResponse();
 		List<Center> centers = getCenters(request);
 		int studentCount = countStudents(centers);
+		int ipsaaclubstudent=ipsaaclubStudents(centers);
 		int corporateStudentCount = countStudents(centers, true);
 
 		for (String dashboard : dashboards) {
@@ -786,6 +799,7 @@ public class DashboardService extends BaseService {
 				response.setStudents(studentCount);
 				response.setCorporateStudents(corporateStudentCount);
 
+				response.setIpsaaclubStudents(ipsaaclubstudent);
 				// 2. present today
 				int presentStudent = countPresentStudents(centers);
 				response.setStudentPresent(presentStudent);
@@ -836,6 +850,16 @@ public class DashboardService extends BaseService {
 			}
 		}
 		return response;
+	}
+
+	private int ipsaaclubStudents(List<Center> centers) {
+		JPAQuery<Student> query = new JPAQuery<>(entityManager);
+		QStudent student = QStudent.student;
+		query.select(student).from(student)
+				.where(student.active.isTrue())
+				.where(student.program.id.eq(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
+				.where(student.center.in(centers));
+		return (int) query.fetchCount();
 	}
 
 	public List<DashStudentResponse> allStudentList(DashboardRequest request) {

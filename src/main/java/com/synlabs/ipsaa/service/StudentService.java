@@ -949,13 +949,13 @@ public class StudentService extends BaseService {
             int requestQuarter = request.getQuarter();
             int requestYear = request.getYear();
             return feePaymentRepository
-                    .findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(period, requestQuarter, requestYear, request.getCenterCode());
+                    .findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(period, requestQuarter, requestYear, request.getCenterCode(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
         } else {
             int requestQuarter = request.getQuarter();
             int requestYear = request.getYear();
             return feePaymentRepository
-                    .findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
-                            period, requestQuarter, requestYear);
+                    .findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(
+                            period, requestQuarter, requestYear,FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
         }
     }
 
@@ -1788,13 +1788,13 @@ public class StudentService extends BaseService {
 		FeeDuration period = FeeDuration.valueOf("Quarterly");
 		if (request.getCenterCode().equals("All")) {
 			slip2 = feePaymentRepository
-					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
-							period, request.getQuarter(), request.getYear());
+					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(
+							period, request.getQuarter(), request.getYear(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
 		} else {
 			slip2 = feePaymentRepository
-					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
+					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(
 							period, request.getQuarter(), request.getYear(),
-							request.getCenterCode());
+							request.getCenterCode(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
 		}
 		return slip2;
 

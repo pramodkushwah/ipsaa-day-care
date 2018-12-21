@@ -192,6 +192,8 @@ export class GenerateMonthlySalaryComponent implements OnInit {
       formData.append('month', this.paySlipForm.controls['month'].value);
       this.adminService.uploadEmployeeSalaryFile(formData).subscribe(response => {
         console.log(response);
+        this.getEmployers();
+
       });
     }
   }

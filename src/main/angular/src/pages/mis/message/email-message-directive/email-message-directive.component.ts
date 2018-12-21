@@ -97,7 +97,7 @@ export class EmailMessageDirectiveComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     document.getElementById('message').addEventListener('paste', (event) => {
-      const pastedData = event.clipboardData.items[0];
+      const pastedData: any = event.clipboardData.items[0];
       if (pastedData.type.indexOf('image') === 0) {
         this.composeThumbnail(pastedData.getAsFile()); // this still works!
       }
@@ -211,10 +211,10 @@ export class EmailMessageDirectiveComponent implements OnInit, AfterViewInit {
   //   this.imageCopies = this.images;
   // }
 
-  // public preventAndStop(event) {
-  //   event.stopPropagation();
-  //   event.preventDefault();
-  // }
+  public preventAndStop(event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
 
   // getElements(event) {
   //   this.preventAndStop(event);
@@ -274,12 +274,13 @@ export class EmailMessageDirectiveComponent implements OnInit, AfterViewInit {
     return val;
   }
 
+  postobject = {
+    cids: [],
+    emailcontent: '',
+    images: [],
+  };
+
   createObject() {
-    const postobject = {
-      cids: [],
-      emailcontent: '',
-      images: [],
-    };
 
     // 1. removing url image from img
     // 2. putting image and their cid in postobject.images and postobject.cids
@@ -293,22 +294,26 @@ export class EmailMessageDirectiveComponent implements OnInit, AfterViewInit {
       img.removeAttr('src');
       img.attr('src', 'cid:' + cid);
       if (typeof this.images[cid] !== 'undefined') {
-        postobject.cids.push(cid);
-        postobject.images.push(this.images[cid]);
+        this.postobject.cids.push(cid);
+        this.postobject.images.push(this.images[cid]);
       }
     }
-    postobject.emailcontent = message.html();
-    console.log(message.html());
+    this.postobject.emailcontent = message.html();
     // for (let i = 0; i < this.attachments.length; i++) {
     //   if (this.attachments[i].size < (1024 * 1024 * MAX_FILE_BYTES)) {
-    //     postobject.files.push(this.attachments[i]);
+    //     this.postobject.files.push(this.attachments[i]);
     //   }
     //   else {
     //     error("Attachment size must less then " + MAX_FILE_SIZE + " MB");
     //     return;
     //   }
     // }
-    this.onFileDrop.emit(postobject);
+    this.onFileDrop.emit(this.postobject);
+  }
+
+
+  getElements(event) {
+    this.createObject();
   }
 
 }

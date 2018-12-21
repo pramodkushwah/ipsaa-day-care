@@ -385,7 +385,8 @@ this.showSidePanel(false, null);
   }
 
   dropped(event) {
-    this.eMailForm.controls['body'].patchValue(event.textContent || '');
+    console.log(event);
+    this.eMailForm.controls['body'].patchValue(event.emailcontent || '');
   }
 
 

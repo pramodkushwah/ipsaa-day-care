@@ -214,11 +214,11 @@ export class StudentMessageComponent implements OnInit {
 
   selectAll(isChecked: boolean) {
     if (isChecked) {
-      this.students.forEach(student => {
+      this.allItems.forEach(student => {
         this.studentIds[student.id] = true;
       });
     } else {
-      this.students.forEach(student => {
+      this.allItems.forEach(student => {
         this.studentIds[student.id] = false;
       });
       this.selectAllStudent = false;
@@ -279,6 +279,8 @@ export class StudentMessageComponent implements OnInit {
     this.smsService.sendStudentEmail(formData).subscribe((response: any) => {
       this.studentIds = {};
       this.sending = false;
+      this.emailList = [];
+      this.ccEmail = '';
       this.alertService.successAlert('Succesfully sent');
       this.hideViewPanel();
       this.selectAll(false);
@@ -298,7 +300,7 @@ export class StudentMessageComponent implements OnInit {
   selectStudents() {
     this.ids = [];
     Object.keys(this.studentIds).forEach(id => {
-      if (this.studentIds[id]) {
+      if (this.studentIds[id] === true) {
         this.ids.push(id);
       }
     });
