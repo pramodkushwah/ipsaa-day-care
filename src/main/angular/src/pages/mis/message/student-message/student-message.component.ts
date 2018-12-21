@@ -94,7 +94,7 @@ export class StudentMessageComponent implements OnInit {
       console.log(this.allItems);
 
       this.students = this.allItems;
-      this.studentsCopy = JSON.parse(JSON.stringify(this.students));
+      this.studentsCopy = JSON.parse(JSON.stringify(this.allItems));
       this.pageSize = response.pageSize;
       this.pageNumber = response.pageNumber;
       // initialize to page 1

@@ -255,7 +255,7 @@ formData.append('cc', element);
       if ( this.staffIds[id] ) {
         this.ids.push(id);
       }
-    });
+     });
     if (!this.ids.length) {
       this.hideViewPanel();
     }
