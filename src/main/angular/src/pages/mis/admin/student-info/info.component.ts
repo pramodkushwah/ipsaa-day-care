@@ -525,5 +525,12 @@ export class StudentInfoComponent implements OnInit {
 
   }
 
+  createAccount(parent:FormGroup) {
+    this.adminService.createAccount(parent.value.id).subscribe(response =>{
+      this.alertService.successAlert('Account created successfully!');
+      parent.controls['account'].patchValue(true);
+    });
+  }
+
 
 }

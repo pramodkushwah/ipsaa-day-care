@@ -2,6 +2,8 @@ package com.synlabs.ipsaa.view.student;
 
 import com.synlabs.ipsaa.entity.student.Student;
 import com.synlabs.ipsaa.entity.student.StudentFee;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequest;
+import com.synlabs.ipsaa.entity.student.StudentFeePaymentRequestIpsaaClub;
 import com.synlabs.ipsaa.view.common.Response;
 
 import java.math.BigDecimal;
@@ -36,6 +38,30 @@ public class DashStudentFeeResponse implements Response
     this.discount = studentfee.getDiscount() == null ? new BigDecimal(0) : studentfee.getDiscount();
     this.feeDuration = studentfee.getFeeDuration().name();
     this.baseFee = studentfee.getBaseFee();
+  }
+  public DashStudentFeeResponse(StudentFeePaymentRequest slip)
+  {
+    Student student = slip.getStudent();
+    name = student.getName();
+    program = student.getProgramName();
+    group = student.getGroupName();
+    center = student.getCenterName();
+    this.finalFee = slip.getTotalFee();
+    this.discount = slip.getBaseFeeDiscount() == null ? new BigDecimal(0) : slip.getBaseFeeDiscount();
+    this.feeDuration = slip.getFeeDuration().name();
+    this.baseFee = slip.getBaseFee();
+  }
+  public DashStudentFeeResponse(StudentFeePaymentRequestIpsaaClub slip)
+  {
+    Student student = slip.getStudent();
+    name = student.getName();
+    program = student.getProgramName();
+    group = student.getGroupName();
+    center = student.getCenterName();
+    this.finalFee = slip.getTotalFee();
+    this.discount = slip.getBaseFeeDiscount() == null ? new BigDecimal(0) : slip.getBaseFeeDiscount();
+    this.feeDuration = slip.getFeeDuration().name();
+    this.baseFee = slip.getBaseFee();
   }
 
   public String getName()

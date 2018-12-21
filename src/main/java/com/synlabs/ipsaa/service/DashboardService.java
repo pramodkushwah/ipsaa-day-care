@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import com.synlabs.ipsaa.entity.student.*;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,16 +40,6 @@ import com.synlabs.ipsaa.entity.staff.EmployeeSalary;
 import com.synlabs.ipsaa.entity.staff.QEmployee;
 import com.synlabs.ipsaa.entity.staff.QEmployeeLeave;
 import com.synlabs.ipsaa.entity.staff.QEmployeeSalary;
-import com.synlabs.ipsaa.entity.student.QStudent;
-import com.synlabs.ipsaa.entity.student.QStudentFee;
-import com.synlabs.ipsaa.entity.student.QStudentFeePaymentRecord;
-import com.synlabs.ipsaa.entity.student.QStudentFeePaymentRecordIpsaaClub;
-import com.synlabs.ipsaa.entity.student.QStudentFeePaymentRequest;
-import com.synlabs.ipsaa.entity.student.QStudentFeePaymentRequestIpsaaClub;
-import com.synlabs.ipsaa.entity.student.QStudentParent;
-import com.synlabs.ipsaa.entity.student.Student;
-import com.synlabs.ipsaa.entity.student.StudentFee;
-import com.synlabs.ipsaa.entity.student.StudentParent;
 import com.synlabs.ipsaa.enums.ApprovalStatus;
 import com.synlabs.ipsaa.enums.AttendanceStatus;
 import com.synlabs.ipsaa.enums.CallDisposition;
@@ -242,7 +233,6 @@ public class DashboardService extends BaseService {
 		QStudent student = QStudent.student;
 		query.select(student).from(student)
 				.where(student.active.isTrue())
-				.where(student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
 				.where(student.center.in(centers));
 		return (int) query.fetchCount();
 	}
@@ -252,7 +242,6 @@ public class DashboardService extends BaseService {
 		QStudent student = QStudent.student;
 		query.select(student).from(student)
 				.where(student.active.isTrue())
-				.where(student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
 				.where(student.corporate.eq(corporate))
 				.where(student.center.in(centers));
 		return (int) query.fetchCount();
@@ -493,8 +482,10 @@ public class DashboardService extends BaseService {
 
 		List<Student> students = query.fetch();
 
-		attquery.select(attendance).from(attendance).where(attendance.student.in(students))
-				.where(attendance.student.center.in(centers)).where(attendance.student.active.isTrue())
+		attquery.select(attendance).from(attendance)
+				.where(attendance.student.in(students))
+				.where(attendance.student.center.in(centers))
+				.where(attendance.student.active.isTrue())
 				.where(attendance.attendanceDate.eq(LocalDate.now().toDate()));
 
 		List<StudentAttendance> attendances = attquery.fetch();
@@ -617,6 +608,37 @@ public class DashboardService extends BaseService {
 		}
 
 		return response;
+	}
+
+	public List<DashStudentFeeResponse> listStudentSlip(DashboardRequest request) {
+		List<Center> centers = getCenters(request);
+		JPAQuery<StudentFeePaymentRequest> query = new JPAQuery<>(entityManager);
+		QStudentFeePaymentRequest studentfeRequest = QStudentFeePaymentRequest.studentFeePaymentRequest;
+		query.select(studentfeRequest).from(studentfeRequest).where(studentfeRequest.student.active.isTrue())
+				.where(studentfeRequest.student.center.in(centers))
+				.where(studentfeRequest.month.eq(request.getMonth()))
+				.where(studentfeRequest.year.eq(request.getYear()))
+				.where(studentfeRequest.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
+				.where(studentfeRequest.feeDuration.eq(FeeDuration.Quarterly));
+
+		List<StudentFeePaymentRequest> slips = query.fetch();
+		return slips.stream().map(DashStudentFeeResponse::new).collect(Collectors.toList());
+	}
+	public List<DashStudentFeeResponse> listStudentSlipIpsaaClub(DashboardRequest request) {
+		List<Center> centers = getCenters(request);
+		JPAQuery<StudentFeePaymentRequestIpsaaClub> query = new JPAQuery<>(entityManager);
+		QStudentFeePaymentRequestIpsaaClub studentfeRequest = QStudentFeePaymentRequestIpsaaClub.studentFeePaymentRequestIpsaaClub;
+		query.select(studentfeRequest).from(studentfeRequest)
+				.where(studentfeRequest.student.active.isTrue())
+				.where(studentfeRequest.student.center.in(centers));
+
+				query.where(studentfeRequest.student.program.id.eq(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
+						.where(studentfeRequest.month.eq(request.getMonth()))
+						.where(studentfeRequest.year.eq(request.getYear()))
+						.where(studentfeRequest.isExpire.isFalse());
+
+		List<StudentFeePaymentRequestIpsaaClub> slips = query.fetch();
+		return slips.stream().map(DashStudentFeeResponse::new).collect(Collectors.toList());
 	}
 
 	public List<UserResponse> listUser(DashboardRequest request) {

@@ -223,6 +223,7 @@ export class StudentMessageComponent implements OnInit {
         this.studentIds[student.id] = false;
       });
       this.selectAllStudent = false;
+      this.hideViewPanel();
     }
     this.selectStudents();
   }

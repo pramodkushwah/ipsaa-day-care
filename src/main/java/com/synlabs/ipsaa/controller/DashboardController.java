@@ -80,6 +80,19 @@ public class DashboardController
   {
     return dashboardService.listStudentFee(request);
   }
+  @PostMapping("/dash/studentSlip")
+  @Secured(DASHBOARD_STATS)
+  public List<DashStudentFeeResponse> getStudentSlip(@RequestBody DashboardRequest request)
+  {
+    return dashboardService.listStudentSlip(request);
+  }
+
+  @PostMapping("/dash/ipsaaclub/studentSlip")
+  @Secured(DASHBOARD_STATS)
+  public List<DashStudentFeeResponse> getStudentIpsaaclubSlip(@RequestBody DashboardRequest request)
+  {
+    return dashboardService.listStudentSlip(request);
+  }
 
   @PostMapping("/dash/user")
   @Secured(DASHBOARD_STATS)
