@@ -1788,13 +1788,13 @@ public class StudentService extends BaseService {
 		FeeDuration period = FeeDuration.valueOf("Quarterly");
 		if (request.getCenterCode().equals("All")) {
 			slip2 = feePaymentRepository
-					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYear(
-							period, request.getQuarter(), request.getYear());
+					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(
+							period, request.getQuarter(), request.getYear(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
 		} else {
 			slip2 = feePaymentRepository
-					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCode(
+					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(
 							period, request.getQuarter(), request.getYear(),
-							request.getCenterCode());
+							request.getCenterCode(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
 		}
 		return slip2;
 

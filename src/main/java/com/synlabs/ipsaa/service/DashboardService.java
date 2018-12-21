@@ -352,9 +352,12 @@ public class DashboardService extends BaseService {
 		if (feeDuration == null || feeDuration == FeeDuration.Monthly) {
 			JPAQuery<BigDecimal> ipssaQuery = new JPAQuery<>(entityManager);
 
-			ipssaQuery.select(ipsaaSlip.totalFee.sum()).from(ipsaaSlip).where(ipsaaSlip.student.active.isTrue())
-					.where(ipsaaSlip.student.corporate.isFalse()).where(ipsaaSlip.isExpire.isFalse())
-					.where(ipsaaSlip.year.eq(year)).where(ipsaaSlip.month.eq(month))
+			ipssaQuery.select(ipsaaSlip.totalFee.sum()).from(ipsaaSlip)
+					.where(ipsaaSlip.student.active.isTrue())
+					.where(ipsaaSlip.student.corporate.isFalse())
+					.where(ipsaaSlip.isExpire.isFalse())
+					.where(ipsaaSlip.year.eq(year))
+					.where(ipsaaSlip.month.eq(month))
 					.where(ipsaaSlip.student.center.in(centers));
 			BigDecimal totalSum = ipssaQuery.fetchFirst();
 			total += totalSum == null ? 0 : totalSum.intValue();
@@ -373,7 +376,8 @@ public class DashboardService extends BaseService {
 					.where(slip.feeDuration.eq(FeeDuration.Quarterly))
 					.where(slip.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
 					.where(slip.year.eq(year))
-					.where(slip.quarter.eq(quarter)).where(slip.student.center.in(centers));
+					.where(slip.quarter.eq(quarter))
+					.where(slip.student.center.in(centers));
 
 			BigDecimal quarterly = quarterlyquery.fetchFirst();
 			total += quarterly == null ? 0 : quarterly.intValue();
