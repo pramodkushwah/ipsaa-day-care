@@ -215,6 +215,9 @@ export class AdminService {
     return this.api.put('api/user/', user);
   }
 
+  deleteUser(userId: any) {
+    return this.api.delete('api/user/' + userId);
+  }
   resetUserPassword(userIdAndPassword: any) {
     return this.api.post('api/user/resetpwd', userIdAndPassword);
   }
@@ -524,7 +527,7 @@ export class AdminService {
     return this.api.get('api/student/approve/' + student_id);
   }
   rejectStudent(student_id, comment) {
-    return this.api.post('api/student/reject/' + student_id, {'comment': comment});
+    return this.api.post('api/student/reject/' + student_id, { 'comment': comment });
   }
 
   // center
@@ -542,11 +545,11 @@ export class AdminService {
   }
 
   getHolidaysList(currentYearMonth) {
-    return this.api.post('/api/holiday/' , currentYearMonth);
+    return this.api.post('/api/holiday/', currentYearMonth);
   }
 
   AddNewHolliday(holliday_Details) {
-    return this.api.post('/api/holiday/save' , holliday_Details);
+    return this.api.post('/api/holiday/save', holliday_Details);
   }
 
   deleteHoliday(holidayId) {

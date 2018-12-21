@@ -3,7 +3,7 @@
     <div class="form-group">
       <label for="sel1">Zone:</label>
       <select class="form-control" id="sel1" [(ngModel)]="selectedZone" (ngModelChange)="getCenterByZone($event.name);getStatsResult()">
-        <option value="all">All</option>
+        <option value="{name: 'all'}">All</option>
         <option *ngFor="let zone of zones;" [ngValue]="zone">{{zone.name}}</option>
       </select>
       <span class="material-input"></span>

@@ -80,6 +80,8 @@ export class StaffLeavesComponent implements OnInit {
     this.selectedYear = (new Date()).getFullYear();
     this.years.push((new Date()).getFullYear() - 1);
     this.years.push((new Date()).getFullYear());
+
+    this.years.push((new Date()).getFullYear() + 1);
     this.LeaveMonthTable();
   }
 

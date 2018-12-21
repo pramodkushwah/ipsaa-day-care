@@ -11,7 +11,7 @@
     <div class="form-group">
       <label for="center">Center:</label>
       <select class="form-control" id="center" [(ngModel)]="selectedCenter" (ngModelChange)="filterStaffByCenter()">
-        <option value="all">All</option>
+        <option [ngValue]="'All'">All</option>
         <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
       </select>
       <span class="material-input"></span>
@@ -21,7 +21,7 @@
   <div class="col-md-3">
     <div class="form-group">
       <label for="staff_status">Staff Status:</label>
-      <select class="form-control" id="staff_status" [(ngModel)]="selectedStaffStatus" (ngModelChange)="filterStaff($event)">
+      <select class="form-control" id="staff_status" [(ngModel)]="selectedStaffStatus" (ngModelChange)="filterStaffByCenter()">
       
         <option value="true">Active</option>
         <option value="false">Inactive</option>
@@ -33,9 +33,9 @@
   <div class="col-md-3">
     <div class="form-group">
       <label for="staff_type">Staff Type:</label>
-      <select class="form-control" id="staff_type" [(ngModel)]="selectedStaffType" (ngModelChange)="filterStaff()">
-        <option value="ALL" selected>All</option>
-        <option *ngFor="let stafftype of staffType" [ngValue]="stafftype.value">{{stafftype.name}}</option>
+      <select class="form-control" id="staff_type" [(ngModel)]="selectedStaffType" (ngModelChange)="filterStaffByCenter()">
+        <option [ngValue]="'All'" selected>All</option>
+        <option *ngFor="let type of staffType" [ngValue]="type.value">{{type.name}}</option>
       </select>
       <span class="material-input"></span>
     </div>

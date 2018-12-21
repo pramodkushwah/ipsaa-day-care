@@ -17,7 +17,7 @@
   <div class="col-md-4">
     <div class="form-group">
       <label for="exampleFormControlSelect3">Active/Incative</label>
-      <select class="form-control" id="exampleFormControlSelect3" [(ngModel)]="activeStatus" (ngModelChange)="filterStudent($event)">
+      <select class="form-control" id="exampleFormControlSelect3" [(ngModel)]="activeStatus" (ngModelChange)="getStudents()">
         <option value="true">Active</option>
         <option value="false">Inactive</option>
       </select>

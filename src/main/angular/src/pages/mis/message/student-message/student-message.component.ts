@@ -83,12 +83,16 @@ export class StudentMessageComponent implements OnInit {
   }
 
   getStudents() {
-    this.students = [];
+    this.allItems = [];
     this.loader = true;
-    this.adminService.getStudents({}).subscribe((response: any) => {
+    this.adminService.getStudents({ active: true }).subscribe((response: any) => {
       this.loader = false;
-      this.allItems = response.students;
-      this.students = response.students;
+      this.allItems = response.students.filter(stud => {
+        return stud.active === true;
+      });
+      console.log(this.allItems);
+
+      this.students = this.allItems;
       this.studentsCopy = JSON.parse(JSON.stringify(this.students));
       this.pageSize = response.pageSize;
       this.pageNumber = response.pageNumber;
@@ -233,6 +237,8 @@ export class StudentMessageComponent implements OnInit {
     this.sending = true;
     this.smsService.sendStudentSMS(object).subscribe((response: any) => {
       this.sending = false;
+      this.studentIds = {};
+
       this.alertService.successAlert('Succesfully sent');
       this.hideViewPanel();
       this.selectAll(false);
@@ -271,6 +277,7 @@ export class StudentMessageComponent implements OnInit {
     });
     this.sending = true;
     this.smsService.sendStudentEmail(formData).subscribe((response: any) => {
+      this.studentIds = {};
       this.sending = false;
       this.alertService.successAlert('Succesfully sent');
       this.hideViewPanel();

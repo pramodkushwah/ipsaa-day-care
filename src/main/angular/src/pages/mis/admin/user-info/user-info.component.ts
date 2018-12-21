@@ -55,12 +55,12 @@ export class UserInfoComponent implements OnInit {
     private adminService: AdminService,
     private fb: FormBuilder,
     private alertService: AlertService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.selectedUser.employee
-        ? this.userForm.controls['empId'].patchValue(this.selectedUser.employee.id)
-        : this.userForm.controls['empId'].patchValue(null);
+      ? this.userForm.controls['empId'].patchValue(this.selectedUser.employee.id)
+      : this.userForm.controls['empId'].patchValue(null);
     this.getEmployee();
     this.getCenters();
     this.getRoles();
@@ -164,7 +164,7 @@ export class UserInfoComponent implements OnInit {
       if (value) {
         this.alertService.confirm('You want to change Password').then(isConfirm => {
           if (isConfirm) {
-            this.adminService.resetUserPassword({id: this.selectedUser.id, password: value}).subscribe(success => {
+            this.adminService.resetUserPassword({ id: this.selectedUser.id, password: value }).subscribe(success => {
               this.alertService.successAlert('Password Changed Successfully');
             });
           }
@@ -173,7 +173,14 @@ export class UserInfoComponent implements OnInit {
     });
   }
 
-  removeUser() {}
+  removeUser() {
+
+    this.adminService.deleteUser(this.selectedUser.id)
+      .subscribe((res: any) => {
+
+        this.alertService.successAlert('User Dalete Successfuly');
+      });
+  }
 
   saveUser() {
     this.userForm.controls['roles'].patchValue(this.selectedRoles);
@@ -235,7 +242,7 @@ export class UserInfoComponent implements OnInit {
       this.employees = this.employeesCopy.filter(employee => {
         return employee.name.toLowerCase().startsWith(val);
       });
-    }  else {
+    } else {
       this.employees = this.employeesCopy;
     }
   }

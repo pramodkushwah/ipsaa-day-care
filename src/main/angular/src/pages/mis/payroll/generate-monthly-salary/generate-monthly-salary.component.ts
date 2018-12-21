@@ -26,7 +26,7 @@ export class GenerateMonthlySalaryComponent implements OnInit {
     'November',
     'December'
   ];
-  years: any[] = [ new Date().getFullYear() - 1, new Date().getFullYear() ];
+  years: any[] = [new Date().getFullYear() - 1, new Date().getFullYear(), new Date().getFullYear() + 1];
   paySlipForm: FormGroup;
   viewPanel: boolean;
   salaryList: any[] = [];
@@ -158,8 +158,8 @@ export class GenerateMonthlySalaryComponent implements OnInit {
     this.adminService.downloadPaySlip(salary).subscribe((response: any) => {
       const blob = new Blob([response.body], {
         // type: 'application/octet-stream'
-    });
-    FileSaver.saveAs(blob, response.headers.get('fileName'));
+      });
+      FileSaver.saveAs(blob, response.headers.get('fileName'));
 
     });
   }

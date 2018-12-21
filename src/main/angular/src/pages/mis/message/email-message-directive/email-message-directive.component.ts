@@ -284,6 +284,8 @@ export class EmailMessageDirectiveComponent implements OnInit, AfterViewInit {
     // 1. removing url image from img
     // 2. putting image and their cid in postobject.images and postobject.cids
     const message = $('#message').clone();
+    console.log(message);
+
     const imgs = message.find('img');
     for (let i = 0; i < imgs.length; i++) {
       const img = $(imgs[i]);
@@ -296,6 +298,7 @@ export class EmailMessageDirectiveComponent implements OnInit, AfterViewInit {
       }
     }
     postobject.emailcontent = message.html();
+    console.log(message.html());
     // for (let i = 0; i < this.attachments.length; i++) {
     //   if (this.attachments[i].size < (1024 * 1024 * MAX_FILE_BYTES)) {
     //     postobject.files.push(this.attachments[i]);

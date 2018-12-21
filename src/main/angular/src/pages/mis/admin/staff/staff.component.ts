@@ -11,15 +11,16 @@ declare let $: any;
 })
 export class AppStaffComponent implements OnInit {
   staffListCopy: any = [];
+  searchStaffList: any = [];
+
   constructor(
     private adminService: AdminService,
     private pagerService: PagerService
   ) { }
-
   loadingStaffList = false;
   centers: any;
-  selectedCenter: any = 'all';
-  staffType: object[] = [
+  selectedCenter: any = 'All';
+  staffType = [
     { name: 'CxO', value: 'CxO' },
     { name: 'Management', value: 'Management' },
     { name: 'Teacher', value: 'Teacher' },
@@ -28,8 +29,8 @@ export class AppStaffComponent implements OnInit {
 
   update: boolean;
   search: string;
-  selectedStaffStatus = true;
-  selectedStaffType: any = 'ALL';
+  selectedStaffStatus = 'true';
+  selectedStaffType: any = 'All';
   viewPanel = false;
   allItems = []; // all staff list will be stored here
   staffList = []; // filtered stafflist with pagination stored here
@@ -52,6 +53,8 @@ export class AppStaffComponent implements OnInit {
     this.getCenter();
     // setting staffList response recived from backend
     this.getStaff();
+    console.log(this.selectedStaffType);
+
     this.subscribeViewPanelChange();
   }
 
@@ -64,13 +67,17 @@ export class AppStaffComponent implements OnInit {
   getStaff() {
     this.adminService.getStaff().subscribe(response => {
       this.allItems = response;
-      this.staffListCopy = this.allItems;
-      this.staffList = this.allItems;
-      this.filterStaff('true');
-      this.setPage(1);
-      this.staffLoaded();
+      this.staffListCopy = response.slice(0);
+      this.staffList = response.slice(0);
+      // this.filterStaff('true');
+      this.filterStaffByCenter();
+      // this.setPage(1);
+      // this.staffLoaded();
     });
   }
+
+
+
 
   showStaff(staff) {
     this.update = false;
@@ -91,8 +98,9 @@ export class AppStaffComponent implements OnInit {
 
   // set the page of pagination after data intialized and changes
   setPage(page: number) {
+    // debugger;
+    // this.allItems = this.staffListCopy.slice(0);
     this.pager = this.pagerService.getPager(this.staffList.length, page);
-
     // get current page of items
     this.pagedItems = this.staffList.slice(
       this.pager.startIndex,
@@ -102,75 +110,121 @@ export class AppStaffComponent implements OnInit {
   }
 
   searchStaff(event) {
-    let list = this.allItems;
-    if (this.filteredStaff.length) {
-      list = this.filteredStaff;
-    }
-    this.staffList = list;
-    this.searchKey = event;
-    const val = event.target.value;
+    // debugger;
+    const val = event.target.value.toLowerCase();
     if (val && val.trim() !== '') {
-      this.staffList = list.filter(staff => {
-        return staff.name.toLowerCase().startsWith(val.toLowerCase());
+      this.staffList = this.searchStaffList.filter( staff => {
+        return staff.name.toLowerCase().startsWith(val);
       });
-      this.searchedStaff = this.staffList;
     } else {
-      this.searchedStaff = [];
+      console.log( this.searchStaffList);
+      this.staffList = this.searchStaffList;
     }
     this.setPage(1);
   }
 
   filterStaffByCenter() {
-    let list = this.allItems;
-    if (this.filteredStaff.length) {
-      list = this.filteredStaff;
-    }
-
-    if (this.searchedStaff.length) {
-      list = this.searchedStaff;
-    }
-
-    this.staffList = list;
-    // this.filteredStaff = this.allItems;
-    if (this.selectedCenter !== 'all') {
-      this.staffList = list.filter(
-        staff => staff.centerName === this.selectedCenter.name
-      );
-      this.filteredStaff = this.staffList;
+    let status: boolean;
+    if (this.selectedStaffStatus === 'true') {
+      status = true;
     } else {
-      this.filteredByCenter = [];
+      status = false;
+
     }
+    console.log('clcik hhhhh');
+
+    if (this.selectedCenter === 'All') {
+      console.log(' if1');
+
+      if (this.selectedStaffType === 'All') {
+        console.log(' if2');
+
+        this.staffList = this.allItems.filter(staff => {
+          console.log(status);
+
+          return staff.active === status;
+        });
+      } else {
+        console.log(' else1');
+
+        this.staffList = this.allItems.filter(staff => {
+          return staff.type === this.selectedStaffType && staff.active === status;
+        });
+      }
+    } else {
+      console.log(' else2');
+
+      if (this.selectedStaffType === 'All') {
+        console.log(' if3');
+
+        this.staffList = this.allItems.filter(staff => {
+          return staff.centerCode === this.selectedCenter.code && staff.active === status;
+        });
+      } else {
+        console.log(' else3');
+
+        this.staffList = this.allItems.filter(staff => {
+          return staff.type === this.selectedStaffType && staff.active === status &&
+            staff.centerCode === this.selectedCenter.code;
+        });
+      }
+    }
+
+    //  this.fitlerStaffListActive();
+
+
+    // let list = this.allItems;
+    // if (this.filteredStaff.length) {
+    //   list = this.filteredStaff;
+    // }
+
+    // if (this.searchedStaff.length) {
+    //   list = this.searchedStaff;
+    // }
+
+    // this.staffList = list;
+    // // this.filteredStaff = this.allItems;
+    // if (this.selectedCenter !== 'all') {
+    //   this.staffList = list.filter(
+    //     staff => staff.centerName === this.selectedCenter.name
+    //   );
+    //   this.filteredStaff = this.staffList;
+    // } else {
+    //   this.filteredByCenter = [];
+    // }
+    this.searchStaffList = this.staffList;
+
     this.setPage(1);
-    this.staffLoaded();
+    // this.staffLoaded();
   }
 
-  filterStaff(status) {
-    const a = 'true' === status;
-    this.loadingStaffList = true;
-    this.staffList = this.staffListCopy.filter((staff: any) => {
-      return staff.active === a;
-    });
-    this.setPage(1);
-    this.staffLoaded();
-    // const filter = {
-    //   employeeType: this.selectedStaffType,
-    //   active: this.selectedStaffStatus,
-    //   pageNumber: 0,
-    //   pageSize: 0
-    // };
-    // this.adminService.filterStaff(filter).subscribe(response => {
-    //   this.staffList = response.stafflist;
-    //   this.filteredStaff = this.staffList;
-    //   if (this.searchedStaff.length) {
-    //     this.searchStaff(this.searchKey);
-    //   }
-    //   if (this.selectedCenter !== 'all') {
-    //     this.filterStaffByCenter();
-    //   } else {
-    //     this.staffLoaded();
-    //   }
-    // });
-  }
+  // filterStaff(status) {
+  //   const a = 'true' === status;
+  //   this.loadingStaffList = true;
+  //   this.staffList = this.staffListCopy.filter((staff: any) => {
+  //     return staff.active === a;
+  //   });
+  //   this.setPage(1);
+  //   this.staffLoaded();
+  //   // const filter = {
+  //   //   employeeType: this.selectedStaffType,
+  //   //   active: this.selectedStaffStatus,
+  //   //   pageNumber: 0,
+  //   //   pageSize: 0
+  //   // };
+  //   // this.adminService.filterStaff(filter).subscribe(response => {
+  //   //   this.staffList = response.stafflist;
+  //   //   this.filteredStaff = this.staffList;
+  //   //   if (this.searchedStaff.length) {
+  //   //     this.searchStaff(this.searchKey);
+  //   //   }
+  //   //   if (this.selectedCenter !== 'all') {
+  //   //     this.filterStaffByCenter();
+  //   //   } else {
+  //   //     this.staffLoaded();
+  //   //   }
+  //   // });
+  // }
 
   staffLoaded() {
     setTimeout(() => {
