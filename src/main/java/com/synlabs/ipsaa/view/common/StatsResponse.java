@@ -4,6 +4,7 @@ public class StatsResponse implements Response
 {
   private int              students;
   private int              corporateStudents;
+  private int              ipsaaclubStudents;
   private int              parentUsers;
   private int              centers;
   private int              studentPresent;
@@ -24,6 +25,14 @@ public class StatsResponse implements Response
 
   private int staffAbsent;
   private int staffOnLeave;
+
+  public int getIpsaaclubStudents() {
+    return ipsaaclubStudents;
+  }
+
+  public void setIpsaaclubStudents(int ipsaaclubStudents) {
+    this.ipsaaclubStudents = ipsaaclubStudents;
+  }
 
   public int getCorporateStudents()
   {

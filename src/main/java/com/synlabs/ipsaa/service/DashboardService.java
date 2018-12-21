@@ -786,6 +786,7 @@ public class DashboardService extends BaseService {
 		StatsResponse response = new StatsResponse();
 		List<Center> centers = getCenters(request);
 		int studentCount = countStudents(centers);
+		int ipsaaclubstudent=ipsaaclubStudents(centers);
 		int corporateStudentCount = countStudents(centers, true);
 
 		for (String dashboard : dashboards) {
@@ -798,6 +799,7 @@ public class DashboardService extends BaseService {
 				response.setStudents(studentCount);
 				response.setCorporateStudents(corporateStudentCount);
 
+				response.setIpsaaclubStudents(ipsaaclubstudent);
 				// 2. present today
 				int presentStudent = countPresentStudents(centers);
 				response.setStudentPresent(presentStudent);
@@ -848,6 +850,16 @@ public class DashboardService extends BaseService {
 			}
 		}
 		return response;
+	}
+
+	private int ipsaaclubStudents(List<Center> centers) {
+		JPAQuery<Student> query = new JPAQuery<>(entityManager);
+		QStudent student = QStudent.student;
+		query.select(student).from(student)
+				.where(student.active.isTrue())
+				.where(student.program.id.eq(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
+				.where(student.center.in(centers));
+		return (int) query.fetchCount();
 	}
 
 	public List<DashStudentResponse> allStudentList(DashboardRequest request) {
