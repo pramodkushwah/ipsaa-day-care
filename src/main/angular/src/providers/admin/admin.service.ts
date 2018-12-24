@@ -533,27 +533,27 @@ export class AdminService {
   // center
 
   getZones() {
-    return this.api.get('/api/zone/');
+    return this.api.get('api/zone/');
   }
 
 
   getStatesByZone(zoneId) {
-    return this.api.get('/api/state/zone/' + zoneId + '/');
+    return this.api.get('api/state/zone/' + zoneId + '/');
   }
   getCitiesByStateByZone(stateId) {
-    return this.api.get('/api/city/state/' + stateId + '/');
+    return this.api.get('api/city/state/' + stateId + '/');
   }
 
   getHolidaysList(currentYearMonth) {
-    return this.api.post('/api/holiday/', currentYearMonth);
+    return this.api.post('api/holiday/', currentYearMonth);
   }
 
   AddNewHolliday(holliday_Details) {
-    return this.api.post('/api/holiday/save', holliday_Details);
+    return this.api.post('api/holiday/save', holliday_Details);
   }
 
   deleteHoliday(holidayId) {
-    return this.api.delete('/api/holiday/' + holidayId);
+    return this.api.delete('api/holiday/' + holidayId);
 
   }
 
@@ -563,9 +563,9 @@ export class AdminService {
 
   getInquiry(centerId?) {
     if (centerId) {
-      return this.api.get('/api/inquiry/?centerId=' + centerId);
+      return this.api.get('api/inquiry/?centerId=' + centerId);
     } else {
-      return this.api.get('/api/inquiry/');
+      return this.api.get('api/inquiry/');
     }
   }
 
