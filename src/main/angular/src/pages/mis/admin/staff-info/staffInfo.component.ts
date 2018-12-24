@@ -163,7 +163,7 @@ export class StaffInfoComponent implements OnInit {
       reportingManagerName: [null, Validators.required],
       name: [''],
       firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      lastName: [''],
       mobile: ['', [Validators.required]],
       secondaryNumbers: [''],
       email: ['', [ Validators.email]],
