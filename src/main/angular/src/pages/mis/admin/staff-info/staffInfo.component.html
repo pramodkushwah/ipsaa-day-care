@@ -62,7 +62,7 @@
             </div>
             <div class="col-md-4">
               <div class="form-group">
-                <label class="control-label">Last Name : <sup>*</sup></label>
+                <label class="control-label">Last Name : </label>
                 <input class="form-control" value="" [readonly]="!editable" formControlName="lastName" >
                 <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="text-danger position-absolute">
                   <div *ngIf="lastName.errors.required">Required</div>
@@ -179,6 +179,16 @@
                 </div>
               </div>
             </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="control-label">Secondary Number :</label>
+                  <input class="form-control" value="" formControlName="secondaryNumbers" [readonly]="!editable" type="number" name="mobile">
+                  <div *ngIf="mobile.invalid && (mobile.dirty || mobile.touched)" class="text-danger position-absolute">
+                    <div *ngIf="mobile.errors.required">Required</div>
+                    <div *ngIf="mobile.errors.maxlength">Should be of 10 digit</div>
+                  </div>
+                </div>
+              </div>
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Reporting Manager : <sup>*</sup></label>
