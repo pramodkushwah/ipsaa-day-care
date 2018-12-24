@@ -237,15 +237,8 @@ export class GenerateFeeSlipComponent implements OnInit {
     Object.keys(this.studentIds).forEach(id => {
       if (this.studentIds[id]) {
         this.ids.push(id);
-
-
-
         this.studentDetails.forEach(element => {
-
-
-
-          if (element.id === Number(id)  && !element.generateActive) {
-
+          if (element.id === Number(id) && !element.generateActive) {
             this.unlockIds.push(id);
           }
         });
@@ -256,11 +249,11 @@ export class GenerateFeeSlipComponent implements OnInit {
 
   selectAll(isChecked: boolean) {
     if (isChecked) {
-      this.studentDetails.forEach(student => {
+      this.allItems.forEach(student => {
         this.studentIds[student.id] = true;
       });
     } else {
-      this.studentDetails.forEach(student => {
+      this.allItems.forEach(student => {
         this.studentIds[student.id] = false;
       });
       this.selectAllStudent = false;
@@ -303,10 +296,10 @@ export class GenerateFeeSlipComponent implements OnInit {
     if (value === 'SpecificDate') {
       this.regenerateSlip = true;
 
-      this.adminService.regenerateStudentsFeeSlips( {
-         'id': this.selectedStudentDetails.id ,
-         'spaceifyRegenrationDate' : this.regenrateSpecificDate
-         }, 'regenerate')
+      this.adminService.regenerateStudentsFeeSlips({
+        'id': this.selectedStudentDetails.id,
+        'spaceifyRegenrationDate': this.regenrateSpecificDate
+      }, 'regenerate')
         .subscribe((res: any) => {
           this.regenerateSlip = false;
           $('#SpecificDate').modal('hide');
@@ -325,10 +318,10 @@ export class GenerateFeeSlipComponent implements OnInit {
     this.downloadingSlips = true;
 
     this.adminService.downloadFeeSlips(this.ids)
-    .subscribe((res) => {
-      const blob = new Blob([res.body], {
-      });
-      FileSaver.saveAs(blob, res.headers.get('fileName'));
+      .subscribe((res) => {
+        const blob = new Blob([res.body], {
+        });
+        FileSaver.saveAs(blob, res.headers.get('fileName'));
 
         this.downloadingSlips = false;
         this.alertService.successAlert('');
@@ -380,16 +373,12 @@ export class GenerateFeeSlipComponent implements OnInit {
       .subscribe((res: any) => {
         this.eMailForm.reset();
         this.alertService.successAlert('');
-this.showSidePanel(false, null);
-   });
+        this.showSidePanel(false, null);
+      });
   }
 
   dropped(event) {
     console.log(event);
     this.eMailForm.controls['body'].patchValue(event.emailcontent || '');
   }
-
-
-
-
 }

@@ -127,19 +127,28 @@
         </h4>
       </div>
       <div class="card-body">
-          <div class="form-group">
-              <label class="control-label" for="cc">CC</label>
-              <input class="form-control" name="ccemail"  required  
-               pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" id="cc" type="email" [(ngModel)]="ccEmail" #cc="ngModel">
-              <button class="btn btn-rose btn-xm " (click)="addCcEmail()" [disabled]="!cc.valid" > ADD<i  class="material-icons" >add</i>
-                </button>
-            </div>
-            <div class="form-group">
-                  <button class="btn btn-info btn-sm btn-round" *ngFor="let email of emailList ,let i = index">
-                      {{email}}<i (click)="removeCcEmail(i)"  class="material-icons" >close</i>
-                    </button>
-            </div>
-    
+        <div class="dropdown">
+          <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Selected Staff ({{selectedStaffs.length}})
+          </a>
+        
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" *ngFor="let staff of selectedStaffs;">{{staff.name}}</a>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="cc">CC</label>
+          <input class="form-control" name="ccemail" required pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+            id="cc" type="email" [(ngModel)]="ccEmail" #cc="ngModel">
+          <button class="btn btn-rose btn-xm " (click)="addCcEmail()" [disabled]="!cc.valid"> ADD<i class="material-icons">add</i>
+          </button>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-info btn-sm btn-round" *ngFor="let email of emailList ,let i = index">
+            {{email}}<i (click)="removeCcEmail(i)" class="material-icons">close</i>
+          </button>
+        </div>
+
         <div class="form-group">
           <label class="control-label">Subject*</label>
           <input class="form-control" [(ngModel)]="emailsubject">

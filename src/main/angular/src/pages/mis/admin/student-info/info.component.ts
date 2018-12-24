@@ -18,6 +18,7 @@ declare let $: any;
 })
 export class StudentInfoComponent implements OnInit {
   student: any = {};
+  resetButton: boolean;
   editable: boolean;
   studentForm: FormGroup;
   private programs: any[];
@@ -142,7 +143,7 @@ export class StudentInfoComponent implements OnInit {
       designation: [''],
       residentialAddress: this.getAddressField(),
       officeAddress: this.getAddressField(),
-      account: [''],
+      account: [],
       emergencyContact: [''],
       fullName: [''],
       id: [''],
@@ -252,10 +253,10 @@ export class StudentInfoComponent implements OnInit {
             );
             feeControlForm.patchValue({
               discountAnnualCharges: 0,
-               discountAdmissionCharges: 0,
-               discountBaseFee: 0,
-               discountSecurityDeposit: 0
-              });
+              discountAdmissionCharges: 0,
+              discountBaseFee: 0,
+              discountSecurityDeposit: 0
+            });
             const sprogram = this.programs.find(program => program.id === programId);
             this.groups = (sprogram) ? sprogram.groups : [];
             this.calculateFinalFee(feeControlForm.value);
@@ -327,13 +328,13 @@ export class StudentInfoComponent implements OnInit {
     this.studentForm.controls.fee.get('finalAdmissionCharges').valueChanges
       .subscribe((val) => { this.updateDiscount(); });
 
-      this.studentForm.controls.fee.get('finalSecurityDeposit').valueChanges
+    this.studentForm.controls.fee.get('finalSecurityDeposit').valueChanges
       .subscribe((val) => { this.updateDiscount(); });
 
     this.studentForm.controls.fee.get('finalBaseFee').valueChanges
       .subscribe((val) => { this.updateDiscount(); });
 
-      this.studentForm.controls.fee.get('transportFee').valueChanges
+    this.studentForm.controls.fee.get('transportFee').valueChanges
       .subscribe((val) => { this.updateDiscount(); });
 
   }
@@ -514,4 +515,15 @@ export class StudentInfoComponent implements OnInit {
       this.disableGenerate = false;
     });
   }
+  resetPassword(id) {
+    this.resetButton = true;
+    this.adminService.resetParentAccount(id)
+      .subscribe((res: any) => {
+        this.resetButton = false;
+        this.alertService.successAlert('Password Reset Successfuly');
+      });
+
+  }
+
+
 }

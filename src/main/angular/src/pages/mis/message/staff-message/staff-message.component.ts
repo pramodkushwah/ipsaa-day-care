@@ -57,6 +57,7 @@ export class StaffMessageComponent implements OnInit {
   emailData: any;
   ccEmail: string ;
   emailList: any = [];
+  selectedStaffs: any = [];
 
   constructor(
     private adminService: AdminService,
@@ -127,6 +128,7 @@ this.allItems = this.staffs;
       });
     }
     this.setPage(1);
+    this.selectAll(false);
   }
   searchStaff(event: any) {
     this.searchKey = event;
@@ -234,6 +236,15 @@ formData.append('cc', element);
   }
 
   showEmailPanel() {
+    this.selectedStaffs = [];
+    this.ids.forEach((id: number) => {
+      const staff: any = this.allItems.find(s => {
+        return s.id == id;
+      });
+      if (staff) {
+        this.selectedStaffs.push(staff);
+      }
+    });
     this.adminService.viewPanel.next(true);
     this.smsCard = false;
     this.emailCard = true;
@@ -245,7 +256,7 @@ formData.append('cc', element);
       if ( this.staffIds[id] ) {
         this.ids.push(id);
       }
-    });
+     });
     if (!this.ids.length) {
       this.hideViewPanel();
     }
