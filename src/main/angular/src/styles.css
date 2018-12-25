@@ -22,44 +22,39 @@ text-transform: capitalize;
 .form-check, label {
   font-size: 13px;
 }
-/* .swal-footer {
-    background-color: rgb(245, 248, 250);
-    margin-top: 32px;
-    border-top: 1px solid #E9EEF1;
-    overflow: hidden;
-  } */
-/* 
-.wrapper .main-panel{
-    float: none;
-    width: 100%;
-    max-width: 1000px;
-    margin: auto;
-}
-
-.wrapper .main-panel .main-content{
-    float: none;
-    width: 100%;
-    max-width: 1000px;
-    margin: 80px 0 0 0;
-    background: #fafafa;
-    height: auto;
-    
-    box-shadow: 0 0 10px 2px #999;
-}
-
-.wrapper nav.navbar .container-fluid a.navbar-brand {
-    padding-top: 0;
-}
-.main-panel nav.navbar {
-    position: fixed;
-    top: 0;
-    left: 0 !important;
-    right: 0 !important;
-    background: white !important;
-    box-shadow: 0 0 10px 3px #999;
-    padding: 10px 50px;
-}  */
 
 .nav .nav-item a[aria-expanded=true] .caret, .nav .nav-item a[data-toggle=collapse][aria-expanded=true] .caret {
     transform: rotate(180deg);
 }
+select.form-control {
+    border: solid 1px #ddd;
+    background: white;
+    padding: 0 0 0 10px;
+    font-weight: lighter;
+    background-image: inherit !important;
+    -webkit-appearance: menulist-button !important;
+  }
+
+
+  .card-footer a.link {
+    color: #212121 !important;
+    display: inline-block;
+    width: 100%;
+    font-size: 14px;
+  }
+  .card-footer a.link:hover{
+    color: #fb8c00 !important;
+  }
+  
+  a{
+    color: #212121 !important;
+  }
+  a:hover{
+    color: #fb8c00 !important;
+  }
+  .card-title a.link{
+    color: #212121 !important;
+  }
+  
+
+  

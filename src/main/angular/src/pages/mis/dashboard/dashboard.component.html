@@ -35,42 +35,93 @@
     <div class="card card-stats">
       <div class="card-header card-header-warning card-header-icon">
         <div class="card-icon">
-          <i class="material-icons">content_copy</i>
+            <!-- <i class="fa fa-question-circle-o" aria-hidden="true"></i> -->
+            <img alt="inquiries" src="/assets/img/inquiries.png">
         </div>
         <p class="card-category">Inquiries</p>
         <h3 class="card-title">{{statsResult.monthInquiries}}
         </h3>
+
+        
       </div>
-      <div class="card-footer">
-        <div class="stats">
-          <a  (click)="getFolloups() ; scroll(target)"  id="goDown" class="link"> Open: {{statsResult.openFollowups}} | Today : {{statsResult.todayFollowups}} | Due :
-            {{statsResult.previousFollowups}}</a>
+      <div class="card-body">
+        <div class="row">
+        <!-- <div class="col-md-10 text-left">
+            <div class="card-body-content">
+          <p class="card-category staff_cost m-0 p-0">Open: {{statsResult.openFollowups}} | Today : {{statsResult.todayFollowups}} | Due :</p>
+          <p class="card-category staff_cost m-0 p-0">&nbsp;</p>
+        </div>
+        </div> -->
+        <div class="col-md-12">
+            <div class="form-group m-0 p-0">
+          <a data-toggle="collapse" href="#collapseExample2" class="show_details">
+            <i class="material-icons">keyboard_arrow_down</i>
+          </a>
+          </div>
         </div>
       </div>
+      </div>
+      <div class="collapse" id="collapseExample2">
+      <div class="card-footer">
+        <div class="stats">
+            <p class="card-category staff_cost m-0 p-0">Open: {{statsResult.openFollowups}} | Today : {{statsResult.todayFollowups}} | Due :</p>
+        </div>
+
+        <div class="list_details">
+              <a (click)="getFolloups() ; scroll(target)" class="link"  id="goDown" >
+                  Followup Reports
+              </a>
+        </div>
+      </div>
+    </div>
     </div>
   </div>
   <div class="col-md-4 col-sm-4" [hidden]="isAccessible('center')">
     <div class="card card-stats">
       <div class="card-header card-header-warning card-header-icon">
         <div class="card-icon">
-          <i class="material-icons">content_copy</i>
+            <!-- <i class="fa fa-book" aria-hidden="true"></i> -->
+            <img alt="centers" src="/assets/img/centers.png">
         </div>
         <p class="card-category">Centers</p>
         <h3 class="card-title">{{statsResult.centers}}
         </h3>
       </div>
+      <div class="card-body">
+          <div class="row">
+              <!-- <div class="col-md-10 text-left">
+                  <div class="card-body-content">
+                    <p class="card-category staff_cost m-0 p-0">Capacity:{{statsResult.capacity}}</p>
+                    <p class="card-category staff_cost m-0 p-0">Utilization:{{statsResult.utilisation}} %</p>
+                </div>
+              </div> -->
+              <div class="col-md-12">
+                  <div class="form-group m-0 p-0">
+                <a data-toggle="collapse" href="#collapseExample3" class="show_details">
+                  <i class="material-icons">keyboard_arrow_down</i>
+                </a>
+                </div>
+              </div>
+            </div>
+      </div>
+      <div class="collapse" id="collapseExample3" >
       <div class="card-footer" >
         <div class="stats">
-          <a (click)="getCenterList()  ; scroll(target)" class="link">Capacity:{{statsResult.capacity}} | Utilization:{{statsResult.utilisation}} %</a>
+            <p class="card-category staff_cost m-0 p-0">Capacity:{{statsResult.capacity}}</p>
+            <p class="card-category staff_cost m-0 p-0">Utilization:{{statsResult.utilisation}} %</p>
         </div>
+
+        <div class="list_details"><a (click)="getCenterList()  ; scroll(target)" class="link" > View Centers </a></div>
       </div>
+    </div>
     </div>
   </div>
   <div class="col-md-4 col-sm-4" [hidden]="isAccessible('staff')">
     <div class="card card-stats">
       <div class="card-header card-header-warning card-header-icon">
         <div class="card-icon">
-          <i class="material-icons">content_copy</i>
+            <!-- <i class="fa fa-users" aria-hidden="true"></i> -->
+            <img alt="staff" src="/assets/img/staff.png">
         </div>
         <p class="card-category">Staff</p>
         
@@ -82,8 +133,28 @@
               </a>
             </h3>
         
-        <p class="card-category">Staff Cost : {{statsResult.staffCost}}</p>
+        
       </div>
+      <div class="card-body">
+        
+
+        <div class="row">
+            <div class="col-md-10 text-left">
+              <div class="card-body-content">
+              <p class="card-category staff_cost m-0 p-0">Staff Cost : {{statsResult.staffCost}}</p>
+            </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group m-0 p-0">
+              <a data-toggle="collapse" href="#collapseExample4" class="show_details">
+                <i class="material-icons">keyboard_arrow_down</i>
+              </a>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="collapse" id="collapseExample4">
       <div class="card-footer" >
         <div (click)=" scroll(target) ">
           <p><a (click)="getFilterStaff('newjoinings')" class="link">New Joinee: {{statsResult.newJoinings}} </a></p>
@@ -99,17 +170,33 @@
         </div>
       </div>
     </div>
+
+    </div>
   </div>
   <div class="col-md-4 col-sm-4" [hidden]="isAccessible('student')">
     <div class="card card-stats">
       <div class="card-header card-header-warning card-header-icon">
         <div class="card-icon">
-          <i class="material-icons">content_copy</i>
+            <!-- <i class="fa fa-graduation-cap" aria-hidden="true"></i> -->
+            <img alt="students" src="/assets/img/students.png">
         </div>
         <p class="card-category">Students</p>
         <h3 class="card-title">{{statsResult.students}}
         </h3>
       </div>
+
+      <div class="card-body">
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="form-group m-0 p-0">
+                <a data-toggle="collapse" href="#collapseExample5" class="show_details">
+                  <i class="material-icons">keyboard_arrow_down</i>
+                </a>
+                </div>
+              </div>
+            </div>
+      </div>
+      <div class="collapse" id="collapseExample5">
       <div class="card-footer">
         <!-- <div class="stats"> -->
           <p><a class="link" (click)="getFilteredStudents('Present') ; scroll(target)" > Present : {{statsResult.studentPresent}}</a></p> 
@@ -119,42 +206,81 @@
         <!-- </div> -->
       </div>
     </div>
+    </div>
   </div>
   <div class="col-md-4 col-sm-4" [hidden]="isAccessible('fee')">
     <div class="card card-stats">
       <div class="card-header card-header-warning card-header-icon">
         <div class="card-icon">
-          <i class="material-icons">content_copy</i>
+            <!-- <i class="fa fa-cubes" aria-hidden="true"></i> -->
+            <img alt="ipsaa_fee" src="/assets/img/ipsaa_club.png">
         </div>
         <p class="card-category">Ipsaa Club Fee</p>
         <h3 class="card-title" *ngIf="monthlyFee.expectedFee">{{monthlyFee.expectedFee.ipssaFee ? monthlyFee.expectedFee.ipssaFee : 0}}
         </h3>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-              <label class="control-label" style="float: left;margin: 0px">Month:</label>
-              <select class="form-control" [(ngModel)]="monthly.month" (ngModelChange)="getMonthlyFee()">
-                <option *ngFor="let month of months;let i = index;" value="{{ i+1 }}">{{month}}</option>
-              </select>
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label class="control-label" style="float: left;margin: 0px">Year:</label>
-              <select class="form-control" [(ngModel)]="monthly.year" (ngModelChange)="getMonthlyFee()">
-                <option *ngFor="let year of years;" value="{{year}}">{{year}}</option>
-              </select>
-              <span class="material-input"></span>
-            </div>
-          </div>
-        </div>
+
       </div>
+      <div class="card-body">
+
+          <div class="row">
+              <!-- <div class="col-md-5">
+                <div class="form-group m-0 p-0">
+                  <label class="control-label" style="float: left;margin: 0px">Month:</label>
+                  <select class="form-control" [(ngModel)]="monthly.month" (ngModelChange)="getMonthlyFee()">
+                    <option *ngFor="let month of months;let i = index;" value="{{ i+1 }}">{{month}}</option>
+                  </select>
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <div class="form-group m-0 p-0">
+                  <label class="control-label" style="float: left;margin: 0px">Year:</label>
+                  <select class="form-control" [(ngModel)]="monthly.year" (ngModelChange)="getMonthlyFee()">
+                    <option *ngFor="let year of years;" value="{{year}}">{{year}}</option>
+                  </select>
+                  <span class="material-input"></span>
+                </div>
+              </div> -->
+              <div class="col-md-12">
+                  <div class="form-group m-0 p-0">
+                      <a data-toggle="collapse" href="#collapseExample6" class="show_details">
+                          <i class="material-icons">keyboard_arrow_down</i>
+                        </a>
+                  </div>
+                </div>
+            </div>
+
+
+      </div>
+
+      <div class="collapse" id="collapseExample6">
       <div class="card-footer">
+
+        <div class="row month_filter">
+            <div class="col-md-6">
+                <div class="form-group m-0 p-0">
+                  <label class="control-label" style="float: left;margin: 0px">Month:</label>
+                  <select class="form-control" [(ngModel)]="monthly.month" (ngModelChange)="getMonthlyFee()">
+                    <option *ngFor="let month of months;let i = index;" value="{{ i+1 }}">{{month}}</option>
+                  </select>
+                  <span class="material-input"></span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group m-0 p-0">
+                  <label class="control-label" style="float: left;margin: 0px">Year:</label>
+                  <select class="form-control" [(ngModel)]="monthly.year" (ngModelChange)="getMonthlyFee()">
+                    <option *ngFor="let year of years;" value="{{year}}">{{year}}</option>
+                  </select>
+                  <span class="material-input"></span>
+                </div>
+              </div>
+        </div>
         <div class="stats">
           <a class="link" *ngIf="monthlyFee.collectedFee" (click)="getStudentFee(monthly.feeDuration)">Collected : {{monthlyFee.collectedFee.ipssaFee?monthlyFee.collectedFee.ipssaFee:0}}</a>
         </div>
       </div>
+    </div>
     </div>
   </div>
 
@@ -163,50 +289,87 @@
     <div class="card card-stats">
       <div class="card-header card-header-warning card-header-icon">
         <div class="card-icon">
-          <i class="material-icons">content_copy</i>
+            <!-- <i class="fa fa-graduation-cap" aria-hidden="true"></i> -->
+            <img alt="fee" src="/assets/img/fee.png">
         </div>
         <p class="card-category">Quarterly Fee</p>
         <h3 class="card-title" *ngIf="quarterlyFee.expectedFee">{{quarterlyFee.expectedFee.quarterly ?
           quarterlyFee.expectedFee.quarterly : 0}}
         </h3>
         <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-              <label class="control-label" style="float: left;margin: 0px">Quarter:</label>
-              <select class="form-control" [(ngModel)]="quarterly.quarter" (ngModelChange)="getQuarterlyFee()">
-                <option *ngFor="let quarter of quarters;let i = index" value="{{i + 1}}">{{quarter}}</option>
-              </select>
-              <span class="material-input"></span>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="form-group">
-              <label class="control-label" style="float: left;margin: 0px">Year:</label>
-              <select class="form-control" [(ngModel)]="quarterly.year" (ngModelChange)="getQuarterlyFee()">
-                <option *ngFor="let year of years;" value="{{year}}">{{year}}</option>
-              </select>
-              <span class="material-input"></span>
-            </div>
-          </div>
+
         </div>
       </div>
+
+      <div class="card-body">
+          <div class="row">
+              <!-- <div class="col-md-5">
+                  <div class="form-group m-0 p-0">
+                    <label class="control-label" style="float: left;margin: 0px">Quarter:</label>
+                    <select class="form-control" [(ngModel)]="quarterly.quarter" (ngModelChange)="getQuarterlyFee()">
+                      <option *ngFor="let quarter of quarters;let i = index" value="{{i + 1}}">{{quarter}}</option>
+                    </select>
+                    <span class="material-input"></span>
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <div class="form-group m-0 p-0">
+                    <label class="control-label" style="float: left;margin: 0px">Year:</label>
+                    <select class="form-control" [(ngModel)]="quarterly.year" (ngModelChange)="getQuarterlyFee()">
+                      <option *ngFor="let year of years;" value="{{year}}">{{year}}</option>
+                    </select>
+                    <span class="material-input"></span>
+                  </div>
+                </div> -->
+              <div class="col-md-12">
+                  <div class="form-group p-0 m-0">
+                <a data-toggle="collapse" href="#collapseExample7" class="show_details">
+                  <i class="material-icons">keyboard_arrow_down</i>
+                </a>
+                </div>
+              </div>
+            </div>
+    </div>
+
+      <div class="collapse" id="collapseExample7">
       <div class="card-footer">
+          <div class="row month_filter">
+              <div class="col-md-6">
+                  <div class="form-group m-0 p-0">
+                    <label class="control-label" style="float: left;margin: 0px">Quarter:</label>
+                    <select class="form-control" [(ngModel)]="quarterly.quarter" (ngModelChange)="getQuarterlyFee()">
+                      <option *ngFor="let quarter of quarters;let i = index" value="{{i + 1}}">{{quarter}}</option>
+                    </select>
+                    <span class="material-input"></span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group m-0 p-0">
+                    <label class="control-label" style="float: left;margin: 0px">Year:</label>
+                    <select class="form-control" [(ngModel)]="quarterly.year" (ngModelChange)="getQuarterlyFee()">
+                      <option *ngFor="let year of years;" value="{{year}}">{{year}}</option>
+                    </select>
+                    <span class="material-input"></span>
+                  </div>
+                </div>
+          </div> 
         <div class="stats">
           <a class="link" *ngIf="quarterlyFee.collectedFee" (click)="getStudentFee(quarterly.feeDuration) ; scroll(target)">Collected :
             {{quarterlyFee.collectedFee.quarterly?quarterlyFee.collectedFee.quarterly:0}}</a>
         </div>
       </div>
     </div>
+    </div>
   </div>
 </div>
 <div class="row " *ngIf="tableTitle" >
   <div [class]="viewPanelForFee?'transition col-lg-8':'transition col-lg-12'" style="padding: 0px">
     <div class="row" style="margin: 0px">
-      <div [class]="viewPanel?'transition col-lg-6':'transition col-lg-12'">
+      <div [class]="viewPanel?'transition col-lg-5':'transition col-lg-12'">
         <app-table [title]="tableTitle" [dataArray]="tableData" [tableColumn]="tableColumn" [tableFor]="tableFor"
           (showDetail)="showDetail($event)"></app-table>
       </div>
-      <div class="col-lg-6" *ngIf="viewPanel">
+      <div class="col-lg-7" *ngIf="viewPanel">
         <app-student-info [id]="selectedStudent.id" [update]="update" *ngIf="tableFor === 'student'"
           (getPayReceiptHistory)="getHistory($event)"></app-student-info>
         <app-center-info [center]="selectedCenterFromList" [update]="update" *ngIf="tableFor === 'center'"></app-center-info>
@@ -219,5 +382,5 @@
   </div>
 </div>
 <div #target >
-
+  
 </div>

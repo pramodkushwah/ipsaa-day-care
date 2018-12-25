@@ -94,6 +94,9 @@
                     position: relative;
                     float: left;
                     display: inherit;
+                    .logo-mini{
+                        display: block !important;
+                    }
 
                     i{
                         font-size: 10px !important;
@@ -211,12 +214,12 @@
     .nav li .dropdown-menu a{
           margin: 10px 15px 0;
           border-radius: $border-radius-base;
-          color: $white-color;
+          color: $white-color !important;
           padding-left: 10px;
           padding-right: 10px;
           text-transform: capitalize;
           font-size: $font-paragraph - 1;
-          padding: 10px 15px;
+          padding: 10px;
     }
 
 
@@ -408,6 +411,21 @@
     .main-panel{
         height: 100%;
         max-height: 100%;
+
+
+        .logo{
+            a.logo-normal{
+                display: block;
+            }
+            a.logo-mini{
+                display: none;
+
+                img{
+                    width: 40px !important;
+                }
+            }
+            
+        }
     }
 }
 
@@ -456,9 +474,17 @@
 
             .logo{
                 a.logo-normal{
-                    opacity: 0;
+                    display: none;
                     @include transform-translate-x(-25px);
                 }
+                a.logo-mini{
+                    display: block;
+
+                    img{
+                        width: 40px !important;
+                    }
+                }
+                
             }
 
             .sidebar-wrapper{
@@ -470,6 +496,7 @@
                     opacity: 0;
                 }
             }
+            
         }
 
         .sidebar:hover{
@@ -477,8 +504,16 @@
 
             .logo{
                 a.logo-normal{
-                    opacity: 1;
+                    display: block;
                     @include transform-translate-x(0px);
+                }
+                a.logo-mini{
+                    display: none;
+                    @include transform-translate-x(0px);
+
+                    img{
+                        width: 40px !important;
+                    }
                 }
             }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { DashboardService } from '../../../providers/dashboard/dashboard.service';
 import { Student } from '../../../modal/student';
 import { AdminService } from '../../../providers/admin/admin.service';
@@ -10,7 +10,7 @@ declare const $: any;
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit{
   zones: any;
   cities: any;
   centers: any;
@@ -76,6 +76,30 @@ export class DashboardComponent implements OnInit {
     }
     this.subscribeViewPanelChange();
   }
+
+  // ngAfterViewInit(){
+  //   if ($('#back-to-top').length) {
+  //     var scrollTrigger = 100, // px
+  //         backToTop = function () {
+  //             var scrollTop = $(window).scrollTop();
+  //             if (scrollTop > scrollTrigger) {
+  //                 $('#back-to-top').addClass('show');
+  //             } else {
+  //                 $('#back-to-top').removeClass('show');
+  //             }
+  //         };
+  //     backToTop();
+  //     $(window).on('scroll', function () {
+  //         backToTop();
+  //     });
+  //     $('#back-to-top').on('click', function (e) {
+  //         e.preventDefault();
+  //         $('html,body').animate({
+  //             scrollTop: 0
+  //         }, 700);
+  //     });
+  // }
+  // }
 
   loadDashboard() {
     this.getDashboardTabs();
@@ -209,9 +233,14 @@ export class DashboardComponent implements OnInit {
         'employer',
         'ctc'
       ];
+
       this.scroll(this.terget);
     }, (err) => {
       this.alertService.loading.next(false);
+      
+    //   this.scroll(this.terget);
+    // }, (err) => {
+    //   this.alertService.loading.next(false);
 
     });
   }
@@ -443,7 +472,7 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  scroll(el) {
+  scroll(el: any) {
     this.terget = el;
     el.scrollIntoView();
 
@@ -541,7 +570,9 @@ export class DashboardComponent implements OnInit {
       }, (err) => {
         this.alertService.errorAlert(err);
       });
+
   }
+  
 }
 
 

@@ -12,7 +12,9 @@
     width: calc(100% - 30px);
     background-color: rgba(180, 180, 180, 0.3);
   }
-
+  .username{
+    color: white !important;
+  }
   .photo {
     width: 34px;
     height: 34px;
@@ -35,7 +37,33 @@
     text-align: center;
     display: block;
     white-space: nowrap;
+
+    span{
+      float: left;
+      margin-top: 5px;
+    }
+    .caret{
+      margin-left: 30px;
+      margin-top: 8px;
+    }
   }
+  .user-info{
+    .collapse{
+      ul{
+        li{
+          display: inline-block;
+            a{
+              display: inline-block;
+              width: 100%;
+              height: auto;
+            }
+        }
+      }
+    }
+  }
+
+
+
 }
 
 
@@ -46,4 +74,7 @@
       opacity: 0.8 !important;
     }
   }
+
+
+
 }

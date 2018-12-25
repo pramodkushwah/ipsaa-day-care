@@ -26,4 +26,16 @@ sidebar .user a {
   padding: .5rem 15px;
   white-space: nowrap;
 }
-
+/* 
+.sidebar-mini .logo-normal {
+  display: none !important;
+}
+.sidebar:hover a.simple-text.logo-mini {
+  display: none !important;
+}
+.sidebar:hover a.simple-text.logo-normal {
+  display: block !important;
+} */
+/* .logo a.simple-text.logo-mini img {
+  width: 40px;
+} */
