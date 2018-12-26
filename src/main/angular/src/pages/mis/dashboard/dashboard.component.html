@@ -2,8 +2,8 @@
   <div class="col-lg-4">
     <div class="form-group">
       <label for="sel1">Zone:</label>
-      <select class="form-control" id="sel1" [(ngModel)]="selectedZone" (ngModelChange)="getCenterByZone($event.name);getStatsResult()">
-        <option value="{name: 'all'}">All</option>
+      <select class="form-control" id="sel1" [(ngModel)]="selectedZone" (ngModelChange)="selectedCity='all';selectedCenter='all';getStatsResult();">
+        <option value="all">All</option>
         <option *ngFor="let zone of zones;" [ngValue]="zone">{{zone.name}}</option>
       </select>
       <span class="material-input"></span>
@@ -12,7 +12,7 @@
   <div class="col-lg-4">
     <div class="form-group">
       <label for="sel2">City:</label>
-      <select class="form-control" id="sel2" [(ngModel)]="selectedCity" (ngModelChange)="getStatsResult()">
+      <select class="form-control" id="sel2" [(ngModel)]="selectedCity" (ngModelChange)="selectedCenter='all';getStatsResult();">
         <option value="all">All</option>
         <option *ngFor="let city of cities;" [ngValue]="city">{{city.name}}</option>
       </select>
@@ -61,7 +61,7 @@
       </div>
       <div class="card-footer" >
         <div class="stats">
-          <a (click)="getCenterList()  ; scroll(target)" class="link">Capacity:{{statsResult.capacity}} | Utilization:{{statsResult.utilisation}} %</a>
+          <a (click)="getCenterList()  ; scroll(target)" class="link">Capacity:{{statsResult.capacity}} | Utilization:{{statsResult.utilisation | number : '1.2-2'}} %</a>
         </div>
       </div>
     </div>
@@ -133,7 +133,7 @@
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label" style="float: left;margin: 0px">Month:</label>
-              <select class="form-control" [(ngModel)]="monthly.month" (ngModelChange)="getMonthlyFee()">
+              <select class="form-control" [(ngModel)]="monthly.month" (ngModelChange)="getMonthlyFee(monthly)">
                 <option *ngFor="let month of months;let i = index;" value="{{ i+1 }}">{{month}}</option>
               </select>
               <span class="material-input"></span>
@@ -142,7 +142,7 @@
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label" style="float: left;margin: 0px">Year:</label>
-              <select class="form-control" [(ngModel)]="monthly.year" (ngModelChange)="getMonthlyFee()">
+              <select class="form-control" [(ngModel)]="monthly.year" (ngModelChange)="getMonthlyFee(monthly)">
                 <option *ngFor="let year of years;" value="{{year}}">{{year}}</option>
               </select>
               <span class="material-input"></span>
@@ -173,7 +173,7 @@
           <div class="col-md-6">
             <div class="form-group">
               <label class="control-label" style="float: left;margin: 0px">Quarter:</label>
-              <select class="form-control" [(ngModel)]="quarterly.quarter" (ngModelChange)="getQuarterlyFee()">
+              <select class="form-control" [(ngModel)]="quarterly.quarter" (ngModelChange)="getQuarterlyFee(quarterly)">
                 <option *ngFor="let quarter of quarters;let i = index" value="{{i + 1}}">{{quarter}}</option>
               </select>
               <span class="material-input"></span>
@@ -182,7 +182,7 @@
           <div class="col-md-4">
             <div class="form-group">
               <label class="control-label" style="float: left;margin: 0px">Year:</label>
-              <select class="form-control" [(ngModel)]="quarterly.year" (ngModelChange)="getQuarterlyFee()">
+              <select class="form-control" [(ngModel)]="quarterly.year" (ngModelChange)="getQuarterlyFee(quarterly)">
                 <option *ngFor="let year of years;" value="{{year}}">{{year}}</option>
               </select>
               <span class="material-input"></span>

@@ -126,9 +126,9 @@ export class DashboardComponent implements OnInit {
     if (this.selectedCenter !== 'all') {
       object.center = this.selectedCenter.code;
     }
-    this.getMonthlyFee(object);
-    this.getQuarterlyFee(object);
     this.dashboardService.getStats(object).subscribe((response: any) => {
+      this.getMonthlyFee(object);
+      this.getQuarterlyFee(object);
       this.statsResult = response;
     });
   }
@@ -140,6 +140,15 @@ export class DashboardComponent implements OnInit {
   }
 
   getMonthlyFee(object: any) {
+    if (this.selectedZone !== 'all') {
+      object.zone = this.selectedZone.name;
+    }
+    if (this.selectedCity !== 'all') {
+      object.city = this.selectedCity.name;
+    }
+    if (this.selectedCenter !== 'all') {
+      object.center = this.selectedCenter.code;
+    }
     this.adminService.viewPanel.next(false);
     if (object) {
       object = Object.assign(object, this.monthly);
@@ -152,6 +161,15 @@ export class DashboardComponent implements OnInit {
   }
 
   getQuarterlyFee(object: any) {
+    if (this.selectedZone !== 'all') {
+      object.zone = this.selectedZone.name;
+    }
+    if (this.selectedCity !== 'all') {
+      object.city = this.selectedCity.name;
+    }
+    if (this.selectedCenter !== 'all') {
+      object.center = this.selectedCenter.code;
+    }
     this.adminService.viewPanel.next(false);
     if (object) {
       object = Object.assign(object, this.quarterly);
@@ -347,7 +365,7 @@ export class DashboardComponent implements OnInit {
     this.tableColumn = [];
     object.feeDuration = feeDuration;
     if (this.selectedZone !== 'all') {
-      object.center = this.selectedZone.name;
+      object.zone = this.selectedZone.name;
     }
     if (this.selectedCity !== 'all') {
       object.city = this.selectedCity.name;
@@ -402,7 +420,6 @@ export class DashboardComponent implements OnInit {
   }
 
   showDetail(data: any) {
-    console.log(data);
     switch (this.tableFor) {
       case 'student':
         this.selectedStudent = data;
@@ -416,7 +433,6 @@ export class DashboardComponent implements OnInit {
         break;
       case 'staff':
         this.selectedStaff = data;
-        console.log(this.selectedStaff);
         this.update = true;
         this.adminService.viewPanel.next(true);
         break;
