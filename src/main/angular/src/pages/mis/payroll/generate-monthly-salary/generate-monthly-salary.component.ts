@@ -38,6 +38,7 @@ export class GenerateMonthlySalaryComponent implements OnInit {
   regenerating: boolean;
   genrateSalaryLoader: boolean;
   salaryListCopy1: any;
+  showTable = false;
   constructor(private adminService: AdminService,
     private alertService: AlertService,
     private fb: FormBuilder) { }
@@ -127,8 +128,8 @@ export class GenerateMonthlySalaryComponent implements OnInit {
       this.salaryList = response;
       this.salaryListCopy = response;
       this.salaryListCopy1 = response;
-
       this.genrateSalaryLoader = false;
+      this.showTable = true;
     });
   }
 
