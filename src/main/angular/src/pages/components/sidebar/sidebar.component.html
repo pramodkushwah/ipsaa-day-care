@@ -1,10 +1,6 @@
-<!-- <div class="logo">
-  <a ui-sref="app.home" class="simple-text">
-    <img src="/assets/img/ipsaa-logo-sm.png">
-  </a>
-</div> -->
 <div class="logo">
-  <a href="#" class="simple-text logo-mini">
+  <a href="http://www.creative-tim.com" class="simple-text logo-mini">
+    <img src="/assets/img/favicon.png">
   </a>
   <a href="#" class="simple-text logo-normal">
     <img src="/assets/img/ipsaa-logo-sm.png">
@@ -17,15 +13,15 @@
       <img *ngIf="profileImageURI" [hidden]="!loaded" (load)="loaded = true" [src]="profileImageURI" />
     </div>
     <div class="user-info">
+
       <a data-toggle="collapse" href="#collapseExample" class="username">
-        <span>{{self.name}}</span><br>
-        <!-- <span>{{self.email}}</span> -->
+        <span>{{self.name}}</span>
+        <b _ngcontent-c2="" class="caret"></b>
       </a>
       <div class="collapse" id="collapseExample">
-        <ul class="nav">
+        <ul class="nav pk">
           <li class="nav-item">
             <a class="nav-link" href="#">
-              <span class="sidebar-normal"> {{self.name}} </span><br>
               <span class="sidebar-normal"> {{self.email}} </span>
             </a>
           </li>
@@ -48,7 +44,7 @@
   </div>
   <ul class="nav" id="accordion">
     <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
-      <a class="nav-link" [routerLink]="[menuItem.path]" data-toggle="collapse" >
+      <a class="nav-link" [routerLink]="[menuItem.path]" data-toggle="collapse">
         <i class="material-icons">{{menuItem.icon}}</i>
         <p>{{menuItem.title}}</p>
       </a>
@@ -64,7 +60,7 @@
         <ul class="nav">
           <li class="nav-item" routerLinkActive="active" *ngFor="let submenu of item.submenu">
             <a class="nav-link" [routerLink]="[submenu.state]">
-              <span class="sidebar-mini">&nbsp;</span>
+              <!-- <span class="sidebar-mini"><i class="fa fa-circle" aria-hidden="true"></i></span> -->
               <span class="sidebar-normal">{{submenu.label}}</span>
             </a>
           </li>

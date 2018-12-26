@@ -32,7 +32,10 @@ export class StudentApprovalsComponent implements OnInit {
 getCenterStudentApprovelList() {
   this.adminService.getAllCenterStudentsApprovalCount()
   .subscribe((res: any) => {
-this.centers = res;
+    this.centers = res;
+    this.centers.sort((ai: any , bi: any) => {
+      return bi.count - ai.count;
+    });
   }, (err) => {
     this.alertService.errorAlert(err);
   });
