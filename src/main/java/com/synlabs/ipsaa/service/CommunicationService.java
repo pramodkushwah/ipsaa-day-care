@@ -483,9 +483,9 @@ public class CommunicationService
         email.getTo().addAll(Arrays.asList(notificationEmailService.notificationEmailList(EmailNotificationType.FeePaymentLink)));
         email.getBcc().add(parent.getEmail());
         String body = request.getBody().replace("{paymentlink}",
-                                                paymentBaseUrl + "/" +
+                 "<h4>"+paymentBaseUrl + "/" +
                                                     BaseService.mask(slip.getId()) + "/" +
-                                                    BaseService.mask(parent.getId()));
+                                                    BaseService.mask(parent.getId())+ "</h4>");
         email.setBody(body);
         email.setHtml(true);
         emails.add(email);
@@ -509,9 +509,9 @@ public class CommunicationService
         email.getTo().addAll(Arrays.asList(notificationEmailService.notificationEmailList(EmailNotificationType.FeePaymentLink)));
         email.getBcc().add(parent.getEmail());
         String body = request.getBody().replace("{paymentlink}",
-                ipsaaclubpaymentBaseUrl + "/" +
+                "<h4>"+ipsaaclubpaymentBaseUrl + "/" +
                         BaseService.mask(slip.getId()) + "/" +
-                        BaseService.mask(parent.getId()));
+                        BaseService.mask(parent.getId())+"\"</h4>\"");
         email.setBody(body);
         email.setHtml(true);
         emails.add(email);
