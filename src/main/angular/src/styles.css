@@ -55,6 +55,43 @@ select.form-control {
   .card-title a.link{
     color: #212121 !important;
   }
+  .text-primary{
+    color: #212121 !important;
+  }
   
 
   
+  
+.card-header .card-icon {
+  width: 70px;
+  text-align: center;
+  height: 60px;
+  padding: 0 !important;
+  position: relative;
+  float: left !important;
+}
+
+
+.card-header .card-icon img {
+  max-width: 35px;
+  height: auto;
+  max-height: 35px;
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -moz-transform:  translateY(-50%); 
+}
+
+.card-header .card-icon i.material-icons {
+  top: 50%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  margin: auto;
+}

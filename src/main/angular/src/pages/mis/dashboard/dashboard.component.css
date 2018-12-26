@@ -85,28 +85,3 @@
   margin-bottom: 10px;
 }
 
-
-.card-header .card-icon {
-  width: 110px;
-  text-align: center;
-  height: 90px;
-  padding: 0 !important;
-  position: relative;
-  float: left !important;
-}
-
-
-.card-icon img {
-  max-width: 48px;
-  height: auto;
-  max-height: 48px;
-  margin: auto;
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
-  -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  -moz-transform:  translateY(-50%); 
-}
