@@ -12,6 +12,7 @@ export class TableComponent implements AfterViewInit {
   private tableData: any[] = [];
   private tableTitle: string;
   tableForObject: string;
+  icon: string;
 
   @Input()
   set dataArray(data: any[]) {
@@ -31,6 +32,11 @@ export class TableComponent implements AfterViewInit {
   @Input()
   set title(text: string) {
     this.tableTitle = text;
+  }
+
+  @Input()
+  set iconUrl(text: string) {
+    this.icon = text;
   }
 
   @Input()

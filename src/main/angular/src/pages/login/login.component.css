@@ -20,3 +20,9 @@
 .err-msg-smaller {
   font-size: smaller;
 }
+.login_main {
+  width: 100%;
+  max-width: 425px;
+  padding: 0 15px;
+}
+
