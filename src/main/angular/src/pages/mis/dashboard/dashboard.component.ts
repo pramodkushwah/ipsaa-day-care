@@ -10,7 +10,8 @@ declare const $: any;
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit{
+export class DashboardComponent implements OnInit, AfterViewInit{
+  // export class DashboardComponent implements OnInit{
   zones: any;
   cities: any;
   centers: any;
@@ -66,6 +67,7 @@ export class DashboardComponent implements OnInit{
 
   terget: any;
   SALARY_READ: boolean;
+  tableIcon: string;
   constructor(private dashboardService: DashboardService, private alertService: AlertService, private adminService: AdminService) { }
 
   ngOnInit() {
@@ -77,9 +79,31 @@ export class DashboardComponent implements OnInit{
     this.subscribeViewPanelChange();
   }
 
-  // ngAfterViewInit(){
-    
-  // }
+  ngAfterViewInit(){
+   
+    if ($('#back-to-top').length) {
+      var scrollTrigger = 100, 
+          backToTop = function () {
+              var scrollTop = $(window).scrollTop();
+              if (scrollTop > scrollTrigger) {
+                  $('#back-to-top').addClass('show');
+              } else {
+                  $('#back-to-top').removeClass('show');
+              }
+          };
+      backToTop();
+      $(window).on('scroll', function () {
+          backToTop();
+      });
+      $('#back-to-top').on('click', function (e) {
+          e.preventDefault();
+          $('html,body').animate({
+              scrollTop: 0
+          }, 700);
+      });
+  }
+
+  }
 
   loadDashboard() {
     this.getDashboardTabs();
@@ -170,6 +194,7 @@ export class DashboardComponent implements OnInit{
   getStudents(object) {
     this.adminService.viewPanel.next(false);
     this.tableTitle = 'Students';
+    this.tableIcon = '/assets/img/students.png';
     this.tableData = [];
     this.dashboardService.getStudents(object).subscribe((response: any) => {
       this.tableData = response;
@@ -199,6 +224,7 @@ export class DashboardComponent implements OnInit{
 
     this.tableFor = 'staff';
     this.tableTitle = 'Staff';
+    this.tableIcon = '/assets/img/staff.png';
     this.tableData = [];
     this.dashboardService.getStaff(object).subscribe((response: any) => {
       this.tableData = response;
@@ -230,6 +256,7 @@ export class DashboardComponent implements OnInit{
     this.alertService.loading.next(true);
     this.tableFor = 'center';
     this.tableTitle = 'Centers';
+    this.tableIcon = '/assets/img/centers.png';
     this.tableData = [];
     this.dashboardService.getCenterList().subscribe((response: any) => {
       this.tableData = response;
@@ -262,6 +289,7 @@ export class DashboardComponent implements OnInit{
     this.adminService.viewPanel.next(false);
     this.tableFor = 'student';
     this.tableTitle = filterType + ' Students';
+    this.tableIcon = '/assets/img/students.png';
     this.tableData = [];
     this.tableColumn = [];
     this.dashboardService.getStudents(object).subscribe((response: any) => {
@@ -349,8 +377,10 @@ export class DashboardComponent implements OnInit{
     const object: any = {};
     if (feeDuration === 'Monthly') {
       this.tableTitle = 'Ipsaa Club Students Fee';
+      this.tableIcon = '/assets/img/ipsaa_club.png';
     } else {
       this.tableTitle = 'Student Fee';
+      this.tableIcon = '/assets/img/fee.png';
     }
     this.tableData = [];
     this.tableColumn = [];
@@ -390,6 +420,7 @@ export class DashboardComponent implements OnInit{
     this.alertService.loading.next(true);
     this.tableFor = '';
     this.tableTitle = 'Followup Report';
+    this.tableIcon = '/assets/img/inquiries.png';
     this.tableData = [];
     this.tableColumn = [];
     this.dashboardService.getFollowups().subscribe((response: any) => {
@@ -466,6 +497,7 @@ export class DashboardComponent implements OnInit{
 
     this.tableFor = 'staff';
     this.tableTitle = 'Staff';
+    this.tableIcon = '/assets/img/staff.png';
     this.tableData = [];
 
 
@@ -486,6 +518,7 @@ export class DashboardComponent implements OnInit{
             'active'
           ];
           this.tableTitle = 'Staff New Joinee';
+          this.tableIcon = '/assets/img/staff.png';
             break;
           case 'newleavings':
             this.tableColumn = [
@@ -498,6 +531,7 @@ export class DashboardComponent implements OnInit{
               'active'
             ];
             this.tableTitle = 'Staff New Joinee';
+            this.tableIcon = '/assets/img/staff.png';
             break;
           case 'recruitmentHeadCountList':
             this.tableColumn = [
@@ -510,6 +544,7 @@ export class DashboardComponent implements OnInit{
               'active'
             ];
             this.tableTitle = 'Staff Active Headcount';
+            this.tableIcon = '/assets/img/staff.png';
             break;
           case 'presentStaff':
             this.tableColumn = [
@@ -522,6 +557,7 @@ export class DashboardComponent implements OnInit{
               'checkOut'
             ];
             this.tableTitle = 'Present Staff';
+            this.tableIcon = '/assets/img/staff.png';
             break;
           case 'absentStaff':
             this.tableColumn = [
@@ -532,6 +568,7 @@ export class DashboardComponent implements OnInit{
               'employer'
             ];
             this.tableTitle = 'Absent Staff';
+            this.tableIcon = '/assets/img/staff.png';
             break;
           case 'onLeaveStaff':
             this.tableColumn = [
@@ -542,6 +579,7 @@ export class DashboardComponent implements OnInit{
               'employer'
             ];
             this.tableTitle = 'Staff On Leave';
+            this.tableIcon = '/assets/img/staff.png';
             break;
 
         }
@@ -551,6 +589,9 @@ export class DashboardComponent implements OnInit{
         this.alertService.errorAlert(err);
       });
 
+
+
+      
   }
   
 }
