@@ -26,11 +26,12 @@
     </div>
   </div>
   <div class="col-lg-3">
-    <button class="btn btn-primary" (click)="getPayslips()" [disabled]="genrateSalaryLoader">
+    <button class="btn btn-primary"  (click)="getPayslips()" [disabled]="genrateSalaryLoader">
       <i class="fa fa-spinner fa-fw fa-pulse" *ngIf="genrateSalaryLoader"></i>
       Generate
     </button>
   </div>
+  <!-- data-toggle="modal" data-target="#errorPageResponse" -->
 </div>
 <div class="row" *ngIf="showTable">
   <div [class]="viewPanel?'col-lg-6':'col-lg-12'">
@@ -185,3 +186,48 @@
     </div>
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal fade" id="errorPageResponse" tabindex="-1" role="dialog" aria-labelledby="errorPageResponse" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content card card-stats">
+      <div class="card-header card-header-danger card-header-icon">
+        <h3 style="text-align: center" class="card-title">Reply</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="reply"> description</label>
+          <textarea class="form-control " style="border: 1px solid #d9d4d4;" rows="5" name="reply"
+            id="reply"></textarea>
+        </div>
+      </div>
+      <div style="text-align: center">
+        <button type="button" class="btn btn-default" >Okay</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+

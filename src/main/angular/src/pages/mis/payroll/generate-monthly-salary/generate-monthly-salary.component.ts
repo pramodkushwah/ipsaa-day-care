@@ -130,6 +130,9 @@ export class GenerateMonthlySalaryComponent implements OnInit {
       this.salaryListCopy1 = response;
       this.genrateSalaryLoader = false;
       this.showTable = true;
+    }, (err) => {
+      this.genrateSalaryLoader = false;
+
     });
   }
 
@@ -194,6 +197,8 @@ export class GenerateMonthlySalaryComponent implements OnInit {
       this.adminService.uploadEmployeeSalaryFile(formData).subscribe(response => {
         console.log(response);
         this.getEmployers();
+
+      }, (err) => {
 
       });
     }
