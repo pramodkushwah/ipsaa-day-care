@@ -12,6 +12,7 @@ export class StudentAttendanceComponent implements OnInit {
   private attendanceCopy: any;
   bharatRamSchool = false;
   programs = [];
+  selectedCenter: any;
   selectedCenterId: any;
   selectedProgram: any;
   centers: any = [];

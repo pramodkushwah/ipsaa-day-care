@@ -27,6 +27,8 @@ export class IpsaaClubReportComponent implements OnInit {
   selectedMonth = null;
   selectedYear = null;
   centers: any = [];
+  disableDownloadFee: boolean;
+  disableDownloadCoolection: boolean;
 
   constructor(public adminService: AdminService, public alertService: AlertService) { }
 
@@ -48,7 +50,7 @@ export class IpsaaClubReportComponent implements OnInit {
       console.log(request);
       this.disableDownloadFee = true;
 
-      this.adminService.ipsaaClubFeeReportDownload(request).subscribe(response =>{
+      this.adminService.ipsaaClubFeeReportDownload(request).subscribe(response => {
         this.disableDownloadFee = false;
         const blob = new Blob([response.body], {
         });

@@ -10,7 +10,7 @@ declare let $: any;
   styleUrls: ['./student-approvals.component.css']
 })
 export class StudentApprovalsComponent implements OnInit {
-
+  comment: string;
   selectedCenterId: any;
   centers: Array<any>;
   studentAprrovelList: Array<any> = [];
