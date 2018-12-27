@@ -26,20 +26,21 @@
     </div>
   </div>
   <div class="col-lg-3">
-    <button class="btn btn-primary" (click)="getPayslips()" [disabled]="genrateSalaryLoader">
+    <button class="btn btn-primary"  (click)="getPayslips()" [disabled]="genrateSalaryLoader">
       <i class="fa fa-spinner fa-fw fa-pulse" *ngIf="genrateSalaryLoader"></i>
       Generate
     </button>
   </div>
+  <!-- data-toggle="modal" data-target="#errorPageResponse" -->
 </div>
-<div class="row" *ngIf="salaryListCopy.length">
+<div class="row" *ngIf="showTable">
   <div [class]="viewPanel?'col-lg-6':'col-lg-12'">
     <div class="card">
       <div class="card-header card-header-warning card-header-icon">
         <div class="card-icon">
           <i class="material-icons">content_copy</i>
         </div>
-        <h3 class="card-title">
+        <h3 class="card-title" *ngIf="salaryListCopy.length">
           Employee Monthly Salary
           <input type="file" style="float: right" class="btn btn-info" (click)="getExcelFile($event)" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"> 
           <div class=" no-border">
@@ -69,7 +70,7 @@
               <th>Net Salary</th>
               <th>Pay Slip</th>
             </thead>
-            <tbody>
+            <tbody *ngIf="salaryListCopy.length">
               <tr *ngFor="let salary of salaryList;">
                 <td>{{salary.empName}}</td>
                 <td>{{salary.ctc}}</td>
@@ -83,6 +84,11 @@
                 </td>
               </tr>
             </tbody>
+            <tfoot *ngIf="!salaryListCopy.length" style="border: 1px groove #e8e8e8;">
+              <tr>
+                <td colspan="7" class="text-center">No Content</td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
@@ -180,3 +186,48 @@
     </div>
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal fade" id="errorPageResponse" tabindex="-1" role="dialog" aria-labelledby="errorPageResponse" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content card card-stats">
+      <div class="card-header card-header-danger card-header-icon">
+        <h3 style="text-align: center" class="card-title">Reply</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="reply"> description</label>
+          <textarea class="form-control " style="border: 1px solid #d9d4d4;" rows="5" name="reply"
+            id="reply"></textarea>
+        </div>
+      </div>
+      <div style="text-align: center">
+        <button type="button" class="btn btn-default" >Okay</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+

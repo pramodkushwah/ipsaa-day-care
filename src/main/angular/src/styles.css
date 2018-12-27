@@ -120,3 +120,7 @@ select.form-control {
 #back-to-top.show {
   opacity: 1;
 }
+
+.user .user-info a[aria-expanded=true] .caret, .user .user-info a[data-toggle=collapse][aria-expanded=true] .caret {
+  transform: rotate(180deg);
+}

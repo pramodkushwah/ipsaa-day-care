@@ -1,7 +1,32 @@
 .table-responsive {
     height: inherit;
   }
-
-  /* ul {
-    background-color: orange;
-  } */
+.card table.table{
+  table-layout: fixed;
+}
+  .card table tbody tr {
+    cursor: pointer;
+}
+.card table tbody tr:hover{
+  background: #fafafa;
+}
+tr.show td table tbody tr {
+  cursor: initial !important;
+ 
+}
+tr.show td table tbody tr:hover{
+  background: none !important;
+}
+tr.show td {
+  padding: 0 !important;
+}
+tr.show td table.table{
+  table-layout: fixed;
+  margin-bottom: 0;
+}
+tr.show td table.table tbody tr th, tr.show td table.table tbody tr td {
+  padding: 10px 10px !important;
+}
+.card table.table tbody tr td {
+  border: solid 1px #ddd !important;
+}

@@ -5,7 +5,7 @@
     </button>
     <div class="card-profile">
       <div class="staff-img mx-auto rounded-circle">
-        <img class="img-fluid" *ngIf="staff && !staff.staffImageData" src="/assets/img/default-avatar.png" />
+        <img class="img-fluid" *ngIf="staff && !staff.staffImageData" id="new-Staff-profile" src="/assets/img/default-avatar.png" />
         <img class="img-fluid" id="staff-profile" *ngIf="staff && staff.staffImageData" [hidden]="!loaded" (load)="loaded = true"
           [src]="'data:image/PNG;base64,' + staff.staffImageData">
       </div>
@@ -20,8 +20,7 @@
       <a href="" onclick="document.getElementById('upload').click(); return false" *ngIf="editable">
         {{ newStaff ? 'Add Profile Pic' : 'Update Profile Pic' }}
       </a>
-      <input type="file" id="upload" name="upload" style="display: none" (change)="uploadProfilePic(staff, $event.target.files['0'])"
-      />
+      <input type="file" id="upload" name="upload" style="display: none" (change)="uploadProfilePic(staff, $event.target.files['0'])" />
     </div>
     <div class="card-content">
       <ul class="nav nav-pills nav-tabs" role="tablist">
@@ -48,13 +47,13 @@
             <div class="col-md-4" [hidden]="newStaff || editable">
               <div class="form-group">
                 <label class="control-label">Employee ID : </label>
-                <input class="form-control" [readonly]="!editable" value="" formControlName="eid" >
+                <input class="form-control" [readonly]="!editable" value="" formControlName="eid">
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">First Name : <sup>*</sup></label>
-                <input class="form-control" value="" [readonly]="!editable" formControlName="firstName" >
+                <input class="form-control" value="" [readonly]="!editable" formControlName="firstName">
                 <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="text-danger position-absolute">
                   <div *ngIf="firstName.errors.required">Required</div>
                 </div>
@@ -123,7 +122,7 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">DOJ : <sup>*</sup></label>
-                <input type="date" class="form-control" value="" formControlName="doj"  [readonly]="!editable"placeholder="YYYY-MM-DD">
+                <input type="date" class="form-control" formControlName="doj" [readonly]="!editable" placeholder="YYYY-MM-DD">
                 <div *ngIf="doj.invalid && (doj.dirty || doj.touched)" class="text-danger position-absolute">
                   <div *ngIf="doj.errors.required">Required</div>
                 </div>
@@ -132,21 +131,21 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">DOL : </label>
-                <input type="date" class="form-control" value="" [readonly]="!editable" formControlName="dol" placeholder="YYYY-MM-DD">
+                <input type="date" class="form-control" [readonly]="!editable" formControlName="dol" placeholder="YYYY-MM-DD">
               </div>
             </div>
+
+          </div>
+          <div class="row">
             <div class="col-md-4">
-              <div class="form-group">
+              <div class="form-group" formGroupName="profile">
                 <label class="control-label">DOB : <sup>*</sup></label>
-                <input type="date" class="form-control" value="" formControlName="dob" [readonly]="!editable" placeholder="YYYY-MM-DD">
+                <input type="date" class="form-control" formControlName="dob" [readonly]="!editable" placeholder="YYYY-MM-DD">
                 <div *ngIf="dob.invalid && (dob.dirty || dob.touched)" class="text-danger position-absolute">
                   <div *ngIf="dob.errors.required">Required</div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="row">
-
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Employee Type : <sup>*</sup></label>
@@ -160,6 +159,7 @@
                 </div>
               </div>
             </div>
+
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Designation : <sup>*</sup></label>
@@ -169,6 +169,10 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="row">
+
+
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Mobile : <sup>*</sup></label>
@@ -189,16 +193,32 @@
                   </div>
                 </div>
               </div>
+            
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Reporting Manager : <sup>*</sup></label>
-                <select class="form-control" formControlName="reportingManagerName" [class.readonly]="!editable" (change)="setReportingManagerId()">
-                  <option value="null"  (click)="setReportingManagerId('')" hidden>Select</option>
+
+                <input type="text" class="form-control dropdown-toggle" required [class.readonly]="!editable"
+                  [ngModelOptions]="{standalone: true}" [(ngModel)]="searchEmpName" data-toggle="dropdown" placeholder="Select"
+                  (keyup)="searchManager($event)">
+                <ul class="dropdown-menu dropdown-menu-right" role="menu" style="right: unset;max-height: 50vh;overflow-y: auto; background-color: white;">
+                  <li *ngFor="let reportingManager of allReportingManagers">
+                    <a (click)="setReportingManagerId(reportingManager)">{{reportingManager.name}} -
+                      {{reportingManager.designation}}
+                    </a>
+                  </li>
+                </ul>
+
+
+                <!-- <select class="form-control" formControlName="reportingManagerName" [class.readonly]="!editable"
+                  (change)="setReportingManagerId()">
+                  <option value="null" (click)="setReportingManagerId('')" hidden>Select</option>
                   <option *ngFor="let reportingManager of allReportingManagers" [ngValue]="reportingManager.name">{{reportingManager.name}}</option>
-                </select>
-                <div *ngIf="reportingManagerName.invalid && (reportingManagerName.dirty || reportingManagerName.touched)" class="text-danger position-absolute">
+                </select> -->
+                <!-- <div *ngIf="reportingManagerName.invalid && (reportingManagerName.dirty || reportingManagerName.touched)"
+                  class="text-danger position-absolute">
                   <div *ngIf="reportingManagerName.errors.required">Required</div>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -237,7 +257,8 @@
                 <label class="control-label">Cost Center : <sup>*</sup></label>
                 <select class="form-control" formControlName="employerId" [class.readonly]="!editable">
                   <option value="null" hidden>Select</option>
-                  <option *ngFor="let costCenter of costCenters;let c = index;" [ngValue]="costCenter.id"> {{costCenter.name}}</option>
+                  <option *ngFor="let costCenter of costCenters;let c = index;" [ngValue]="costCenter.id">
+                    {{costCenter.name}}</option>
                 </select>
                 <div *ngIf="employerId.invalid && (employerId.dirty || employerId.touched)" class="text-danger position-absolute">
                   <div *ngIf="employerId.errors.required">Required</div>
@@ -453,7 +474,7 @@
 
         </div>
         <div class="tab-pane container mt-2" id="salary" *ngIf="!newStaff">
-            <app-salary-info [salary]="salary" [update]="true"></app-salary-info>
+          <app-salary-info [salary]="salary" [update]="true"></app-salary-info>
         </div>
         <div class="tab-pane container mt-2" id="payslips" *ngIf="!newStaff">
           <h3>PaySlips Detail</h3>
@@ -491,14 +512,14 @@
   <div class="card-footer">
     <div class="stats padding-left-right-30">
       <button mat-raised-button class="btn btn-primary" [disabled]="staffForm.invalid " (click)="saveStaff()" [hidden]="!newStaff && !editable">
-     
+        
         <span *ngIf=" formSave ;else save">
           <i class="fa fa-spinner fa-spin"></i> Saving
         </span>
         <ng-template #save>Save</ng-template>
       </button>
-     
-     
+
+
       <button mat-raised-button class="btn btn-default" (click)="hideViewPanel()" [hidden]="!newStaff && !editable">Cancel</button>
     </div>
   </div>

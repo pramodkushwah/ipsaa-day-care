@@ -2,6 +2,8 @@
   padding-bottom: 20px;
   margin: 20px auto 0;
   position: relative;
+  display: inline-block;
+  width: 100%;
 
   &:after {
     content: '';
@@ -49,16 +51,59 @@
   }
   .user-info{
     .collapse{
+
+      
+      .show{
+        background-color: rgba(180, 180, 180, 0.3);
+      }
       ul{
         li{
           display: inline-block;
+          width: 100%;
+         
             a{
               display: inline-block;
-              width: 100%;
-              height: auto;
+              width: -webkit-fill-available;
+              clear: both;
+              
+              
             }
         }
       }
+    }
+  
+    .collapsing {
+        position: relative;
+        height: auto;
+        overflow: visible;
+        transition: height 0.35s ease;
+
+        // .show{
+        //   background-color: rgba(180, 180, 180, 0.3);
+        // }
+        // ul{
+        //   li{
+        //     display: inline-block;
+        //     width: 100%;
+        //     line-height: normal;
+        //       a{
+        //         display: inline-block;
+        //         width: -webkit-fill-available;
+        //         /* height: auto; */
+        //         padding: 10px 10px;
+        //         clear: both;
+        //         /* float: left; */
+        //         text-align: center;
+        //         line-height: normal;
+        //         span{
+        //           width: 100%;
+        //           text-align: center;
+        //           line-height: normal;
+        //         }
+        //       }
+        //   }
+        // }
+
     }
   }
 
