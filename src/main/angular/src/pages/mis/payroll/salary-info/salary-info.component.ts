@@ -147,12 +147,14 @@ export class SalaryInfoComponent implements OnInit {
 
   calculateBasic(salary) {
     const ctc = salary.ctc ? salary.ctc : 0;
-    return (ctc * 40) / 100;
+    const basic = (ctc * 40) / 100;
+    this.salaryForm.controls.basic.patchValue(basic);
+    this.onChange();
   }
 
   calculateHRA(salary) {
     const basic = salary.basic ? salary.basic : 0;
-    return (basic * 40) / 100;
+    return ((basic * 40) / 100);
   }
   // conveyance fixed 1600
   // bonus fixed 584
