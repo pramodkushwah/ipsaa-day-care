@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { DashboardService } from '../../../providers/dashboard/dashboard.service';
 import { Student } from '../../../modal/student';
 import { AdminService } from '../../../providers/admin/admin.service';
@@ -10,7 +10,7 @@ declare const $: any;
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
   zones: any;
   cities: any;
   centers: any;
@@ -66,6 +66,7 @@ export class DashboardComponent implements OnInit {
 
   terget: any;
   SALARY_READ: boolean;
+  tableIcon: string;
   constructor(private dashboardService: DashboardService, private alertService: AlertService, private adminService: AdminService) { }
 
   ngOnInit() {
@@ -75,6 +76,32 @@ export class DashboardComponent implements OnInit {
       this.loadDashboard();
     }
     this.subscribeViewPanelChange();
+  }
+
+  ngAfterViewInit() {
+
+    if ($('#back-to-top').length) {
+      const scrollTrigger = 100,
+        backToTop = function () {
+          const scrollTop = $(window).scrollTop();
+          if (scrollTop > scrollTrigger) {
+            $('#back-to-top').addClass('show');
+          } else {
+            $('#back-to-top').removeClass('show');
+          }
+        };
+      backToTop();
+      $(window).on('scroll', function () {
+        backToTop();
+      });
+      $('#back-to-top').on('click', function (e) {
+        e.preventDefault();
+        $('html,body').animate({
+          scrollTop: 0
+        }, 700);
+      });
+    }
+
   }
 
   loadDashboard() {
@@ -126,9 +153,9 @@ export class DashboardComponent implements OnInit {
     if (this.selectedCenter !== 'all') {
       object.center = this.selectedCenter.code;
     }
-    this.getMonthlyFee(object);
-    this.getQuarterlyFee(object);
     this.dashboardService.getStats(object).subscribe((response: any) => {
+      this.getMonthlyFee(object);
+      this.getQuarterlyFee(object);
       this.statsResult = response;
     });
   }
@@ -140,6 +167,15 @@ export class DashboardComponent implements OnInit {
   }
 
   getMonthlyFee(object: any) {
+    if (this.selectedZone !== 'all') {
+      object.zone = this.selectedZone.name;
+    }
+    if (this.selectedCity !== 'all') {
+      object.city = this.selectedCity.name;
+    }
+    if (this.selectedCenter !== 'all') {
+      object.center = this.selectedCenter.code;
+    }
     this.adminService.viewPanel.next(false);
     if (object) {
       object = Object.assign(object, this.monthly);
@@ -152,6 +188,15 @@ export class DashboardComponent implements OnInit {
   }
 
   getQuarterlyFee(object: any) {
+    if (this.selectedZone !== 'all') {
+      object.zone = this.selectedZone.name;
+    }
+    if (this.selectedCity !== 'all') {
+      object.city = this.selectedCity.name;
+    }
+    if (this.selectedCenter !== 'all') {
+      object.center = this.selectedCenter.code;
+    }
     this.adminService.viewPanel.next(false);
     if (object) {
       object = Object.assign(object, this.quarterly);
@@ -166,6 +211,7 @@ export class DashboardComponent implements OnInit {
   getStudents(object) {
     this.adminService.viewPanel.next(false);
     this.tableTitle = 'Students';
+    this.tableIcon = '/assets/img/students.png';
     this.tableData = [];
     this.dashboardService.getStudents(object).subscribe((response: any) => {
       this.tableData = response;
@@ -195,6 +241,7 @@ export class DashboardComponent implements OnInit {
 
     this.tableFor = 'staff';
     this.tableTitle = 'Staff';
+    this.tableIcon = '/assets/img/staff.png';
     this.tableData = [];
     this.dashboardService.getStaff(object).subscribe((response: any) => {
       this.tableData = response;
@@ -209,9 +256,13 @@ export class DashboardComponent implements OnInit {
         'employer',
         'ctc'
       ];
+
       this.scroll(this.terget);
     }, (err) => {
       this.alertService.loading.next(false);
+      //   this.scroll(this.terget);
+      // }, (err) => {
+      //   this.alertService.loading.next(false);
 
     });
   }
@@ -221,6 +272,7 @@ export class DashboardComponent implements OnInit {
     this.alertService.loading.next(true);
     this.tableFor = 'center';
     this.tableTitle = 'Centers';
+    this.tableIcon = '/assets/img/centers.png';
     this.tableData = [];
     this.dashboardService.getCenterList().subscribe((response: any) => {
       this.tableData = response;
@@ -253,6 +305,7 @@ export class DashboardComponent implements OnInit {
     this.adminService.viewPanel.next(false);
     this.tableFor = 'student';
     this.tableTitle = filterType + ' Students';
+    this.tableIcon = '/assets/img/students.png';
     this.tableData = [];
     this.tableColumn = [];
     this.dashboardService.getStudents(object).subscribe((response: any) => {
@@ -340,14 +393,16 @@ export class DashboardComponent implements OnInit {
     const object: any = {};
     if (feeDuration === 'Monthly') {
       this.tableTitle = 'Ipsaa Club Students Fee';
+      this.tableIcon = '/assets/img/ipsaa_club.png';
     } else {
       this.tableTitle = 'Student Fee';
+      this.tableIcon = '/assets/img/fee.png';
     }
     this.tableData = [];
     this.tableColumn = [];
     object.feeDuration = feeDuration;
     if (this.selectedZone !== 'all') {
-      object.center = this.selectedZone.name;
+      object.zone = this.selectedZone.name;
     }
     if (this.selectedCity !== 'all') {
       object.city = this.selectedCity.name;
@@ -381,6 +436,7 @@ export class DashboardComponent implements OnInit {
     this.alertService.loading.next(true);
     this.tableFor = '';
     this.tableTitle = 'Followup Report';
+    this.tableIcon = '/assets/img/inquiries.png';
     this.tableData = [];
     this.tableColumn = [];
     this.dashboardService.getFollowups().subscribe((response: any) => {
@@ -402,7 +458,6 @@ export class DashboardComponent implements OnInit {
   }
 
   showDetail(data: any) {
-    console.log(data);
     switch (this.tableFor) {
       case 'student':
         this.selectedStudent = data;
@@ -416,7 +471,6 @@ export class DashboardComponent implements OnInit {
         break;
       case 'staff':
         this.selectedStaff = data;
-        console.log(this.selectedStaff);
         this.update = true;
         this.adminService.viewPanel.next(true);
         break;
@@ -443,7 +497,7 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  scroll(el) {
+  scroll(el: any) {
     this.terget = el;
     el.scrollIntoView();
 
@@ -457,6 +511,7 @@ export class DashboardComponent implements OnInit {
 
     this.tableFor = 'staff';
     this.tableTitle = 'Staff';
+    this.tableIcon = '/assets/img/staff.png';
     this.tableData = [];
 
 
@@ -477,6 +532,7 @@ export class DashboardComponent implements OnInit {
               'active'
             ];
             this.tableTitle = 'Staff New Joinee';
+            this.tableIcon = '/assets/img/staff.png';
             break;
           case 'newleavings':
             this.tableColumn = [
@@ -489,6 +545,7 @@ export class DashboardComponent implements OnInit {
               'active'
             ];
             this.tableTitle = 'Staff New Joinee';
+            this.tableIcon = '/assets/img/staff.png';
             break;
           case 'recruitmentHeadCountList':
             this.tableColumn = [
@@ -501,6 +558,7 @@ export class DashboardComponent implements OnInit {
               'active'
             ];
             this.tableTitle = 'Staff Active Headcount';
+            this.tableIcon = '/assets/img/staff.png';
             break;
           case 'presentStaff':
             this.tableColumn = [
@@ -513,6 +571,7 @@ export class DashboardComponent implements OnInit {
               'checkOut'
             ];
             this.tableTitle = 'Present Staff';
+            this.tableIcon = '/assets/img/staff.png';
             break;
           case 'absentStaff':
             this.tableColumn = [
@@ -523,6 +582,7 @@ export class DashboardComponent implements OnInit {
               'employer'
             ];
             this.tableTitle = 'Absent Staff';
+            this.tableIcon = '/assets/img/staff.png';
             break;
           case 'onLeaveStaff':
             this.tableColumn = [
@@ -533,6 +593,7 @@ export class DashboardComponent implements OnInit {
               'employer'
             ];
             this.tableTitle = 'Staff On Leave';
+            this.tableIcon = '/assets/img/staff.png';
             break;
 
         }

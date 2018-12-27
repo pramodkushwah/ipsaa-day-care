@@ -24,42 +24,42 @@
     <form id="studentFeeForm" [formGroup]="studentFeeForm">
       <div class="card-content">
         <div class="row">
-          <div class="col-lg-6 col-md-3 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label"> Annual Charge</label>
               <input class="form-control" type="number"  readonly name="annualFee"  formControlName="annualFee">
               <span class="material-input"></span>
             </div>
           </div>
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label"> Discount(%)</label>
               <input class="form-control" type="number"  readonly name="discountAnnualCharges"  formControlName="discountAnnualCharges">
               <span class="material-input"></span>
             </div>
           </div>
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label">Final Annual Charges</label>
               <input class="form-control" type="number"  [readonly]="!editable"  name="finalAnnualFee" (keyup)="setDiscount('annualFee','discountAnnualCharges','finalAnnualFee')"  formControlName="finalAnnualFee">
               <span class="material-input"></span>
             </div>
           </div>
-          <div class="col-lg-6 col-md-4 col-sm-3">
-            <div class="form-group">
+          <div class="col-lg-4 col-md-4 col-sm-12">
+          <div class="form-group">
               <label class="control-label">Admission Charges</label>
               <input class="form-control" type="number" readonly name="admissionCharges"  formControlName="admissionCharges">
               <span class="material-input"></span>
             </div>
           </div>
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label">Discount(%)</label>
               <input class="form-control" type="number" readonly name="discountAdmissionCharges"  formControlName="discountAdmissionCharges">
               <span class="material-input"></span>
             </div>
           </div>
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label">Final Admission Charges</label>
               <input class="form-control" type="number"  [readonly]="!editable"  name="finalAdmissionCharges" (keyup)="setDiscount('admissionCharges','discountAdmissionCharges','finalAdmissionCharges')" formControlName="finalAdmissionCharges">
@@ -67,42 +67,42 @@
             </div>
           </div>
           
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label">Monthly Program Fees</label>
               <input class="form-control" type="number" readonly name="baseFee"  formControlName="baseFee">
               <span class="material-input"></span>
             </div>
           </div>
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label">Discount(%)</label>
               <input class="form-control" type="number" readonly name="discountBaseFee"  formControlName="discountBaseFee">
               <span class="material-input"></span>
             </div>
           </div>
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label">Final Monthly Fees</label>
               <input class="form-control" type="number"  [readonly]="!editable" (keyup)="setDiscount('baseFee','discountBaseFee','finalBaseFee')" formControlName="finalBaseFee"  name="finalBaseFee"  >
               <span class="material-input"></span>
             </div>
           </div>
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label">Security Deposit</label>
               <input class="form-control" type="number" readonly name="securityDeposit"  formControlName="securityDeposit">
               <span class="material-input"></span>
             </div>
           </div>
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label">Discount(%)</label>
               <input class="form-control" type="number" readonly name="discountSecurityDeposit"  formControlName="discountSecurityDeposit">
               <span class="material-input"></span>
             </div>
           </div>
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label">Final Security Deposit</label>
               <input class="form-control" type="number"  [readonly]="!editable"  name="finalSecurityDeposit" (keyup)="setDiscount('securityDeposit','discountSecurityDeposit','finalSecurityDeposit')" formControlName="finalSecurityDeposit">
@@ -110,14 +110,14 @@
             </div>
           </div>
           
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label">Monthly Transport Fees</label>
               <input class="form-control" type="number"  [readonly]="!editable"  name="transportFee"  formControlName="transportFee">
               <span class="material-input"></span>
             </div>
           </div>
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label">Annual-Fee-GST</label> &nbsp; <a data-toggle="tooltip" title="18% if applicable ">
                 <b>i</b></a>
@@ -125,7 +125,7 @@
               <span class="material-input"></span>
             </div>
           </div>
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label">Quarterly-Program-Fee-GST</label> &nbsp; <a data-toggle="tooltip" title="18% if applicable ">
                 <b>i</b></a>
@@ -134,7 +134,7 @@
             </div>
           </div>
        
-          <div class="col-lg-6 col-md-4 col-sm-3">
+          <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="form-group">
               <label class="control-label">Final Fees</label>
               <input class="form-control" type="number"  readonly name="finalFee"  formControlName="finalFee">

@@ -12,7 +12,7 @@
     {
       "label": "Ipsaa Club Fee",
       "state": "fee/ipsaaclub",
-      "p" : "STUDENTFEE_READ",
+      "p" : "STUDENTFEE_SLIP_WRITE",
       "seq" : 200
     },
     {

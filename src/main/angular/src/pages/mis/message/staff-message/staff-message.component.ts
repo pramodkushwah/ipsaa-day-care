@@ -171,6 +171,7 @@ this.allItems = this.staffs;
         this.staffIds[staff.id] = false;
       });
       this.selectAllStaff = false;
+      this.hideViewPanel();
     }
     this.selectStaffs();
   }

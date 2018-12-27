@@ -259,6 +259,15 @@
             [formGroupName]="i">
             <br>
             <div class="row">
+              <div class="col-lg-12" *ngIf="!newStudent">
+                <button mat-raised-button  class="btn" [disabled]="parent.value.account" (click)="createAccount(parent)"> 
+                  Create Account 
+                </button>
+                <button class="btn btn-primary" [disabled]="resetButton" mat-raised-button  (click)="resetPassword(parent.value.id)" class="btn btn-primary"> 
+                  <!-- <input type="checkbox" formControlName="account" hidden> -->
+                  Reset Password 
+                </button>
+              </div>
               <div class="col-lg-6">
                 <div class="form-group">
                   <label class="control-label">First Name : </label>
@@ -271,16 +280,6 @@
                   <input class="form-control" [readonly]="!editable" value=" Kharetwal" formControlName="lastName">
                 </div>
               </div>
-            </div>
-            <div class="col-lg-12" *ngIf="!newStudent">
-              <label mat-raised-button  class="btn" [ngClass]=" parent.value.account ?  btn-primary : btn-disabled"> 
-                <input type="checkbox" [disabled]="parent.value.account" formControlName="account" hidden>
-                Create Account 
-              </label>
-              <button [disabled]="resetButton" mat-raised-button  (click)="resetPassword(parent.value.id)" class="btn btn-primary"> 
-                <!-- <input type="checkbox" formControlName="account" hidden> -->
-                Reset Password 
-              </button>
             </div>
             <div class="row">
               <div class="col-md-6">
