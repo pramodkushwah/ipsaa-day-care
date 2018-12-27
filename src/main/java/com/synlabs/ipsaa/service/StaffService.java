@@ -223,8 +223,8 @@ public class StaffService extends BaseService {
 	public File getAllEmployees(StaffFilterRequest request) {
 
 		int month = request.getMonth();
-		if (month == 0)
-			month = LocalDate.now().getMonthOfYear() - 1;
+		if(month > LocalDate.now().getMonthOfYear()-1 )
+			throw new ValidationException("Salary is not generated for this month");
 
 		int year = LocalDate.now().getYear();
 
