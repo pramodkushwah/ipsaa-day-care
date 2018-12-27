@@ -128,7 +128,7 @@
     }
 
     .nav{
-        margin-top: 20px;
+        margin-top: 30px;
         display: block;
 
         .caret{
@@ -406,7 +406,32 @@
     }
 }
 
-.perfect-scrollbar-on{
+
+    .perfect-scrollbar-on{
+    .sidebar,
+    .main-panel{
+        height: 100%;
+        max-height: 100%;
+
+
+        .logo{
+            a.logo-normal{
+                display: block;
+            }
+            a.logo-mini{
+                display: none;
+
+                img{
+                    width: 40px !important;
+                }
+            }
+            
+        }
+    }
+}
+
+
+.perfect-scrollbar-off{
     .sidebar,
     .main-panel{
         height: 100%;
@@ -451,7 +476,7 @@
 
 @media (min-width: 991px) {
     .sidebar-mini{
-        .visible-on-sidebar-regular{
+        .visible-on-sidebar-regular {
             display: none !important;
         }
         .visible-on-sidebar-mini{
@@ -487,7 +512,7 @@
                 
             }
 
-            .sidebar-wrapper{
+            .sidebar-wrapper {
                 > .nav [data-toggle="collapse"] ~ div > ul > li > a .sidebar-normal,
                 .user .user-info [data-toggle="collapse"] ~ div > ul > li > a .sidebar-normal,
                 .user .user-info > a > span,
