@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormGroup, FormBuilder, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { AdminService } from '../../../../providers/admin/admin.service';
@@ -13,6 +13,7 @@ declare let $: any;
   styleUrls: ['./staffInfo.component.css']
 })
 export class StaffInfoComponent implements OnInit {
+  @Output() addStaff: EventEmitter<any> = new EventEmitter<any>();
   paySlips: any = [];
   staff: any = {};
   editable: boolean;
@@ -160,12 +161,13 @@ export class StaffInfoComponent implements OnInit {
       this.adminService
         .updateStaffProfilePic(staff.id, formData)
         .subscribe((response: any) => {
-
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = function (e: any) {
-            $('#staff-profile').attr('src', e.target.result);
-          };
+          this.getStaff(staff.id);
+          // const reader = new FileReader();
+          // reader.readAsDataURL(this.picFile);
+          // reader.onload = function (e: any) {
+          //   $('#staff-profile').attr('src', e.target.result);
+          //   staff.staffImageData = e.target.result;
+          // };
         });
     }
   }
@@ -298,33 +300,27 @@ export class StaffInfoComponent implements OnInit {
       delete this.staffForm.value['id'];
 
       this.adminService.addStaff(this.staffForm.value).subscribe(res => {
-        if (res.error) {
-          this.formSave = false;
-          this.alertService.errorAlert(res.error);
-        } else {
           this.formSave = false;
           this.staffForm.reset();
+          this.addStaff.emit(res);
           this.alertService.successAlert('New Staff Added');
           this.hideViewPanel();
-          this.uploadProfilePic(res, this.picFile);
-        }
+          if (this.picFile) {
+            this.uploadProfilePic(res, this.picFile);
+          }
+      }, error => {
+        this.formSave = false;
       });
     } else {
-      // for update staff record
       this.staffForm.controls['mode'].patchValue('Edit');
       this.adminService.updateStaff(this.staffForm.value).subscribe(res => {
-        if (res.error) {
-          this.formSave = false;
-
-          this.alertService.errorAlert(res.error);
-        } else {
-          this.formSave = false;
-
-          this.alertService.successAlert('Staff Details Updated');
-        }
+        this.formSave = false;
+        this.alertService.successAlert('Staff Details Updated');
         this.id = null;
         this.staff = {};
         this.adminService.viewPanel.next(false);
+      }, error => {
+        this.formSave = false;
       });
     }
   }

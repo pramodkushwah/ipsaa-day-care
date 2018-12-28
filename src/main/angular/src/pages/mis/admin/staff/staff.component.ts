@@ -251,6 +251,13 @@ export class AppStaffComponent implements OnInit {
     });
   }
 
+  pushStaff(staff) {
+    if (staff) {
+      this.staffList.push(staff);
+      this.setPage(1);
+    }
+  }
+
   hasPrivilege(privilege) { }
 
   subscribeViewPanelChange = () => {

@@ -88,8 +88,8 @@
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Program : </label>
-                <select class="form-control" [class.readonly]="!editable" formControlName="programId" (change)="getFee(programId)"
-                  [(ngModel)]="programId">
+                <select class="form-control" [class.readonly]="!editable" formControlName="programId" (change)="getFee(programId)" [(ngModel)]="programId">
+                  <option value=""></option>
                   <option *ngFor="let program of programs;let c = index;" [ngValue]="program.id"> {{program.name}}</option>
                 </select>
               </div>
@@ -98,6 +98,7 @@
               <div class="form-group">
                 <label class="control-label">Group : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="groupId">
+                  <option value=""></option>
                   <option *ngFor="let group of groups;let c = index;" [ngValue]="group.id"> {{group.name}}</option>
                 </select>
               </div>
@@ -108,7 +109,7 @@
               <div class="form-group">
                 <label class="control-label">Gender : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="gender">
-                  <option value="">Gender</option>
+                  <option value=""></option>
                   <option value="Male">Boy</option>
                   <option value="Female">Girl</option>
                 </select>
@@ -118,6 +119,7 @@
               <div class="form-group">
                 <label class="control-label">Blood Group : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="bloodGroup">
+                  <option value=""></option>
                   <option *ngFor="let bg of bloodGroups;">{{bg}}</option>
                 </select>
               </div>
@@ -134,6 +136,7 @@
               <div class="form-group">
                 <label class="control-label">Familty Type : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="familyType">
+                  <option value=""></option>
                   <option value="">Family Type</option>
                   <option value="Nuclear">Nuclear</option>
                   <option value="Joint">Joint</option>
@@ -213,7 +216,7 @@
             <div class="col-md-3">
               <div class="form-group ">
                 <label class="control-label">*Center</label>
-                <select class="form-control" id="sel3" [disabled]="editable" [ngModelOptions]="{standalone: true}"
+                <select class="form-control" id="sel3" [ngModelOptions]="{standalone: true}"
                   [(ngModel)]="siblingCenter" [disabled]="!sibling.hasSibling">
                   <option value="">Select</option>
                   <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
@@ -223,7 +226,7 @@
             <div class="col-md-3">
               <div class="form-group ">
                 <label class="control-label">Sibling Program</label>
-                <select class="form-control" [disabled]="editable" [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingProgram"
+                <select class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingProgram"
                   [disabled]="!sibling.hasSibling">
                   <option value="">Select</option>
                   <option *ngFor="let program of programs;" [ngValue]="program"> {{program.name}}</option>
@@ -233,7 +236,7 @@
             <div class="col-md-3">
               <div class="form-group ">
                 <label class="control-label">Sibling Group</label>
-                <select class="form-control" [disabled]="editable" [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingGroup"
+                <select class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingGroup"
                   [disabled]="!sibling.hasSibling">
                   <option value="">Select</option>
                   <option *ngFor="let group of groups;" [ngValue]="group"> {{group.name}}</option>
@@ -243,7 +246,7 @@
             <div class="col-md-3">
               <div class="form-group ">
                 <label class="control-label">Student</label>
-                <select class="form-control" [disabled]="editable" [ngModelOptions]="{standalone: true}" [(ngModel)]="sibling.siblingId"
+                <select class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="sibling.siblingId"
                   [disabled]="!sibling.hasSibling" (ngModelChange)="siblingSelected($event)">
                   <option value="">Select</option>
                   <ng-container *ngFor="let student of students;">
