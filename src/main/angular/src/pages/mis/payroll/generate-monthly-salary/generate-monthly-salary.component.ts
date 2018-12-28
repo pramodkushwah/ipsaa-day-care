@@ -5,6 +5,8 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import * as FileSaver from 'file-saver';
 import * as _ from 'underscore';
 
+declare let $: any;
+
 @Component({
   selector: 'app-generate-monthly-salary',
   templateUrl: './generate-monthly-salary.component.html',
@@ -39,6 +41,8 @@ export class GenerateMonthlySalaryComponent implements OnInit {
   genrateSalaryLoader: boolean;
   salaryListCopy1: any;
   showTable = false;
+  ungeneratedSalary: any = [];
+  loader: boolean;
   constructor(private adminService: AdminService,
     private alertService: AlertService,
     private fb: FormBuilder) { }
@@ -194,10 +198,12 @@ export class GenerateMonthlySalaryComponent implements OnInit {
       formData.append('employerId', this.paySlipForm.controls['employer'].value);
       formData.append('year', this.paySlipForm.controls['year'].value);
       formData.append('month', this.paySlipForm.controls['month'].value);
+      this.loader = true;
       this.adminService.uploadEmployeeSalaryFile(formData).subscribe(response => {
-        console.log(response);
+        this.ungeneratedSalary = response;
+        this.loader = false;
+        $('#errorPageResponse').modal('show');
         this.getEmployers();
-
       }, (err) => {
 
       });
