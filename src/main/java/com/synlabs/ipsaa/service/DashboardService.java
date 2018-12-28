@@ -328,8 +328,8 @@ public class DashboardService extends BaseService {
 				: request.getMonth() == null ? today.getMonthOfYear() : request.getMonth();
 		Integer year = feeDuration == null ? today.getYear()
 				: request.getYear() == null ? today.getYear() : request.getYear();
-		Integer quarter = feeDuration == null ? (month / 3) + 1
-				: request.getQuarter() == null ? (month / 3) + 1 : request.getQuarter();
+		Integer quarter = feeDuration == null ? FeeUtilsV2.getQuarter(month)
+				: request.getQuarter() == null ? FeeUtilsV2.getQuarter(month) : request.getQuarter();
 		feeStatsResponse.setYear(today.getYear());
 		feeStatsResponse.setMonth(month);
 
@@ -401,8 +401,8 @@ public class DashboardService extends BaseService {
 				: request.getMonth() == null ? today.getMonthOfYear() : request.getMonth();
 		Integer year = feeDuration == null ? today.getYear()
 				: request.getYear() == null ? today.getYear() : request.getYear();
-		Integer quarter = feeDuration == null ? (month / 3) + 1
-				: request.getQuarter() == null ? (month / 3) + 1 : request.getQuarter();
+		Integer quarter = feeDuration == null ? FeeUtilsV2.getQuarter(month)
+				: request.getQuarter() == null ? FeeUtilsV2.getQuarter(month) : request.getQuarter();
 		int total = 0;
 
 		JPAQuery<BigDecimal> ipsaaClubq = new JPAQuery<>(entityManager);
@@ -410,9 +410,12 @@ public class DashboardService extends BaseService {
 		QStudentFeePaymentRecordIpsaaClub records = QStudentFeePaymentRecordIpsaaClub.studentFeePaymentRecordIpsaaClub;
 
 		if (feeDuration == null || feeDuration == FeeDuration.Monthly) {
-			ipsaaClubq.select(records.paidAmount.sum()).from(records).where(records.student.active.isTrue())
-					.where(records.active.isTrue()).where(records.student.corporate.isFalse())
-					.where(records.request.year.eq(year)).where(records.request.month.eq(month))
+			ipsaaClubq.select(records.paidAmount.sum()).from(records)
+					.where(records.student.active.isTrue())
+					.where(records.active.isTrue())
+					.where(records.student.corporate.isFalse())
+					.where(records.request.year.eq(year))
+					.where(records.request.month.eq(month))
 					.where(records.student.center.in(centers));
 
 			BigDecimal monthly = ipsaaClubq.fetchFirst();
@@ -428,8 +431,10 @@ public class DashboardService extends BaseService {
 					.where(payment.student.corporate.isFalse())
 					// .where(payment.student.approvalStatus.eq(ApprovalStatus.Approved))
 					.where(payment.student.program.id.ne(FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID))
-					.where(payment.request.feeDuration.eq(FeeDuration.Quarterly)).where(payment.request.year.eq(year))
-					.where(payment.request.quarter.eq(quarter)).where(payment.paymentStatus.eq(PaymentStatus.Paid))
+					.where(payment.request.feeDuration.eq(FeeDuration.Quarterly))
+					.where(payment.request.year.eq(year))
+					.where(payment.request.quarter.eq(quarter))
+					.where(payment.paymentStatus.eq(PaymentStatus.Paid))
 					.where(payment.student.center.in(centers));
 
 			BigDecimal quarterly = quarterlyq.fetchFirst();

@@ -19,12 +19,14 @@ public class DashStudentResponse implements Response
   private Date expectedOut;
   private Date expectedIn;
 
+
   private boolean corporate;
 
   //Avneet
 
   private Long id;
   private String admissionNumber;
+  private Integer extraHours;
 
   public DashStudentResponse(Student student)
   {
@@ -45,6 +47,7 @@ public class DashStudentResponse implements Response
     present = true;
     checkin = attendance.getCheckin();
     checkout = attendance.getCheckout();
+    extraHours = attendance.getExtraHours();
   }
 
   public boolean isCorporate()
@@ -101,4 +104,8 @@ public class DashStudentResponse implements Response
   public Long getId() { return id; }
 
   public String getAdmissionNumber() { return admissionNumber; }
+
+  public Integer getExtraHours() { return extraHours; }
+
+  public void setExtraHours(Integer extraHours) { this.extraHours = extraHours; }
 }

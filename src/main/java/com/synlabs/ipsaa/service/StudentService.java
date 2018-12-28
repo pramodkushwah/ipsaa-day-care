@@ -965,11 +965,11 @@ public class StudentService extends BaseService {
         FeeDuration period = FeeDuration.valueOf(request.getPeriod());
         if (request.getCenterCode().equals("All")) {
             slips = feePaymentRepository
-                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(
+                    .findByStudentCorporateIsFalseAndStudentActiveIsTrueAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(
                             period, request.getQuarter(), request.getYear(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
         } else {
             slips = feePaymentRepository
-                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(
+                    .findByStudentCorporateIsFalseAndStudentActiveIsTrueAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(
                             period, request.getQuarter(), request.getYear(),
                             request.getCenterCode(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
         }
@@ -1788,11 +1788,11 @@ public class StudentService extends BaseService {
 		FeeDuration period = FeeDuration.valueOf("Quarterly");
 		if (request.getCenterCode().equals("All")) {
 			slip2 = feePaymentRepository
-					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(
+					.findByStudentCorporateIsFalseAndStudentActiveIsTrueAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(
 							period, request.getQuarter(), request.getYear(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
 		} else {
 			slip2 = feePaymentRepository
-					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(
+					.findByStudentCorporateIsFalseAndStudentActiveIsTrueAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(
 							period, request.getQuarter(), request.getYear(),
 							request.getCenterCode(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
 		}
