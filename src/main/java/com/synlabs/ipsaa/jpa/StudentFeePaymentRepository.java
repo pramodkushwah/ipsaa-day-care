@@ -42,8 +42,8 @@ public interface StudentFeePaymentRepository extends JpaRepository<StudentFeePay
 
   // ipsaa
   List<StudentFeePaymentRequest> findByStudentActiveIsTrueAndStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(FeeDuration period, int quarter, int year, String centerCode,long id);
-  List<StudentFeePaymentRequest> findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(FeeDuration period, int quarter, int year,long id);
-  List<StudentFeePaymentRequest> findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(FeeDuration period, int quarter, int year, String centerCode,long id);
+  List<StudentFeePaymentRequest> findByStudentCorporateIsFalseAndStudentActiveIsTrueAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(FeeDuration period, int quarter, int year,long id);
+  List<StudentFeePaymentRequest> findByStudentCorporateIsFalseAndStudentActiveIsTrueAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(FeeDuration period, int quarter, int year, String centerCode,long id);
 
   List<StudentFeePaymentRequest> findByStudentAndFeeDurationAndQuarterNotAndYearNot(Student student, FeeDuration period,int quarter, int year);
   StudentFeePaymentRequest findByStudentAndFeeDurationAndQuarterAndYear(Student student, FeeDuration period,int quarter, int year);
