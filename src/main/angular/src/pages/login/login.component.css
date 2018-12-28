@@ -25,4 +25,18 @@
   max-width: 425px;
   padding: 0 15px;
 }
-
+.footer button.btn {
+  display: inline-block;
+  line-height: normal;
+}
+.footer button.btn span {
+  display: inline-block;
+  position: relative;
+}
+.footer button.btn .fa-spin {
+  display: inline-block;
+  float: left;
+  width: auto;
+  position: static !important;
+  margin: 4px 7px 0 0 !important;
+}

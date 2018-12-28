@@ -8,9 +8,9 @@ declare let $: any;
   styleUrls: ['./table.component.css']
 })
 export class TableComponent implements AfterViewInit {
-  private tableColums: any[] = [];
-  private tableData: any[] = [];
-  private tableTitle: string;
+  tableColums: any[] = [];
+  tableData: any[] = [];
+  tableTitle: string;
   tableForObject: string;
   icon: string;
 

@@ -2,7 +2,7 @@
   <div class="col-lg-4">
     <div class="form-group">
       <label for="sel1">Zone:</label>
-      <select class="form-control" id="sel1" [(ngModel)]="selectedZone" (ngModelChange)="selectedCity='all';selectedCenter='all';getStatsResult();">
+      <select class="form-control" id="sel1" [(ngModel)]="selectedZone" (ngModelChange)="bySelectingZone();">
         <option value="all">All</option>
         <option *ngFor="let zone of zones;" [ngValue]="zone">{{zone.name}}</option>
       </select>
@@ -12,7 +12,7 @@
   <div class="col-lg-4">
     <div class="form-group">
       <label for="sel2">City:</label>
-      <select class="form-control" id="sel2" [(ngModel)]="selectedCity" (ngModelChange)="selectedCenter='all';getStatsResult();">
+      <select class="form-control" id="sel2" [(ngModel)]="selectedCity" (ngModelChange)="bySelectingCity();">
         <option value="all">All</option>
         <option *ngFor="let city of cities;" [ngValue]="city">{{city.name}}</option>
       </select>
@@ -22,7 +22,7 @@
   <div class="col-lg-4">
     <div class="form-group">
       <label for="sel3">Center:</label>
-      <select class="form-control" id="sel3" [(ngModel)]="selectedCenter" (ngModelChange)="getStatsResult()">
+      <select class="form-control" id="sel3" [(ngModel)]="selectedCenter" (ngModelChange)="getStatsResult();">
         <option value="all">All</option>
         <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
       </select>

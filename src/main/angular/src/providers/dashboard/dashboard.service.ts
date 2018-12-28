@@ -88,7 +88,7 @@ export class DashboardService {
 
 
 
-  getFilterStaff(filterBy) {
-return this.api.post('api/dash/' + filterBy , {});
+  getFilterStaff(filterBy, data) {
+return this.api.post('api/dash/' + filterBy , data);
   }
 }

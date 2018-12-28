@@ -84,7 +84,7 @@ export class AppStaffComponent implements OnInit {
     this.selectedStaff = staff;
     this.adminService.viewPanel.next(true);
   }
-  addNewStaff(staff) {
+  addNewStaff() {
     this.update = true;
     this.selectedStaff = {};
     this.adminService.viewPanel.next(true);

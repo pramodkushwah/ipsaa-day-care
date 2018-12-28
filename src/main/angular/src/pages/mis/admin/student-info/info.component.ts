@@ -4,7 +4,8 @@ import {
   FormGroup,
   FormBuilder,
   FormControl,
-  Validators
+  Validators,
+  FormArray
 } from '@angular/forms';
 import * as _ from 'underscore';
 import { AlertService } from '../../../../providers/alert/alert.service';
@@ -21,7 +22,7 @@ export class StudentInfoComponent implements OnInit {
   resetButton: boolean;
   editable: boolean;
   studentForm: FormGroup;
-  private programs: any[];
+  programs: any[];
   centers: any[];
   groups: any[];
   bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'NA'];
@@ -120,6 +121,10 @@ export class StudentInfoComponent implements OnInit {
       parents: this.fb.array([this.getParentData('Father'), this.getParentData('Mother')]),
       fee: this.getFeeField()
     });
+  }
+
+  get parentFormArray() {
+    return (<FormArray>this.studentForm.controls.parents).controls;
   }
 
   getProgramsByCenter(centerId: number) {
@@ -525,8 +530,8 @@ export class StudentInfoComponent implements OnInit {
 
   }
 
-  createAccount(parent:FormGroup) {
-    this.adminService.createAccount(parent.value.id).subscribe(response =>{
+  createAccount(parent: FormGroup) {
+    this.adminService.createAccount(parent.value.id).subscribe(response => {
       this.alertService.successAlert('Account created successfully!');
       parent.controls['account'].patchValue(true);
     });

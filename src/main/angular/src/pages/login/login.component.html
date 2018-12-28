@@ -37,7 +37,8 @@
 								<div class="footer text-center d-block">
 									<button type="submit" [disabled]="loginForm.invalid || logging" class="btn btn-rose mx-auto">
 										<span *ngIf="logging;else save">
-											<i class="fa fa-spinner fa-spin"></i> Logging In...
+											<i class="fa fa-spinner fa-spin"></i> 
+											<i>Logging In...</i>
 										</span>
 										<ng-template #save>Login</ng-template>
 									</button> <br>

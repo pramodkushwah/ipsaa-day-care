@@ -10,7 +10,7 @@
           Users
           <button class="btn btn-primary btn-sm" style="float: right;" (click)="showSidePanel(false,null)">Add New</button>
           <div class="form-group" style="float: right;">
-            <input class="form-control" [(ngModel)]="searchUser" (ngModelChange)="filterUser($event)" placeholder="Search by name..">
+            <input class="form-control" (ngModelChange)="filterUser($event)" placeholder="Search by name.." ngModel>
           </div>
         </h3>
       </div>

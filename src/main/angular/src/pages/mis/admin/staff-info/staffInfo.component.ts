@@ -84,6 +84,7 @@ export class StaffInfoComponent implements OnInit {
     this.adminService.getStaffById(id).subscribe((staff: any) => {
       this.staff = staff;
       this.staffForm.patchValue(staff);
+      this.searchEmpName = this.staffForm.value.reportingManagerName;
       this.staffForm.controls['costCenterId'].patchValue(
         staff.costCenter ? staff.costCenter.id : ''
       );
@@ -220,7 +221,7 @@ export class StaffInfoComponent implements OnInit {
         city: ['', Validators.required],
         state: ['', Validators.required],
         zipcode: ['', Validators.required],
-        phone: ['', Validators.required],
+        phone: [''],
         addressType: ['']
       }),
       permanentAddress: this.fb.group({
@@ -228,7 +229,7 @@ export class StaffInfoComponent implements OnInit {
         city: ['', Validators.required],
         state: ['', Validators.required],
         zipcode: ['', Validators.required],
-        phone: ['', Validators.required],
+        phone: [''],
         addressType: ['']
       }),
       pan: [''],
