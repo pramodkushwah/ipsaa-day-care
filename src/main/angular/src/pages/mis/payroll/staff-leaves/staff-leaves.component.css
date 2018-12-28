@@ -28,5 +28,12 @@ tr.show td table.table tbody tr th, tr.show td table.table tbody tr td {
   padding: 10px 10px !important;
 }
 .card table.table tbody tr td {
-  border: solid 1px #ddd !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+tr.clickable {
+  background: #f3f2f2;
+}
+tr.collapsed {
+  background: white;
 }

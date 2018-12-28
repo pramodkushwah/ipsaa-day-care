@@ -101,6 +101,16 @@
                     i{
                         font-size: 10px !important;
                     }
+
+                    
+                        .username{
+                            span {
+                                    position: absolute;
+                                    top: 0;
+                                }
+                            }
+                        
+
                 }
 
                 i{
@@ -128,7 +138,7 @@
     }
 
     .nav{
-        margin-top: 30px;
+        margin-top: 20px;
         display: block;
 
         .caret{
@@ -212,14 +222,14 @@
 
     .nav li a,
     .nav li .dropdown-menu a{
-          margin: 10px 15px 0;
-          border-radius: $border-radius-base;
-          color: $white-color !important;
-          padding-left: 10px;
-          padding-right: 10px;
-          text-transform: capitalize;
-          font-size: $font-paragraph - 1;
-          padding: 10px;
+        margin: 10px 15px 0;
+        border-radius: $border-radius-base;
+        color: $white-color !important;
+        padding-left: 10px;
+        padding-right: 10px;
+        text-transform: capitalize;
+        font-size: $font-paragraph - 1;
+        padding: 10px 15px;
     }
 
 
@@ -422,10 +432,19 @@
                 display: none;
 
                 img{
-                    width: 40px !important;
+                    width: 50px !important;
                 }
             }
             
+        }
+        .user{
+            .username{
+                span{
+                    position: absolute;
+                    left: 80px;
+                    top: 0;
+                }
+            }
         }
     }
 }
@@ -446,10 +465,19 @@
                 display: none;
 
                 img{
-                    width: 40px !important;
+                    width: 50px !important;
                 }
             }
             
+        }
+        .user{
+            .username{
+                span{
+                    position: absolute;
+                    left: 80px;
+                    top: 0;
+                }
+            }
         }
     }
 }
@@ -497,16 +525,25 @@
             font-weight: 200;
             z-index: 9999;
 
+            .user{
+                .username{
+                    span{
+                        position: absolute;
+                        left: 100px;
+                        top: 0;
+                    }
+                }
+            }
             .logo{
                 a.logo-normal{
                     display: none;
-                    @include transform-translate-x(-25px);
+                    // @include transform-translate-x(-25px);
                 }
                 a.logo-mini{
                     display: block;
 
                     img{
-                        width: 40px !important;
+                        width: 50px !important;
                     }
                 }
                 
@@ -530,14 +567,12 @@
             .logo{
                 a.logo-normal{
                     display: block;
-                    @include transform-translate-x(0px);
                 }
                 a.logo-mini{
-                    display: none;
-                    @include transform-translate-x(0px);
+                   display: none;
 
                     img{
-                        width: 40px !important;
+                        width: 50px !important;
                     }
                 }
             }
@@ -553,6 +588,15 @@
                     opacity: 1;
                 }
             }
+            .user{
+            .username{
+                span {
+                        position: absolute;
+                        top: 0;
+                        left: 80px;
+                    }
+                }
+            }
         }
     }
 
@@ -566,3 +610,4 @@
       }
     }
 }
+
