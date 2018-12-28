@@ -26,6 +26,16 @@ text-transform: capitalize;
 .nav .nav-item a[aria-expanded=true] .caret, .nav .nav-item a[data-toggle=collapse][aria-expanded=true] .caret {
     transform: rotate(180deg);
 }
+
+.form-control {
+  border: solid 1px #ddd;
+  background: white;
+  padding: 0 0 0 10px;
+  font-weight: lighter;
+  background-image: inherit !important;
+  /* -webkit-appearance: menulist-button !important; */
+}
+
 select.form-control {
     border: solid 1px #ddd;
     background: white;

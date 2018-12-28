@@ -291,12 +291,14 @@
 
       </div>
       <div class="col-md-4 col-sm-4 col-xs-4">
+        <div class="form-group">
         <label class="control-label">Center:</label>
         <select class="form-control" [(ngModel)]="filterCenter" name="center" (ngModelChange)="filterEmployeeList()">
           <option [value]="'All'">All</option>
           <option *ngFor="let center of centers; " [value]="center.name">{{center.name}}</option>
         </select>
         <span class="material-input"></span>
+      </div>
       </div>
 
     </div>
@@ -321,14 +323,14 @@
           <!-- </tr> -->
         </thead>
         <tbody *ngFor=" let summary of employeeLeaveSummary; let i =index">
-          <tr (click)="getEmployeeLeaves(summary.eid)" id="heading{{i}}" data-toggle="collapse" attr.href="#collapseExample{{i}}">
+          <tr (click)="getEmployeeLeaves(summary.eid)" class="clickable collapsed" id="heading{{i}}" data-toggle="collapse" attr.href="#collapseExample{{i}}">
             <td>{{summary.eid}}</td>
             <td>{{summary.name}}</td>
             <td>{{summary.center}}</td>
             <td>{{summary.count}}</td>
           </tr>
-          <tr class="collapse " data-parent="#coll" attr.id="collapseExample{{i}}">
-            <td colspan="4" style="background: gray;">
+          <tr class="collapse" data-parent="#coll" attr.id="collapseExample{{i}}">
+            <td colspan="4">
               <table class="table table-bordered">
                 <tr>
                   <th>Date</th>
