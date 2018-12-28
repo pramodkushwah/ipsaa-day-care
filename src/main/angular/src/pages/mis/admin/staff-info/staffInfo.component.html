@@ -20,7 +20,7 @@
       <a href="" onclick="document.getElementById('upload').click(); return false" *ngIf="editable">
         {{ newStaff ? 'Add Profile Pic' : 'Update Profile Pic' }}
       </a>
-      <input type="file" id="upload" name="upload" style="display: none" (change)="uploadProfilePic(staff, $event.target.files['0'])" />
+      <input type="file" id="upload" name="upload" style="display: none" (change)="uploadProfilePic(staff, $event.srcElement.files['0'])" />
     </div>
     <div class="card-content">
       <ul class="nav nav-pills nav-tabs" role="tablist">
