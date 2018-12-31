@@ -103,12 +103,7 @@
                     }
 
                     
-                        .username{
-                            span {
-                                    position: absolute;
-                                    top: 0;
-                                }
-                            }
+
                         
 
                 }
@@ -437,15 +432,7 @@
             }
             
         }
-        .user{
-            .username{
-                span{
-                    position: absolute;
-                    left: 80px;
-                    top: 0;
-                }
-            }
-        }
+
     }
 }
 
@@ -470,15 +457,7 @@
             }
             
         }
-        .user{
-            .username{
-                span{
-                    position: absolute;
-                    left: 80px;
-                    top: 0;
-                }
-            }
-        }
+
     }
 }
 
@@ -525,15 +504,6 @@
             font-weight: 200;
             z-index: 9999;
 
-            .user{
-                .username{
-                    span{
-                        position: absolute;
-                        left: 100px;
-                        top: 0;
-                    }
-                }
-            }
             .logo{
                 a.logo-normal{
                     display: none;
@@ -588,15 +558,7 @@
                     opacity: 1;
                 }
             }
-            .user{
-            .username{
-                span {
-                        position: absolute;
-                        top: 0;
-                        left: 80px;
-                    }
-                }
-            }
+
         }
     }
 
