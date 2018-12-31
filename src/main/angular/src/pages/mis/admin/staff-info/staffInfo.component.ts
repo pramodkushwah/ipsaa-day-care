@@ -243,6 +243,8 @@ export class StaffInfoComponent implements OnInit {
       ifscCode: [''],
       bankName: [''],
       branchName: [''],
+      fatherName: [''],
+      spouseName: [''],
       holderName: [''],
       pState: ['']
     });

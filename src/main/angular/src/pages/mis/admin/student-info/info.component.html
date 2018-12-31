@@ -7,8 +7,9 @@
   <p class="card-category">Category subtitle</p> -->
     <div class="card-profile">
       <!-- <img *ngIf="(loaded&&student)" src="/assets/img/loading.gif" /> -->
-      <img *ngIf="!student.studentImageData" src="/assets/img/default-avatar.png" />
-      <img id="student-profile" *ngIf="student.studentImageData" [hidden]="!loaded" (load)="loaded = true" [src]="'data:image/PNG;base64,' + student.studentImageData" />
+      <img  id="new-student-profile" *ngIf="student && !student.studentImageData" src="/assets/img/default-avatar.png" />
+      <img id="student-profile" *ngIf=" student && student.studentImageData" [hidden]="!loaded" (load)="loaded = true"
+        [src]="'data:image/PNG;base64,' + student.studentImageData" />
     </div>
   </div>
   <div class="card-body">
@@ -16,8 +17,10 @@
       <span *ngIf="!newStudent">{{student.fullName}}</span>
       <span *ngIf="newStudent">New Student</span>
       <br>
-      <a href="" onclick="document.getElementById('upload').click(); return false" *ngIf="!newStudent">Update Profile
-        Pic</a>
+
+      <a href="" onclick="document.getElementById('upload').click(); return false" *ngIf="editable">
+        {{ newStudent ? 'Add Profile Pic' : 'Update Profile Pic' }}
+      </a>
       <input type="file" id="upload" name="upload" style="display: none" (change)="uploadProfilePic(student, $event.target.files['0'])" />
     </div>
     <div class="card-content">
@@ -88,7 +91,8 @@
             <div class="col-lg-4">
               <div class="form-group">
                 <label class="control-label">Program : </label>
-                <select class="form-control" [class.readonly]="!editable" formControlName="programId" (change)="getFee(programId)" [(ngModel)]="programId">
+                <select class="form-control" [class.readonly]="!editable" formControlName="programId" (change)="getFee(programId)"
+                  [(ngModel)]="programId">
                   <option value=""></option>
                   <option *ngFor="let program of programs;let c = index;" [ngValue]="program.id"> {{program.name}}</option>
                 </select>
@@ -137,7 +141,6 @@
                 <label class="control-label">Familty Type : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="familyType">
                   <option value=""></option>
-                  <option value="">Family Type</option>
                   <option value="Nuclear">Nuclear</option>
                   <option value="Joint">Joint</option>
                 </select>
@@ -216,8 +219,8 @@
             <div class="col-md-3">
               <div class="form-group ">
                 <label class="control-label">*Center</label>
-                <select class="form-control" id="sel3" [ngModelOptions]="{standalone: true}"
-                  [(ngModel)]="siblingCenter" [disabled]="!sibling.hasSibling">
+                <select class="form-control" id="sel3" [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingCenter"
+                  [disabled]="!sibling.hasSibling">
                   <option value="">Select</option>
                   <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
                 </select>
@@ -263,12 +266,13 @@
             <br>
             <div class="row">
               <div class="col-lg-12" *ngIf="!newStudent">
-                <button mat-raised-button  class="btn" [disabled]="parent.value.account" (click)="createAccount(parent)"> 
-                  Create Account 
+                <button mat-raised-button class="btn" [disabled]="parent.value.account" (click)="createAccount(parent)">
+                  Create Account
                 </button>
-                <button class="btn btn-primary" [disabled]="resetButton" mat-raised-button  (click)="resetPassword(parent.value.id)" class="btn btn-primary"> 
+                <button class="btn btn-primary" [disabled]="resetButton" mat-raised-button (click)="resetPassword(parent.value.id)"
+                  class="btn btn-primary">
                   <!-- <input type="checkbox" formControlName="account" hidden> -->
-                  Reset Password 
+                  Reset Password
                 </button>
               </div>
               <div class="col-lg-6">
@@ -609,7 +613,15 @@
         <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disableGenerate"></i>
         Generate Fee
       </button>
-      <button mat-raised-button class="btn btn-primary" (click)="saveStudent()" [disabled]="!studentForm.valid">Save</button>
+      <button mat-raised-button class="btn btn-primary" (click)="saveStudent()" [disabled]="!studentForm.valid" [hidden]="!newStudent && !editable">
+          <span *ngIf=" formSave ;else save">
+            <i class="fa fa-spinner fa-spin"></i> Saving
+          </span>
+          <ng-template #save>Save</ng-template>
+        </button>
+  
+  
+     
       <button mat-raised-button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>
     </div>
   </div>

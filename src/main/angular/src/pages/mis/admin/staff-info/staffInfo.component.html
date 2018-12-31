@@ -44,10 +44,10 @@
       <form class="tab-content" [formGroup]="staffForm">
         <div class="tab-pane container active mt-2" id="profile">
           <div class="row">
-            <div class="col-md-4" [hidden]="newStaff || editable">
+            <div class="col-md-4" [hidden]="newStaff ">
               <div class="form-group">
                 <label class="control-label">Employee ID : </label>
-                <input class="form-control" [readonly]="!editable" value="" formControlName="eid">
+                <input class="form-control" disabled="true" value="" formControlName="eid">
               </div>
             </div>
             <div class="col-md-4">
@@ -62,34 +62,25 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Last Name : </label>
-                <input class="form-control" value="" [readonly]="!editable" formControlName="lastName" >
+                <input class="form-control" value="" [readonly]="!editable" formControlName="lastName">
                 <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="text-danger position-absolute">
                   <div *ngIf="lastName.errors.required">Required</div>
                 </div>
               </div>
             </div>
           </div>
+
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4" formGroupName="profile">
               <div class="form-group">
-                <label class="control-label">Email : <sup>*</sup></label>
-                <input class="form-control" value="" [readonly]="!editable" formControlName="email">
-                <!-- <div *ngIf="email.invalid && (email.dirty || email.touched)"  class="text-danger position-absolute">
-                  <div *ngIf="email.errors.required">Required</div>
-                  <div *ngIf="email.errors.email">Invalid Email</div>
-                </div> -->
+                <label class="control-label">Father Name : </label>
+                <input class="form-control" value="" [readonly]="!editable" formControlName="fatherName">
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4" formGroupName="profile">
               <div class="form-group">
-                <label class="control-label">Location : <sup>*</sup></label>
-                <select class="form-control" formControlName="costCenterId" [class.readonly]="!editable">
-                  <option value="null" hidden disabled>Select</option>
-                  <option *ngFor="let center of centers;let c = index;" [ngValue]="center.id"> {{center.name}}</option>
-                </select>
-                <div *ngIf="costCenterId.invalid && (costCenterId.dirty || costCenterId.touched)" class="text-danger position-absolute">
-                  <div *ngIf="costCenterId.errors.required">Required</div>
-                </div>
+                <label class="control-label">Spouse Name : </label>
+                <input class="form-control" value="" [readonly]="!editable" formControlName="spouseName">
               </div>
             </div>
             <div class="col-md-4">
@@ -101,6 +92,30 @@
                 </select>
                 <div *ngIf="maritalStatus.invalid && (maritalStatus.dirty || maritalStatus.touched)" class="text-danger position-absolute">
                   <div *ngIf="maritalStatus.errors.required">Required</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="control-label">Email : </label>
+                <input class="form-control" value="" [readonly]="!editable" formControlName="email">
+                <!-- <div *ngIf="email.invalid && (email.dirty || email.touched)"  class="text-danger position-absolute">
+                  <div *ngIf="email.errors.required">Required</div>
+                  <div *ngIf="email.errors.email">Invalid Email</div>
+                </div> -->
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="control-label">Location : <sup>*</sup></label>
+                <select class="form-control" formControlName="costCenterId" [class.readonly]="!editable">
+                  <option value="null" hidden disabled>Select</option>
+                  <option *ngFor="let center of centers;let c = index;" [ngValue]="center.id"> {{center.name}}</option>
+                </select>
+                <div *ngIf="costCenterId.invalid && (costCenterId.dirty || costCenterId.touched)" class="text-danger position-absolute">
+                  <div *ngIf="costCenterId.errors.required">Required</div>
                 </div>
               </div>
             </div>
@@ -183,17 +198,18 @@
                 </div>
               </div>
             </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label class="control-label">Secondary Number :</label>
-                  <input class="form-control" value="" formControlName="secondaryNumbers" [readonly]="!editable" type="number" name="mobile">
-                  <div *ngIf="mobile.invalid && (mobile.dirty || mobile.touched)" class="text-danger position-absolute">
-                    <div *ngIf="mobile.errors.required">Required</div>
-                    <div *ngIf="mobile.errors.maxlength">Should be of 10 digit</div>
-                  </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="control-label">Secondary Number :</label>
+                <input class="form-control" value="" formControlName="secondaryNumbers" [readonly]="!editable" type="number"
+                  name="mobile">
+                <div *ngIf="mobile.invalid && (mobile.dirty || mobile.touched)" class="text-danger position-absolute">
+                  <div *ngIf="mobile.errors.required">Required</div>
+                  <div *ngIf="mobile.errors.maxlength">Should be of 10 digit</div>
                 </div>
               </div>
-            
+            </div>
+
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Reporting Manager : <sup>*</sup></label>
@@ -265,6 +281,14 @@
                 </div>
               </div>
             </div>
+            <div class="col-md-4" formGroupName="profile">
+              <div class="form-group">
+                <label class="control-label">PState : <sup>*</sup></label>
+                <select class="form-control" formControlName="pState" required>
+                  <option *ngFor="let state of states;" [ngValue]="state.name">{{state.name}}</option>
+                </select>
+              </div>
+            </div>
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Biometric Id : <sup>*</sup></label>
@@ -274,36 +298,42 @@
                 </div> -->
               </div>
             </div>
+
+
+
+
+          </div>
+          <div class="row">
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label">Aadhar Number : </label>
                 <input class="form-control" value="" formControlName="aadharNumber" [readonly]="!editable">
               </div>
             </div>
+            <div class="col-md-4" formGroupName="profile">
+              <div class="form-group">
+                <label class="control-label">PAN : </label>
+                <input class="form-control" value="" formControlName="pan" [readonly]="!editable">
+              </div>
+            </div>
+            <div class="col-md-4" formGroupName="profile">
+              <div class="form-group">
+                <label class="control-label">UAN : </label>
+                <input class="form-control" value="" formControlName="uan" [readonly]="!editable">
+              </div>
+            </div>
+
           </div>
           <div formGroupName="profile">
+
             <div class="row">
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label class="control-label">PAN : </label>
-                  <input class="form-control" value="" formControlName="pan" [readonly]="!editable">
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label class="control-label">UAN : </label>
-                  <input class="form-control" value="" formControlName="uan" [readonly]="!editable">
-                </div>
-              </div>
+
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">ESIN : </label>
                   <input class="form-control" value="" formControlName="esin" [readonly]="!editable">
                 </div>
               </div>
-            </div>
-
-            <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">PFAN : </label>
@@ -316,15 +346,16 @@
                   <input class="form-control" value="" formControlName="pran" [readonly]="!editable">
                 </div>
               </div>
+            </div>
+
+            <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Bank Account No. : </label>
                   <input class="form-control" value="" formControlName="ban" [readonly]="!editable">
                 </div>
               </div>
-            </div>
 
-            <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Name As Per Bank : </label>
@@ -337,27 +368,20 @@
                   <input class="form-control" value="" formControlName="ifscCode" [readonly]="!editable">
                 </div>
               </div>
+
+            </div>
+
+            <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Bank Name : </label>
                   <input class="form-control" value="" formControlName="bankName" [readonly]="!editable">
                 </div>
               </div>
-            </div>
-
-            <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Branch Name : </label>
                   <input class="form-control" value="" formControlName="branchName" [readonly]="!editable">
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label class="control-label">PState : <sup>*</sup></label>
-                  <select class="form-control" formControlName="pState" required>
-                    <option *ngFor="let state of states;" [ngValue]="state.name">{{state.name}}</option>
-                  </select>
                 </div>
               </div>
             </div>
@@ -512,7 +536,7 @@
   <div class="card-footer">
     <div class="stats padding-left-right-30">
       <button mat-raised-button class="btn btn-primary" [disabled]="staffForm.invalid " (click)="saveStaff()" [hidden]="!newStaff && !editable">
-        
+
         <span *ngIf=" formSave ;else save">
           <i class="fa fa-spinner fa-spin"></i> Saving
         </span>
