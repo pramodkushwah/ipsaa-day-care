@@ -74,6 +74,11 @@ export class InquiryComponent implements OnInit {
     this.getCenter();
     this.getFollowUps();
     this.getInquiries();
+    this.adminService.getWebInquiry()
+      .subscribe(res => {
+        console.log(res);
+
+      });
   }
 
   getCenter() {
@@ -110,19 +115,19 @@ export class InquiryComponent implements OnInit {
     // if (filter) {
 
 
-if (this.filterBy.name === 'TODAY') {
-  this.followUpsFor[this.filterBy.value] = this.today.toJSON().slice(0, 10);
+    if (this.filterBy.name === 'TODAY') {
+      this.followUpsFor[this.filterBy.value] = this.today.toJSON().slice(0, 10);
 
-}
-if (this.filterBy.name === 'OPEN') {
-  this.followUpsFor[this.filterBy.value] = this.tomorrow.toJSON().slice(0, 10);
+    }
+    if (this.filterBy.name === 'OPEN') {
+      this.followUpsFor[this.filterBy.value] = this.tomorrow.toJSON().slice(0, 10);
 
-}
-if (this.filterBy.name === 'DUE') {
-  this.followUpsFor[this.filterBy.value] = this.yesterday.toJSON().slice(0, 10);
+    }
+    if (this.filterBy.name === 'DUE') {
+      this.followUpsFor[this.filterBy.value] = this.yesterday.toJSON().slice(0, 10);
 
-}
-console.log(this.filterBy);
+    }
+    console.log(this.filterBy);
     // }
     this.adminService.getFollowUps(this.followUpsFor)
       .subscribe((res: any) => {
@@ -176,18 +181,18 @@ console.log(this.filterBy);
         this.inquiries = this.inquiriesCoppy.filter(inquiry => {
           return inquiry.childName.toLowerCase().startsWith(val);
         });
-    }  else {
-      this.inquiries = this.inquiriesCoppy;
-    }
-  } else {
+      } else {
+        this.inquiries = this.inquiriesCoppy;
+      }
+    } else {
       if (val && val.trim() !== '') {
         this.followUps = this.followUpsCoppy.filter(follow => {
           return follow.inquiryNumber.toLowerCase().startsWith(val);
         });
-         }  else {
-          this.followUps = this.followUpsCoppy;
-         }
-        }
+      } else {
+        this.followUps = this.followUpsCoppy;
+      }
+    }
   }
 
 
