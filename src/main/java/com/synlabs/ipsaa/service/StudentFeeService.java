@@ -1058,7 +1058,7 @@ public class StudentFeeService extends BaseService{
         Calendar cal = Calendar. getInstance();
         int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));
         int year=cal.get(Calendar.YEAR);
-        return feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(student,FeeDuration.Quarterly,quarter,year);
+        return feePaymentRepository.findOneByStudentAndFeeDurationAndIsExpireIsFalse(student,FeeDuration.Quarterly);
     }
 
     public PaymentHistoryResponce getStudentPaymentHistory(Long studentId) {

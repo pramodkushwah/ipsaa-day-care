@@ -55,4 +55,6 @@ public interface StudentFeePaymentRepository extends JpaRepository<StudentFeePay
 
 //  /////Avneet
 //  List<StudentFeePaymentRequest> findByStudentCenterIdInAndQuarterAndYear(List<Long> ids, int quarter,int year);
+
+  StudentFeePaymentRequest findOneByStudentAndFeeDurationAndIsExpireIsFalse(Student student, FeeDuration period);
 }
