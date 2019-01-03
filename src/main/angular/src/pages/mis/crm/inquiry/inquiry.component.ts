@@ -53,6 +53,7 @@ export class InquiryComponent implements OnInit {
   selectedCenter = {};
   followUpsCoppy: any;
   inquiriesCoppy: any;
+  websiteInquiry: any;
   FOLLOWUP_NOTIFICATION: boolean;
   constructor(
     private fb: FormBuilder,
@@ -64,7 +65,6 @@ export class InquiryComponent implements OnInit {
   ngOnInit() {
     this.FOLLOWUP_NOTIFICATION = this.adminService.hasPrivilage('FOLLOWUP_NOTIFICATION');
     this.alertService.loading.next(true);
-    console.log(this.selectedTab);
     this.today = new Date();
     this.today.setDate(this.today.getDate());
     this.yesterday = new Date();
@@ -74,11 +74,7 @@ export class InquiryComponent implements OnInit {
     this.getCenter();
     this.getFollowUps();
     this.getInquiries();
-    this.adminService.getWebInquiry()
-      .subscribe(res => {
-        console.log(res);
-
-      });
+    this.getWebsiteInquiry();
   }
 
   getCenter() {
@@ -145,6 +141,13 @@ export class InquiryComponent implements OnInit {
       });
   }
 
+  getWebsiteInquiry() {
+    this.adminService.getWebInquiry()
+      .subscribe(res => {
+        console.log(res);
+this.websiteInquiry = res;
+      });
+  }
   filterFeeByCenter(selectedCenter) {
     // this.currentCenter = {};
     this.alertService.loading.next(true);
@@ -163,7 +166,6 @@ export class InquiryComponent implements OnInit {
   changeTab(val) {
     this.selectedTab = val;
     this.InquiresDteailsShow = false;
-    console.log(this.selectedTab);
   }
 
 
@@ -185,12 +187,22 @@ export class InquiryComponent implements OnInit {
         this.inquiries = this.inquiriesCoppy;
       }
     } else {
-      if (val && val.trim() !== '') {
-        this.followUps = this.followUpsCoppy.filter(follow => {
-          return follow.inquiryNumber.toLowerCase().startsWith(val);
-        });
+      if (this.selectedTab === 'Website') {
+        // if (val && val.trim() !== '') {
+        //   this.inquiries = this.inquiriesCoppy.filter(inquiry => {
+        //     return inquiry.childName.toLowerCase().startsWith(val);
+        //   });
+        // } else {
+        //   this.inquiries = this.inquiriesCoppy;
+
       } else {
-        this.followUps = this.followUpsCoppy;
+        if (val && val.trim() !== '') {
+          this.followUps = this.followUpsCoppy.filter(follow => {
+            return follow.inquiryNumber.toLowerCase().startsWith(val);
+          });
+        } else {
+          this.followUps = this.followUpsCoppy;
+        }
       }
     }
   }
