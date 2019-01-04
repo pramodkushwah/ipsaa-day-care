@@ -15,7 +15,6 @@
     background-color: rgba(180, 180, 180, 0.3);
   }
   .username{
-    color: white !important;
     padding: 5px 10px;
   }
   .photo {
@@ -65,14 +64,14 @@
 }
 
 
-.sidebar{
-  .sidebar-background{
-    &:after{
-      background: #000 !important;
-      opacity: 0.8 !important;
-    }
-  }
+// .sidebar{
+//   .sidebar-background{
+//     &:after{
+//       background: #000 !important;
+//       opacity: 0.8 !important;
+//     }
+//   }
 
 
 
-}
+// }

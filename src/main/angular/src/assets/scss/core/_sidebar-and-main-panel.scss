@@ -72,7 +72,7 @@
             [data-toggle="collapse"] ~ div > ul > li > a{
                 span{
                     display: inline-block;
-                    @extend .animation-transition-general;
+                    // @extend .animation-transition-general;
                 }
 
                 .sidebar-normal{
@@ -172,7 +172,7 @@
 
             &.active > a,
             &.active > a i{
-                color: $white-color;
+                color: $white-color !important;
             }
 
             &.separator{
@@ -201,7 +201,7 @@
             display: block;
             height: auto;
             white-space: nowrap;
-            color: #fff;
+            // color: #fff;
         }
 
         i{
@@ -211,7 +211,7 @@
             line-height: 30px;
             width: 30px;
             text-align: center;
-            color: #fff;
+            color: #a9afbb;
         }
     }
 
@@ -219,7 +219,7 @@
     .nav li .dropdown-menu a{
         margin: 10px 15px 0;
         border-radius: $border-radius-base;
-        color: $white-color !important;
+        color: $black-color;
         padding-left: 10px;
         padding-right: 10px;
         text-transform: capitalize;
@@ -246,8 +246,8 @@
             height: 100%;
             content: "";
             display: block;
-            background: #000;
-            opacity: .8;
+            background: #fff;
+            opacity: .93;
         }
     }
 

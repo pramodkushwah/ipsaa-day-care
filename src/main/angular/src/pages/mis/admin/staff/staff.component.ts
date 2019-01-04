@@ -7,8 +7,10 @@ declare let $: any;
 
 @Component({
   selector: 'app-staff',
-  templateUrl: './staff.component.html'
+  templateUrl: './staff.component.html',
+  styleUrls: ['./staff.component.scss']
 })
+
 export class AppStaffComponent implements OnInit {
   staffListCopy: any = [];
   searchStaffList: any = [];
