@@ -1,0 +1,31 @@
+.action-buttons i.fa {
+  font-size: 20px;
+  display: inline-block;
+  margin: 0 10px;
+  cursor: pointer;
+
+  &.fa-pencil-square-o {
+    color: #9c27b0;
+  }
+  &.fa-trash-o {
+    color: red;
+  }
+
+}
+
+// .card .table thead th, .table tbody td
+.card{
+  .table{
+
+    thead{
+      th{
+        white-space: nowrap;
+      }
+    }
+    tbody{
+      td{
+        white-space: nowrap;
+      }
+    }
+  }
+}
