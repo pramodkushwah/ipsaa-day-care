@@ -125,14 +125,10 @@ public class BiometricAttendanceService extends BaseService
     Connection connection = null;
     try
     {
-      String sql = String.format("select * from %s where LogDateTime > ? and LogDateTime < ?;", "payrol");
-      try{connection = attendanceDataSource.getConnection();
-      }catch(Exception e){ e.printStackTrace();
-        System.out.println(e);}
+      String sql = String.format("select * from %s where LogDateTime > ? ;", "payrol");
+      connection = attendanceDataSource.getConnection();
       PreparedStatement stmt = connection.prepareStatement(sql);
       stmt.setDate(1, new java.sql.Date(fromLocal.toDate().getTime()));
-     // stmt.setDate(1, fromLocal.toDate().getTime());
-//      stmt.setDate(2, new java.sql.Date(toLocal.toDate().getTime()));
       System.out.println(stmt.toString());
       ResultSet resultSet = stmt.executeQuery();
       logger.info("Attendances picked :"+resultSet.getFetchSize());
@@ -173,9 +169,12 @@ public class BiometricAttendanceService extends BaseService
 
       if (employee != null)
       {
-        EmployeeAttendance attendance = attendanceRepository
-            .findOneByAttendanceDateAndEmployee
-                (ba.getDate().toDate(), employee);
+        EmployeeAttendance attendance = null;
+        try {
+          attendance = attendanceRepository
+                  .findOneByAttendanceDateAndEmployee
+                          (ba.getDate().toDate(), employee);
+
         if (attendance == null)
         {
           attendance = new EmployeeAttendance();
@@ -194,18 +193,10 @@ public class BiometricAttendanceService extends BaseService
           ////update timings
           attendance.setCheckout(ba.getClockout());
         }
-//        if (attendance.getCheckin() == null)
-//        {
-//          System.out.println(ba.getClockin());
-//          attendance.setCheckin(ba.getClockin());
-//        }
-//        if (attendance.getCheckout() == null)
-//        {
-//          attendance.setCheckout(ba.getClockout());
-//        }
-        logger.info("Attendance added for employee:"+ attendance.getEmployee()+"( "+ba.getBiometricId()+") of date:"
-                +attendance.getAttendanceDate());
         list.add(attendance);
+      }catch (Exception e){
+          e.printStackTrace();
+      }
       }
       else{
         logger.info("Employee mot found for biometric:" + ba.getBiometricId());
