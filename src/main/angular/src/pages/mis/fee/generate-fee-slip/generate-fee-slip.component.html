@@ -41,7 +41,7 @@
 
     </form>
   </div>
-  <div *ngIf="showtable" [class]="viewPanel?'col-lg-8':'col-lg-12'">
+  <div *ngIf="showtable" [class]="viewPanel?'col-lg-7':'col-lg-12'">
     <div class="card">
 
       <div class="card-header card-header-warning card-header-icon">
@@ -211,7 +211,7 @@
 
   </div>
 
-  <div class="col-lg-4" *ngIf="viewPanel">
+  <div class="col-lg-5" *ngIf="viewPanel">
 
     <div *ngIf="!mailPanel" class="card">
       <div class="card-header card-header-warning card-header-icon">
@@ -247,42 +247,42 @@
         <form id="regenerateSlipForm" [formGroup]="regenerateSlipForm">
           <div class="card-content">
             <div class="row">
-              <div class="col-lg-6 col-md-3 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label"> Annual Charge</label>
                   <input class="form-control" type="number" name="annualFee" readonly formControlName="annualFee">
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label"> Discount(%)</label>
                   <input class="form-control" type="number" name="annualFeeDiscount" readonly formControlName="annualFeeDiscount">
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Final Annual Charges</label>
                   <input class="form-control" type="number" name="finalAnnualCharges" readonly formControlName="finalAnnualCharges">
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Admission Charges</label>
                   <input class="form-control" type="number" name="admissionFee" readonly formControlName="admissionFee">
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Discount(%)</label>
                   <input class="form-control" type="number" name="addmissionFeeDiscount" readonly formControlName="addmissionFeeDiscount">
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Final Admission Charges</label>
                   <input class="form-control" type="number" name="finalAdmissionFee" readonly formControlName="finalAdmissionFee">
@@ -291,21 +291,21 @@
               </div>
               <!-- </div>
             <div class="row"> -->
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Monthly Program Fees</label>
                   <input class="form-control" type="number" name="baseFee" readonly formControlName="baseFee">
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Discount(%)</label>
                   <input class="form-control" type="number" name="baseFeeDiscount" readonly formControlName="baseFeeDiscount">
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Final Monthly Fees</label>
                   <input class="form-control" type="number" [value]="regenerateSlipForm.get('finalBaseFee').value / regenerateSlipForm.get('feeRatio').value  "
@@ -313,21 +313,21 @@
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Security Deposit</label>
                   <input class="form-control" type="number" name="deposit" readonly formControlName="deposit">
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Discount(%)</label>
                   <input class="form-control" type="number" name="depositFeeDiscount" readonly formControlName="depositFeeDiscount">
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Final Security Deposit</label>
                   <input class="form-control" type="number" name="finalDepositFee" readonly formControlName="finalDepositFee">
@@ -336,14 +336,14 @@
               </div>
               <!-- </div>
             <div class="row"> -->
-              <div class="col-lg-12 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Monthly Transport Fees</label>
                   <input class="form-control" type="number" name="transportFee" readonly formControlName="transportFee">
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Annual-Fee-GST</label> &nbsp; <a data-toggle="tooltip" title="18% if applicable ">
                     <b>i</b></a>
@@ -351,7 +351,7 @@
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-12 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Quarterly-Program-Fee-GST</label> &nbsp; <a data-toggle="tooltip" title="18% if applicable ">
                     <b>i</b></a>
@@ -359,7 +359,7 @@
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Uniform Charges</label>
                   <input class="form-control" type="number" name="uniformCharges" [readonly]="selectedStudentDetails.generateActive"
@@ -376,7 +376,7 @@
                 </div>
               </div>
 
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Fee Ratio</label>
                   <input class="form-control" type="number" name="feeRatio" readonly formControlName="feeRatio">
@@ -385,7 +385,7 @@
               </div>
               <!-- </div>
             <div class="row"> -->
-              <div class="col-lg-6 col-md-3 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label"> Fee</label>
                   <input class="form-control" type="number" formControlName="finalFee" 
@@ -393,7 +393,7 @@
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label"> Balance</label>
                   <input class="form-control" type="number" name="balance" [readonly]="selectedStudentDetails.generateActive"
@@ -401,7 +401,7 @@
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label"> Extra</label>
                   <input class="form-control" type="number" name="extraCharge" [readonly]="selectedStudentDetails.generateActive"
@@ -409,7 +409,7 @@
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Late Payment </label>
                   <input class="form-control" type="number" name="latePaymentCharge" [readonly]="selectedStudentDetails.generateActive"
@@ -417,7 +417,7 @@
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Adjust</label>
                   <input class="form-control" type="number" name="adjust" [readonly]="selectedStudentDetails.generateActive"
@@ -425,7 +425,7 @@
                   <span class="material-input"></span>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-4 col-sm-3">
+              <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label class="control-label">Final Fees</label>
                   <input class="form-control" type="number" name="totalFee" readonly formControlName="totalFee">
