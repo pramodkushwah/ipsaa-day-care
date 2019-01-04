@@ -27,11 +27,11 @@ public class AttendancePullScheduler
 
   private static final Logger logger = LoggerFactory.getLogger(AttendancePullScheduler.class);
 
-  @Scheduled(cron = "0 0 * * * *")
+  @Scheduled(cron = "0 * * * * *")
   public void pullAttendance() throws ParseException, SQLException, IOException
   {
     logger.info("Pull attendance from Ipsaa attencance Database.");
-    Set<BioAttendance> bioAttendances = service.pullFromDatabase(LocalDate.now().minusDays(3).toDate());
+    Set<BioAttendance> bioAttendances = service.pullFromDatabase(LocalDate.now().minusDays(4).toDate());
     service.saveAttendance(bioAttendances, false);
   }
 }
