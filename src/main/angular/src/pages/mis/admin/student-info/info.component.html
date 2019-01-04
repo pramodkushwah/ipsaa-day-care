@@ -493,7 +493,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="control-label">Final Monthly Fees Amount</label>
-                  <input class="form-control" type="text" [readonly]="!editable" formControlName="finalBaseFee"
+                  <input class="form-control" type="number" [readonly]="!editable" formControlName="finalBaseFee"
                     required [disabled]="!studentForm.controls.fee.controls.baseFee.value" min="0" (keyup)="calculateDiscount('baseFee', 'finalBaseFee', 'discountBaseFee')">
                 </div>
               </div>

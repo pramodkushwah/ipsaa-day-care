@@ -53,6 +53,7 @@ export class InquiryComponent implements OnInit {
   selectedCenter = {};
   followUpsCoppy: any;
   inquiriesCoppy: any;
+  websiteInquiry: any;
   FOLLOWUP_NOTIFICATION: boolean;
   constructor(
     private fb: FormBuilder,
@@ -64,7 +65,6 @@ export class InquiryComponent implements OnInit {
   ngOnInit() {
     this.FOLLOWUP_NOTIFICATION = this.adminService.hasPrivilage('FOLLOWUP_NOTIFICATION');
     this.alertService.loading.next(true);
-    console.log(this.selectedTab);
     this.today = new Date();
     this.today.setDate(this.today.getDate());
     this.yesterday = new Date();
@@ -74,6 +74,7 @@ export class InquiryComponent implements OnInit {
     this.getCenter();
     this.getFollowUps();
     this.getInquiries();
+    this.getWebsiteInquiry();
   }
 
   getCenter() {
@@ -110,19 +111,19 @@ export class InquiryComponent implements OnInit {
     // if (filter) {
 
 
-if (this.filterBy.name === 'TODAY') {
-  this.followUpsFor[this.filterBy.value] = this.today.toJSON().slice(0, 10);
+    if (this.filterBy.name === 'TODAY') {
+      this.followUpsFor[this.filterBy.value] = this.today.toJSON().slice(0, 10);
 
-}
-if (this.filterBy.name === 'OPEN') {
-  this.followUpsFor[this.filterBy.value] = this.tomorrow.toJSON().slice(0, 10);
+    }
+    if (this.filterBy.name === 'OPEN') {
+      this.followUpsFor[this.filterBy.value] = this.tomorrow.toJSON().slice(0, 10);
 
-}
-if (this.filterBy.name === 'DUE') {
-  this.followUpsFor[this.filterBy.value] = this.yesterday.toJSON().slice(0, 10);
+    }
+    if (this.filterBy.name === 'DUE') {
+      this.followUpsFor[this.filterBy.value] = this.yesterday.toJSON().slice(0, 10);
 
-}
-console.log(this.filterBy);
+    }
+    console.log(this.filterBy);
     // }
     this.adminService.getFollowUps(this.followUpsFor)
       .subscribe((res: any) => {
@@ -140,6 +141,13 @@ console.log(this.filterBy);
       });
   }
 
+  getWebsiteInquiry() {
+    this.adminService.getWebInquiry()
+      .subscribe(res => {
+        console.log(res);
+this.websiteInquiry = res;
+      });
+  }
   filterFeeByCenter(selectedCenter) {
     // this.currentCenter = {};
     this.alertService.loading.next(true);
@@ -158,7 +166,6 @@ console.log(this.filterBy);
   changeTab(val) {
     this.selectedTab = val;
     this.InquiresDteailsShow = false;
-    console.log(this.selectedTab);
   }
 
 
@@ -176,18 +183,28 @@ console.log(this.filterBy);
         this.inquiries = this.inquiriesCoppy.filter(inquiry => {
           return inquiry.childName.toLowerCase().startsWith(val);
         });
-    }  else {
-      this.inquiries = this.inquiriesCoppy;
-    }
-  } else {
-      if (val && val.trim() !== '') {
-        this.followUps = this.followUpsCoppy.filter(follow => {
-          return follow.inquiryNumber.toLowerCase().startsWith(val);
-        });
-         }  else {
+      } else {
+        this.inquiries = this.inquiriesCoppy;
+      }
+    } else {
+      if (this.selectedTab === 'Website') {
+        // if (val && val.trim() !== '') {
+        //   this.inquiries = this.inquiriesCoppy.filter(inquiry => {
+        //     return inquiry.childName.toLowerCase().startsWith(val);
+        //   });
+        // } else {
+        //   this.inquiries = this.inquiriesCoppy;
+
+      } else {
+        if (val && val.trim() !== '') {
+          this.followUps = this.followUpsCoppy.filter(follow => {
+            return follow.inquiryNumber.toLowerCase().startsWith(val);
+          });
+        } else {
           this.followUps = this.followUpsCoppy;
-         }
         }
+      }
+    }
   }
 
 

@@ -4,6 +4,7 @@ import { AdminService } from '../../../../providers/admin/admin.service';
 import { AlertService } from '../../../../providers/alert/alert.service';
 import * as FileSaver from 'file-saver';
 import * as _ from 'underscore';
+import { DatePipe } from '@angular/common';
 
 declare const $: any;
 
@@ -23,7 +24,7 @@ export class FeeReceiptInfoComponent implements OnInit {
   mailPanel = false;
   recordPayment = false;
   downloadReceipt = false;
-  currentDate: Date;
+  // currentDate: Date;
   selectedStudentDetails: any = {};
   feePaymentForm: FormGroup;
   allItems: any;
@@ -37,9 +38,10 @@ export class FeeReceiptInfoComponent implements OnInit {
   constructor(
     private adminService: AdminService,
     private fb: FormBuilder,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private datePipe: DatePipe
   ) {
-    this.currentDate = new Date();
+    // this.currentDate = new Date();
     this.feePaymentForm = this.getReceiptForm();
   }
 
@@ -103,7 +105,7 @@ export class FeeReceiptInfoComponent implements OnInit {
       stationary: [{ value: 0, disabled: false }],
       stationaryPaidAmountTotal: [{ value: 0, disabled: false }],
       status: [{ value: 0, disabled: false }],
-      paymentDate: [{ value: this.currentDate.toISOString().slice(0, 10), disabled: false }],
+      paymentDate: [this.datePipe.transform(new Date(), 'yyyy-MM-dd')],
       totalFee: [{ value: 0, disabled: true }],
       totalOtherPaidAmount: [{ value: 0, disabled: false }],
       totalOtherRemainningAmount: [{ value: 0, disabled: false }],
@@ -149,10 +151,10 @@ export class FeeReceiptInfoComponent implements OnInit {
 
     this.downloadReceipt = true;
     this.adminService.downloadReceipt(this.selectedStudentDetails.id)
-    .subscribe((res) => {
-      const blob = new Blob([res.body], {
-      });
-      FileSaver.saveAs(blob, res.headers.get('fileName'));
+      .subscribe((res) => {
+        const blob = new Blob([res.body], {
+        });
+        FileSaver.saveAs(blob, res.headers.get('fileName'));
 
         this.alertService.successAlert('');
         this.downloadReceipt = false;
