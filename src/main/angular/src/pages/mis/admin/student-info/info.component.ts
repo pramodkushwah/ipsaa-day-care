@@ -388,7 +388,8 @@ export class StudentInfoComponent implements OnInit {
     //     Number((Number(feeControlForm.controls['finalBaseFee'].value) * 3 * 0.18).toFixed(2))
     //   );
     // } else
-    if (feeControlForm.controls['formalSchool'].value) {
+    // || feeControlForm.controls['isGST'].value
+    if ( this.studentForm.get('programId').value === 622614691413790 ) {
       feeControlForm.controls['gstFee'].patchValue(
         Number((Number(feeControlForm.controls['finalAnnualFee'].value) * 0.18).toFixed(2))
       );
