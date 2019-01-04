@@ -13,7 +13,7 @@ declare const $: any;
 export class LoginComponent implements OnInit {
   user = {
     email: '',
-    password: 'ajay0211'
+    password: ''
   };
   token: string;
   password1: string;

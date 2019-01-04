@@ -172,6 +172,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   getStatsResult() {
+    console.log(this.selectedCenter);
+
     const object: any = {};
     if (this.selectedZone !== 'all') {
       object.zone = this.selectedZone.name;
@@ -183,8 +185,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       object.center = this.selectedCenter.code;
     }
     this.dashboardService.getStats(object).subscribe((response: any) => {
-      this.getMonthlyFee(object);
-      this.getQuarterlyFee(object);
+      this.getMonthlyFee(this.monthly);
+      this.getQuarterlyFee(this.quarterly);
       this.statsResult = response;
     });
   }
@@ -227,10 +229,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       object.center = this.selectedCenter.code;
     }
     this.adminService.viewPanel.next(false);
-    if (object) {
+    if (typeof(object)) {
       object = Object.assign(object, this.quarterly);
     } else {
-      object = Object.assign({}, this.quarterly);
+      object = Object.assign(Object, this.quarterly);
     }
     this.dashboardService.getFee(object).subscribe((response: any) => {
       this.quarterlyFee = response;

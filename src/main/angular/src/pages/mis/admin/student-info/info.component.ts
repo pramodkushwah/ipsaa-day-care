@@ -36,28 +36,15 @@ export class StudentInfoComponent implements OnInit {
   siblingGroup: any = {};
   paymentHistory: any[] = [];
   programId: any;
+  picFile: any;
   isIpsaaclub: boolean;
   disableGenerate: boolean;
+  formSave: boolean;
   @Input()
   set id(id: number) {
     if (id) {
       this.newStudent = false;
-      this.adminService.getStudentById(id).subscribe((student: any) => {
-        this.student = student;
-        this.studentForm.patchValue(student);
-        this.studentForm.controls['centerId'].patchValue(student.center.id);
-        this.studentForm.controls['groupId'].patchValue(student.group.id);
-        this.studentForm.controls['programId'].patchValue(student.program.id);
-        if (this.studentForm.contains('fee')) {
-          this.studentForm.controls['fee'].patchValue(student.fee);
-        }
-        if (this.student.program.id === 72932732558618) {
-          this.isIpsaaclub = true;
-        } else {
-          this.isIpsaaclub = false;
-        }
-        this.getPaymentHistory(student);
-      });
+      this.getStudentByid(id);
     } else {
       this.newStudent = true;
       this.isIpsaaclub = false;
@@ -90,6 +77,26 @@ export class StudentInfoComponent implements OnInit {
     this.studentForm = this.getStudentForm();
   }
 
+
+
+  getStudentByid(id) {
+    this.adminService.getStudentById(id).subscribe((student: any) => {
+      this.student = student;
+      this.studentForm.patchValue(student);
+      this.studentForm.controls['centerId'].patchValue(student.center.id);
+      this.studentForm.controls['groupId'].patchValue(student.group.id);
+      this.studentForm.controls['programId'].patchValue(student.program.id);
+      if (this.studentForm.contains('fee')) {
+        this.studentForm.controls['fee'].patchValue(student.fee);
+      }
+      if (this.student.program.id === 72932732558618) {
+        this.isIpsaaclub = true;
+      } else {
+        this.isIpsaaclub = false;
+      }
+      this.getPaymentHistory(student);
+    });
+  }
   getStudentForm() {
     return this.fb.group({
       firstName: ['', [Validators.required]],
@@ -187,7 +194,7 @@ export class StudentInfoComponent implements OnInit {
       transportFee: [0],
       uniformCharges: [0],
       stationary: [0],
-      comment: ['', [Validators.required]],
+      comment: [''],
       gstFee: [0],
       baseFeeGst: [0],
       finalFee: [0],
@@ -271,42 +278,69 @@ export class StudentInfoComponent implements OnInit {
   }
 
   uploadProfilePic(student: any, file: any) {
-    console.log('asdfdsf', file);
+    this.picFile = file;
     const formData = new FormData();
     formData.append('file', file);
-    if (file) {
+
+    if (!student.id) {
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function (e: any) {
+        console.log('its called');
+
+        $('#new-student-profile').attr('src', e.target.result);
+      };
+    } else {
       this.adminService.uploadStudentProfilePic(student.id, formData).subscribe(
         (response: any) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = function (e: any) {
-            $('#student-profile').attr('src', e.target.result);
-          };
-        },
-        (error: any) => {
-          this.alertService.errorAlert(error);
-        }
-      );
+          this.getStudentByid(student.id);
+        });
     }
+    // if (file) {
+    //   this.adminService.uploadStudentProfilePic(student.id, formData).subscribe(
+    //     (response: any) => {
+    //       const reader = new FileReader();
+    //       reader.readAsDataURL(file);
+    //       reader.onload = function (e: any) {
+    //         $('#student-profile').attr('src', e.target.result);
+    //       };
+    //     },
+    //     (error: any) => {
+    //       this.alertService.errorAlert(error);
+    //     }
+    //   );
+    // }
   }
 
   saveStudent() {
+    this.formSave = true;
     this.studentForm.value['dob'] = this.datePipe.transform(this.studentForm.controls['dob'].value, 'yyyy-MM-dd');
     if (this.studentForm.controls['id'].value) {
       this.adminService
         .updateStudent(this.studentForm.value)
         .subscribe((response: any) => {
           _.extend(this.student, response);
+          this.formSave = false;
           this.alertService.successAlert('Student Info Successfully updated.');
           this.adminService.viewPanel.next(false);
-        });
-    } else {
+        }, (err) => {
+          this.formSave = false;
+
+        });    } else {
       this.adminService
         .addStudent(this.studentForm.value)
         .subscribe((response: any) => {
           this.addStudent.emit(response);
+          this.formSave = false;
+          if (this.picFile) {
+            this.uploadProfilePic(response, this.picFile);
+          }
           this.alertService.successAlert('Student Info Successfully added.');
           this.adminService.viewPanel.next(false);
+        }, (err) => {
+          this.formSave = false;
+
         });
     }
   }
