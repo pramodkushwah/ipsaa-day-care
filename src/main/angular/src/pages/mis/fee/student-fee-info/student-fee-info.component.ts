@@ -106,6 +106,7 @@ export class StudentFeeInfoComponent implements OnInit {
         id: [0],
         name: [''],
       }),
+      isGST: [true],
       schoolName: [''],
       securityDeposit: [0],
       sgst: [''],
