@@ -1,9 +1,9 @@
 .table-responsive {
     height: inherit;
   }
-.card table.table{
+/* .card table.table{
   table-layout: fixed;
-}
+} */
   .card table tbody tr {
     cursor: pointer;
 }
@@ -36,4 +36,8 @@ tr.clickable {
 }
 tr.collapsed {
   background: white;
+}
+
+.card .table thead th {
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }

@@ -285,21 +285,21 @@ export class StaffInfoComponent implements OnInit {
       // for new staff add request
       console.log(this.staffForm.value);
       // delete this.staffForm.value['costCenter'];
-      delete this.staffForm.value['aadharNumber'];
-      delete this.staffForm.value['active'];
-      delete this.staffForm.value['approvalStatus'];
-      delete this.staffForm.value['attendanceEnabled'];
-      delete this.staffForm.value['biometricId'];
-      delete this.staffForm.value['eid'];
-      delete this.staffForm.value['employerName'];
-      delete this.staffForm.value['expectedHours'];
-      delete this.staffForm.value['expectedIn'];
-      delete this.staffForm.value['expectedOut'];
+      // delete this.staffForm.value['aadharNumber'];
+      // delete this.staffForm.value['active'];
+      // delete this.staffForm.value['approvalStatus'];
+      // delete this.staffForm.value['attendanceEnabled'];
+      // delete this.staffForm.value['biometricId'];
+      // delete this.staffForm.value['eid'];
+      // delete this.staffForm.value['employerName'];
+      // delete this.staffForm.value['expectedHours'];
+      // delete this.staffForm.value['expectedIn'];
+      // delete this.staffForm.value['expectedOut'];
       // delete this.staffForm.value['reportingManagerName'];
-      delete this.staffForm.value['payrollEnabled'];
-      delete this.staffForm.value['name'];
-      delete this.staffForm.value['mode'];
-      delete this.staffForm.value['id'];
+      // delete this.staffForm.value['payrollEnabled'];
+      // delete this.staffForm.value['name'];
+      // delete this.staffForm.value['mode'];
+      // delete this.staffForm.value['id'];
 
       this.adminService.addStaff(this.staffForm.value).subscribe(res => {
           this.formSave = false;

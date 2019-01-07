@@ -15,8 +15,7 @@
     background-color: rgba(180, 180, 180, 0.3);
   }
   .username{
-    color: white !important;
-    position: relative;
+    padding: 5px 10px;
   }
   .photo {
     width: 34px;
@@ -35,77 +34,29 @@
   }
 
   a {
-    text-align: center;
+    
     color: #fff;
-    text-align: center;
+    text-align: left;
     display: block;
     white-space: nowrap;
-
-    span{
-      float: left;
-      margin-top: 5px;
-    }
-    .caret{
-      margin-left: 110px;
-      margin-top: 8px;
+  .caret{
+      margin-left: 70px;
+      
     }
   }
   .user-info{
-    .collapse{
 
-      
+    .collapse{
+      display: none;
+      &.show{
+        display: block;
+      }
       .show{
         background-color: rgba(180, 180, 180, 0.3);
       }
-      ul{
-        li{
-          display: inline-block;
-          width: 100%;
-         
-            a{
-              display: inline-block;
-              width: -webkit-fill-available;
-              clear: both;
-              
-              
-            }
-        }
-      }
+
     }
   
-    .collapsing {
-        position: relative;
-        height: auto;
-        overflow: visible;
-        transition: height 0.35s ease;
-
-        // .show{
-        //   background-color: rgba(180, 180, 180, 0.3);
-        // }
-        // ul{
-        //   li{
-        //     display: inline-block;
-        //     width: 100%;
-        //     line-height: normal;
-        //       a{
-        //         display: inline-block;
-        //         width: -webkit-fill-available;
-        //         /* height: auto; */
-        //         padding: 10px 10px;
-        //         clear: both;
-        //         /* float: left; */
-        //         text-align: center;
-        //         line-height: normal;
-        //         span{
-        //           width: 100%;
-        //           text-align: center;
-        //           line-height: normal;
-        //         }
-        //       }
-        //   }
-        // }
-
-    }
   }
 
 
@@ -113,14 +64,14 @@
 }
 
 
-.sidebar{
-  .sidebar-background{
-    &:after{
-      background: #000 !important;
-      opacity: 0.8 !important;
-    }
-  }
+// .sidebar{
+//   .sidebar-background{
+//     &:after{
+//       background: #000 !important;
+//       opacity: 0.8 !important;
+//     }
+//   }
 
 
 
-}
+// }

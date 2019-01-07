@@ -7,6 +7,9 @@
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" (click)="changeTab('FollowUps');" href="#FollowUps">FollowUps</a>
     </li>
+    <!-- <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" (click)="changeTab('Website');" href="#Website">Website</a>
+    </li> -->
   </ul>
 </div>
 
@@ -23,7 +26,8 @@
       <h3 class="card-title">
         {{selectedTab}}
         <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="!loader"></i>
-        <button class="btn btn-primary btn-sm pull-right" (click)="loadInquiry(null)" *ngIf="selectedTab !== 'FollowUps' ">New Inquiry</button>
+        <button class="btn btn-primary btn-sm pull-right" (click)="loadInquiry(null)" *ngIf="selectedTab !== 'FollowUps' ">New
+          Inquiry</button>
       </h3>
       <div class="row">
         <div class="form-group ipsaa-form-group col-lg-4 col-md-4">
@@ -36,7 +40,8 @@
         <div class=" col-lg-4 col-md-4">
           <div class="form-group">
             <label for="exampleFormControlInput1">Search</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Search by Student Name.." (keyup)="searchStudent($event)">
+            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Search by Student Name.."
+              (keyup)="searchStudent($event)">
           </div>
         </div>
         <div *ngIf="selectedTab === 'FollowUps' " class="form-group ipsaa-form-group col-lg-4 col-md-4">
@@ -44,8 +49,8 @@
           <select class="form-control" id="filter" [(ngModel)]="filterBy" (ngModelChange)="getFollowUps()" name="filter">
             <option *ngFor=" let filterBy of filterFollowUps " [ngValue]="filterBy">{{filterBy.name}}</option>
           </select>
-  
-      </div>
+
+        </div>
       </div>
     </div>
 
@@ -66,14 +71,14 @@
 
             </colgroup>
             <thead class="text-primary">
-              <tr>
+              <!-- <tr> -->
                 <th>#</th>
                 <th>Child Name</th>
                 <th>Center</th>
                 <th>Program</th>
                 <th>Group</th>
                 <th>Fees offer</th>
-              </tr>
+              <!-- </tr> -->
             </thead>
             <tbody>
               <tr *ngFor=" let inquiry of  inquiries ">
@@ -91,7 +96,7 @@
 
         <div id="FollowUps" class="tab-pane fade">
           <br>
-        
+
           <br>
 
           <table class="table table-hover table-responsive ">
@@ -104,13 +109,13 @@
 
             </colgroup>
             <thead class="text-primary">
-              <tr>
+              <!-- <tr> -->
                 <th>Inquiry Number</th>
                 <th>Disposition</th>
                 <th>CallBack Date</th>
                 <th>CallBack Number</th>
                 <th>Comment</th>
-              </tr>
+              <!-- </tr> -->
             </thead>
             <tbody>
               <tr *ngFor=" let followUp of followUps ">
@@ -124,14 +129,63 @@
           </table>
         </div>
 
+
+        <div id="Website" class="tab-pane fade">
+          <br>
+
+          <br>
+
+          <table class="table table-hover table-responsive ">
+            <colgroup>
+              <col width="18%">
+              <col width="12%">
+              <col width="18%">
+              <col width="10%">
+              <col width="32%">
+              <col width="10%">
+            </colgroup>
+            <thead class="text-primary">
+              <!-- <tr> -->
+                <th>Name</th>
+                <th>Phone No.</th>
+                <th> Email Id</th>
+                <th>City</th>
+                <th> Message</th>
+                <th>Status</th>
+              <!-- </tr> -->
+            </thead>
+
+<!-- 
+            city: "[text - 549]"
+            id: 549681958855172
+            program: null
+            status: "New"
+            type: "C -->
+
+            <tbody>
+              <tr *ngFor=" let website of websiteInquiry ">
+                <td >{{website.name}}</td>
+                <td >{{website.phone}}</td>
+                <td >{{website.email}}</td>
+                <td >{{website.city}}</td>
+                <td >{{website.message | slice:0:20}}</td>
+                <td >
+                  <button type="button" class="btn btn-primary btn-sm" (click)="loadInquiry(website.id)">Add to inquiry</button>
+
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </div>
   </div>
 </div>
 
 <div *ngIf="InquiresDteailsShow">
-  
-  <app-inquirydetails [inquiryId]="selectedInquiryDetialsId" [currentTab]="selectedTab" ></app-inquirydetails>
+
+  <app-inquirydetails [inquiryId]="selectedInquiryDetialsId" [currentTab]="selectedTab"></app-inquirydetails>
 
 
 </div>
