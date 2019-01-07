@@ -65,7 +65,7 @@ export class StaffReportComponent implements OnInit {
       });
       FileSaver.saveAs(blob, response.headers.get('fileName'));
       this.alertService.successAlert('Staff Report Generated');
-    }, error => {
+    }, (err) => {
       this.disableGenerateButton = false;
     });
   }

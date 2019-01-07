@@ -75,6 +75,7 @@ export class GenerateFeeSlipComponent implements OnInit {
 
 
   generate() {
+    this.studentIds = {};
     this.downloadinData = false;
     this.alertService.loading.next(true);
     this.adminService.generateStudentFeeSlip({
@@ -86,7 +87,8 @@ export class GenerateFeeSlipComponent implements OnInit {
       this.alertService.loading.next(false);
       this.showtable = true;
       this.downloadinData = true;
-
+      this.ids = [];
+      this.selectAllStudent = false;
       this.studentDetails = res;
       this.studentDetailsCopy = res;
       this.allItems = res.slice(0);
@@ -94,6 +96,8 @@ export class GenerateFeeSlipComponent implements OnInit {
       this.alertService.loading.next(false);
       this.downloadinData = true;
       this.showtable = true;
+      this.ids = [];
+      this.selectAllStudent = false;
 
     });
 
@@ -127,7 +131,6 @@ export class GenerateFeeSlipComponent implements OnInit {
   showSidePanel(value: boolean, student: object) {
     this.viewPanel = value;
     this.mailPanel = false;
-
     this.selectedStudentDetails = (student) ? student : {};
     this.regenerateSlipForm = this.getRegenerateSlipForm();
     console.log(this.regenerateSlipForm.value);
@@ -371,6 +374,7 @@ export class GenerateFeeSlipComponent implements OnInit {
   sendMail() {
     this.adminService.sendEmails({ 'subject': this.eMailForm.value.subject, 'body': this.eMailForm.value.body, 'slipIds': this.ids })
       .subscribe((res: any) => {
+        this.ids = [];
         this.eMailForm.reset();
         this.alertService.successAlert('');
         this.showSidePanel(false, null);

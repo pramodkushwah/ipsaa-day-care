@@ -65,7 +65,7 @@
         <div class="card-footer">
           <div class="stats">
             <p class="card-category staff_cost m-0 p-0">Open: {{statsResult.openFollowups}} | Today :
-              {{statsResult.todayFollowups}} | Due :</p>
+              {{statsResult.todayFollowups}} | Due : {{statsResult.previousFollowups}}</p>
           </div>
 
           <div class="list_details">
@@ -142,7 +142,8 @@
         <div class="row">
           <div class="col-md-10 text-left">
             <div class="card-body-content">
-              <p class="card-category staff_cost m-0 p-0">Staff Cost : {{statsResult.staffCost}}</p>
+              <p class="card-category staff_cost m-0 p-0">Staff Cost : {{statsResult.staffCost |
+                indianCurrency:true:'1.1':false}}</p>
             </div>
           </div>
           <div class="col-md-2">
@@ -220,8 +221,8 @@
           <img alt="ipsaa_fee" src="/assets/img/ipsaa_club.png">
         </div>
         <p class="card-category">Ipsaa Club Fee</p>
-        <h3 class="card-title" *ngIf="monthlyFee.expectedFee">{{monthlyFee.expectedFee.ipssaFee ?
-          monthlyFee.expectedFee.ipssaFee : 0}}
+        <h3 class="card-title" *ngIf="monthlyFee.expectedFee">{{monthlyFee.expectedFee.ipssaFee |
+          indianCurrency}}
         </h3>
 
       </div>
@@ -265,7 +266,8 @@
           </div>
           <div class="stats">
             <a class="link" *ngIf="monthlyFee.collectedFee" (click)="getStudentFee(monthly.feeDuration)">Collected :
-              {{monthlyFee.collectedFee.ipssaFee?monthlyFee.collectedFee.ipssaFee:0}}</a>
+              {{monthlyFee.collectedFee.ipssaFee |
+                indianCurrency}}</a>
           </div>
         </div>
       </div>
@@ -281,8 +283,8 @@
           <img alt="fee" src="/assets/img/fee.png">
         </div>
         <p class="card-category">Quarterly Fee</p>
-        <h3 class="card-title" *ngIf="quarterlyFee.expectedFee">{{quarterlyFee.expectedFee.quarterly ?
-          quarterlyFee.expectedFee.quarterly : 0}}
+        <h3 class="card-title" *ngIf="quarterlyFee.expectedFee">{{quarterlyFee.expectedFee.quarterly |
+          indianCurrency}}
         </h3>
         <div class="row">
 
@@ -326,7 +328,8 @@
           <div class="stats">
             <a class="link" *ngIf="quarterlyFee.collectedFee" (click)="getStudentFee(quarterly.feeDuration) ; scroll(target)">Collected
               :
-              {{quarterlyFee.collectedFee.quarterly?quarterlyFee.collectedFee.quarterly:0}}</a>
+              {{quarterlyFee.collectedFee.quarterly |
+                indianCurrency}}</a>
           </div>
         </div>
       </div>
