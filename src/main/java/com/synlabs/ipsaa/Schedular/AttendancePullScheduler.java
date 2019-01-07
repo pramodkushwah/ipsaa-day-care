@@ -31,7 +31,7 @@ public class AttendancePullScheduler
   public void pullAttendance() throws ParseException, SQLException, IOException
   {
     logger.info("Pull attendance from Ipsaa attencance Database.");
-    Set<BioAttendance> bioAttendances = service.pullFromDatabase(LocalDate.now().minusDays(4).toDate());
+    Set<BioAttendance> bioAttendances = service.pullFromDatabase(LocalDate.now().minusDays(7).toDate());
     service.saveAttendance(bioAttendances, false);
   }
 }
