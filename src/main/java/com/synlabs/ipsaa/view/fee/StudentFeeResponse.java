@@ -42,7 +42,7 @@ public class StudentFeeResponse extends StudentSummaryResponse
   private BigDecimal  admissionCharges;
   private BigDecimal  securityDeposit;
   private BigDecimal gstAmount;
-  private boolean isGST;
+  private boolean isGst;
 
 
   public StudentFeeResponse(StudentFee studentfee)
@@ -50,11 +50,11 @@ public class StudentFeeResponse extends StudentSummaryResponse
     super(studentfee.getStudent());
     id = studentfee.getId();
     ///to check if the GST is to be calculated Or not
-    if(FeeUtilsV2.IPSAA_CLUB_REGULAR_PROGRAM_ID==studentfee.getStudent().getProgram().getId()
+    if(FeeUtilsV2.IPSAA_CLUB_REGULAR_PROGRAM_ID == studentfee.getStudent().getProgram().getId()
             || studentfee.getStudent().isFormalSchool())
-        isGST= true;
+        isGst= true;
     else
-      isGST= false;
+      isGst= false;
     this.finalFee = studentfee.getFinalFee();
     this.comment = studentfee.getComment();
     this.discount = studentfee.getDiscount() == null ? new BigDecimal(0) : studentfee.getDiscount();
@@ -298,4 +298,10 @@ public class StudentFeeResponse extends StudentSummaryResponse
   {
     return found;
   }
+
+  public boolean getIsGst() { return isGst; }
+
+  public void setIsGst(boolean isGst){ this.isGst=isGst; }
+
+
 }

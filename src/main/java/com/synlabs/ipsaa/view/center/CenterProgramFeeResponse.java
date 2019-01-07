@@ -14,9 +14,13 @@ public class CenterProgramFeeResponse implements Response
   private CenterResponse  center;
 
   private Integer fee;
+  private Integer baseFee;    // due to angular 2
   private Integer deposit;
+  private Integer securityDeposit;  // due to angular 2
   private Integer annualFee;
   private Integer admissionFee;
+  private Integer admissionCharges;   // due to angular 2
+
 
   private BigDecimal cgst;
   private BigDecimal sgst;
@@ -31,8 +35,11 @@ public class CenterProgramFeeResponse implements Response
     }
     id= mask(centerProgramFee.getId());
     fee = centerProgramFee.getFee();
+    baseFee= centerProgramFee.getFee();
     admissionFee =centerProgramFee.getAddmissionFee()==null?0:centerProgramFee.getAddmissionFee().intValue();
+    admissionCharges =centerProgramFee.getAddmissionFee()==null?0:centerProgramFee.getAddmissionFee().intValue();
     deposit = centerProgramFee.getDeposit();
+    securityDeposit = centerProgramFee.getDeposit();
     annualFee = centerProgramFee.getAnnualFee();
     cgst = centerProgramFee.getCgst();
     sgst = centerProgramFee.getSgst();
@@ -117,4 +124,18 @@ public class CenterProgramFeeResponse implements Response
   public Long getId() { return id; }
 
   public void setId(Long id) { this.id = id; }
+
+  public Integer getSecurityDeposit() { return securityDeposit; }
+
+  public void setSecurityDeposit(Integer securityDeposit) {
+    this.deposit = securityDeposit;
+    this.securityDeposit = securityDeposit; }
+
+  public Integer getBaseFee() { return baseFee; }
+
+  public void setBaseFee(Integer baseFee) { this.baseFee = baseFee; }
+
+  public Integer getAdmissionCharges() { return admissionCharges; }
+
+  public void setAdmissionCharges(Integer admissionCharges) { this.admissionCharges = admissionCharges; }
 }
