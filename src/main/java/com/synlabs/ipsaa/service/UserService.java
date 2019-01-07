@@ -175,6 +175,10 @@ public class UserService extends BaseService implements UserDetailsService
   public User saveUser(UserRequest request)
   {
     validateUser(request);
+    User odlUser= userRepository.findByEmployeeId(request.getEmpId());
+    if(odlUser != null)
+      throw new ValidationException("The Employee assigned is a user already!!!!");
+
     User user = userRepository.findByEmail(request.getEmail());
     if (user != null)
     {
@@ -210,6 +214,13 @@ public class UserService extends BaseService implements UserDetailsService
     {
       throw new NotFoundException("Missing user");
     }
+
+    if(user.getEmployee().getId() != request.getEmpId()){
+      User isNew=userRepository.findByEmployeeId(request.getEmpId());
+      if(isNew != null)
+        throw new ValidationException("This employee is already a user!!");
+    }
+
 
     User byEmail = userRepository.findByEmail(request.getEmail());
     if (byEmail != null
@@ -253,6 +264,7 @@ public class UserService extends BaseService implements UserDetailsService
     {
       throw new ValidationException("User email is required.");
     }
+
   }
 
   private void putEmployee(UserRequest request, User user)
