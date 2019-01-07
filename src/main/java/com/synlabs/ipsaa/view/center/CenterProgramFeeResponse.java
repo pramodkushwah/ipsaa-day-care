@@ -15,6 +15,7 @@ public class CenterProgramFeeResponse implements Response
 
   private Integer fee;
   private Integer deposit;
+  private Integer securityDeposit;  // due to angular 2
   private Integer annualFee;
   private Integer admissionFee;
 
@@ -33,6 +34,7 @@ public class CenterProgramFeeResponse implements Response
     fee = centerProgramFee.getFee();
     admissionFee =centerProgramFee.getAddmissionFee()==null?0:centerProgramFee.getAddmissionFee().intValue();
     deposit = centerProgramFee.getDeposit();
+    securityDeposit = centerProgramFee.getDeposit();
     annualFee = centerProgramFee.getAnnualFee();
     cgst = centerProgramFee.getCgst();
     sgst = centerProgramFee.getSgst();
@@ -117,4 +119,10 @@ public class CenterProgramFeeResponse implements Response
   public Long getId() { return id; }
 
   public void setId(Long id) { this.id = id; }
+
+  public Integer getSecurityDeposit() { return securityDeposit; }
+
+  public void setSecurityDeposit(Integer securityDeposit) {
+    this.deposit = securityDeposit;
+    this.securityDeposit = securityDeposit; }
 }
