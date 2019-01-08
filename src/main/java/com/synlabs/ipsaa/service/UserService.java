@@ -215,7 +215,7 @@ public class UserService extends BaseService implements UserDetailsService
       throw new NotFoundException("Missing user");
     }
 
-    if(user.getEmployee().getId() != request.getEmpId()){
+    if(!user.getEmployee().getId() .equals(request.getEmpId()) ){
       User isNew=userRepository.findByEmployeeId(request.getEmpId());
       if(isNew != null)
         throw new ValidationException("This employee is already a user!!");
