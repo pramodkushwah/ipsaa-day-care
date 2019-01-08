@@ -1,11 +1,5 @@
 package com.synlabs.ipsaa.controller;
 
-import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.COLLECTION_FEE_REPORT;
-import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.FEE_REPORT;
-import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.INQUIRY_REPORT;
-import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.STAFF_ATTENDANCE_REPORT;
-import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.STD_ATTENDANCE_REPORT;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -41,6 +35,8 @@ import com.synlabs.ipsaa.view.fee.StudentFeeSlipResponse2;
 import com.synlabs.ipsaa.view.fee.StudentFeeSlipResponse3;
 import com.synlabs.ipsaa.view.inquiry.InquiryReportRequest;
 import com.synlabs.ipsaa.view.staff.StaffFilterRequest;
+
+import static com.synlabs.ipsaa.auth.IPSAAAuth.Privileges.*;
 
 @RestController
 @RequestMapping("/api/report/")
@@ -268,7 +264,7 @@ public class ReportController {
 
 	// shubham staff collection
 	@PostMapping("staffCollection/excel")
-	@Secured(COLLECTION_FEE_REPORT)
+	@Secured(STAFF_SALARY_REPORT)
 	public void staffCollectionExcel(HttpServletResponse response, @RequestBody StaffFilterRequest staffRequest)
 			throws IOException {
 		// modifiy by shubham
@@ -289,7 +285,7 @@ public class ReportController {
 	}
 
 	@PostMapping("staff/excel")
-	@Secured(COLLECTION_FEE_REPORT)
+	@Secured(STAFF_SALARY_REPORT)
 	public void staffExcel(HttpServletResponse response, @RequestBody StaffFilterRequest staffRequest)
 			throws IOException {
 		// modifiy by shubham

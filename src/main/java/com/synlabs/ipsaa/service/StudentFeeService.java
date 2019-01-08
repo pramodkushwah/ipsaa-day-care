@@ -358,7 +358,7 @@ public class StudentFeeService extends BaseService{
                 slip.setFinalFee(slip.getTotalFee());
                 slip.setTotalFee(slip.getTotalFee().add(balance));
 
-                  // expiring all old slips
+                  // expiring first old slip
                      if(lastQuarterSlip!=null && !lastQuarterSlip.isExpire()){
                         lastQuarterSlip.setExpire(true);
                         feePaymentRepository.saveAndFlush(lastQuarterSlip);

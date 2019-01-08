@@ -98,7 +98,7 @@ public class FeeUtilsV2 {
 			finalRatio = THREE;
 		}
 		fee.setFinalTransportFee(fee.getTransportFee().multiply(finalRatio));
-// need to chnage fee ratio with 3
+		// need to chnage fee ratio with 3
 		fee.setFinalBaseFee(calculateDiscountAmmount(fee.getBaseFee(), fee.getBaseFeeDiscount(),
 				fee.getFinalBaseFee().divide(THREE, 2, BigDecimal.ROUND_CEILING), "Base Fee"));
 
