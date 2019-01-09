@@ -28,7 +28,7 @@ text-transform: capitalize;
 }
 
 .form-control {
-  border: solid 1px #ddd;
+  border: solid 1px #ddd !important;
   background: white;
   padding: 0 0 0 10px;
   font-weight: lighter;
@@ -44,11 +44,11 @@ select.form-control {
     background-image: inherit !important;
     -webkit-appearance: menulist-button !important;
   }
-
+/* 
 input[type=date]::-webkit-calendar-picker-indicator {
     -webkit-appearance: none !important;
     display: none !important;
-}
+} */
 input[type=date]::-webkit-inner-spin-button {
     height: 100%;
 }

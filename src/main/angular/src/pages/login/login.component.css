@@ -40,3 +40,15 @@
   position: static !important;
   margin: 4px 7px 0 0 !important;
 }
+.card-login .input-group .form-group {
+  max-width: 80%;
+  width: 100%;
+}
+.card-login .input-group .form-group .control-label{
+  margin-top: 0;
+  top: -10px;
+  font-size: 12px;
+}
+.card-login .input-group .form-group .form-control{
+  margin-top: 10px;
+}
