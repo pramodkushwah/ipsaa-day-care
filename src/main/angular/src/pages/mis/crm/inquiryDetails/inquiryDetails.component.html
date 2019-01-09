@@ -83,7 +83,7 @@
           <div class="form-group ipsaa-form-group col-md-2">
             <div class="form-group ipsaa-form-group">
               <label class="control-label">Inquiry Date (YYYY-MM-DD)</label>
-              <input class="form-control " type="date" required name="inquiryDate"
+              <input class="form-control "  required name="inquiryDate"
                 formControlName="inquiryDate">
             </div>
           </div>
@@ -206,7 +206,7 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <div *ngIf="tab ==='Inquiry'" class="form-group">
+            <div *ngIf="tab ==='Inquiry' || 'Website'" class="form-group">
               <legend>Call Log</legend>
             </div>
             <div *ngIf="tab ==='FollowUps'" class="form-group">
@@ -233,7 +233,7 @@
             <div class="row">
               <div class="form-group ipsaa-form-group col-md-4">
                 <div class="form-group ipsaa-form-group">
-                  <label class="control-label">Callback Date (YYYY-MM-DD)</label>
+                  <label class="control-label">Callback Date </label>
                   <input type="date" [ngModelOptions]="{standalone: true}" [(ngModel)]="log.callBackDate" class="form-control datepicker"
                     id="callBackDate" [disabled]="log.callDisposition ===''" name="callBackDate">
                 </div>

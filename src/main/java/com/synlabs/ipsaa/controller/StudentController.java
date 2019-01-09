@@ -37,6 +37,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -114,11 +115,14 @@ public class StudentController
 
   @GetMapping(path = "checkPending/{id}")
   @Secured(STUDENT_DELETE)
-  public boolean checkPending(@PathVariable Long id)
+  public Map<String,Boolean> checkPending(@PathVariable Long id)
   {
+    Map<String,Boolean> map= new HashMap<>();
     StudentRequest request = new StudentRequest();
     request.setId(id);
-    return studentService.checkPending(request);
+    boolean istrue=studentService.checkPending(request);
+    map.put("isPending",istrue);
+    return map;
   }
   @DeleteMapping(path = "{id}/forced")
   @Secured(STUDENT_DELETE)

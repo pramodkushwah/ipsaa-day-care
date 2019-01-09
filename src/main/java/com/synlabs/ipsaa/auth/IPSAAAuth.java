@@ -116,5 +116,7 @@ public final class IPSAAAuth
 
     public static final String HOLIDAY_WRITE="ROLE_HOLIDAY_WRITE";
 
+    public static final String STAFF_SALARY_REPORT="ROLE_STAFF_SALARY_REPORT";
+
   }
 }

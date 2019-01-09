@@ -1836,11 +1836,16 @@ public class StudentService extends BaseService {
 		if (student == null) {
 			throw new NotFoundException(String.format("Cannot locate student with id %s", request.getId()));
 		}
+
+		if(student.isCorporate()){
+			return false;
+		}
+
 		StudentFeePaymentRequest slip = studentFeeService.getStudentBalance(student);
 		if (slip != null)
 			if ((slip.getBalance() != null && slip.getBalance().intValue() > 0) || !slip.getPaymentStatus().equals(PaymentStatus.Paid)) {
 				return true;
 			}
-			return false;
+		return false;
 	}
 }

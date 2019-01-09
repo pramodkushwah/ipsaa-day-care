@@ -40,10 +40,12 @@ export class StudentInfoComponent implements OnInit {
   isIpsaaclub: boolean;
   disableGenerate: boolean;
   formSave: boolean;
+  ipsaaRagulerClub: any;
   @Input()
   set id(id: number) {
     if (id) {
       this.newStudent = false;
+      this.studentForm = this.getStudentForm();
       this.getStudentByid(id);
     } else {
       this.newStudent = true;
@@ -74,7 +76,7 @@ export class StudentInfoComponent implements OnInit {
     this.getCenters();
     this.getPrograms();
     this.getGroups();
-    this.studentForm = this.getStudentForm();
+    // this.studentForm = this.getStudentForm();
   }
 
 
@@ -82,6 +84,7 @@ export class StudentInfoComponent implements OnInit {
   getStudentByid(id) {
     this.adminService.getStudentById(id).subscribe((student: any) => {
       this.student = student;
+this.ipsaaRagulerClub = student.program.id;
       this.studentForm.patchValue(student);
       this.studentForm.controls['centerId'].patchValue(student.center.id);
       this.studentForm.controls['groupId'].patchValue(student.group.id);
@@ -195,7 +198,9 @@ export class StudentInfoComponent implements OnInit {
       uniformCharges: [0],
       stationary: [0],
       comment: [''],
+      gstAmount: [0],
       gstFee: [0],
+      isGST: [],
       baseFeeGst: [0],
       finalFee: [0],
       formalSchool: [false]
@@ -226,6 +231,7 @@ export class StudentInfoComponent implements OnInit {
   }
 
   getFee(programId: number) {
+    this.ipsaaRagulerClub = programId;
     if (programId && this.studentForm.controls['centerId'].value) {
       if (programId === 72932732558618) {
         this.isIpsaaclub = true;
@@ -253,21 +259,22 @@ export class StudentInfoComponent implements OnInit {
 
             feeControlForm.patchValue(response);
             console.log(feeControlForm.value);
-            feeControlForm.controls['finalBaseFee'].patchValue(response.baseFee); // Final Monthly Fees
-            feeControlForm.controls['finalAnnualFee'].patchValue(
-              response.annualFee
+            feeControlForm.controls['finalBaseFee'].patchValue('');
+            // response.baseFee); // Final Monthly Fees
+            feeControlForm.controls['finalAnnualFee'].patchValue(''
+              // response.annualFee
             );
-            feeControlForm.controls['finalAdmissionCharges'].patchValue(
-              response.admissionCharges
+            feeControlForm.controls['finalAdmissionCharges'].patchValue(''
+              // response.admissionCharges
             );
-            feeControlForm.controls['finalSecurityDeposit'].patchValue(
-              response.securityDeposit
+            feeControlForm.controls['finalSecurityDeposit'].patchValue(''
+              // response.securityDeposit
             );
             feeControlForm.patchValue({
-              discountAnnualCharges: 0,
-              discountAdmissionCharges: 0,
-              discountBaseFee: 0,
-              discountSecurityDeposit: 0
+              discountAnnualCharges: '',
+              discountAdmissionCharges: '',
+              discountBaseFee: '',
+              discountSecurityDeposit: ''
             });
             const sprogram = this.programs.find(program => program.id === programId);
             this.groups = (sprogram) ? sprogram.groups : [];
@@ -327,7 +334,8 @@ export class StudentInfoComponent implements OnInit {
         }, (err) => {
           this.formSave = false;
 
-        });    } else {
+        });
+    } else {
       this.adminService
         .addStudent(this.studentForm.value)
         .subscribe((response: any) => {
@@ -381,14 +389,17 @@ export class StudentInfoComponent implements OnInit {
   updateDiscount() {
     const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
     // if (typeof student !== 'undefined' && student.formalSchool) {
-    //   feeControlForm.controls['gstFee'].patchValue(
+    //   feeControlForm.controls['gstAmount'].patchValue(
     //     Number((Number(feeControlForm.controls['finalAnnualFee'].value) * 0.18).toFixed(2))
     //   ); // annual-fee-gst
     //   feeControlForm.controls['baseFeeGst'].patchValue(
     //     Number((Number(feeControlForm.controls['finalBaseFee'].value) * 3 * 0.18).toFixed(2))
     //   );
     // } else
-    if (feeControlForm.controls['formalSchool'].value) {
+    // || feeControlForm.controls['isGST'].value
+    console.log(this.ipsaaRagulerClub);
+
+    if (this.ipsaaRagulerClub === 622614691413790 || feeControlForm.controls['formalSchool'].value) {
       feeControlForm.controls['gstFee'].patchValue(
         Number((Number(feeControlForm.controls['finalAnnualFee'].value) * 0.18).toFixed(2))
       );

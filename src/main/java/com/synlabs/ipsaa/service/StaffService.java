@@ -223,10 +223,14 @@ public class StaffService extends BaseService {
 	public File getAllEmployees(StaffFilterRequest request) {
 
 		int month = request.getMonth();
-		if(month > LocalDate.now().getMonthOfYear()-1 )
+		LocalDate date=LocalDate.now();
+		int year;
+		if(month== 12 && month!=date.getMonthOfYear()){
+			year=date.getYear() -1;
+		}else if(month > LocalDate.now().getMonthOfYear() )
 			throw new ValidationException("Salary is not generated for this month");
-
-		int year = LocalDate.now().getYear();
+		else
+			year= LocalDate.now().getYear();
 
 		String employer = request.getEmployerCode();
 		List<Employee> list = new ArrayList<>();

@@ -4,6 +4,7 @@ import { AdminService } from '../../../../providers/admin/admin.service';
 import { AlertService } from '../../../../providers/alert/alert.service';
 import * as FileSaver from 'file-saver';
 import * as _ from 'underscore';
+import { DatePipe } from '@angular/common';
 
 declare const $: any;
 
@@ -23,7 +24,7 @@ export class FeeReceiptInfoComponent implements OnInit {
   mailPanel = false;
   recordPayment = false;
   downloadReceipt = false;
-  currentDate: Date;
+  // currentDate: Date;
   selectedStudentDetails: any = {};
   feePaymentForm: FormGroup;
   allItems: any;
@@ -37,9 +38,10 @@ export class FeeReceiptInfoComponent implements OnInit {
   constructor(
     private adminService: AdminService,
     private fb: FormBuilder,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private datePipe: DatePipe
   ) {
-    this.currentDate = new Date();
+    // this.currentDate = new Date();
     this.feePaymentForm = this.getReceiptForm();
   }
 
@@ -60,63 +62,63 @@ export class FeeReceiptInfoComponent implements OnInit {
   getReceiptForm() {
     return this.fb.group({
 
-      addmissionFeeDiscount: [{ value: '', disabled: false }],
-      addmissionPaidAmountTotal: [{ value: '', disabled: false }],
-      adjust: [{ value: '', disabled: false }],
-      admissionFee: [{ value: '', disabled: false }],
-      annualFee: [{ value: '', disabled: false }],
-      annualFeeDiscount: [{ value: '', disabled: false }],
-      annualPaidAmountTotal: [{ value: '', disabled: false }],
-      autoComments: [{ value: '', disabled: false }],
-      balance: [{ value: '', disabled: false }],
-      baseFee: [{ value: '', disabled: false }],
-      baseFeeDiscount: [{ value: '', disabled: false }],
-      cgst: [{ value: '', disabled: false }],
-      comments: [{ value: '', disabled: false }],
-      deposit: [{ value: '', disabled: false }],
-      depositFeeDiscount: [{ value: '', disabled: false }],
-      depositPaidAmountTotal: [{ value: '', disabled: false }],
-      extraCharge: [{ value: '', disabled: false }],
-      fee: [{ value: '', disabled: false }],
-      feeDuration: [{ value: '', disabled: false }],
-      feeRatio: [{ value: '', disabled: false }],
-      finalAdmissionFee: [{ value: '', disabled: false }],
-      finalAnnualCharges: [{ value: '', disabled: false }],
-      finalBaseFee: [{ value: '', disabled: false }],
-      finalDepositFee: [{ value: '', disabled: false }],
-      finalTransportFee: [{ value: '', disabled: false }],
-      fullName: [{ value: '', disabled: false }],
-      generateActive: [{ value: '', disabled: false }],
-      group: [{ value: '', disabled: false }],
-      gstAmount: [{ value: '', disabled: false }],
-      id: [{ value: '', disabled: false }],
-      igst: [{ value: '', disabled: false }],
-      invoiceDate: [{ value: '', disabled: false }],
-      latePaymentCharge: [{ value: '', disabled: false }],
-      month: [{ value: '', disabled: false }],
-      payableAmount: [{ value: '', disabled: true }],
-      payments: [{ value: '', disabled: false }],
-      program: [{ value: '', disabled: false }],
-      programPaidAmountTotal: [{ value: '', disabled: false }],
-      quarter: [{ value: '', disabled: false }],
-      sgst: [{ value: '', disabled: false }],
-      stationary: [{ value: '', disabled: false }],
-      stationaryPaidAmountTotal: [{ value: '', disabled: false }],
-      status: [{ value: '', disabled: false }],
-      paymentDate: [{ value: this.currentDate.toISOString().slice(0, 10), disabled: false }],
-      totalFee: [{ value: '', disabled: true }],
-      totalOtherPaidAmount: [{ value: '', disabled: false }],
-      totalOtherRemainningAmount: [{ value: '', disabled: false }],
-      totalPaidAmount: [{ value: '', disabled: false }],
-      transportFee: [{ value: '', disabled: false }],
-      transportPaidAmountTotal: [{ value: '', disabled: false }],
-      uniformCharges: [{ value: '', disabled: false }],
-      uniformPaidAmountTotal: [{ value: '', disabled: false }],
-      year: [{ value: '', disabled: false }],
-      finalFee: [{ value: '', disabled: false }],
-      paymentMode: [{ value: '', disabled: false }],
-      paidAmount: [{ value: '', disabled: false }],
-      txnid: [{ value: '', disabled: false }],
+      addmissionFeeDiscount: [{ value: 0, disabled: false }],
+      addmissionPaidAmountTotal: [{ value: 0, disabled: false }],
+      adjust: [{ value: 0, disabled: false }],
+      admissionFee: [{ value: 0, disabled: false }],
+      annualFee: [{ value: 0, disabled: false }],
+      annualFeeDiscount: [{ value: 0, disabled: false }],
+      annualPaidAmountTotal: [{ value: 0, disabled: false }],
+      autoComments: [{ value: 0, disabled: false }],
+      balance: [{ value: 0, disabled: false }],
+      baseFee: [{ value: 0, disabled: false }],
+      baseFeeDiscount: [{ value: 0, disabled: false }],
+      cgst: [{ value: 0, disabled: false }],
+      comments: [{ value: 0, disabled: false }],
+      deposit: [{ value: 0, disabled: false }],
+      depositFeeDiscount: [{ value: 0, disabled: false }],
+      depositPaidAmountTotal: [{ value: 0, disabled: false }],
+      extraCharge: [{ value: 0, disabled: false }],
+      fee: [{ value: 0, disabled: false }],
+      feeDuration: [{ value: 0, disabled: false }],
+      feeRatio: [{ value: 0, disabled: false }],
+      finalAdmissionFee: [{ value: 0, disabled: false }],
+      finalAnnualCharges: [{ value: 0, disabled: false }],
+      finalBaseFee: [{ value: 0, disabled: false }],
+      finalDepositFee: [{ value: 0, disabled: false }],
+      finalTransportFee: [{ value: 0, disabled: false }],
+      fullName: [{ value: 0, disabled: false }],
+      generateActive: [{ value: 0, disabled: false }],
+      group: [{ value: 0, disabled: false }],
+      gstAmount: [{ value: 0, disabled: false }],
+      id: [{ value: 0, disabled: false }],
+      igst: [{ value: 0, disabled: false }],
+      invoiceDate: [{ value: 0, disabled: false }],
+      latePaymentCharge: [{ value: 0, disabled: false }],
+      month: [{ value: 0, disabled: false }],
+      payableAmount: [{ value: 0, disabled: true }],
+      payments: [{ value: 0, disabled: false }],
+      program: [{ value: 0, disabled: false }],
+      programPaidAmountTotal: [{ value: 0, disabled: false }],
+      quarter: [{ value: 0, disabled: false }],
+      sgst: [{ value: 0, disabled: false }],
+      stationary: [{ value: 0, disabled: false }],
+      stationaryPaidAmountTotal: [{ value: 0, disabled: false }],
+      status: [{ value: 0, disabled: false }],
+      paymentDate: [this.datePipe.transform(new Date(), 'yyyy-MM-dd')],
+      totalFee: [{ value: 0, disabled: true }],
+      totalOtherPaidAmount: [{ value: 0, disabled: false }],
+      totalOtherRemainningAmount: [{ value: 0, disabled: false }],
+      totalPaidAmount: [{ value: 0, disabled: false }],
+      transportFee: [{ value: 0, disabled: false }],
+      transportPaidAmountTotal: [{ value: 0, disabled: false }],
+      uniformCharges: [{ value: 0, disabled: false }],
+      uniformPaidAmountTotal: [{ value: 0, disabled: false }],
+      year: [{ value: 0, disabled: false }],
+      finalFee: [{ value: 0, disabled: false }],
+      paymentMode: [{ value: 0, disabled: false }],
+      paidAmount: [{ value: 0, disabled: false }],
+      txnid: [{ value: 0, disabled: false }],
       // confirmed: [{ value: false, disabled: false }]
 
     });
@@ -149,10 +151,10 @@ export class FeeReceiptInfoComponent implements OnInit {
 
     this.downloadReceipt = true;
     this.adminService.downloadReceipt(this.selectedStudentDetails.id)
-    .subscribe((res) => {
-      const blob = new Blob([res.body], {
-      });
-      FileSaver.saveAs(blob, res.headers.get('fileName'));
+      .subscribe((res) => {
+        const blob = new Blob([res.body], {
+        });
+        FileSaver.saveAs(blob, res.headers.get('fileName'));
 
         this.alertService.successAlert('');
         this.downloadReceipt = false;

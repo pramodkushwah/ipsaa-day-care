@@ -358,7 +358,7 @@ public class StudentFeeService extends BaseService{
                 slip.setFinalFee(slip.getTotalFee());
                 slip.setTotalFee(slip.getTotalFee().add(balance));
 
-                  // expiring all old slips
+                  // expiring first old slip
                      if(lastQuarterSlip!=null && !lastQuarterSlip.isExpire()){
                         lastQuarterSlip.setExpire(true);
                         feePaymentRepository.saveAndFlush(lastQuarterSlip);
@@ -1058,7 +1058,7 @@ public class StudentFeeService extends BaseService{
         Calendar cal = Calendar. getInstance();
         int quarter=FeeUtilsV2.getQuarter(cal.get(Calendar.MONTH));
         int year=cal.get(Calendar.YEAR);
-        return feePaymentRepository.findOneByStudentAndFeeDurationAndQuarterAndYear(student,FeeDuration.Quarterly,quarter,year);
+        return feePaymentRepository.findOneByStudentAndFeeDurationAndIsExpireIsFalse(student,FeeDuration.Quarterly);
     }
 
     public PaymentHistoryResponce getStudentPaymentHistory(Long studentId) {

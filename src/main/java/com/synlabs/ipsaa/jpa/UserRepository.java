@@ -21,4 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long>
   long countDistinctByActiveTrueAndCentersIn(List<Center> centers);
 
   User findByEmployee(Employee currentEmployee);
+
+  User findByEmployeeId(Long id);
 }

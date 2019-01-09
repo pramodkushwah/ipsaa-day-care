@@ -62,19 +62,19 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">First Name : </label>
+                <label class="control-label">*First Name : </label>
                 <input class="form-control" [readonly]="!editable" value=" Pankaj" formControlName="firstName">
               </div>
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Last Name : </label>
+                <label class="control-label">*Last Name : </label>
                 <input class="form-control" [readonly]="!editable" value=" Kharetwal" formControlName="lastName">
               </div>
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Nick Name : </label>
+                <label class="control-label">*Nick Name : </label>
                 <input class="form-control" [readonly]="!editable" value=" Pankaj" formControlName="nickName">
               </div>
             </div>
@@ -82,7 +82,7 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Center : </label>
+                <label class="control-label">*Center : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="centerId" (ngModelChange)="getProgramsByCenter($event)">
                   <option *ngFor="let center of centers;let c = index;" [ngValue]="center.id"> {{center.name}}</option>
                 </select>
@@ -90,7 +90,7 @@
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Program : </label>
+                <label class="control-label">*Program : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="programId" (change)="getFee(programId)"
                   [(ngModel)]="programId">
                   <option value=""></option>
@@ -100,7 +100,7 @@
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Group : </label>
+                <label class="control-label">*Group : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="groupId">
                   <option value=""></option>
                   <option *ngFor="let group of groups;let c = index;" [ngValue]="group.id"> {{group.name}}</option>
@@ -111,7 +111,7 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Gender : </label>
+                <label class="control-label">*Gender : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="gender">
                   <option value=""></option>
                   <option value="Male">Boy</option>
@@ -121,7 +121,7 @@
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Blood Group : </label>
+                <label class="control-label">*Blood Group : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="bloodGroup">
                   <option value=""></option>
                   <option *ngFor="let bg of bloodGroups;">{{bg}}</option>
@@ -138,7 +138,7 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Familty Type : </label>
+                <label class="control-label">*Familty Type : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="familyType">
                   <option value=""></option>
                   <option value="Nuclear">Nuclear</option>
@@ -154,8 +154,8 @@
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Expected In : </label>
-                <input class="form-control" [readonly]="!editable" formControlName="expectedIn">
+                <label class="control-label">*Expected In :  (HH:MM)</label>
+                <input class="form-control" [readonly]="!editable"  placeholder="0-24" formControlName="expectedIn">
               </div>
             </div>
           </div>
@@ -169,8 +169,8 @@
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Expected Out : </label>
-                <input class="form-control" [readonly]="!editable" formControlName="expectedOut">
+                <label class="control-label">Expected Out : (HH:MM) </label>
+                <input class="form-control" [readonly]="!editable" placeholder="0-24" formControlName="expectedOut">
               </div>
             </div>
           </div>
@@ -277,13 +277,13 @@
               </div>
               <div class="col-lg-6">
                 <div class="form-group">
-                  <label class="control-label">First Name : </label>
+                  <label class="control-label">*First Name : </label>
                   <input class="form-control" [readonly]="!editable" value="Pankaj" formControlName="firstName">
                 </div>
               </div>
               <div class="col-lg-6">
                 <div class="form-group">
-                  <label class="control-label">Last Name : </label>
+                  <label class="control-label">*Last Name : </label>
                   <input class="form-control" [readonly]="!editable" value=" Kharetwal" formControlName="lastName">
                 </div>
               </div>
@@ -441,7 +441,7 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label">Final Annual Charges
+                  <label class="control-label">*Final Annual Charges
                   </label>
                   <input class="form-control" type="number" [readonly]="!editable" formControlName="finalAnnualFee"
                     required min="0" (keyup)="calculateDiscount('annualFee','finalAnnualFee', 'discountAnnualCharges')">
@@ -465,7 +465,7 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label">Final Admission Charges</label>
+                  <label class="control-label">*Final Admission Charges</label>
                   <input class="form-control" type="number" [readonly]="!editable" formControlName="finalAdmissionCharges"
                     required min="0" (keyup)="calculateDiscount('admissionCharges', 'finalAdmissionCharges', 'discountAdmissionCharges')"
                     [disabled]="!studentForm.controls.fee.controls.admissionCharges.value">
@@ -492,8 +492,8 @@
 
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label">Final Monthly Fees Amount</label>
-                  <input class="form-control" type="text" [readonly]="!editable" formControlName="finalBaseFee"
+                  <label class="control-label">*Final Monthly Fees Amount</label>
+                  <input class="form-control" type="number" [readonly]="!editable" formControlName="finalBaseFee"
                     required [disabled]="!studentForm.controls.fee.controls.baseFee.value" min="0" (keyup)="calculateDiscount('baseFee', 'finalBaseFee', 'discountBaseFee')">
                 </div>
               </div>
@@ -516,7 +516,7 @@
 
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label">Final Security Deposit Fees</label>
+                  <label class="control-label">*Final Security Deposit Fees</label>
                   <input class="form-control" type="number" [readonly]="!editable" formControlName="finalSecurityDeposit"
                     required [disabled]="!studentForm.controls.fee.controls.securityDeposit.value" min="0" (keyup)="calculateDiscount('securityDeposit', 'finalSecurityDeposit', 'discountSecurityDeposit')">
                 </div>

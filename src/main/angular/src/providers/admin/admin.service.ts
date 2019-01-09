@@ -583,6 +583,15 @@ export class AdminService {
   updateInquiry(updated_Inquiry_Details) {
     return this.api.put('api/inquiry/', updated_Inquiry_Details);
   }
+  // website inquiry
+
+  getWebInquiry() {
+    return this.api.get('api/inquiry/website');
+  }
+
+
+
+
 
   getIpsaaClubFeeSlips(code: string) {
     return this.api.post('api/student/ipsaaclub/feeslip/list', { 'centerCode': code });
@@ -613,10 +622,10 @@ export class AdminService {
   }
 
   resetParentAccount(parentId) {
-    return this.api.put('api/student/parent/resetPassword/', {'id': parentId});
+    return this.api.put('api/student/parent/resetPassword/', { 'id': parentId });
   }
 
-  createAccount(parentId){
+  createAccount(parentId) {
     return this.api.get('api/student/createParentAccount/' + parentId);
   }
 

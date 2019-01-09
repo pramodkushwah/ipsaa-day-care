@@ -3,6 +3,7 @@ package com.synlabs.ipsaa.service;
 import com.google.common.eventbus.EventBus;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
+import com.synlabs.ipsaa.config.Local;
 import com.synlabs.ipsaa.entity.center.Center;
 import com.synlabs.ipsaa.entity.staff.*;
 import com.synlabs.ipsaa.enums.LeaveStatus;
@@ -498,9 +499,28 @@ public class StaffLeaveService extends BaseService {
 //
 //      }
 
+
+    int year;
+    Calendar startYear= Calendar.getInstance();
+    Calendar endYear= Calendar.getInstance();
+
+    if(LocalDate.now().getMonthOfYear() <3){
+      startYear.set(LocalDate.now().getYear()-1,3,1);
+      endYear.set(LocalDate.now().getYear(),2,31);
+    }else{
+        startYear.set(LocalDate.now().getYear(),3,1);
+        endYear.set(LocalDate.now().getYear()+1,2,31);
+    }
+
+
+    System.out.println(LocalDate.fromCalendarFields(startYear).toDate()+" "+LocalDate.fromCalendarFields(endYear).toDate());
+    System.out.println(startYear.getTime()+" "+endYear.getTime());
      if(month == 0) {
+
+
        leaves= query.select(leave).from(leave)
-               .where(leave.date.month().between(1,12).and(leave.date.year().eq(LocalDate.now().getYear())))
+               .where(leave.date.goe(startYear.getTime()))
+               .where(leave.date.loe(endYear.getTime()))
                .where(leave.employee.active.isTrue())
                .where(leave.leaveStatus.eq(LeaveStatus.Approved))
                .orderBy(leave.employee.id.asc())
@@ -508,8 +528,12 @@ public class StaffLeaveService extends BaseService {
 
      }
      else{
+       if(month <3 )
+         year= LocalDate.now().getYear();
+       else
+         year=LocalDate.now().getYear() -1;
              leaves = query.select(leave).from(leave)
-                  .where(leave.date.month().eq(month).and(leave.date.year().eq(LocalDate.now().getYear())))
+                  .where(leave.date.month().eq(month).and(leave.date.year().eq(year)))
                   .where(leave.employee.active.isTrue())
                   .where(leave.leaveStatus.eq(LeaveStatus.Approved))
                   .orderBy(leave.employee.id.asc())
@@ -551,17 +575,35 @@ public class StaffLeaveService extends BaseService {
       QEmployeeLeave employeeLeave = QEmployeeLeave.employeeLeave;
 
       List<EmployeeLeave> leaves = new ArrayList<>();
+      Calendar startYear= Calendar.getInstance();
+      Calendar endYear= Calendar.getInstance();
+
+      if(LocalDate.now().getMonthOfYear() <3){
+        startYear.set(LocalDate.now().getYear()-1,3,1);
+        endYear.set(LocalDate.now().getYear(),2,31);
+      }else{
+        startYear.set(LocalDate.now().getYear(),3,1);
+        endYear.set(LocalDate.now().getYear()+1,2,31);
+      }
+
 
       if(month == 0){
         leaves= query.select(employeeLeave).from(employeeLeave)
-                .where(employeeLeave.employee.eid.eq(eid).and(employeeLeave.date.month().between(1,12)))
-                .where(employeeLeave.date.year().eq(LocalDate.now().getYear()))
+                .where(employeeLeave.employee.eid.eq(eid))
+                .where(employeeLeave.date.between(startYear.getTime(),endYear.getTime()))
                 .where(employeeLeave.leaveStatus.eq(LeaveStatus.Approved))
                 .orderBy(employeeLeave.date.asc())
                 .fetch();
       }else {
+        int year;
+        if(month < 3)
+          year=LocalDate.now().getYear();
+        else
+          year=LocalDate.now().getYear() -1;
+
         leaves = query.select(employeeLeave).from(employeeLeave)
-                .where(employeeLeave.date.month().eq(month).and(employeeLeave.date.year().eq(LocalDate.now().getYear())))
+                .where(employeeLeave.date.month().eq(month))
+                .where(employeeLeave.date.year().eq(year))
                 .where(employeeLeave.employee.eid.eq(eid))
                 .where(employeeLeave.leaveStatus.eq(LeaveStatus.Approved))
                 .orderBy(employeeLeave.date.asc())

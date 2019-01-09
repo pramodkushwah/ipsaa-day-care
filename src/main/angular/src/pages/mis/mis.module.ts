@@ -10,6 +10,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { PagerService } from '../../providers/pagination/pager.service';
 import { AdminModule } from './admin/admin.module';
 import { FeeModule } from './fee/fee.module';
+import { IndianCurrency } from '../../providers/pipe/indianCurrency';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -19,7 +21,8 @@ import { FeeModule } from './fee/fee.module';
     AdminModule,
     FeeModule
   ],
-  declarations: [MISComponent, DashboardComponent],
+  declarations: [MISComponent,    IndianCurrency,
+    DashboardComponent],
   providers: [PagerService],
 })
 export class MISModule {}
