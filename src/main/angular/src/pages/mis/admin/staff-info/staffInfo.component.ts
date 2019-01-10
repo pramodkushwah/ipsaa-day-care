@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormGroup, FormBuilder, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { AdminService } from '../../../../providers/admin/admin.service';
@@ -13,15 +13,19 @@ declare let $: any;
   styleUrls: ['./staffInfo.component.css']
 })
 export class StaffInfoComponent implements OnInit {
+  @Output() addStaff: EventEmitter<any> = new EventEmitter<any>();
   paySlips: any = [];
   staff: any = {};
   editable: boolean;
   staffForm: FormGroup;
   newStaff: boolean;
   centers = [];
+  picFile: any;
   formSave: boolean;
   costCenters = [];
   allReportingManagers = [];
+  filterReportingManager = [];
+  searchEmpName: string;
   martialStatusOptions = ['Married', 'Unmarried', 'Widowed', 'Divorced'];
   months: any[] = [
     'Jan',
@@ -45,7 +49,7 @@ export class StaffInfoComponent implements OnInit {
     private fb: FormBuilder,
     private alertService: AlertService,
     private datePipe: DatePipe
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.staffForm = this.getStaffForm();
@@ -57,7 +61,6 @@ export class StaffInfoComponent implements OnInit {
 
   @Input()
   set id(id: number) {
-    console.log(id);
     if (id) {
       // if id exist then show staff details
       this.newStaff = false;
@@ -82,6 +85,7 @@ export class StaffInfoComponent implements OnInit {
     this.adminService.getStaffById(id).subscribe((staff: any) => {
       this.staff = staff;
       this.staffForm.patchValue(staff);
+      this.searchEmpName = this.staffForm.value.reportingManagerName;
       this.staffForm.controls['costCenterId'].patchValue(
         staff.costCenter ? staff.costCenter.id : ''
       );
@@ -112,38 +116,60 @@ export class StaffInfoComponent implements OnInit {
   getReportingManagers() {
     this.adminService.getStaff().subscribe(res => {
       res.forEach(staff => {
-          this.allReportingManagers.push({id: staff.id, name: staff.name});
-      });
-    });
-  }
-  setReportingManagerId() {
-    if (this.staffForm.value['reportingManagerName'] !== 'select') {
 
-      this.allReportingManagers.filter( staff => {
-        if (this.staffForm.value['reportingManagerName'] === staff.name) {
-          this.staffForm.controls['reportingManagerId'].patchValue(staff.id);
+        // this.staffList = this.allItems.filter(staff => {
+        //   console.log(status);
+
+        //   return staff.active === status;
+        if (staff.active === true) {
+          this.allReportingManagers.push({ id: staff.id, name: staff.name, designation: staff.designation });
+
         }
       });
-    } else {
-      this.staffForm.controls['reportingManagerId'].patchValue('');
-    }
+      console.log(this.allReportingManagers);
+
+      this.filterReportingManager = this.allReportingManagers;
+    });
+  }
+  setReportingManagerId(reportingManagerName) {
+    this.searchEmpName = reportingManagerName.name;
+    this.allReportingManagers.filter(staff => {
+      if (reportingManagerName.name === staff.name) {
+        this.staffForm.controls['reportingManagerId'].patchValue(staff.id);
+        this.staffForm.controls['reportingManagerName'].patchValue(staff.name);
+
+      }
+    });
+
   }
 
   hideViewPanel() {
     this.adminService.viewPanel.next(false);
   }
   uploadProfilePic(staff: any, file: any) {
+    this.picFile = file;
     const formData = new FormData();
     formData.append('file', file);
-    this.adminService
-      .updateStaffProfilePic(staff.id, formData)
-      .subscribe((response: any) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function(e: any) {
-          $('#staff-profile').attr('src', e.target.result);
-        };
-      });
+    if (!staff.id) {
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function (e: any) {
+        $('#new-Staff-profile').attr('src', e.target.result);
+      };
+    } else {
+      this.adminService
+        .updateStaffProfilePic(staff.id, formData)
+        .subscribe((response: any) => {
+          this.getStaff(staff.id);
+          // const reader = new FileReader();
+          // reader.readAsDataURL(this.picFile);
+          // reader.onload = function (e: any) {
+          //   $('#staff-profile').attr('src', e.target.result);
+          //   staff.staffImageData = e.target.result;
+          // };
+        });
+    }
   }
 
   getStaffForm() {
@@ -163,10 +189,10 @@ export class StaffInfoComponent implements OnInit {
       reportingManagerName: [null, Validators.required],
       name: [''],
       firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      lastName: [''],
       mobile: ['', [Validators.required]],
       secondaryNumbers: [''],
-      email: ['', [ Validators.email]],
+      email: ['', [Validators.email]],
       payrollEnabled: [''],
       attendanceEnabled: [''],
       designation: ['', Validators.required],
@@ -182,7 +208,6 @@ export class StaffInfoComponent implements OnInit {
       aadharNumber: [''],
       costCenterId: [null, Validators.required],
       mode: [''],
-      searchReportingManager: ['']
     });
   }
 
@@ -198,7 +223,7 @@ export class StaffInfoComponent implements OnInit {
         city: ['', Validators.required],
         state: ['', Validators.required],
         zipcode: ['', Validators.required],
-        phone: ['', Validators.required],
+        phone: [''],
         addressType: ['']
       }),
       permanentAddress: this.fb.group({
@@ -206,7 +231,7 @@ export class StaffInfoComponent implements OnInit {
         city: ['', Validators.required],
         state: ['', Validators.required],
         zipcode: ['', Validators.required],
-        phone: ['', Validators.required],
+        phone: [''],
         addressType: ['']
       }),
       pan: [''],
@@ -218,6 +243,8 @@ export class StaffInfoComponent implements OnInit {
       ifscCode: [''],
       bankName: [''],
       branchName: [''],
+      fatherName: [''],
+      spouseName: [''],
       holderName: [''],
       pState: ['']
     });
@@ -257,57 +284,71 @@ export class StaffInfoComponent implements OnInit {
     if (this.newStaff) {
       // for new staff add request
       console.log(this.staffForm.value);
-      delete this.staffForm.value['costCenter'];
-      delete this.staffForm.value['aadharNumber'];
-      delete this.staffForm.value['active'];
-      delete this.staffForm.value['approvalStatus'];
-      delete this.staffForm.value['attendanceEnabled'];
-      delete this.staffForm.value['biometricId'];
-      delete this.staffForm.value['eid'];
-      delete this.staffForm.value['employerName'];
-      delete this.staffForm.value['expectedHours'];
-      delete this.staffForm.value['expectedIn'];
-      delete this.staffForm.value['expectedOut'];
-      delete this.staffForm.value['reportingManagerName'];
-      delete this.staffForm.value['payrollEnabled'];
-      delete this.staffForm.value['name'];
-      delete this.staffForm.value['mode'];
-      delete this.staffForm.value['id'];
+      // delete this.staffForm.value['costCenter'];
+      // delete this.staffForm.value['aadharNumber'];
+      // delete this.staffForm.value['active'];
+      // delete this.staffForm.value['approvalStatus'];
+      // delete this.staffForm.value['attendanceEnabled'];
+      // delete this.staffForm.value['biometricId'];
+      // delete this.staffForm.value['eid'];
+      // delete this.staffForm.value['employerName'];
+      // delete this.staffForm.value['expectedHours'];
+      // delete this.staffForm.value['expectedIn'];
+      // delete this.staffForm.value['expectedOut'];
+      // delete this.staffForm.value['reportingManagerName'];
+      // delete this.staffForm.value['payrollEnabled'];
+      // delete this.staffForm.value['name'];
+      // delete this.staffForm.value['mode'];
+      // delete this.staffForm.value['id'];
 
       this.adminService.addStaff(this.staffForm.value).subscribe(res => {
-        if (res.error) {
           this.formSave = false;
-          this.alertService.errorAlert(res.error);
-        } else {
-          this.formSave = false;
-this.staffForm.reset();
+          this.staffForm.reset();
+          this.addStaff.emit(res);
           this.alertService.successAlert('New Staff Added');
-        }
+          this.hideViewPanel();
+          if (this.picFile) {
+            this.uploadProfilePic(res, this.picFile);
+          }
+      }, error => {
+        this.formSave = false;
       });
     } else {
-      // for update staff record
       this.staffForm.controls['mode'].patchValue('Edit');
       this.adminService.updateStaff(this.staffForm.value).subscribe(res => {
-        if (res.error) {
-          this.formSave = false;
-
-          this.alertService.errorAlert(res.error);
-        } else {
-          this.formSave = false;
-
-          this.alertService.successAlert('Staff Details Updated');
-        }
+        this.formSave = false;
+        this.alertService.successAlert('Staff Details Updated');
         this.id = null;
         this.staff = {};
         this.adminService.viewPanel.next(false);
+      }, error => {
+        this.formSave = false;
       });
     }
   }
+
+
+
+
 
   getPaySlipByEmployee(employeeId) {
     this.adminService.getPaySlipByEmoployee(employeeId).subscribe(response => {
       this.paySlips = response;
     });
+  }
+
+
+
+
+  searchManager(event) {
+    const val = event.target.value.toLowerCase();
+    if (val && val.trim() !== '') {
+      this.allReportingManagers = this.filterReportingManager.filter(employee => {
+        return employee.name.toLowerCase().startsWith(val);
+      });
+    } else {
+      this.allReportingManagers = this.filterReportingManager;
+    }
   }
 
 }

@@ -109,23 +109,33 @@ export class StudentComponent implements OnInit {
   }
 
   deleteStudentSwal(student: any) {
-    this.adminService.isFeePanding(student.id).subscribe((isPending: boolean) => {
-      if (isPending) {
-        this.alertService.confirm('As ' + student.fullName + ' Fee is still outstanding').then(isConfirm => {
-          if (isConfirm) {
-            this.adminService.deleteStudentForcefully(student.id).subscribe(response => {
-              this.allItems.splice(this.allItems.indexOf(student), 1);
-              this.setPage(1);
-              this.alertService.successAlert('Student successfully deleted');
-            });
-          }
-        });
+    this.adminService.isFeePanding(student.id).subscribe((res: any) => {
+      if (res.isPending) {
+        this.alertService
+          .confirm("As " + student.fullName + " Fee is still outstanding")
+          .then(isConfirm => {
+            if (isConfirm) {
+              this.adminService
+                .deleteStudentForcefully(student.id)
+                .subscribe(response => {
+                  this.allItems.splice(this.allItems.indexOf(student), 1);
+                  this.setPage(1);
+                  this.alertService.successAlert(
+                    "Student successfully deleted"
+                  );
+                });
+            }
+          });
       } else {
-        this.alertService.confirm('').then(isConfirm => {
+        this.alertService.confirm("").then(isConfirm => {
           if (isConfirm) {
-            this.adminService.deleteStudentById(student.id).subscribe((response: any) => {
-              this.alertService.successAlert('You have deleted student record successfully');
-            });
+            this.adminService
+              .deleteStudentById(student.id)
+              .subscribe((response: any) => {
+                this.alertService.successAlert(
+                  "You have deleted student record successfully"
+                );
+              });
           }
         });
       }

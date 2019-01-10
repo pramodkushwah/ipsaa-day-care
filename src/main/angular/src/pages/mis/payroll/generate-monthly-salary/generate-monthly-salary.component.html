@@ -26,22 +26,26 @@
     </div>
   </div>
   <div class="col-lg-3">
-    <button class="btn btn-primary" (click)="getPayslips()" [disabled]="genrateSalaryLoader">
+    <button class="btn btn-primary"  (click)="getPayslips()" [disabled]="genrateSalaryLoader">
       <i class="fa fa-spinner fa-fw fa-pulse" *ngIf="genrateSalaryLoader"></i>
       Generate
     </button>
   </div>
+  <!-- data-toggle="modal" data-target="#errorPageResponse" -->
 </div>
-<div class="row" *ngIf="salaryListCopy.length">
+<div class="row" *ngIf="showTable">
   <div [class]="viewPanel?'col-lg-6':'col-lg-12'">
     <div class="card">
       <div class="card-header card-header-warning card-header-icon">
         <div class="card-icon">
           <i class="material-icons">content_copy</i>
         </div>
-        <h3 class="card-title">
+        <h3 class="card-title" *ngIf="salaryListCopy.length">
           Employee Monthly Salary
-          <input type="file" style="float: right" class="btn btn-info" (click)="getExcelFile($event)" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"> 
+          <div style="float: right">
+            <input type="file" class="btn btn-info" (change)="getExcelFile($event)" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"> 
+            <i class="fa fa-spinner fa-fw fa-pulse text-primary" [hidden]="!loader"></i>
+          </div>
           <div class=" no-border">
             <input  type="text" class="form-control" (keyup)="searchEmployee($event)" name="search"
               placeholder="search text goes here">
@@ -69,7 +73,7 @@
               <th>Net Salary</th>
               <th>Pay Slip</th>
             </thead>
-            <tbody>
+            <tbody *ngIf="salaryListCopy.length">
               <tr *ngFor="let salary of salaryList;">
                 <td>{{salary.empName}}</td>
                 <td>{{salary.ctc}}</td>
@@ -83,6 +87,11 @@
                 </td>
               </tr>
             </tbody>
+            <tfoot *ngIf="!salaryListCopy.length" style="border: 1px groove #e8e8e8;">
+              <tr>
+                <td colspan="7" class="text-center">No Content</td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
@@ -180,3 +189,41 @@
     </div>
   </div>
 </div>
+
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="errorPageResponse">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ungenerated Payslips</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="ungeneratedSalary">
+        <div class="table-responsive">
+          <table class="table table-shopping">
+              <thead>
+                  <tr>
+                    <th class="text-center">Error</th>
+                  </tr>
+              </thead>
+              <tbody *ngFor="let err of ungeneratedSalary.ungenerate;">
+                  <tr>
+                    <td class="text-center">{{err.error}}</td>
+                  </tr>
+              </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

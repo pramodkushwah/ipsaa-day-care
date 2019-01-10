@@ -52,7 +52,7 @@ export class StaffReportComponent implements OnInit {
 
     const req_body: any = {
       employerCode: this.selectedEmployer.code,
-      month: this.selectedMonth.moy
+      month: 0
     };
     if (this.selectedMonth) {
       req_body['month'] = this.selectedMonth.moy;
@@ -65,8 +65,7 @@ export class StaffReportComponent implements OnInit {
       });
       FileSaver.saveAs(blob, response.headers.get('fileName'));
       this.alertService.successAlert('Staff Report Generated');
-    }, error => {
-      this.alertService.errorAlert('Unbale to generate Staff Report');
+    }, (err) => {
       this.disableGenerateButton = false;
     });
   }

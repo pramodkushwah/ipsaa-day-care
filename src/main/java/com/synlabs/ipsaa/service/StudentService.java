@@ -965,11 +965,11 @@ public class StudentService extends BaseService {
         FeeDuration period = FeeDuration.valueOf(request.getPeriod());
         if (request.getCenterCode().equals("All")) {
             slips = feePaymentRepository
-                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(
+                    .findByStudentCorporateIsFalseAndStudentActiveIsTrueAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(
                             period, request.getQuarter(), request.getYear(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
         } else {
             slips = feePaymentRepository
-                    .findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(
+                    .findByStudentCorporateIsFalseAndStudentActiveIsTrueAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(
                             period, request.getQuarter(), request.getYear(),
                             request.getCenterCode(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
         }
@@ -1788,11 +1788,11 @@ public class StudentService extends BaseService {
 		FeeDuration period = FeeDuration.valueOf("Quarterly");
 		if (request.getCenterCode().equals("All")) {
 			slip2 = feePaymentRepository
-					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(
+					.findByStudentCorporateIsFalseAndStudentActiveIsTrueAndFeeDurationAndQuarterAndYearAndStudentProgramIdIsNot(
 							period, request.getQuarter(), request.getYear(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
 		} else {
 			slip2 = feePaymentRepository
-					.findByStudentCorporateIsFalseAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(
+					.findByStudentCorporateIsFalseAndStudentActiveIsTrueAndFeeDurationAndQuarterAndYearAndStudentCenterCodeAndStudentProgramIdIsNot(
 							period, request.getQuarter(), request.getYear(),
 							request.getCenterCode(),FeeUtilsV2.IPSAA_CLUB_PROGRAM_ID);
 		}
@@ -1836,11 +1836,16 @@ public class StudentService extends BaseService {
 		if (student == null) {
 			throw new NotFoundException(String.format("Cannot locate student with id %s", request.getId()));
 		}
+
+		if(student.isCorporate()){
+			return false;
+		}
+
 		StudentFeePaymentRequest slip = studentFeeService.getStudentBalance(student);
 		if (slip != null)
 			if ((slip.getBalance() != null && slip.getBalance().intValue() > 0) || !slip.getPaymentStatus().equals(PaymentStatus.Paid)) {
 				return true;
 			}
-			return false;
+		return false;
 	}
 }

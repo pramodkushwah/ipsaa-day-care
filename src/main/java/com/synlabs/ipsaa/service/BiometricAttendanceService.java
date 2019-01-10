@@ -13,6 +13,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
@@ -46,6 +48,8 @@ public class BiometricAttendanceService extends BaseService
   @Autowired
   private TaskExecutor taskExecutor;
 
+  private static final Logger logger=LoggerFactory.getLogger(BiometricAttendanceService.class);
+
   public InputStream pullAttendance(AttendancePullRequest request) throws SQLException, ParseException, IOException
   {
     if (request.getFrom() == null)
@@ -57,7 +61,7 @@ public class BiometricAttendanceService extends BaseService
       throw new ValidationException("From to is required.");
     }
     boolean dryRun = request.getDryRun() == null ? true : request.getDryRun();
-    Set<BioAttendance> bioAttendances = pullFromDatabase(request.getFrom(), request.getTo());
+    Set<BioAttendance> bioAttendances = pullFromDatabase(request.getFrom());
     List<EmployeeAttendance> employeeAttendances = saveAttendance(bioAttendances, dryRun);
     return export(employeeAttendances);
   }
@@ -107,26 +111,27 @@ public class BiometricAttendanceService extends BaseService
     return pis;
   }
 
-  public Set<BioAttendance> pullFromDatabase(Date from, Date to) throws SQLException
+  public Set<BioAttendance> pullFromDatabase(Date from) throws SQLException
   {
-    if (from.after(to))
-    {
-      Date temp = to;
-      to = from;
-      from = temp;
-    }
+//    if (from.after(to))
+//    {
+//      Date temp = to;
+//      to = from;
+//      from = temp;
+//    }
     LocalDate fromLocal = new LocalDate(from);
-    LocalDate toLocal = new LocalDate(to);
+//    LocalDate toLocal = new LocalDate(to);
 
     Connection connection = null;
     try
     {
-      String sql = String.format("select * from %s where LogDateTime > ? and LogDateTime < ?;", "payrol");
+      String sql = String.format("select * from %s where LogDateTime > ? ;", "payrol");
       connection = attendanceDataSource.getConnection();
       PreparedStatement stmt = connection.prepareStatement(sql);
       stmt.setDate(1, new java.sql.Date(fromLocal.toDate().getTime()));
-      stmt.setDate(2, new java.sql.Date(toLocal.toDate().getTime()));
+      System.out.println(stmt.toString());
       ResultSet resultSet = stmt.executeQuery();
+      logger.info("Attendances picked :"+resultSet.getFetchSize());
       Map<BioAttendance, List<Date>> map = new HashMap<>();
       while (resultSet.next())
       {
@@ -138,10 +143,12 @@ public class BiometricAttendanceService extends BaseService
             k -> new ArrayList<>()).add(dateTime);
 
       }
+      logger.info("Attendance to to synced are: "+map.size());
       map.forEach((k, v) -> {
         k.setList(v);
         k.updateClocking();
       });
+      logger.info("ID's fetched for updating:"+ map.keySet());
       return map.keySet();
     }
     finally
@@ -162,9 +169,12 @@ public class BiometricAttendanceService extends BaseService
 
       if (employee != null)
       {
-        EmployeeAttendance attendance = attendanceRepository
-            .findOneByAttendanceDateAndEmployee
-                (ba.getDate().toDate(), employee);
+        EmployeeAttendance attendance = null;
+        try {
+          attendance = attendanceRepository
+                  .findOneByAttendanceDateAndEmployee
+                          (ba.getDate().toDate(), employee);
+
         if (attendance == null)
         {
           attendance = new EmployeeAttendance();
@@ -175,21 +185,21 @@ public class BiometricAttendanceService extends BaseService
 
           if(attendance.getCheckin() == null)
             attendance.setCheckin(ba.getClockin());
+
+          if(attendance.getCheckout() == null)
+          attendance.setCheckout(ba.getClockout());
         }
         else{
           ////update timings
           attendance.setCheckout(ba.getClockout());
         }
-//        if (attendance.getCheckin() == null)
-//        {
-//          System.out.println(ba.getClockin());
-//          attendance.setCheckin(ba.getClockin());
-//        }
-//        if (attendance.getCheckout() == null)
-//        {
-//          attendance.setCheckout(ba.getClockout());
-//        }
         list.add(attendance);
+      }catch (Exception e){
+          e.printStackTrace();
+      }
+      }
+      else{
+        logger.info("Employee mot found for biometric:" + ba.getBiometricId());
       }
     });
     if (!dryRun)

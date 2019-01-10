@@ -4,7 +4,8 @@ import {
   FormGroup,
   FormBuilder,
   FormControl,
-  Validators
+  Validators,
+  FormArray
 } from '@angular/forms';
 import * as _ from 'underscore';
 import { AlertService } from '../../../../providers/alert/alert.service';
@@ -21,7 +22,7 @@ export class StudentInfoComponent implements OnInit {
   resetButton: boolean;
   editable: boolean;
   studentForm: FormGroup;
-  private programs: any[];
+  programs: any[];
   centers: any[];
   groups: any[];
   bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'NA'];
@@ -35,28 +36,17 @@ export class StudentInfoComponent implements OnInit {
   siblingGroup: any = {};
   paymentHistory: any[] = [];
   programId: any;
+  picFile: any;
   isIpsaaclub: boolean;
   disableGenerate: boolean;
+  formSave: boolean;
+  ipsaaRagulerClub: any;
   @Input()
   set id(id: number) {
     if (id) {
       this.newStudent = false;
-      this.adminService.getStudentById(id).subscribe((student: any) => {
-        this.student = student;
-        this.studentForm.patchValue(student);
-        this.studentForm.controls['centerId'].patchValue(student.center.id);
-        this.studentForm.controls['groupId'].patchValue(student.group.id);
-        this.studentForm.controls['programId'].patchValue(student.program.id);
-        if (this.studentForm.contains('fee')) {
-          this.studentForm.controls['fee'].patchValue(student.fee);
-        }
-        if (this.student.program.id === 72932732558618) {
-          this.isIpsaaclub = true;
-        } else {
-          this.isIpsaaclub = false;
-        }
-        this.getPaymentHistory(student);
-      });
+      this.studentForm = this.getStudentForm();
+      this.getStudentByid(id);
     } else {
       this.newStudent = true;
       this.isIpsaaclub = false;
@@ -86,9 +76,30 @@ export class StudentInfoComponent implements OnInit {
     this.getCenters();
     this.getPrograms();
     this.getGroups();
-    this.studentForm = this.getStudentForm();
+    // this.studentForm = this.getStudentForm();
   }
 
+
+
+  getStudentByid(id) {
+    this.adminService.getStudentById(id).subscribe((student: any) => {
+      this.student = student;
+this.ipsaaRagulerClub = student.program.id;
+      this.studentForm.patchValue(student);
+      this.studentForm.controls['centerId'].patchValue(student.center.id);
+      this.studentForm.controls['groupId'].patchValue(student.group.id);
+      this.studentForm.controls['programId'].patchValue(student.program.id);
+      if (this.studentForm.contains('fee')) {
+        this.studentForm.controls['fee'].patchValue(student.fee);
+      }
+      if (this.student.program.id === 72932732558618) {
+        this.isIpsaaclub = true;
+      } else {
+        this.isIpsaaclub = false;
+      }
+      this.getPaymentHistory(student);
+    });
+  }
   getStudentForm() {
     return this.fb.group({
       firstName: ['', [Validators.required]],
@@ -120,6 +131,10 @@ export class StudentInfoComponent implements OnInit {
       parents: this.fb.array([this.getParentData('Father'), this.getParentData('Mother')]),
       fee: this.getFeeField()
     });
+  }
+
+  get parentFormArray() {
+    return (<FormArray>this.studentForm.controls.parents).controls;
   }
 
   getProgramsByCenter(centerId: number) {
@@ -182,8 +197,10 @@ export class StudentInfoComponent implements OnInit {
       transportFee: [0],
       uniformCharges: [0],
       stationary: [0],
-      comment: ['', [Validators.required]],
+      comment: [''],
+      gstAmount: [0],
       gstFee: [0],
+      isGST: [],
       baseFeeGst: [0],
       finalFee: [0],
       formalSchool: [false]
@@ -214,6 +231,7 @@ export class StudentInfoComponent implements OnInit {
   }
 
   getFee(programId: number) {
+    this.ipsaaRagulerClub = programId;
     if (programId && this.studentForm.controls['centerId'].value) {
       if (programId === 72932732558618) {
         this.isIpsaaclub = true;
@@ -241,21 +259,22 @@ export class StudentInfoComponent implements OnInit {
 
             feeControlForm.patchValue(response);
             console.log(feeControlForm.value);
-            feeControlForm.controls['finalBaseFee'].patchValue(response.baseFee); // Final Monthly Fees
-            feeControlForm.controls['finalAnnualFee'].patchValue(
-              response.annualFee
+            feeControlForm.controls['finalBaseFee'].patchValue('');
+            // response.baseFee); // Final Monthly Fees
+            feeControlForm.controls['finalAnnualFee'].patchValue(''
+              // response.annualFee
             );
-            feeControlForm.controls['finalAdmissionCharges'].patchValue(
-              response.admissionCharges
+            feeControlForm.controls['finalAdmissionCharges'].patchValue(''
+              // response.admissionCharges
             );
-            feeControlForm.controls['finalSecurityDeposit'].patchValue(
-              response.securityDeposit
+            feeControlForm.controls['finalSecurityDeposit'].patchValue(''
+              // response.securityDeposit
             );
             feeControlForm.patchValue({
-              discountAnnualCharges: 0,
-              discountAdmissionCharges: 0,
-              discountBaseFee: 0,
-              discountSecurityDeposit: 0
+              discountAnnualCharges: '',
+              discountAdmissionCharges: '',
+              discountBaseFee: '',
+              discountSecurityDeposit: ''
             });
             const sprogram = this.programs.find(program => program.id === programId);
             this.groups = (sprogram) ? sprogram.groups : [];
@@ -266,42 +285,70 @@ export class StudentInfoComponent implements OnInit {
   }
 
   uploadProfilePic(student: any, file: any) {
-    console.log('asdfdsf', file);
+    this.picFile = file;
     const formData = new FormData();
     formData.append('file', file);
-    if (file) {
+
+    if (!student.id) {
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function (e: any) {
+        console.log('its called');
+
+        $('#new-student-profile').attr('src', e.target.result);
+      };
+    } else {
       this.adminService.uploadStudentProfilePic(student.id, formData).subscribe(
         (response: any) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = function (e: any) {
-            $('#student-profile').attr('src', e.target.result);
-          };
-        },
-        (error: any) => {
-          this.alertService.errorAlert(error);
-        }
-      );
+          this.getStudentByid(student.id);
+        });
     }
+    // if (file) {
+    //   this.adminService.uploadStudentProfilePic(student.id, formData).subscribe(
+    //     (response: any) => {
+    //       const reader = new FileReader();
+    //       reader.readAsDataURL(file);
+    //       reader.onload = function (e: any) {
+    //         $('#student-profile').attr('src', e.target.result);
+    //       };
+    //     },
+    //     (error: any) => {
+    //       this.alertService.errorAlert(error);
+    //     }
+    //   );
+    // }
   }
 
   saveStudent() {
+    this.formSave = true;
     this.studentForm.value['dob'] = this.datePipe.transform(this.studentForm.controls['dob'].value, 'yyyy-MM-dd');
     if (this.studentForm.controls['id'].value) {
       this.adminService
         .updateStudent(this.studentForm.value)
         .subscribe((response: any) => {
           _.extend(this.student, response);
+          this.formSave = false;
           this.alertService.successAlert('Student Info Successfully updated.');
           this.adminService.viewPanel.next(false);
+        }, (err) => {
+          this.formSave = false;
+
         });
     } else {
       this.adminService
         .addStudent(this.studentForm.value)
         .subscribe((response: any) => {
           this.addStudent.emit(response);
+          this.formSave = false;
+          if (this.picFile) {
+            this.uploadProfilePic(response, this.picFile);
+          }
           this.alertService.successAlert('Student Info Successfully added.');
           this.adminService.viewPanel.next(false);
+        }, (err) => {
+          this.formSave = false;
+
         });
     }
   }
@@ -342,14 +389,17 @@ export class StudentInfoComponent implements OnInit {
   updateDiscount() {
     const feeControlForm = <FormGroup>this.studentForm.controls['fee'];
     // if (typeof student !== 'undefined' && student.formalSchool) {
-    //   feeControlForm.controls['gstFee'].patchValue(
+    //   feeControlForm.controls['gstAmount'].patchValue(
     //     Number((Number(feeControlForm.controls['finalAnnualFee'].value) * 0.18).toFixed(2))
     //   ); // annual-fee-gst
     //   feeControlForm.controls['baseFeeGst'].patchValue(
     //     Number((Number(feeControlForm.controls['finalBaseFee'].value) * 3 * 0.18).toFixed(2))
     //   );
     // } else
-    if (feeControlForm.controls['formalSchool'].value) {
+    // || feeControlForm.controls['isGST'].value
+    console.log(this.ipsaaRagulerClub);
+
+    if (this.ipsaaRagulerClub === 622614691413790 || feeControlForm.controls['formalSchool'].value) {
       feeControlForm.controls['gstFee'].patchValue(
         Number((Number(feeControlForm.controls['finalAnnualFee'].value) * 0.18).toFixed(2))
       );
@@ -525,8 +575,8 @@ export class StudentInfoComponent implements OnInit {
 
   }
 
-  createAccount(parent:FormGroup) {
-    this.adminService.createAccount(parent.value.id).subscribe(response =>{
+  createAccount(parent: FormGroup) {
+    this.adminService.createAccount(parent.value.id).subscribe(response => {
       this.alertService.successAlert('Account created successfully!');
       parent.controls['account'].patchValue(true);
     });

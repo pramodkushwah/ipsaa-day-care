@@ -1,5 +1,6 @@
 package com.synlabs.ipsaa.view.inquiry;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.synlabs.ipsaa.entity.inquiry.WebsiteInquiry;
 import com.synlabs.ipsaa.entity.programs.Program;
 import com.synlabs.ipsaa.enums.FormType;
@@ -21,6 +22,9 @@ public class WebsiteInquiryResponse implements Response {
     private FormType type;
     private ProgramResponse program;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "IST")
+    private Date date;
+
     public WebsiteInquiryResponse(WebsiteInquiry inquiry){
 
         this.id=mask(inquiry.getId());
@@ -33,7 +37,7 @@ public class WebsiteInquiryResponse implements Response {
         this.type=inquiry.getFormType();
         if(inquiry.getProgram() !=null)
             this.program=new ProgramResponse(inquiry.getProgram());
-
+        date=inquiry.getCreatedDate().toDate();
     }
 
     public String getName() { return name; }
@@ -61,4 +65,6 @@ public class WebsiteInquiryResponse implements Response {
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
+
+    public Date getDate() { return date; }
 }

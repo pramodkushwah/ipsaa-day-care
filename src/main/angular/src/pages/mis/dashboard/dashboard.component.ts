@@ -14,8 +14,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   zones: any;
   cities: any;
   centers: any;
-  citiesCopy: any;
-  centersCopy: any;
+  citiesCopy: any = [];
+  centersCopy: any = [];
   statsResult: any = {};
   selectedZone: any = 'all';
   selectedCity: any = 'all';
@@ -140,12 +140,43 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
+  bySelectingZone() {
+    this.selectedCity = 'all';
+    this.selectedCenter = 'all';
+    if (this.selectedZone !== 'all') {
+      // this.cities = this.selectedZone.cities;
+      this.centers = this.centersCopy.filter(center => {
+        return center.zone === this.selectedZone.name;
+      });
+      this.cities.filter(city => {
+        return city.zone === this.selectedZone.name;
+      });
+    } else {
+      this.centers = this.centersCopy;
+      this.cities = this.citiesCopy;
+    }
+    this.getStatsResult();
+  }
+  bySelectingCity() {
+    this.selectedCenter = 'all';
+    if (this.selectedCity !== 'all') {
+      this.centers = this.centersCopy.filter(center => {
+        return center.city === this.selectedCity.name;
+      });
+    } else {
+      this.centers = this.centersCopy.filter(center => {
+        return center.zone === this.selectedZone.name;
+      });
+    }
+    this.getStatsResult();
+  }
+
   getStatsResult() {
+    console.log(this.selectedCenter);
+
     const object: any = {};
     if (this.selectedZone !== 'all') {
       object.zone = this.selectedZone.name;
-      this.cities = this.selectedZone.cities;
-      // this.getCenterByZone(this.selectedZone.name);
     }
     if (this.selectedCity !== 'all') {
       object.city = this.selectedCity.name;
@@ -154,8 +185,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       object.center = this.selectedCenter.code;
     }
     this.dashboardService.getStats(object).subscribe((response: any) => {
-      this.getMonthlyFee(object);
-      this.getQuarterlyFee(object);
+      this.getMonthlyFee(this.monthly);
+      this.getQuarterlyFee(this.quarterly);
       this.statsResult = response;
     });
   }
@@ -198,10 +229,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       object.center = this.selectedCenter.code;
     }
     this.adminService.viewPanel.next(false);
-    if (object) {
+    if (typeof(object)) {
       object = Object.assign(object, this.quarterly);
     } else {
-      object = Object.assign({}, this.quarterly);
+      object = Object.assign(Object, this.quarterly);
     }
     this.dashboardService.getFee(object).subscribe((response: any) => {
       this.quarterlyFee = response;
@@ -514,8 +545,19 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.tableIcon = '/assets/img/staff.png';
     this.tableData = [];
 
+    const object: any = {};
+    if (this.selectedZone !== 'all') {
+      object.zone = this.selectedZone.name;
+    }
+    if (this.selectedCity !== 'all') {
+      object.city = this.selectedCity.name;
+    }
+    if (this.selectedCenter !== 'all') {
+      object.center = this.selectedCenter.code;
+    }
 
-    this.dashboardService.getFilterStaff(fitlterBy)
+
+    this.dashboardService.getFilterStaff(fitlterBy, object)
       .subscribe((res: any) => {
 
         this.tableData = res;

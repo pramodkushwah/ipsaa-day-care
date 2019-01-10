@@ -66,7 +66,7 @@
           <div class="col-lg-6 col-md-6 col-sm-6">
             <div class="form-group">
               <label class="control-label">Payment Date (YYYY-MM-DD)</label>
-              <input class="form-control" required type="date" name="paymentDate" formControlName="paymentDate">
+              <input class="form-control" required  name="paymentDate" formControlName="paymentDate">
               <span class="material-input"></span>
             </div>
           </div>
@@ -189,21 +189,21 @@
         </tr>
         <tr>
           <th scope="row">Transport Fees </th>
-          <td>{{selectedStudentDetails.transportFee}}</td>
+          <td>{{selectedStudentDetails.finalTransportFee}}</td>
           <td>{{selectedStudentDetails.transportPaidAmountTotal}}</td>
-          <td>{{selectedStudentDetails.transportFee - selectedStudentDetails.transportPaidAmountTotal}}</td>
+          <td>{{selectedStudentDetails.finalTransportFee - selectedStudentDetails.transportPaidAmountTotal}}</td>
         </tr>
         <tr>
           <th scope="row">Annual Charges </th>
-          <td>{{selectedStudentDetails.annualFee}}</td>
+          <td>{{selectedStudentDetails.finalAnnualCharges}}</td>
           <td>{{selectedStudentDetails.annualPaidAmountTotal}}</td>
-          <td>{{selectedStudentDetails.annualFee - selectedStudentDetails.annualPaidAmountTotal}}</td>
+          <td>{{selectedStudentDetails.finalAnnualCharges - selectedStudentDetails.annualPaidAmountTotal}}</td>
         </tr>
         <tr>
           <th scope="row">Admission Charges </th>
-          <td>{{selectedStudentDetails.admissionFee}}</td>
+          <td>{{selectedStudentDetails.finalAdmissionFee}}</td>
           <td>{{selectedStudentDetails.addmissionPaidAmountTotal}}</td>
-          <td> {{selectedStudentDetails.admissionFee - selectedStudentDetails.addmissionPaidAmountTotal}}</td>
+          <td> {{selectedStudentDetails.finalAdmissionFee - selectedStudentDetails.addmissionPaidAmountTotal}}</td>
         </tr>
         <tr>
           <th scope="row">Base Fee </th>
@@ -213,9 +213,9 @@
         </tr>
         <tr>
           <th scope="row">Security Deposite Fee </th>
-          <td>{{selectedStudentDetails.deposit}}</td>
+          <td>{{selectedStudentDetails.finalDepositFee}}</td>
           <td>{{selectedStudentDetails.depositPaidAmountTotal}}</td>
-          <td>{{selectedStudentDetails.deposit - selectedStudentDetails.depositPaidAmountTotal}}</td>
+          <td>{{selectedStudentDetails.finalDepositFee - selectedStudentDetails.depositPaidAmountTotal}}</td>
         </tr>
         <tr>
           <th scope="row">Late Payment </th>

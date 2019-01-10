@@ -125,9 +125,6 @@
     </div>
   </div>
   <div class="col-lg-7" *ngIf="viewPanel">
-    <div class="card" id="staff_info">
-
-    </div>
-    <app-staff-info [id]="selectedStaff.id" [update]="update"></app-staff-info>
+    <app-staff-info [id]="selectedStaff.id" [update]="update" (addStaff)="pushStaff($event)"></app-staff-info>
   </div>
 </div>

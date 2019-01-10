@@ -23,7 +23,7 @@ export const ROUTES: RouteInfo[] = [
 })
 export class SidebarComponent implements OnInit {
   menuItems: any[];
-
+  loaded: any;
   menu: any = {};
   self: any = {};
   profileImageURI: string;

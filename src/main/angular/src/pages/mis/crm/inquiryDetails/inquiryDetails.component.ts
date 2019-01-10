@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { AdminService } from '../../../../providers/admin/admin.service';
 import { AlertService } from '../../../../providers/alert/alert.service';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -72,7 +73,8 @@ export class InquiryDetailsComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private adminService: AdminService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private datePipe: DatePipe
     ) { }
 
     @Input() set inquiryId(inquiryId: any) {
@@ -84,7 +86,7 @@ export class InquiryDetailsComponent implements OnInit {
         if (inquiryId) {
             this.loadInquiry(inquiryId);
         } else {
-            this.inquiryForm.get('inquiryDate').setValue('2018-12-21');
+            this.inquiryForm.get('inquiryDate').setValue(this.datePipe.transform(new Date(), 'yyyy-MM-dd'));
             this.inquiryForm.get('toTime').setValue(this.today.getHours() + ':' + this.today.getMinutes());
             this.inquiryForm.get('fromTime').setValue(this.today.getHours() + ':' + this.today.getMinutes());
         }
@@ -98,7 +100,7 @@ export class InquiryDetailsComponent implements OnInit {
         this.getCenter();
         this.getPrograms();
         const todayDate = new Date().toISOString().slice(0, 10);
-console.log(todayDate);
+        console.log(todayDate);
 
         // this.today.setDate(this.today.getDate());
         // console.log(this.today.setDate(this.today.getDate()));
@@ -150,7 +152,7 @@ console.log(todayDate);
             groupName: [''],
             hobbies: [''],
             id: [null],
-            inquiryDate: [{ value: this.today.toISOString().slice(0, 10), disabled: false }],
+            inquiryDate: [this.datePipe.transform(new Date(), 'yyyy-MM-dd')],
             inquiryNumber: [''],
             inquiryType: [''],
             leadSource: [''],
@@ -202,7 +204,7 @@ console.log(todayDate);
         this.log.callBack = ' ' + this.log.callBackDate + ' ' + this.log.callBackTime + ' ' + 'IST';
         this.inquiryForm.controls['log'].patchValue(this.log);
 
-console.log(this.log);
+        console.log(this.log);
 
         if (this.newInquiry) {
             this.inquiryForm.value['logs'] = this.inquiryDetails;

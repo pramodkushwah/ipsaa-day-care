@@ -45,14 +45,14 @@
         <div class="col-lg-3">
           <div class="form-group">
             <label class="control-label">Ctc*</label>
-            <input class="form-control" name="ctc" type="number" formControlName="ctc" (ngModelChange)="onChange();calculateBasic(salaryForm.value)">
+            <input class="form-control" name="ctc" type="number" formControlName="ctc" (ngModelChange)="calculateBasic(salaryForm.value);">
             <span class="material-input"></span>
           </div>
         </div>
         <div class="col-lg-3">
           <div class="form-group">
             <label class="control-label">Basic*</label>
-            <input class="form-control" name="basic" type="number" formControlName="basic" (ngModelChange)="onChange()">
+            <input class="form-control" name="basic" type="number" formControlName="basic" (ngModelChange)="onChange();">
             <span class="material-input"></span>
           </div>
         </div>

@@ -7,8 +7,9 @@
   <p class="card-category">Category subtitle</p> -->
     <div class="card-profile">
       <!-- <img *ngIf="(loaded&&student)" src="/assets/img/loading.gif" /> -->
-      <img *ngIf="!student.studentImageData" src="/assets/img/default-avatar.png" />
-      <img id="student-profile" *ngIf="student.studentImageData" [hidden]="!loaded" (load)="loaded = true" [src]="'data:image/PNG;base64,' + student.studentImageData" />
+      <img  id="new-student-profile" *ngIf="student && !student.studentImageData" src="/assets/img/default-avatar.png" />
+      <img id="student-profile" *ngIf=" student && student.studentImageData" [hidden]="!loaded" (load)="loaded = true"
+        [src]="'data:image/PNG;base64,' + student.studentImageData" />
     </div>
   </div>
   <div class="card-body">
@@ -16,8 +17,10 @@
       <span *ngIf="!newStudent">{{student.fullName}}</span>
       <span *ngIf="newStudent">New Student</span>
       <br>
-      <a href="" onclick="document.getElementById('upload').click(); return false" *ngIf="!newStudent">Update Profile
-        Pic</a>
+
+      <a href="" onclick="document.getElementById('upload').click(); return false" *ngIf="editable">
+        {{ newStudent ? 'Add Profile Pic' : 'Update Profile Pic' }}
+      </a>
       <input type="file" id="upload" name="upload" style="display: none" (change)="uploadProfilePic(student, $event.target.files['0'])" />
     </div>
     <div class="card-content">
@@ -59,19 +62,19 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">First Name : </label>
+                <label class="control-label">*First Name : </label>
                 <input class="form-control" [readonly]="!editable" value=" Pankaj" formControlName="firstName">
               </div>
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Last Name : </label>
+                <label class="control-label">*Last Name : </label>
                 <input class="form-control" [readonly]="!editable" value=" Kharetwal" formControlName="lastName">
               </div>
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Nick Name : </label>
+                <label class="control-label">*Nick Name : </label>
                 <input class="form-control" [readonly]="!editable" value=" Pankaj" formControlName="nickName">
               </div>
             </div>
@@ -79,7 +82,7 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Center : </label>
+                <label class="control-label">*Center : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="centerId" (ngModelChange)="getProgramsByCenter($event)">
                   <option *ngFor="let center of centers;let c = index;" [ngValue]="center.id"> {{center.name}}</option>
                 </select>
@@ -87,17 +90,19 @@
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Program : </label>
+                <label class="control-label">*Program : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="programId" (change)="getFee(programId)"
                   [(ngModel)]="programId">
+                  <option value=""></option>
                   <option *ngFor="let program of programs;let c = index;" [ngValue]="program.id"> {{program.name}}</option>
                 </select>
               </div>
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Group : </label>
+                <label class="control-label">*Group : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="groupId">
+                  <option value=""></option>
                   <option *ngFor="let group of groups;let c = index;" [ngValue]="group.id"> {{group.name}}</option>
                 </select>
               </div>
@@ -106,9 +111,9 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Gender : </label>
+                <label class="control-label">*Gender : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="gender">
-                  <option value="">Gender</option>
+                  <option value=""></option>
                   <option value="Male">Boy</option>
                   <option value="Female">Girl</option>
                 </select>
@@ -116,8 +121,9 @@
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Blood Group : </label>
+                <label class="control-label">*Blood Group : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="bloodGroup">
+                  <option value=""></option>
                   <option *ngFor="let bg of bloodGroups;">{{bg}}</option>
                 </select>
               </div>
@@ -132,9 +138,9 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Familty Type : </label>
+                <label class="control-label">*Familty Type : </label>
                 <select class="form-control" [class.readonly]="!editable" formControlName="familyType">
-                  <option value="">Family Type</option>
+                  <option value=""></option>
                   <option value="Nuclear">Nuclear</option>
                   <option value="Joint">Joint</option>
                 </select>
@@ -148,8 +154,8 @@
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Expected In : </label>
-                <input class="form-control" [readonly]="!editable" formControlName="expectedIn">
+                <label class="control-label">*Expected In :  (HH:MM)</label>
+                <input class="form-control" [readonly]="!editable"  placeholder="0-24" formControlName="expectedIn">
               </div>
             </div>
           </div>
@@ -163,8 +169,8 @@
             </div>
             <div class="col-lg-4">
               <div class="form-group">
-                <label class="control-label">Expected Out : </label>
-                <input class="form-control" [readonly]="!editable" formControlName="expectedOut">
+                <label class="control-label">Expected Out : (HH:MM) </label>
+                <input class="form-control" [readonly]="!editable" placeholder="0-24" formControlName="expectedOut">
               </div>
             </div>
           </div>
@@ -213,8 +219,8 @@
             <div class="col-md-3">
               <div class="form-group ">
                 <label class="control-label">*Center</label>
-                <select class="form-control" id="sel3" [disabled]="editable" [ngModelOptions]="{standalone: true}"
-                  [(ngModel)]="siblingCenter" [disabled]="!sibling.hasSibling">
+                <select class="form-control" id="sel3" [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingCenter"
+                  [disabled]="!sibling.hasSibling">
                   <option value="">Select</option>
                   <option *ngFor="let center of centers;" [ngValue]="center">{{center.name}}</option>
                 </select>
@@ -223,7 +229,7 @@
             <div class="col-md-3">
               <div class="form-group ">
                 <label class="control-label">Sibling Program</label>
-                <select class="form-control" [disabled]="editable" [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingProgram"
+                <select class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingProgram"
                   [disabled]="!sibling.hasSibling">
                   <option value="">Select</option>
                   <option *ngFor="let program of programs;" [ngValue]="program"> {{program.name}}</option>
@@ -233,7 +239,7 @@
             <div class="col-md-3">
               <div class="form-group ">
                 <label class="control-label">Sibling Group</label>
-                <select class="form-control" [disabled]="editable" [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingGroup"
+                <select class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="siblingGroup"
                   [disabled]="!sibling.hasSibling">
                   <option value="">Select</option>
                   <option *ngFor="let group of groups;" [ngValue]="group"> {{group.name}}</option>
@@ -243,7 +249,7 @@
             <div class="col-md-3">
               <div class="form-group ">
                 <label class="control-label">Student</label>
-                <select class="form-control" [disabled]="editable" [ngModelOptions]="{standalone: true}" [(ngModel)]="sibling.siblingId"
+                <select class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="sibling.siblingId"
                   [disabled]="!sibling.hasSibling" (ngModelChange)="siblingSelected($event)">
                   <option value="">Select</option>
                   <ng-container *ngFor="let student of students;">
@@ -255,7 +261,7 @@
           </div>
         </div>
         <ng-container formArrayName="parents">
-          <div [attr.id]="'parent'+i" class="container tab-pane fade" *ngFor=" let parent of studentForm.controls.parents.controls;let i = index;"
+          <div [attr.id]="'parent'+i" class="container tab-pane fade" *ngFor="let parent of parentFormArray;let i = index;"
             [formGroupName]="i">
             <br>
             <div class="row">
@@ -265,18 +271,18 @@
                 </button>
                 <button class="btn btn-rose" [disabled]="resetButton" mat-raised-button  (click)="resetPassword(parent.value.id)" class="btn btn-primary"> 
                   <!-- <input type="checkbox" formControlName="account" hidden> -->
-                  Reset Password 
+                  Reset Password
                 </button>
               </div>
               <div class="col-lg-6">
                 <div class="form-group">
-                  <label class="control-label">First Name : </label>
-                  <input class="form-control" [readonly]="!editable" value=" Pankaj" formControlName="firstName">
+                  <label class="control-label">*First Name : </label>
+                  <input class="form-control" [readonly]="!editable" value="Pankaj" formControlName="firstName">
                 </div>
               </div>
               <div class="col-lg-6">
                 <div class="form-group">
-                  <label class="control-label">Last Name : </label>
+                  <label class="control-label">*Last Name : </label>
                   <input class="form-control" [readonly]="!editable" value=" Kharetwal" formControlName="lastName">
                 </div>
               </div>
@@ -434,7 +440,7 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label">Final Annual Charges
+                  <label class="control-label">*Final Annual Charges
                   </label>
                   <input class="form-control" type="number" [readonly]="!editable" formControlName="finalAnnualFee"
                     required min="0" (keyup)="calculateDiscount('annualFee','finalAnnualFee', 'discountAnnualCharges')">
@@ -458,7 +464,7 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label">Final Admission Charges</label>
+                  <label class="control-label">*Final Admission Charges</label>
                   <input class="form-control" type="number" [readonly]="!editable" formControlName="finalAdmissionCharges"
                     required min="0" (keyup)="calculateDiscount('admissionCharges', 'finalAdmissionCharges', 'discountAdmissionCharges')"
                     [disabled]="!studentForm.controls.fee.controls.admissionCharges.value">
@@ -485,8 +491,8 @@
 
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label">Final Monthly Fees Amount</label>
-                  <input class="form-control" type="text" [readonly]="!editable" formControlName="finalBaseFee"
+                  <label class="control-label">*Final Monthly Fees Amount</label>
+                  <input class="form-control" type="number" [readonly]="!editable" formControlName="finalBaseFee"
                     required [disabled]="!studentForm.controls.fee.controls.baseFee.value" min="0" (keyup)="calculateDiscount('baseFee', 'finalBaseFee', 'discountBaseFee')">
                 </div>
               </div>
@@ -509,7 +515,7 @@
 
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="control-label">Final Security Deposit Fees</label>
+                  <label class="control-label">*Final Security Deposit Fees</label>
                   <input class="form-control" type="number" [readonly]="!editable" formControlName="finalSecurityDeposit"
                     required [disabled]="!studentForm.controls.fee.controls.securityDeposit.value" min="0" (keyup)="calculateDiscount('securityDeposit', 'finalSecurityDeposit', 'discountSecurityDeposit')">
                 </div>
@@ -606,7 +612,15 @@
         <i class="fa fa-spinner fa-fw fa-pulse fa-2x" *ngIf="disableGenerate"></i>
         Generate Fee
       </button>
-      <button mat-raised-button class="btn btn-primary" (click)="saveStudent()" [disabled]="!studentForm.valid">Save</button>
+      <button mat-raised-button class="btn btn-primary" (click)="saveStudent()" [disabled]="!studentForm.valid" [hidden]="!newStudent && !editable">
+          <span *ngIf=" formSave ;else save">
+            <i class="fa fa-spinner fa-spin"></i> Saving
+          </span>
+          <ng-template #save>Save</ng-template>
+        </button>
+  
+  
+     
       <button mat-raised-button class="btn btn-default" (click)="hideViewPanel()">Cancel</button>
     </div>
   </div>

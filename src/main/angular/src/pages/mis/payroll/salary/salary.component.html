@@ -8,7 +8,7 @@
   <div class="col-md-4">
     <div class="form-group">
       <label for="exampleFormControlSelect2">Center</label>
-      <select class="form-control" id="exampleFormControlSelect2" [(ngModel)]="center" (ngModelChange)="getEmployeeByCenter($event)">
+      <select class="form-control" id="exampleFormControlSelect2" (ngModelChange)="getEmployeeByCenter($event)">
         <option value="ALL">ALL</option>
         <option *ngFor="let center of centers;" value="{{center.code}}">{{center.name}}</option>
       </select>

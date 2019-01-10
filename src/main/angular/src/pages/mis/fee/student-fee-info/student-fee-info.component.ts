@@ -55,12 +55,12 @@ export class StudentFeeInfoComponent implements OnInit {
 
     return this.fb.group({
       active: [''],
-      adjust: [''],
-      admissionCharges: [''],
-      admissionNumber: [''],
-      annualFee: [''],
+      adjust: [0],
+      admissionCharges: [0],
+      admissionNumber: [0],
+      annualFee: [0],
       baseFee: [0],
-      baseFeeGst: [''],
+      baseFeeGst: [0],
       center: this.fb.group({
         active: [''],
         capacity: [''],
@@ -72,17 +72,17 @@ export class StudentFeeInfoComponent implements OnInit {
       cgst: [''],
       comment: [''],
       corporate: [''],
-      discount: [''],
-      discountAdmissionCharges: [''],
-      discountAnnualCharges: [''],
-      discountBaseFee: [''],
-      discountSecurityDeposit: [''],
-      feeDuration: [''],
-      finalAdmissionCharges: [''],
-      finalAnnualFee: [''],
-      finalBaseFee: [''],
-      finalFee: [''],
-      finalSecurityDeposit: [''],
+      discount: [0],
+      discountAdmissionCharges: [0],
+      discountAnnualCharges: [0],
+      discountBaseFee: [0],
+      discountSecurityDeposit: [0],
+      feeDuration: [0],
+      finalAdmissionCharges: [0],
+      finalAnnualFee: [0],
+      finalBaseFee: [0],
+      finalFee: [0],
+      finalSecurityDeposit: [0],
       firstName: [''],
       formalSchool: [''],
       found: [''],
@@ -103,21 +103,22 @@ export class StudentFeeInfoComponent implements OnInit {
         code: [''],
         description: [''],
         groups: [''],
-        id: [''],
+        id: [0],
         name: [''],
       }),
+      isGST: [true],
       schoolName: [''],
-      securityDeposit: [''],
+      securityDeposit: [0],
       sgst: [''],
       studentId: [''],
-      transportFee: [''],
+      transportFee: [0],
 
 
     });
   }
 
   modifyResponse(student) {
-    this.studentFeeForm.get('finalBaseFee').setValue(student.finalBaseFee );
+    this.studentFeeForm.get('finalBaseFee').setValue(student.finalBaseFee);
 
     if (student.program.id === 622614691413790 || student.formalSchool) {
       this.studentFeeForm.get('gstFee').setValue((this.studentFeeForm.get('finalAnnualFee').value * .18).toFixed(2)); // annual-fee-gst
@@ -157,16 +158,17 @@ export class StudentFeeInfoComponent implements OnInit {
 
   updateDiscount() {
 
-    if (this.studentFeeForm.get('id').value === 622614691413790 || this.studentFeeForm.get('formalSchool').value) {
+    if (this.studentFeeForm.controls['program'].get('id').value === 622614691413790 ||
+    this.studentFeeForm.get('isGST').value === true || this.studentFeeForm.get('formalSchool').value) {
       this.studentFeeForm.get('gstFee').setValue((this.studentFeeForm.get('finalAnnualFee').value * .18).toFixed(2)); // annual-fee-gst
       this.studentFeeForm.get('baseFeeGst').setValue((this.studentFeeForm.get('finalBaseFee').value * 3 * .18).toFixed(2));
     }
     // this.studentFeeForm.get('baseFeeGst').setValue((this.studentFeeForm.get('finalBaseFee').value * 3 * .18).toFixed(2));
     // this.studentFeeForm.get('gstFee').setValue((this.studentFeeForm.get('finalAnnualFee').value * .18).toFixed(2)); // annual-fee-gst
 
-    const val = (this.studentFeeForm.get('finalAnnualFee').value || 0) + (this.studentFeeForm.get('finalAdmissionCharges').value || 0 ) +
+    const val = (this.studentFeeForm.get('finalAnnualFee').value || 0) + (this.studentFeeForm.get('finalAdmissionCharges').value || 0) +
       (this.studentFeeForm.get('finalSecurityDeposit').value || 0) + (this.studentFeeForm.get('finalBaseFee').value * 3) +
-      (this.studentFeeForm.get('transportFee').value * 3 ) + Number(this.studentFeeForm.get('gstFee').value) +
+      (this.studentFeeForm.get('transportFee').value * 3) + Number(this.studentFeeForm.get('gstFee').value) +
       Number(this.studentFeeForm.get('baseFeeGst').value);
 
     this.studentFeeForm.get('finalFee').setValue(Number(val).toFixed(2));
@@ -174,7 +176,7 @@ export class StudentFeeInfoComponent implements OnInit {
 
   setDiscount(base, targetDiscount, final) {
 
-    this.studentFeeForm.get(final).setValue(this.studentFeeForm.get(final).value || 0 );
+    this.studentFeeForm.get(final).setValue(this.studentFeeForm.get(final).value || 0);
 
     if (this.studentFeeForm.get(final).value === this.studentFeeForm.get(base).value) {
       if (this.studentFeeForm.get(base).value === 0) {

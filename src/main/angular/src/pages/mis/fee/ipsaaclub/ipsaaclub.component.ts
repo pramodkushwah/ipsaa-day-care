@@ -12,6 +12,7 @@ declare let $: any;
 })
 export class IpsaaclubComponent implements OnInit {
   centers: any;
+  comment: string;
   generatedFeeSlips: any[] = [];
   allchecked = false;
   checkedSlipCount: any = 0;
